@@ -1070,6 +1070,18 @@ bool CWalletDB::ReadZerocoinMint(const CBigNum &bnPubCoinValue, CZerocoinMint& z
     return Read(make_pair(string("zerocoin"), hash), zerocoinMint);
 }
 
+bool CWalletDB::ReadZerocoinMintFromSerial(const CBigNum& bnSerial, CZerocoinMint& mint)
+{
+    std::list<CZerocoinMint> listMints = ListMintedCoins(false, false, false);
+    for (CZerocoinMint& m : listMints) {
+        if (m.GetSerialNumber() == bnSerial) {
+            mint = m;
+            return true;
+        }
+    }
+    return false;
+}
+
 bool CWalletDB::EraseZerocoinMint(const CZerocoinMint& zerocoinMint)
 {
     CDataStream ss(SER_GETHASH, 0);
@@ -1231,8 +1243,8 @@ std::list<CZerocoinMint> CWalletDB::ListMintedCoins(bool fUnusedOnly, bool fMatu
 std::list<CBigNum> CWalletDB::ListMintedCoinsSerial()
 {
     std::list<CBigNum> listPubCoin;
-    std::list<CZerocoinMint> listCoins = ListMintedCoins(true, false, false);
-
+    std::list<CZerocoinMint> listCoins = ListMintedCoins(false, false, false);
+    
     for ( auto& coin : listCoins) {
         listPubCoin.push_back(coin.GetSerialNumber());
     }

@@ -43,10 +43,10 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
     if (wtx.IsCoinStake()) {
         TransactionRecord sub(hash, nTime);
         CTxDestination address;
-        if (!ExtractDestination(wtx.vout[1].scriptPubKey, address))
+        if (!wtx.IsZerocoinSpend() && !ExtractDestination(wtx.vout[1].scriptPubKey, address))
             return parts;
 
-        if (!IsMine(*wallet, address)) {
+        if (!wtx.IsZerocoinSpend() && !IsMine(*wallet, address)) {
             //if the address is not yours then it means you have a tx sent to you in someone elses coinstake tx
             for (unsigned int i = 1; i < wtx.vout.size(); i++) {
                 CTxDestination outAddress;
@@ -66,11 +66,25 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             }
         } else {
             //stake reward
-            isminetype mine = wallet->IsMine(wtx.vout[1]);
-            sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
-            sub.type = TransactionRecord::StakeMint;
-            sub.address = CBitcoinAddress(address).ToString();
-            sub.credit = nNet;
+            if (wtx.IsZerocoinSpend()) {
+                sub.involvesWatchAddress = false;
+                sub.type = TransactionRecord::StakeZPIV;
+                sub.address = mapValue["zerocoinmint"];
+                sub.credit = nNet;
+
+                for (const CTxOut& out : wtx.vout) {
+                    if (out.IsZerocoinMint())
+                        sub.debit += out.nValue;
+                }
+
+                sub.debit -= wtx.vin[0].nSequence * COIN;
+            } else {
+                isminetype mine = wallet->IsMine(wtx.vout[1]);
+                sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
+                sub.type = TransactionRecord::StakeMint;
+                sub.address = CBitcoinAddress(address).ToString();
+                sub.credit = nNet;
+            }
         }
         parts.append(sub);
     } else if (wtx.IsZerocoinSpend()) {
@@ -320,7 +334,7 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx)
         }
     }
     // For generated transactions, determine maturity
-    else if (type == TransactionRecord::Generated || type == TransactionRecord::StakeMint || type == TransactionRecord::MNReward || type == TransactionRecord::FNReward) {
+    else if (type == TransactionRecord::Generated || type == TransactionRecord::StakeMint || TransactionRecord::StakeZPIV || type == TransactionRecord::MNReward || type == TransactionRecord::FNReward) {
         if (wtx.GetBlocksToMaturity() > 0) {
             status.status = TransactionStatus::Immature;
 

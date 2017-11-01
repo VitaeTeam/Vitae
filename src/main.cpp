@@ -9,8 +9,10 @@
 #include "main.h"
 
 #include "accumulators.h"
+#include "accumulatormap.h"
 #include "addrman.h"
 #include "alert.h"
+#include "blocksignature.h"
 #include "chainparams.h"
 #include "checkpoints.h"
 #include "checkqueue.h"
@@ -40,7 +42,6 @@
 
 #include "primitives/zerocoin.h"
 #include "libzerocoin/Denominations.h"
-#include "accumulatormap.h"
 
 #include <sstream>
 
@@ -1207,7 +1208,9 @@ bool BlockToZerocoinMintList(const CBlock& block, std::list<CZerocoinMint>& vMin
             if(!TxOutToPublicCoin(txOut, pubCoin, state))
                 return false;
 
-            CZerocoinMint mint = CZerocoinMint(pubCoin.getDenomination(), pubCoin.getValue(), 0, 0, false);
+            //version should not actually matter here since it is just a reference to the pubcoin, not to the privcoin
+            uint8_t version = 1;
+            CZerocoinMint mint = CZerocoinMint(pubCoin.getDenomination(), pubCoin.getValue(), 0, 0, false, version, nullptr);
             mint.SetTxHash(tx.GetHash());
             vMints.push_back(mint);
         }
@@ -1291,28 +1294,27 @@ CoinSpend TxInToZerocoinSpend(const CTxIn& txin)
     return CoinSpend(Params().Zerocoin_Params(), serializedCoinSpend);
 }
 
-//Check a zerocoinspend considering external context such as blockchain data, height, etc.
-bool ContextualCheckCoinSpend(const CoinSpend& spend, CBlockIndex* pindex, const uint256& txid)
+bool ContextualCheckZerocoinSpend(const CTransaction& tx, const CoinSpend& spend, CBlockIndex* pindex)
 {
-    // Make sure that the serial number is in valid range
-    if (pindex->nHeight >= Params().Zerocoin_Block_EnforceSerialRange()) {
-        if (!spend.HasValidSerial(Params().Zerocoin_Params()))
-            return error("%s : txid=%s in block %d contains invalid serial %s\n", __func__, txid.GetHex(),
-                         pindex->nHeight, spend.getCoinSerialNumber());
+    //Check to see if the zPIV is properly signed
+    if (pindex->nHeight >= Params().Zerocoin_Block_V2_Start()) {
+        if (!spend.HasValidSignature())
+            return error("%s: V2 zPIV spend does not have a valid signature", __func__);
     }
 
-    //Is the serial already in the blockchain?
-    int nHeightTxSpend = 0;
-    if (IsSerialInBlockchain(spend.getCoinSerialNumber(), nHeightTxSpend)) {
-        if(!fVerifyingBlocks || (fVerifyingBlocks && pindex->nHeight > nHeightTxSpend))
-            return error("%s : zPiv with serial %s is already in the block %d\n", __func__,
-                         spend.getCoinSerialNumber().GetHex(), nHeightTxSpend);
-    }
-
+    //Is the serial # already in the blockchain
+    int nHeightTx = 0;
+    if (IsSerialInBlockchain(spend.getCoinSerialNumber(), nHeightTx))
+        return error("%s : zPiv spend with serial %s is already in block %d\n", __func__,
+                     spend.getCoinSerialNumber().GetHex(), nHeightTx);
+    //Is serial in the acceptable range
+    if (pindex->nHeight > Params().Zerocoin_Block_EnforceSerialRange() && !spend.HasValidSerial(Params().Zerocoin_Params()))
+        return error("%s : zPiv spend with serial %s from tx %s is not in valid range\n", __func__,
+                     spend.getCoinSerialNumber().GetHex(), tx.GetHash().GetHex());
     return true;
 }
 
-bool CheckZerocoinSpend(const CTransaction tx, bool fVerifySignature, CValidationState& state)
+bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidationState& state)
 {
     //max needed non-mint outputs should be 2 - one for redemption address and a possible 2nd for change
     if (tx.vout.size() > 2) {
@@ -1322,7 +1324,7 @@ bool CheckZerocoinSpend(const CTransaction tx, bool fVerifySignature, CValidatio
                 continue;
             outs++;
         }
-        if (outs > 2)
+        if (outs > 2 && !tx.IsCoinStake())
             return state.DoS(100, error("CheckZerocoinSpend(): over two non-mint outputs in a zerocoinspend transaction"));
     }
 
@@ -1381,7 +1383,7 @@ bool CheckZerocoinSpend(const CTransaction tx, bool fVerifySignature, CValidatio
         fValidated = true;
     }
 
-    if (nTotalRedeemed < tx.GetValueOut()) {
+    if (!tx.IsCoinStake() && nTotalRedeemed < tx.GetValueOut()) {
         LogPrintf("redeemed = %s , spend = %s \n", FormatMoney(nTotalRedeemed), FormatMoney(tx.GetValueOut()));
         return state.DoS(100, error("Transaction spend more than was redeemed in zerocoins"));
     }
@@ -1618,23 +1620,23 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         CCoinsViewCache view(&dummy);
 
         CAmount nValueIn = 0;
-        uint256 txid = tx.GetHash();
         if(tx.IsZerocoinSpend()){
             nValueIn = tx.GetZerocoinSpent();
 
             //Check that txid is not already in the chain
             int nHeightTx = 0;
             if (IsTransactionInChain(tx.GetHash(), nHeightTx))
-                return state.Invalid(error("AcceptToMemoryPool : zVITAE spend tx %s already in block %d", tx.GetHash().GetHex(), nHeightTx),
-                                     REJECT_DUPLICATE, "bad-txns-inputs-spent");
+                return state.Invalid(error("AcceptToMemoryPool : zVITAE spend tx %s already in block %d",
+                                           tx.GetHash().GetHex(), nHeightTx), REJECT_DUPLICATE, "bad-txns-inputs-spent");
 
             //Check for double spending of serial #'s
             for (const CTxIn& txIn : tx.vin) {
                 if (!txIn.scriptSig.IsZerocoinSpend())
                     continue;
                 CoinSpend spend = TxInToZerocoinSpend(txIn);
-                if (!ContextualCheckCoinSpend(spend, chainActive.Tip(), txid))
-                    return state.Invalid(error("%s: zVITAE spend in tx %s failed to pass context checks", __func__, txid.GetHex()));
+                if (!ContextualCheckZerocoinSpend(tx, spend, chainActive.Tip()))
+                    return state.Invalid(error("%s: ContextualCheckZerocoinSpend failed for tx %s", __func__,
+                                               tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvitae");
             }
         } else {
             LOCK(pool.cs);
@@ -3546,12 +3548,14 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 CoinSpend spend = TxInToZerocoinSpend(txIn);
                 nValueIn += spend.getDenomination() * COIN;
 
-                //Perform checks on the spend that are based on blockchain context
-                if (!ContextualCheckCoinSpend(spend, pindex, txid))
-                    return state.DoS(100, error("%s: Coinspend is not valid in block %s", __func__, block.GetHash().GetHex()));
-
                 //queue for db write after the 'justcheck' section has concluded
                 vSpends.emplace_back(make_pair(spend, tx.GetHash()));
+                if (!ContextualCheckZerocoinSpend(tx, spend, pindex))
+                    return state.DoS(100, error("%s: failed to add block %s with invalid zerocoinspend", __func__, tx.GetHash().GetHex()), REJECT_INVALID);
+
+                //record spend to database
+                if (!zerocoinDB->WriteCoinSpend(spend.getCoinSerialNumber(), tx.GetHash()))
+                    return error("%s : failed to record coin serial to database");
             }
         } else if (!tx.IsCoinBase()) {
             if (!view.HaveInputs(tx))
@@ -3635,7 +3639,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     //Check that the block does not overmint
     if (!IsBlockValueValid(block, nExpectedMint, pindex->nMint)) {
         return state.DoS(100, error("ConnectBlock() : reward pays too much (actual=%s vs limit=%s)",
-                FormatMoney(pindex->nMint), FormatMoney(nExpectedMint)), REJECT_INVALID, "bad-cb-amount");
+                                    FormatMoney(pindex->nMint), FormatMoney(nExpectedMint)),
+                         REJECT_INVALID, "bad-cb-amount");
     }
 
     // Ensure that accumulator checkpoints are valid and in the same state as this instance of the chain
@@ -3685,27 +3690,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (fTxIndex)
         if (!pblocktree->WriteTxIndex(vPos))
             return state.Abort("Failed to write transaction index");
-
-    // add new entries
-    for (const CTransaction tx: block.vtx) {
-        if (tx.IsCoinBase() || tx.IsZerocoinSpend())
-            continue;
-        for (const CTxIn in: tx.vin) {
-            LogPrint("map", "mapStakeSpent: Insert %s | %u\n", in.prevout.ToString(), pindex->nHeight);
-            mapStakeSpent.insert(std::make_pair(in.prevout, pindex->nHeight));
-        }
-    }
-
-    // delete old entries
-    for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end();) {
-        if (it->second < pindex->nHeight - Params().MaxReorganizationDepth()) {
-            LogPrint("map", "mapStakeSpent: Erase %s | %u\n", it->first.ToString(), it->second);
-            it = mapStakeSpent.erase(it);
-        }
-        else {
-            it++;
-        }
-    }
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
@@ -4729,18 +4713,6 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
     if (block.nBits != nBitsRequired)
         return error("%s : incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
 
-    if (block.IsProofOfStake()) {
-        uint256 hashProofOfStake;
-        uint256 hash = block.GetHash();
-
-        if(!CheckProofOfStake(block, hashProofOfStake)) {
-            LogPrintf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
-            return false;
-        }
-        if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
-            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
-    }
-
     return true;
 }
 
@@ -4903,6 +4875,29 @@ bool AcceptBlockHeader(const CBlock& block, CValidationState& state, CBlockIndex
     return true;
 }
 
+bool ContextualCheckZerocoinStake(CStakeInput* stake)
+{
+    if (chainActive.Height() + 1 < Params().Zerocoin_Block_V2_Start())
+        return error("%s: zPIV stake block is less than allowed start height", __func__);
+
+    if (CZPivStake* zPIV = dynamic_cast<CZPivStake*>(stake)) {
+        CBlockIndex* pindex = zPIV->GetIndexFrom();
+
+        if (chainActive.Height() - pindex->nHeight < Params().Zerocoin_RequiredStakeDepth())
+            return error("%s: zPIV stake does not have required confirmation depth", __func__);
+
+        //The checksum needs to be the exact checksum from 200 blocks ago
+        uint256 nCheckpoint200 = chainActive[chainActive.Height() - Params().Zerocoin_RequiredStakeDepth()]->nAccumulatorCheckpoint;
+        uint32_t nChecksum200 = ParseChecksum(nCheckpoint200, libzerocoin::AmountToZerocoinDenomination(zPIV->GetValue()));
+        if (nChecksum200 != zPIV->GetChecksum())
+            return error("%s: accumulator checksum is different than the block 200 blocks previous. stake=%d block200=%d", __func__, zPIV->GetChecksum(), nChecksum200);
+    } else {
+        return error("%s: dynamic_cast of stake ptr failed", __func__);
+    }
+
+    return true;
+}
+
 bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, CDiskBlockPos* dbp, bool fAlreadyCheckedBlock)
 {
     AssertLockHeld(cs_main);
@@ -4934,6 +4929,24 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
 
     if (block.GetHash() != Params().HashGenesisBlock() && !CheckWork(block, pindexPrev))
         return false;
+
+    if (block.IsProofOfStake()) {
+        uint256 hashProofOfStake = 0;
+        CStakeInput* stake = nullptr;
+
+        if (!CheckProofOfStake(block, hashProofOfStake, stake))
+            return state.DoS(100, error("%s: proof of stake check failed", __func__));
+
+        if (!stake)
+            return error("%s: null stake ptr", __func__);
+
+        if (stake->IsZPIV() && !ContextualCheckZerocoinStake(stake))
+            return state.DoS(100, error("%s: staked zPIV fails context checks", __func__));
+
+        uint256 hash = block.GetHash();
+        if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
+            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
+    }
 
     if (!AcceptBlockHeader(block, state, &pindex))
         return false;
@@ -5106,14 +5119,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
     if (nMints || nSpends)
         LogPrintf("%s : block contains %d zVITAE mints and %d zVITAE spends\n", __func__, nMints, nSpends);
 
-    // ppcoin: check proof-of-stake
-    // Limited duplicity on stake: prevents block flood attack
-    // Duplicate stake allowed only when there is orphan child block
-    //if (pblock->IsProofOfStake() && setStakeSeen.count(pblock->GetProofOfStake())/* && !mapOrphanBlocksByPrev.count(hash)*/)
-    //    return error("ProcessNewBlock() : duplicate proof-of-stake (%s, %d) for block %s", pblock->GetProofOfStake().first.ToString().c_str(), pblock->GetProofOfStake().second, pblock->GetHash().ToString().c_str());
-
-    // NovaCoin: check proof-of-stake block signature
-    if (!pblock->CheckBlockSignature())
+    if (!CheckBlockSignature(*pblock))
         return error("ProcessNewBlock() : bad proof-of-stake block signature");
 
     if (pblock->GetHash() != Params().HashGenesisBlock() && pfrom != NULL) {
