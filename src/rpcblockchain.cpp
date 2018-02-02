@@ -382,6 +382,8 @@ UniValue getblock(const UniValue& params, bool fHelp)
 
     LOCK(cs_main);
 
+    LOCK(cs_main);
+
     std::string strHash = params[0].get_str();
     uint256 hash(strHash);
 
@@ -537,6 +539,8 @@ UniValue gettxout(const UniValue& params, bool fHelp)
             HelpExampleCli("gettxout", "\"txid\" 1") +
             "\nAs a json rpc call\n" +
             HelpExampleRpc("gettxout", "\"txid\", 1"));
+
+    LOCK(cs_main);
 
     LOCK(cs_main);
 

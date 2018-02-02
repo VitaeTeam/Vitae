@@ -105,7 +105,6 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
             HelpExampleRpc("importprivkey", "\"mykey\", \"testing\", false"));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
-
     EnsureWalletIsUnlocked();
 
     string strSecret = params[0].get_str();
@@ -176,7 +175,6 @@ UniValue importaddress(const UniValue& params, bool fHelp)
             HelpExampleRpc("importaddress", "\"myaddress\", \"testing\", false"));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
-
     CScript script;
 
     CBitcoinAddress address(params[0].get_str());
@@ -244,7 +242,6 @@ UniValue importwallet(const UniValue& params, bool fHelp)
             HelpExampleRpc("importwallet", "\"test\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
-
     EnsureWalletIsUnlocked();
 
     ifstream file;
@@ -446,7 +443,6 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
             HelpExampleRpc("bip38encrypt", "\"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\" \"mypasphrase\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
-
     EnsureWalletIsUnlocked();
 
     string strAddress = params[0].get_str();
@@ -492,7 +488,6 @@ UniValue bip38decrypt(const UniValue& params, bool fHelp)
             HelpExampleRpc("bip38decrypt", "\"encryptedkey\" \"mypassphrase\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
-
     EnsureWalletIsUnlocked();
 
     /** Collect private key and passphrase **/

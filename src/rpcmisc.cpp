@@ -553,6 +553,8 @@ UniValue verifymessage(const UniValue& params, bool fHelp)
 
     LOCK(cs_main);
 
+    LOCK(cs_main);
+
     string strAddress = params[0].get_str();
     string strSign = params[1].get_str();
     string strMessage = params[2].get_str();
