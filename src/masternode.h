@@ -365,4 +365,12 @@ public:
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
 };
 
+// This class was removed by original Vitae.
+// Now put it back partially to try to keep align with the upstream
+class CMasternodeBroadcast
+{
+public:
+    static bool CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext);
+};
+
 #endif
