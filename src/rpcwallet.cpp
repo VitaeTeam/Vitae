@@ -94,6 +94,8 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getnewaddress", "") + HelpExampleCli("getnewaddress", "\"\"") + HelpExampleCli("getnewaddress", "\"myaccount\"") + HelpExampleRpc("getnewaddress", "\"myaccount\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     // Parse the account first so we don't generate a key if there's an error
     string strAccount;
     if (params.size() > 0)
@@ -161,13 +163,14 @@ UniValue getaccountaddress(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getaccountaddress", "") + HelpExampleCli("getaccountaddress", "\"\"") + HelpExampleCli("getaccountaddress", "\"myaccount\"") + HelpExampleRpc("getaccountaddress", "\"myaccount\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     // Parse the account first so we don't generate a key if there's an error
     string strAccount = AccountFromValue(params[0]);
 
     UniValue ret(UniValue::VSTR);
 
     ret = GetAccountAddress(strAccount).ToString();
-
     return ret;
 }
 
@@ -183,6 +186,8 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
             "\"address\"    (string) The address\n"
             "\nExamples:\n" +
             HelpExampleCli("getrawchangeaddress", "") + HelpExampleRpc("getrawchangeaddress", ""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (!pwalletMain->IsLocked())
         pwalletMain->TopUpKeyPool();
@@ -211,6 +216,8 @@ UniValue setaccount(const UniValue& params, bool fHelp)
             "2. \"account\"         (string, required) The account to assign the address to.\n"
             "\nExamples:\n" +
             HelpExampleCli("setaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" \"tabby\"") + HelpExampleRpc("setaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", \"tabby\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
@@ -250,6 +257,8 @@ UniValue getaccount(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\"") + HelpExampleRpc("getaccount", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
@@ -277,6 +286,8 @@ UniValue getaddressesbyaccount(const UniValue& params, bool fHelp)
             "]\n"
             "\nExamples:\n" +
             HelpExampleCli("getaddressesbyaccount", "\"tabby\"") + HelpExampleRpc("getaddressesbyaccount", "\"tabby\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     string strAccount = AccountFromValue(params[0]);
 
@@ -343,6 +354,8 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("sendtoaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1") + HelpExampleCli("sendtoaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1 \"donation\" \"seans outpost\"") + HelpExampleRpc("sendtoaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", 0.1, \"donation\", \"seans outpost\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
@@ -383,6 +396,8 @@ UniValue sendtoaddressix(const UniValue& params, bool fHelp)
             "\"transactionid\"  (string) The transaction id.\n"
             "\nExamples:\n" +
             HelpExampleCli("sendtoaddressix", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1") + HelpExampleCli("sendtoaddressix", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.1 \"donation\" \"seans outpost\"") + HelpExampleRpc("sendtoaddressix", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", 0.1, \"donation\", \"seans outpost\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CBitcoinAddress address(params[0].get_str());
     if (!address.IsValid())
@@ -428,6 +443,8 @@ UniValue listaddressgroupings(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("listaddressgroupings", "") + HelpExampleRpc("listaddressgroupings", ""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     UniValue jsonGroupings(UniValue::VARR);
     map<CTxDestination, CAmount> balances = pwalletMain->GetAddressBalances();
     BOOST_FOREACH (set<CTxDestination> grouping, pwalletMain->GetAddressGroupings()) {
@@ -466,6 +483,8 @@ UniValue signmessage(const UniValue& params, bool fHelp)
             "\nCreate the signature\n" + HelpExampleCli("signmessage", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" \"my message\"") +
             "\nVerify the signature\n" + HelpExampleCli("verifymessage", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" \"signature\" \"my message\"") +
             "\nAs json rpc\n" + HelpExampleRpc("signmessage", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", \"my message\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     EnsureWalletIsUnlocked();
 
@@ -512,6 +531,8 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
             "\nThe amount including unconfirmed transactions, zero confirmations\n" + HelpExampleCli("getreceivedbyaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0") +
             "\nThe amount with at least 6 confirmation, very safe\n" + HelpExampleCli("getreceivedbyaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 6") +
             "\nAs a json rpc call\n" + HelpExampleRpc("getreceivedbyaddress", "\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", 6"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     // vitae address
     CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
@@ -560,6 +581,8 @@ UniValue getreceivedbyaccount(const UniValue& params, bool fHelp)
             "\nAmount received at the tabby account including unconfirmed amounts with zero confirmations\n" + HelpExampleCli("getreceivedbyaccount", "\"tabby\" 0") +
             "\nThe amount with at least 6 confirmation, very safe\n" + HelpExampleCli("getreceivedbyaccount", "\"tabby\" 6") +
             "\nAs a json rpc call\n" + HelpExampleRpc("getreceivedbyaccount", "\"tabby\", 6"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     // Minimum confirmations
     int nMinDepth = 1;
@@ -643,6 +666,8 @@ UniValue getbalance(const UniValue& params, bool fHelp)
             "\nThe total amount in the account named tabby with at least 6 confirmations\n" + HelpExampleCli("getbalance", "\"tabby\" 6") +
             "\nAs a json rpc call\n" + HelpExampleRpc("getbalance", "\"tabby\", 6"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     if (params.size() == 0)
         return ValueFromAmount(pwalletMain->GetBalance());
 
@@ -693,6 +718,9 @@ UniValue getunconfirmedbalance(const UniValue &params, bool fHelp)
         throw runtime_error(
             "getunconfirmedbalance\n"
             "Returns the server's total unconfirmed balance\n");
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     return ValueFromAmount(pwalletMain->GetUnconfirmedBalance());
 }
 
@@ -715,6 +743,8 @@ UniValue movecmd(const UniValue& params, bool fHelp)
             HelpExampleCli("move", "\"\" \"tabby\" 0.01") +
             "\nMove 0.01 btc timotei to akiko with a comment and funds have 6 confirmations\n" + HelpExampleCli("move", "\"timotei\" \"akiko\" 0.01 6 \"happy birthday!\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("move", "\"timotei\", \"akiko\", 0.01, 6, \"happy birthday!\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     string strFrom = AccountFromValue(params[0]);
     string strTo = AccountFromValue(params[1]);
@@ -785,6 +815,8 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
             "\nSend 0.01 from the tabby account to the given address, funds must have at least 6 confirmations\n" + HelpExampleCli("sendfrom", "\"tabby\" \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\" 0.01 6 \"donation\" \"seans outpost\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("sendfrom", "\"tabby\", \"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\", 0.01, 6, \"donation\", \"seans outpost\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     string strAccount = AccountFromValue(params[0]);
     CBitcoinAddress address(params[1].get_str());
     if (!address.IsValid())
@@ -838,6 +870,8 @@ UniValue sendmany(const UniValue& params, bool fHelp)
             HelpExampleCli("sendmany", "\"tabby\" \"{\\\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\\\":0.01,\\\"XuQQkwA4FYkq2XERzMY2CiAZhJTEDAbtcg\\\":0.02}\"") +
             "\nSend two amounts to two different addresses setting the confirmation and comment:\n" + HelpExampleCli("sendmany", "\"tabby\" \"{\\\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\\\":0.01,\\\"XuQQkwA4FYkq2XERzMY2CiAZhJTEDAbtcg\\\":0.02}\" 6 \"testing\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("sendmany", "\"tabby\", \"{\\\"XwnLY9Tf7Zsef8gMGL2fhWA9ZmMjt4KPwg\\\":0.01,\\\"XuQQkwA4FYkq2XERzMY2CiAZhJTEDAbtcg\\\":0.02}\", 6, \"testing\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     string strAccount = AccountFromValue(params[0]);
     UniValue sendTo = params[1].get_obj();
@@ -920,6 +954,8 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
                      "\nAs json rpc call\n" + HelpExampleRpc("addmultisigaddress", "2, \"[\\\"Xt4qk9uKvQYAonVGSZNXqxeDmtjaEWgfrs\\\",\\\"XoSoWQkpgLpppPoyyzbUFh1fq2RBvW6UK1\\\"]\"");
         throw runtime_error(msg);
     }
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     string strAccount;
     if (params.size() > 2)
@@ -1092,6 +1128,8 @@ UniValue listreceivedbyaddress(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("listreceivedbyaddress", "") + HelpExampleCli("listreceivedbyaddress", "6 true") + HelpExampleRpc("listreceivedbyaddress", "6, true, true"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     return ListReceived(params, false);
 }
 
@@ -1120,6 +1158,8 @@ UniValue listreceivedbyaccount(const UniValue& params, bool fHelp)
 
             "\nExamples:\n" +
             HelpExampleCli("listreceivedbyaccount", "") + HelpExampleCli("listreceivedbyaccount", "6 true") + HelpExampleRpc("listreceivedbyaccount", "6, true, true"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     return ListReceived(params, true);
 }
@@ -1265,6 +1305,8 @@ UniValue listtransactions(const UniValue& params, bool fHelp)
             "\nList transactions 100 to 120 from the tabby account\n" + HelpExampleCli("listtransactions", "\"tabby\" 20 100") +
             "\nAs a json rpc call\n" + HelpExampleRpc("listtransactions", "\"tabby\", 20, 100"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     string strAccount = "*";
     if (params.size() > 0)
         strAccount = params[0].get_str();
@@ -1345,6 +1387,8 @@ UniValue listaccounts(const UniValue& params, bool fHelp)
             "\nList account balances including zero confirmation transactions\n" + HelpExampleCli("listaccounts", "0") +
             "\nList account balances for 6 or more confirmations\n" + HelpExampleCli("listaccounts", "6") +
             "\nAs json rpc call\n" + HelpExampleRpc("listaccounts", "6"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     int nMinDepth = 1;
     if (params.size() > 0)
@@ -1429,6 +1473,8 @@ UniValue listsinceblock(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("listsinceblock", "") + HelpExampleCli("listsinceblock", "\"000000000000000bacf66f7497b7dc45ef753ee9a7d38571037cdb1a57f663ad\" 6") + HelpExampleRpc("listsinceblock", "\"000000000000000bacf66f7497b7dc45ef753ee9a7d38571037cdb1a57f663ad\", 6"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     CBlockIndex* pindex = NULL;
     int target_confirms = 1;
     isminefilter filter = ISMINE_SPENDABLE;
@@ -1510,6 +1556,8 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("gettransaction", "\"1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d\"") + HelpExampleCli("gettransaction", "\"1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d\" true") + HelpExampleRpc("gettransaction", "\"1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     uint256 hash;
     hash.SetHex(params[0].get_str());
 
@@ -1556,6 +1604,8 @@ UniValue backupwallet(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("backupwallet", "\"backup.dat\"") + HelpExampleRpc("backupwallet", "\"backup.dat\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     string strDest = params[0].get_str();
     if (!BackupWallet(*pwalletMain, strDest))
         throw JSONRPCError(RPC_WALLET_ERROR, "Error: Wallet backup failed!");
@@ -1575,6 +1625,8 @@ UniValue keypoolrefill(const UniValue& params, bool fHelp)
                                         "1. newsize     (numeric, optional, default=100) The new keypool size\n"
                                         "\nExamples:\n" +
             HelpExampleCli("keypoolrefill", "") + HelpExampleRpc("keypoolrefill", ""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     // 0 is interpreted by TopUpKeyPool() as the default keypool size given by -keypool
     unsigned int kpSize = 0;
@@ -1622,6 +1674,8 @@ UniValue walletpassphrase(const UniValue& params, bool fHelp)
             "\nUnlock the wallet for 60 seconds but allow anonymization, automint, and staking only\n" + HelpExampleCli("walletpassphrase", "\"my pass phrase\" 60 true") +
             "\nLock the wallet again (before 60 seconds)\n" + HelpExampleCli("walletlock", "") +
             "\nAs json rpc call\n" + HelpExampleRpc("walletpassphrase", "\"my pass phrase\", 60"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (fHelp)
         return true;
@@ -1672,6 +1726,8 @@ UniValue walletpassphrasechange(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("walletpassphrasechange", "\"old one\" \"new one\"") + HelpExampleRpc("walletpassphrasechange", "\"old one\", \"new one\""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     if (fHelp)
         return true;
     if (!pwalletMain->IsCrypted())
@@ -1714,6 +1770,8 @@ UniValue walletlock(const UniValue& params, bool fHelp)
             "\nClear the passphrase since we are done before 2 minutes is up\n" + HelpExampleCli("walletlock", "") +
             "\nAs json rpc call\n" + HelpExampleRpc("walletlock", ""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     if (fHelp)
         return true;
     if (!pwalletMain->IsCrypted())
@@ -1749,6 +1807,8 @@ UniValue encryptwallet(const UniValue& params, bool fHelp)
             "\nNow we can so something like sign\n" + HelpExampleCli("signmessage", "\"vitaeaddress\" \"test message\"") +
             "\nNow lock the wallet again by removing the passphrase\n" + HelpExampleCli("walletlock", "") +
             "\nAs a json rpc call\n" + HelpExampleRpc("encryptwallet", "\"my pass phrase\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (fHelp)
         return true;
@@ -1808,6 +1868,8 @@ UniValue lockunspent(const UniValue& params, bool fHelp)
             "\nList the locked transactions\n" + HelpExampleCli("listlockunspent", "") +
             "\nUnlock the transaction again\n" + HelpExampleCli("lockunspent", "true \"[{\\\"txid\\\":\\\"a08e6907dbbd3d809776dbfc5d82e371b764ed838b5655e72f463568df1aadf0\\\",\\\"vout\\\":1}]\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("lockunspent", "false, \"[{\\\"txid\\\":\\\"a08e6907dbbd3d809776dbfc5d82e371b764ed838b5655e72f463568df1aadf0\\\",\\\"vout\\\":1}]\""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (params.size() == 1)
         RPCTypeCheck(params, boost::assign::list_of(UniValue::VBOOL));
@@ -1873,6 +1935,8 @@ UniValue listlockunspent(const UniValue& params, bool fHelp)
             "\nUnlock the transaction again\n" + HelpExampleCli("lockunspent", "true \"[{\\\"txid\\\":\\\"a08e6907dbbd3d809776dbfc5d82e371b764ed838b5655e72f463568df1aadf0\\\",\\\"vout\\\":1}]\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("listlockunspent", ""));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     vector<COutPoint> vOutpts;
     pwalletMain->ListLockedCoins(vOutpts);
 
@@ -1902,6 +1966,8 @@ UniValue settxfee(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("settxfee", "0.00001") + HelpExampleRpc("settxfee", "0.00001"));
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     // Amount
     CAmount nAmount = 0;
     if (params[0].get_real() != 0.0)
@@ -1928,6 +1994,8 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
             "}\n"
             "\nExamples:\n" +
             HelpExampleCli("getwalletinfo", "") + HelpExampleRpc("getwalletinfo", ""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("walletversion", pwalletMain->GetVersion()));
@@ -2343,6 +2411,8 @@ UniValue getzerocoinbalance(const UniValue& params, bool fHelp)
                             "getzerocoinbalance\n"
                             + HelpRequiringPassphrase());
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 
@@ -2356,6 +2426,8 @@ UniValue listmintedzerocoins(const UniValue& params, bool fHelp)
         throw runtime_error(
                             "listmintedzerocoins\n"
                             + HelpRequiringPassphrase());
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -2378,6 +2450,8 @@ UniValue listzerocoinamounts(const UniValue& params, bool fHelp)
         throw runtime_error(
             "listzerocoinamounts\n"
             + HelpRequiringPassphrase());
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -2412,6 +2486,8 @@ UniValue listspentzerocoins(const UniValue& params, bool fHelp)
             "listspentzerocoins\n"
             + HelpRequiringPassphrase());
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 
@@ -2433,6 +2509,8 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
             "mintzerocoin <amount>\n"
             "Usage: Enter an amount of VITAE to convert to zVITAE"
             + HelpRequiringPassphrase());
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     int64_t nTime = GetTimeMillis();
 
@@ -2482,7 +2560,9 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
                     "an address is required"
             + HelpRequiringPassphrase());
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE))
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
+    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
         throw JSONRPCError(RPC_WALLET_ERROR, "zVITAE is currently disabled due to maintenance.");
 
     int64_t nTimeStart = GetTimeMillis();
@@ -2570,6 +2650,8 @@ UniValue resetmintzerocoin(const UniValue& params, bool fHelp)
 
             + HelpRequiringPassphrase());
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     bool fExtendedSearch = false;
     if (params.size() == 1)
         fExtendedSearch = params[0].get_bool();
@@ -2610,6 +2692,8 @@ UniValue resetspentzerocoin(const UniValue& params, bool fHelp)
             "resetspentzerocoin\n"
                 "Scan the blockchain for all of the zerocoins that are held in the wallet.dat. Reset mints that are considered spent that did not make it into the blockchain."
             + HelpRequiringPassphrase());
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CZerocoinMint> listMints = walletdb.ListMintedCoins(false, false, false);
@@ -2659,6 +2743,8 @@ UniValue getarchivedzerocoin(const UniValue& params, bool fHelp)
             "Provides enough information to recover mint if it was incorrectly archived."
             + HelpRequiringPassphrase());
 
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CZerocoinMint> listMints = walletdb.ListArchivedZerocoins();
 
@@ -2703,6 +2789,8 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
 
                 "\nExamples\n" +
             HelpExampleCli("exportzerocoins", "false 5") + HelpExampleRpc("exportzerocoins", "false 5"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -2754,6 +2842,8 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
                 "\nExamples\n" +
             HelpExampleCli("importzerocoins", "\'[{\"d\":100,\"p\":\"mypubcoin\",\"s\":\"myserial\",\"r\":\"randomness_hex\",\"t\":\"mytxid\",\"h\":104923, \"u\":false},{\"d\":5,...}]\'") +
                 HelpExampleRpc("importzerocoins", "[{\"d\":100,\"p\":\"mypubcoin\",\"s\":\"myserial\",\"r\":\"randomness_hex\",\"t\":\"mytxid\",\"h\":104923, \"u\":false},{\"d\":5,...}]"));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if(pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -2820,6 +2910,8 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
 
                 "\nExamples\n" +
             HelpExampleCli("reconsiderzerocoins", "") + HelpExampleRpc("reconsiderzerocoins", ""));
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if(pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
