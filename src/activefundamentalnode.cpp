@@ -68,17 +68,8 @@ void CActiveFundamentalnode::ManageStatus()
             service = CService(strFundamentalNodeAddr);
         }
 
-        if (Params().NetworkID() == CBaseChainParams::MAIN) {
-            if (service.GetPort() != 8765) {
-                notCapableReason = strprintf("Invalid port: %u - only 8765 is supported on mainnet.", service.GetPort());
-                LogPrintf("CActiveFundamentalnode::ManageStatus() - not capable: %s\n", notCapableReason);
-                return;
-            }
-        } else if (service.GetPort() == 8765) {
-            notCapableReason = strprintf("Invalid port: %u - 8765 is only supported on mainnet.", service.GetPort());
-            LogPrintf("CActiveFundamentalnode::ManageStatus() - not capable: %s\n", notCapableReason);
+        if(!CFundamentalnodeBroadcast::CheckDefaultPort(strFundamentalNodeAddr, errorMessage, "CActiveFundamentalnode::ManageStatus()"))
             return;
-        }
 
         LogPrintf("CActiveFundamentalnode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString());
 
@@ -267,17 +258,8 @@ bool CActiveFundamentalnode::Register(std::string strService, std::string strKey
     }
 
     CService service = CService(strService);
-    if (Params().NetworkID() == CBaseChainParams::MAIN) {
-        if (service.GetPort() != 8765) {
-            errorMessage = strprintf("Invalid port %u for fundamentalnode %s - only 8765 is supported on mainnet.", service.GetPort(), strService);
-            LogPrintf("CActiveFundamentalnode::Register() - %s\n", errorMessage);
-            return false;
-        }
-    } else if (service.GetPort() == 8765) {
-        errorMessage = strprintf("Invalid port %u for fundamentalnode %s - 8765 is only supported on mainnet.", service.GetPort(), strService);
-        LogPrintf("CActiveFundamentalnode::Register() - %s\n", errorMessage);
+    if(!CFundamentalnodeBroadcast::CheckDefaultPort(strService, errorMessage, "CActiveFundamentalnode::Register()"))
         return false;
-    }
 
     addrman.Add(CAddress(service), CNetAddr("127.0.0.1"), 2 * 60 * 60);
 

@@ -331,6 +331,7 @@ public:
     /// Create Fundamentalnode broadcast, needs to be relayed manually after that
     static bool Create(CTxIn vin, CService service, CKey keyCollateralAddressNew, CPubKey pubKeyCollateralAddressNew, CKey keyFundamentalnodeNew, CPubKey pubKeyFundamentalnodeNew, std::string& strErrorRet, CFundamentalnodeBroadcast& mnbRet);
     static bool Create(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& strErrorRet, CFundamentalnodeBroadcast& mnbRet, bool fOffline = false);
+    static bool CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext);
 };
 
 #endif

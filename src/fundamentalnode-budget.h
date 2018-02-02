@@ -32,6 +32,7 @@ class CTxBudgetPayment;
 #define VOTE_NO 2
 
 static const CAmount PROPOSAL_FEE_TX = (50 * COIN);
+static const CAmount BUDGET_FEE_TX_OLD = (50 * COIN);
 static const CAmount BUDGET_FEE_TX = (50 * COIN);
 static const int64_t BUDGET_VOTE_UPDATE_MIN = 60 * 60;
 
