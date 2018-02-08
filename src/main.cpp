@@ -1481,6 +1481,10 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
     if (hasZcSpendInputs)
         mapZerocoinspends[tx.GetHash()] = GetAdjustedTime();
 
+    //Track zerocoinspends and ensure that they are given priority to make it into the blockchain
+    if (tx.IsZerocoinSpend())
+        mapZerocoinspends[tx.GetHash()] = GetAdjustedTime();
+
     return true;
 }
 
