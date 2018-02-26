@@ -2068,42 +2068,49 @@ bool CWallet::SelectStakeCoins(std::list<CStakeInput*>& listInputs, CAmount nTar
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS);
     CAmount nAmountSelected = 0;
-    for (const COutput& out : vCoins) {
-        //make sure not to outrun target amount
-        if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
-            continue;
-
-        //if zerocoinspend, then use the block time
-        int64_t nTxTime = out.tx->GetTxTime();
-        if (out.tx->IsZerocoinSpend()) {
-            if (!out.tx->IsInMainChain())
+    if (GetBoolArg("-pivstake", true)) {
+        for (const COutput &out : vCoins) {
+            //make sure not to outrun target amount
+            if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
                 continue;
-            nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
+
+            //if zerocoinspend, then use the block time
+            int64_t nTxTime = out.tx->GetTxTime();
+            if (out.tx->IsZerocoinSpend()) {
+                if (!out.tx->IsInMainChain())
+                    continue;
+                nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
+            }
+
+            //check for min age
+            if (GetAdjustedTime() - nTxTime < nStakeMinAge)
+                continue;
+
+            //check that it is matured
+            if (out.nDepth < (out.tx->IsCoinStake() ? Params().COINBASE_MATURITY() : 10))
+                continue;
+
+            //add to our stake set
+            nAmountSelected += out.tx->vout[out.i].nValue;
+
+            CPivStake *input = new CPivStake();
+            input->SetInput((CTransaction) *out.tx, out.i);
+            listInputs.emplace_back((CStakeInput *) input);
         }
-
-        //check for min age
-        if (GetAdjustedTime() - nTxTime < nStakeMinAge)
-            continue;
-
-        //check that it is matured
-        if (out.nDepth < (out.tx->IsCoinStake() ? Params().COINBASE_MATURITY() : 10))
-            continue;
-
-        //add to our stake set
-        nAmountSelected += out.tx->vout[out.i].nValue;
-
-        CPivStake* input = new CPivStake();
-        input->SetInput((CTransaction)*out.tx, out.i);
-        listInputs.emplace_back((CStakeInput*)input);
     }
 
-    //Add zPIV
-    if (chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    //zPIV
+    if (GetBoolArg("-zpivstake", true) && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
         CWalletDB walletdb(strWalletFile);
         list<CZerocoinMint> listMints = walletdb.ListMintedCoins(true, true, true);
 
         for (CZerocoinMint mint : listMints) {
             if (mint.GetVersion() < CZerocoinMint::STAKABLE_VERSION)
+                continue;
+            if (libzerocoin::ExtractVersionFromSerial(mint.GetSerialNumber()) <
+                libzerocoin::PrivateCoin::PUBKEY_VERSION)
+                continue; //todo: this is contextual to presstabs wallet. Not sure why others would need this check too
+            if (!mint.GetHeight())
                 continue;
             if (mint.GetHeight() < chainActive.Height() - Params().Zerocoin_RequiredStakeDepth()) {
                 CZPivStake *input = new CZPivStake(mint);
@@ -2955,6 +2962,8 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (listInputs.empty())
         return false;
     LogPrintf("%s: listInputs size=%d\n", __func__, listInputs.size());
+    if (GetAdjustedTime() - chainActive.Tip()->GetBlockTime() < 60)
+        MilliSleep(10000);
 
     CAmount nCredit = 0;
     CScript scriptPubKeyKernel;
@@ -4474,7 +4483,7 @@ bool CWallet::GetZerocoinKey(const CBigNum& bnSerial, CKey& key)
 bool CWallet::CreateZPIVOutPut(libzerocoin::CoinDenomination denomination, libzerocoin::PrivateCoin& coin, CTxOut& outMint)
 {
     // mint a new coin (create Pedersen Commitment) and extract PublicCoin that is shareable from it
-    coin = libzerocoin::PrivateCoin(Params().Zerocoin_Params(), denomination);
+    coin = libzerocoin::PrivateCoin(Params().Zerocoin_Params(chainActive.Height() < Params().Zerocoin_Block_V2_Start()), denomination);
     libzerocoin::PublicCoin pubCoin = coin.getPublicCoin();
 
     // Validate
@@ -4515,7 +4524,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
         nMintingValue += nValueNewMint;
 
         CTxOut outMint;
-        libzerocoin::PrivateCoin coin(Params().Zerocoin_Params(), denomination);
+        libzerocoin::PrivateCoin coin(Params().Zerocoin_Params(chainActive.Height() < Params().Zerocoin_Block_V2_Start()), denomination);
         if (!CreateZPIVOutPut(denomination, coin, outMint)) {
             strFailReason = strprintf("%s: failed to create new zpiv output", __func__);
             return error(strFailReason.c_str());
@@ -4586,10 +4595,15 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
 {
     // Default error status if not changed below
     receipt.SetStatus(_("Transaction Mint Started"), ZVIT_TXMINT_GENERAL);
+    libzerocoin::ZerocoinParams* paramsAccumulator = Params().Zerocoin_Params(chainActive.Height() < Params().Zerocoin_Block_V2_Start());
 
-    libzerocoin::CoinDenomination denomination = zerocoinSelected.GetDenomination();
+    bool isV1Coin = zerocoinSelected.GetVersion() < libzerocoin::PrivateCoin::PUBKEY_VERSION;
+    libzerocoin::ZerocoinParams* paramsCoin = Params().Zerocoin_Params(isV1Coin);
+    LogPrintf("%s: *** using v1 coin params=%b, using v1 acc params=%b\n", __func__, isV1Coin, chainActive.Height() < Params().Zerocoin_Block_V2_Start());
+
     // 2. Get pubcoin from the private coin
-    libzerocoin::PublicCoin pubCoinSelected(Params().Zerocoin_Params(), zerocoinSelected.GetValue(), denomination);
+    libzerocoin::CoinDenomination denomination = zerocoinSelected.GetDenomination();
+    libzerocoin::PublicCoin pubCoinSelected(paramsCoin, zerocoinSelected.GetValue(), denomination);
     LogPrintf("%s : pubCoinSelected:\n denom=%d\n value%s\n", __func__, denomination, pubCoinSelected.getValue().GetHex());
     if (!pubCoinSelected.validate()) {
         receipt.SetStatus(_("The selected mint coin is an invalid coin"), ZVIT_INVALID_COIN);
@@ -4597,18 +4611,17 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
     }
 
     // 3. Compute Accumulator and Witness
-    libzerocoin::Accumulator accumulator(Params().Zerocoin_Params(), pubCoinSelected.getDenomination());
-    libzerocoin::AccumulatorWitness witness(Params().Zerocoin_Params(), accumulator, pubCoinSelected);
+    libzerocoin::Accumulator accumulator(paramsAccumulator, pubCoinSelected.getDenomination());
+    libzerocoin::AccumulatorWitness witness(paramsAccumulator, accumulator, pubCoinSelected);
     string strFailReason = "";
     int nMintsAdded = 0;
     if (!GenerateAccumulatorWitness(pubCoinSelected, accumulator, witness, nSecurityLevel, nMintsAdded, strFailReason, pindexCheckpoint)) {
         receipt.SetStatus(_("Try to spend with a higher security level to include more coins"), ZVIT_FAILED_ACCUMULATOR_INITIALIZATION);
-        LogPrintf("%s : %s \n", __func__, receipt.GetStatusMessage());
-        return false;
+        return error("%s : %s", __func__, receipt.GetStatusMessage());
     }
 
     // Construct the CoinSpend object. This acts like a signature on the transaction.
-    libzerocoin::PrivateCoin privateCoin(Params().Zerocoin_Params(), denomination);
+    libzerocoin::PrivateCoin privateCoin(paramsCoin, denomination);
     privateCoin.setPublicCoin(pubCoinSelected);
     privateCoin.setRandomness(zerocoinSelected.GetRandomness());
     privateCoin.setSerialNumber(zerocoinSelected.GetSerialNumber());
@@ -4616,7 +4629,8 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
     //Version 2 zerocoins have a privkey associated with them
     uint8_t nVersion = zerocoinSelected.GetVersion();
     privateCoin.setVersion(zerocoinSelected.GetVersion());
-    if (nVersion >= 2) {
+    LogPrintf("%s: privatecoin version=%d\n", __func__, privateCoin.getVersion());
+    if (nVersion >= libzerocoin::PrivateCoin::PUBKEY_VERSION) {
         CKey key;
         if (!zerocoinSelected.GetKeyPair(key))
             return error("%s: failed to set zPIV privkey mint version=%d", __func__, nVersion);
@@ -4624,14 +4638,25 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
         privateCoin.setPrivKey(key.GetPrivKey());
     }
 
+
     uint32_t nChecksum = GetChecksum(accumulator.getValue());
+    CBigNum bnValue;
+    if (!GetAccumulatorValueFromChecksum(nChecksum, false, bnValue) || bnValue == 0)
+        return error("%s: could not find checksum used for spend\n", __func__);
 
     try {
-        libzerocoin::CoinSpend spend(Params().Zerocoin_Params(), privateCoin, accumulator, nChecksum, witness,
-                                     hashTxOut, libzerocoin::SpendType::SPEND);
+        libzerocoin::CoinSpend spend(paramsCoin, paramsAccumulator, privateCoin, accumulator, nChecksum, witness, hashTxOut,
+                                     spendType);
+        LogPrintf("%s\n", spend.ToString());
 
         if (!spend.Verify(accumulator)) {
             receipt.SetStatus(_("The new spend coin transaction did not verify"), ZVIT_INVALID_WITNESS);
+            //return false;
+            LogPrintf("** spend.verify failed, trying with different params\n");
+
+            libzerocoin::CoinSpend spend2(Params().Zerocoin_Params(true), paramsAccumulator, privateCoin, accumulator,
+                                          nChecksum, witness, hashTxOut, libzerocoin::SpendType::SPEND);
+            LogPrintf("*** spend2 valid=%d\n", spend2.Verify(accumulator));
             return false;
         }
 
@@ -4659,7 +4684,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
             return false;
         }
 
-        libzerocoin::CoinSpend newSpendChecking(Params().Zerocoin_Params(), serializedCoinSpendChecking);
+        libzerocoin::CoinSpend newSpendChecking(paramsCoin, paramsAccumulator, serializedCoinSpendChecking);
         if (!newSpendChecking.Verify(accumulator)) {
             receipt.SetStatus(_("The transaction did not verify"), ZVIT_BAD_SERIALIZATION);
             return false;
@@ -4671,7 +4696,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
                 //Tried to spend an already spent zVITAE
                 zerocoinSelected.SetUsed(true);
                 if (!CWalletDB(strWalletFile).WriteZerocoinMint(zerocoinSelected))
-                    LogPrintf("%s failed to write zerocoinmint\n", __func__);
+                    LogPrintf("%s: failed to write zerocoinmint\n", __func__);
 
                 pwalletMain->NotifyZerocoinChanged(pwalletMain, zerocoinSelected.GetValue().GetHex(), "Used", CT_UPDATED);
                 receipt.SetStatus(_("The coin spend has been used"), ZVIT_SPENT_USED_ZVIT);

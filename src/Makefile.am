@@ -86,6 +86,7 @@ BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
   accumulators.h \
+  accumulatorcheckpoints.h \
   accumulatormap.h \
   addrman.h \
   alert.h \
@@ -348,6 +349,7 @@ libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
   activemasternode.cpp \
   accumulators.cpp \
+  accumulatorcheckpoints.cpp \
   accumulatormap.cpp \
   allocators.cpp \
   amount.cpp \
