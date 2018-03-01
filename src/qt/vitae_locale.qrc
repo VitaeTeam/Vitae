@@ -1,0 +1,29 @@
+<!DOCTYPE RCC><RCC version="1.0">
+    <qresource prefix="/translations">
+        <file alias="bg">locale/vitae_bg.qm</file>
+        <file alias="ca">locale/vitae_ca.qm</file>
+        <file alias="cs">locale/vitae_cs.qm</file>
+        <file alias="da">locale/vitae_da.qm</file>
+        <file alias="de">locale/vitae_de.qm</file>
+        <file alias="en">locale/vitae_en.qm</file>
+        <file alias="en_US">locale/vitae_en_US.qm</file>
+        <file alias="es">locale/vitae_es.qm</file>
+        <file alias="fi">locale/vitae_fi.qm</file>
+        <file alias="fr_FR">locale/vitae_fr_FR.qm</file>
+        <file alias="it">locale/vitae_it.qm</file>
+        <file alias="ja">locale/vitae_ja.qm</file>
+        <file alias="ko_KR">locale/vitae_ko_KR.qm</file>
+        <file alias="nl">locale/vitae_nl.qm</file>
+        <file alias="pl">locale/vitae_pl.qm</file>
+        <file alias="pt">locale/vitae_pt.qm</file>
+        <file alias="pt_BR">locale/vitae_pt_BR.qm</file>
+        <file alias="ro_RO">locale/vitae_ro_RO.qm</file>
+        <file alias="ru">locale/vitae_ru.qm</file>
+        <file alias="sk">locale/vitae_sk.qm</file>
+        <file alias="sv">locale/vitae_sv.qm</file>
+        <file alias="tr">locale/vitae_tr.qm</file>
+        <file alias="uk">locale/vitae_uk.qm</file>
+        <file alias="zh_CN">locale/vitae_zh_CN.qm</file>
+        <file alias="zh_TW">locale/vitae_zh_TW.qm</file>
+    </qresource>
+</RCC>
