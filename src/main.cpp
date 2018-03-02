@@ -3426,7 +3426,7 @@ bool UpdateZVITAESupply(const CBlock& block, CBlockIndex* pindex)
     }
 
     for (auto& denom : zerocoinDenomList)
-        LogPrint("zero" "%s coins for denomination %d pubcoin %s\n", __func__, pindex->mapZerocoinSupply.at(denom), denom);
+        LogPrint("zero", "%s coins for denomination %d pubcoin %s\n", __func__, denom, pindex->mapZerocoinSupply.at(denom));
 
     return true;
 }
