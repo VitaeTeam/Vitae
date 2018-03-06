@@ -67,6 +67,27 @@ VITAE Daemon & Client (RPC Changes)
 --------------
 
 ### Fix listtransactions RPC function
+=======
+Autocombine changes
+---------------------------------
+
+The autocombine feature was carrying a bug leading to a significant CPU overhead
+when being used. The function is now called only once initial blockchain
+download is finished. It's also now avoiding to combine several times while
+under the threshold in order to avoid additional transaction fees. Last but not
+least, the fee computation as been changed and the dust from fee provisioning
+is returned in the main output.
+
+
+SOCKS5 Proxy bug
+---------------------------------
+
+When inputting wrong data into the GUI for a SOCKS5 proxy, the wallet would
+crash and be unable to restart without accessing hidden configuration.
+This crash has been fixed.
+
+
+*version* Change log
 
 This addresses an issue where new incoming transactions are not recorded properly, and subsequently, not returned with `listtransactions` in the same session.
 
