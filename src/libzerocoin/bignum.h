@@ -60,8 +60,6 @@ public:
         bn = BN_new();
     }
 
-<<<<<<< HEAD
-=======
     // Initialize from a Hex String (for zerocoin modulus)
     CBigNum(const std::string& str) {
         bn = BN_new();
@@ -69,7 +67,6 @@ public:
     }
     
 
->>>>>>> 903c4f17f... [Consensus] Allow for compilation with OpenSSL 1.1
     CBigNum(const CBigNum& b)
     {
         bn = BN_new();
@@ -364,11 +361,7 @@ public:
         {
             CBigNum cbn;
             BN_rshift(cbn.bn, bn, 8*(nSize-3));
-<<<<<<< HEAD
-            nCompact = BN_get_word(cbn.bn);
-=======
             nCompact = BN_get_word(bn);
->>>>>>> 903c4f17f... [Consensus] Allow for compilation with OpenSSL 1.1
         }
         // The 0x00800000 bit denotes the sign.
         // Thus, if it is already set, divide the mantissa by 256 and increase the exponent.
@@ -430,11 +423,7 @@ public:
         CAutoBN_CTX pctx;
         CBigNum bnBase = nBase;
         CBigNum bn0 = 0;
-<<<<<<< HEAD
-        CBigNum locBn = *this;
-=======
 	CBigNum locBn = *this;
->>>>>>> 903c4f17f... [Consensus] Allow for compilation with OpenSSL 1.1
         std::string str;
         BN_set_negative(locBn.bn, false);
         CBigNum dv;
