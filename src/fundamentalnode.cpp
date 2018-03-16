@@ -543,9 +543,8 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
 	// unless someone is doing something fishy
 	// (mapSeenMasternodeBroadcast in CMasternodeMan::ProcessMessage should filter legit duplicates)
 	if(pmn->sigTime >= sigTime) {
-		LogPrintf("CFundamentalnodeBroadcast::CheckAndUpdate - Bad sigTime %d for Fundamentalnode %20s %105s (existing broadcast is at %d)\n",
+		return error("CFundamentalnodeBroadcast::CheckAndUpdate - Bad sigTime %d for Fundamentalnode %20s %105s (existing broadcast is at %d)\n",
 					  sigTime, addr.ToString(), vin.ToString(), pmn->sigTime);
-		return false;
     }
 
     // fundamentalnode is not enabled yet/already, nothing to update
@@ -686,13 +685,11 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
     std::string strMessage = GetStrMessage();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
-        LogPrintf("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
-        return false;
+        return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
     }
 
     if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
-        LogPrintf("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
-        return false;
+        return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
     }
 
     return true;
@@ -704,8 +701,7 @@ bool CFundamentalnodeBroadcast::VerifySignature()
     std::string strMessage = GetStrMessage();
 
     if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
-        LogPrintf("CFundamentalnodeBroadcast::VerifySignature() - Error: %s\n", errorMessage);
-        return false;
+        return error("CFundamentalnodeBroadcast::VerifySignature() - Error: %s\n", errorMessage);
     }
 
     return true;
@@ -767,9 +763,8 @@ bool CFundamentalnodePing::VerifySignature(CPubKey& pubKeyFundamentalnode, int &
 	std::string errorMessage = "";
 
 	if(!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)){
-		LogPrintf("CFundamentalnodePing::VerifySignature - Got bad Fundamentalnode ping signature %s Error: %s\n", vin.ToString(), errorMessage);
 		nDos = 33;
-		return false;
+		return error("CFundamentalnodePing::VerifySignature - Got bad Fundamentalnode ping signature %s Error: %s\n", vin.ToString(), errorMessage);
 	}
 	return true;
 }
