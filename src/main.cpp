@@ -7043,6 +7043,7 @@ int ActiveProtocol()
 
 /*    if (IsSporkActive(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_3))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
+
 */
 
     // SPORK_18 is used for 71010. Nodes < 70926 won't see it and still get their protocol version via SPORK_17 and their
