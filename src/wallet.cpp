@@ -47,6 +47,7 @@ bool bSpendZeroConfChange = true;
 bool bdisableSystemnotifications = false; // Those bubbles can be annoying and slow down the UI when you get lots of trx
 bool fSendFreeTransactions = false;
 bool fPayAtLeastCustomFee = true;
+int64_t nStartupTime = GetTime(); //!< Client startup time for use with automint
 
 /**
  * Fees smaller than this (in uVITAE) are considered zero fee (for transaction creation)
@@ -55,7 +56,6 @@ bool fPayAtLeastCustomFee = true;
  * Override with -mintxfee
  */
 CFeeRate CWallet::minTxFee = CFeeRate(10000);
-int64_t nStartupTime = GetAdjustedTime();
 
 /** @defgroup mapWallet
  *
