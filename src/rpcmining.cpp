@@ -461,7 +461,8 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             nTransactionsUpdatedLastLP = nTransactionsUpdatedLast;
         }
 
-        ENTER_CRITICAL_SECTION(cs_main);
+        // Release the wallet and main lock while waiting
+        LEAVE_CRITICAL_SECTION(cs_main);
         {
             checktxtime = boost::get_system_time() + boost::posix_time::minutes(1);
 
