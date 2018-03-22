@@ -490,8 +490,6 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     if(lastPing == CFundamentalnodePing() || !lastPing.CheckAndUpdate(nDos, false, true))
         return false;
 
-    std::string strMessage = GetStrMessage();
-
     if (protocolVersion < fundamentalnodePayments.GetMinFundamentalnodePaymentsProto()) {
         LogPrint("fundamentalnode","mnb - ignoring outdated Fundamentalnode %s protocol version %d\n", vin.prevout.hash.ToString(), protocolVersion);
         return false;
@@ -521,7 +519,8 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     }
 
     std::string errorMessage = "";
-    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
+    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
+    		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
         LogPrint("fundamentalnode","mnb - Got bad Fundamentalnode address signature\n");
         // don't ban for old fundamentalnodes, their sigs could be broken because of the bug
         nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
@@ -682,7 +681,7 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
 {
     std::string errorMessage;
     sigTime = GetAdjustedTime();
-    std::string strMessage = GetStrMessage();
+    std::string strMessage = GetNewStrMessage();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
         return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
@@ -698,26 +697,33 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
 bool CFundamentalnodeBroadcast::VerifySignature()
 {
     std::string errorMessage;
-    std::string strMessage = GetStrMessage();
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
+    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
+    		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
         return error("CFundamentalnodeBroadcast::VerifySignature() - Error: %s\n", errorMessage);
     }
 
     return true;
 }
 
-std::string CFundamentalnodeBroadcast::GetStrMessage()
+std::string CFundamentalnodeBroadcast::GetOldStrMessage()
 {
     std::string strMessage;
-    if(protocolVersion < MIN_PEER_MNANNOUNCE) {
-        std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
-        std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
-        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
-    } else {
-        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
-    }
+
+	std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
+	std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
+	strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
+
     return strMessage;
+}
+
+std:: string CFundamentalnodeBroadcast::GetNewStrMessage()
+{
+	std::string strMessage;
+
+	strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
+
+	return strMessage;
 }
 
 CFundamentalnodePing::CFundamentalnodePing()
