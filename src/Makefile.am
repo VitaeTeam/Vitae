@@ -87,6 +87,7 @@ BITCOIN_CORE_H = \
   activemasternode.h \
   accumulators.h \
   accumulatorcheckpoints.h \
+  accumulatorcheckpoints.json.h \
   accumulatormap.h \
   addrman.h \
   alert.h \
@@ -333,6 +334,7 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/ParamGeneration.h \
   libzerocoin/Params.h \
   libzerocoin/SerialNumberSignatureOfKnowledge.h \
+  libzerocoin/SpendType.h \
   libzerocoin/ZerocoinDefines.h \
   libzerocoin/Accumulator.cpp \
   libzerocoin/AccumulatorProofOfKnowledge.cpp \
