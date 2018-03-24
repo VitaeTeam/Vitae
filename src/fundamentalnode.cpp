@@ -521,7 +521,7 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     std::string errorMessage = "";
     if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
     		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
-        LogPrint("fundamentalnode","mnb - Got bad Fundamentalnode address signature\n");
+        LogPrintf("CFundamentalnodeBroadcast::CheckAndUpdate - Got bad Fundamentalnode address signature\n");
         // don't ban for old fundamentalnodes, their sigs could be broken because of the bug
         nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
         return false;
@@ -681,7 +681,12 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
 {
     std::string errorMessage;
     sigTime = GetAdjustedTime();
-    std::string strMessage = GetNewStrMessage();
+
+    std::string strMessage;
+    if(chainActive.Height() < Params().Zerocoin_Block_V2_Start())
+    	strMessage = GetOldStrMessage();
+    else
+    	strMessage = GetNewStrMessage();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
         return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
