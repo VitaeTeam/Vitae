@@ -28,6 +28,7 @@
 #include "accumulators.h"
 #include "blocksignature.h"
 #include "spork.h"
+#include "invalid.h"
 
 #include "masternodeman.h"
 
@@ -272,7 +273,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 }
 
                 //Check for invalid/fraudulent inputs. They shouldn't make it through mempool, but check anyways.
-                if (mapInvalidOutPoints.count(txin.prevout)) {
+                if (invalid_out::ContainsOutPoint(txin.prevout)) {
                     LogPrintf("%s : found invalid input %s in tx %s", __func__, txin.prevout.ToString(), tx.GetHash().ToString());
                     fMissingInputs = true;
                     break;

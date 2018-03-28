@@ -21,6 +21,8 @@
 #include <QSettings>
 #include <utilmoneystr.h>
 #include <QtWidgets>
+#include <primitives/deterministicmint.h>
+#include <accumulators.h>
 
 PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent),
                                                           ui(new Ui::PrivacyDialog),
@@ -198,7 +200,7 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
     int64_t nTime = GetTimeMillis();
 
     CWalletTx wtx;
-    vector<CZerocoinMint> vMints;
+    vector<CDeterministicMint> vMints;
     string strError = pwalletMain->MintZerocoin(nAmount, wtx, vMints, CoinControlDialog::coinControl);
 
     // Return if something went wrong during minting
@@ -219,9 +221,9 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
     QString strStats = "";
     ui->TEMintStatus->setPlainText(strStatsHeader);
 
-    for (CZerocoinMint mint : vMints) {
+    for (CDeterministicMint dMint : vMints) {
         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
-        strStats = strStats + QString::number(mint.GetDenomination()) + " ";
+        strStats = strStats + QString::number(dMint.GetDenomination()) + " ";
         ui->TEMintStatus->setPlainText(strStatsHeader + strStats);
         ui->TEMintStatus->repaint ();
 
@@ -244,7 +246,7 @@ void PrivacyDialog::on_pushButtonMintReset_clicked()
     ui->TEMintStatus->repaint ();
 
     int64_t nTime = GetTimeMillis();
-    string strResetMintResult = pwalletMain->ResetMintZerocoin(false); // do not do the extended search from GUI
+    string strResetMintResult = pwalletMain->ResetMintZerocoin();
     double fDuration = (double)(GetTimeMillis() - nTime)/1000.0;
     ui->TEMintStatus->setPlainText(QString::fromStdString(strResetMintResult) + tr("Duration: ") + QString::number(fDuration) + tr(" sec.\n"));
     ui->TEMintStatus->repaint ();
@@ -413,10 +415,21 @@ void PrivacyDialog::sendzVIT()
     ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware. \nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zVITAE selector if applicable
+    // use mints from zPiv selector if applicable
+    vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::listSelectedMints.empty()) {
-        vMintsSelected = ZVitControlDialog::GetSelectedMints();
+        vMintsToFetch = ZVitControlDialog::GetSelectedMints();
+
+        for (auto& meta : vMintsToFetch) {
+            CZerocoinMint mint;
+            if (!pwalletMain->GetMint(meta.hashSerial, mint)) {
+                ui->TEMintStatus->setPlainText(tr("Failed to fetch mint associated with serial hash"));
+                ui->TEMintStatus->repaint();
+                return;
+            }
+            vMintsSelected.emplace_back(mint);
+        }
     }
 
     // Spend zVITAE
@@ -593,8 +606,8 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
         mapImmature.insert(make_pair(denom, 0));
     }
 
-    int nBestHeight = chainActive.Height();
     std::vector<CMintMeta> vMints = pwalletMain->zpivTracker->GetMints(false);
+    map<libzerocoin::CoinDenomination, int> mapMaturityHeights = GetMintMaturityHeight();
     for (auto& meta : vMints){
         // All denominations
         mapDenomBalances.at(meta.denom)++;
@@ -603,18 +616,9 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
             // All unconfirmed denominations
             mapUnconfirmed.at(meta.denom)++;
         } else {
-            // After a denomination is confirmed it might still be immature because < 3 of the same denomination were minted after it
-            CBlockIndex *pindex = chainActive[meta.nHeight + 1];
-            int nHeight2CheckpointsDeep = nBestHeight - (nBestHeight % 10) - 20;
-            int nMintsAdded = 0;
-            while (pindex->nHeight < nHeight2CheckpointsDeep) { //at least 2 checkpoints from the top block
-                nMintsAdded += count(pindex->vMintDenominationsInBlock.begin(), pindex->vMintDenominationsInBlock.end(), meta.denom);
-                if (nMintsAdded >= Params().Zerocoin_RequiredAccumulation())
-                    break;
-                pindex = chainActive[pindex->nHeight + 1];
-            }
-            if (nMintsAdded < Params().Zerocoin_RequiredAccumulation()){
-                // Immature denominations
+            if (meta.denom == libzerocoin::CoinDenomination::ZQ_ERROR) {
+                mapImmature.at(meta.denom)++;
+            } else if (meta.nHeight >= mapMaturityHeights.at(meta.denom)) {
                 mapImmature.at(meta.denom)++;
             }
         }
