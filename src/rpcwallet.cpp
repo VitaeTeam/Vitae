@@ -41,9 +41,9 @@ std::string HelpRequiringPassphrase()
     return pwalletMain && pwalletMain->IsCrypted() ? "\nRequires wallet passphrase to be set with walletpassphrase call." : "";
 }
 
-void EnsureWalletIsUnlocked()
+void EnsureWalletIsUnlocked(bool fAllowAnonOnly)
 {
-    if (pwalletMain->IsLocked() || pwalletMain->fWalletUnlockAnonymizeOnly)
+    if (pwalletMain->IsLocked() || (!fAllowAnonOnly && pwalletMain->fWalletUnlockAnonymizeOnly))
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 }
 
@@ -2559,8 +2559,7 @@ UniValue getzerocoinbalance(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
         UniValue ret(UniValue::VOBJ);
         ret.push_back(Pair("Total", ValueFromAmount(pwalletMain->GetZerocoinBalance(false))));
@@ -2591,8 +2590,7 @@ UniValue listmintedzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     set<CMintMeta> setMints = pwalletMain->zpivTracker->ListMints(true, false, true);
@@ -2627,8 +2625,7 @@ UniValue listzerocoinamounts(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     set<CMintMeta> setMints = pwalletMain->zpivTracker->ListMints(true, true, true);
@@ -2669,8 +2666,7 @@ UniValue listspentzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CBigNum> listPubCoin = walletdb.ListSpentCoinsSerial();
@@ -2738,8 +2734,7 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
     if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
         throw JSONRPCError(RPC_WALLET_ERROR, "zVITAE is currently disabled due to maintenance.");
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     CAmount nAmount = params[0].get_int() * COIN;
 
@@ -3065,6 +3060,7 @@ UniValue getarchivedzerocoin(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     EnsureWalletIsUnlocked();
+
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CZerocoinMint> listMints = walletdb.ListArchivedZerocoins();
     list<CDeterministicMint> listDMints = walletdb.ListArchivedDeterministicMints();
@@ -3279,9 +3275,7 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if(pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
-                           "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     list<CZerocoinMint> listMints;
     list<CDeterministicMint> listDMints;
