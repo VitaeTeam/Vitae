@@ -174,12 +174,19 @@ public:
     bool WriteZerocoinSpendSerialEntry(const CZerocoinSpend& zerocoinSpend);
     bool EraseZerocoinSpendSerialEntry(const CBigNum& serialEntry);
     bool ReadZerocoinSpendSerialEntry(const CBigNum& bnSerial);
+    bool WriteCurrentSeedHash(const uint256& hashSeed);
+    bool ReadCurrentSeedHash(uint256& hashSeed);
     bool WriteZVITSeed(const uint256& seed);
     bool ReadZVITSeed(uint256& seed);
     bool WriteZVITCount(const uint32_t& nCount);
     bool ReadZVITCount(uint32_t& nCount);
+
+    bool WriteZPIVCount(const uint32_t& nCount);
+    bool ReadZPIVCount(uint32_t& nCount);
+>>>>>>> 379c85705... Encryption of zpiv seeds
     std::map<uint256, std::vector<pair<uint256, uint32_t> > > MapMintPool();
     bool WriteMintPoolPair(const uint256& hashMasterSeed, const uint256& hashPubcoin, const uint32_t& nCount);
+
 
 private:
     CWalletDB(const CWalletDB&);

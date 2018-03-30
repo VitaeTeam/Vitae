@@ -1718,11 +1718,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         }
         fVerifyingBlocks = false;
 
-        //Inititalize zVITAEWallet
-        uint256 seed = 0;
-        bool fFirstRunZWallet = !CWalletDB(pwalletMain->strWalletFile).ReadZVITSeed(seed);
-        zwalletMain = new CzPIVWallet(pwalletMain->strWalletFile, fFirstRunZWallet);
-        uiInterface.InitMessage(_("Syncing zVITAE wallet..."));
+        //Inititalize zPIVWallet
+        zwalletMain = new CzPIVWallet(pwalletMain->strWalletFile);
+        uiInterface.InitMessage(_("Syncing zVIT wallet..."));
 
         pwalletMain->setZWallet(zwalletMain);
         bool fEnableZVitBackups = GetBoolArg("-backupzVit", true);
