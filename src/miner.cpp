@@ -577,8 +577,6 @@ bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
 }
 
 bool fGenerateBitcoins = false;
-// This fixes an edge case where `fMintableCoins` evaluates to `false` during
-// initialization, which was causing an infinite loop in the staking thread.
 bool fMintableCoins = false;
 int nMintableLastCheck = 0;
 
@@ -608,7 +606,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 continue;
             }
 
-            while (vNodes.empty() ||pwallet->IsLocked() || !fMintableCoins || nReserveBalance >= pwallet->GetBalance() || !fundamentalnodeSync.IsSynced()) {
+            while (vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || (pwallet->GetBalance() > 0 && nReserveBalance >= pwallet->GetBalance()) || !fundamentalnodeSync.IsSynced()) {
                 nLastCoinStakeSearchInterval = 0;
                 // Do a separate 1 minute check here to ensure fMintableCoins is updated
                 if (!fMintableCoins) {
