@@ -1277,7 +1277,7 @@ bool ContextualCheckZerocoinMint(const CTransaction& tx, const PublicCoin& coin,
     return true;
 }
 
-bool ContextualCheckZerocoinSpend(const CTransaction& tx, const CoinSpend& spend, CBlockIndex* pindex)
+bool ContextualCheckZerocoinSpend(const CTransaction& tx, const CoinSpend& spend, CBlockIndex* pindex, const uint256& hashBlock)
 {
     //Check to see if the zPIV is properly signed
     if (pindex->nHeight >= Params().Zerocoin_Block_V2_Start()) {
@@ -1309,11 +1309,14 @@ bool ContextualCheckZerocoinSpend(const CTransaction& tx, const CoinSpend& spend
     // Send signal to wallet if this is ours
     if (pwalletMain) {
         if (pwalletMain->IsMyZerocoinSpend(spend.getCoinSerialNumber())) {
-            LogPrintf("%s: %s detected spent zerocoin mint in transaction %s \n", __func__, spend.getCoinSerialNumber().GetHex(), tx.GetHash().GetHex());
+            LogPrintf("%s: %s detected zerocoinspend in transaction %s \n", __func__, spend.getCoinSerialNumber().GetHex(), tx.GetHash().GetHex());
             pwalletMain->NotifyZerocoinChanged(pwalletMain, spend.getCoinSerialNumber().GetHex(), "Used", CT_UPDATED);
-            CWalletTx wtx(pwalletMain, tx);
-            wtx.nTimeReceived = pindex->GetBlockTime();
-            pwalletMain->AddToWallet(wtx);
+            if (!pwalletMain->mapWallet.count(tx.GetHash())) {
+                CWalletTx wtx(pwalletMain, tx);
+                wtx.nTimeReceived = pindex->GetBlockTime();
+                wtx.hashBlock = hashBlock;
+                pwalletMain->AddToWallet(wtx);
+            }
         }
     }
 
@@ -1630,7 +1633,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 if (!txIn.scriptSig.IsZerocoinSpend())
                     continue;
                 CoinSpend spend = TxInToZerocoinSpend(txIn);
-                if (!ContextualCheckZerocoinSpend(tx, spend, chainActive.Tip()))
+                if (!ContextualCheckZerocoinSpend(tx, spend, chainActive.Tip(), 0))
                     return state.Invalid(error("%s: ContextualCheckZerocoinSpend failed for tx %s", __func__,
                                                tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvitae");
             }
@@ -3326,6 +3329,7 @@ bool UpdateZVITAESupply(const CBlock& block, CBlockIndex* pindex)
     CAmount nAmountZerocoinSpent = 0;
     pindex->vMintDenominationsInBlock.clear();
     if (pindex->pprev) {
+        std::set<uint256> setAddedToWallet;
         for (auto& m : listMints) {
             libzerocoin::CoinDenomination denom = m.GetDenomination();
             pindex->vMintDenominationsInBlock.push_back(m.GetDenomination());
@@ -3338,10 +3342,16 @@ bool UpdateZVITAESupply(const CBlock& block, CBlockIndex* pindex)
 
                     // Add the transaction to the wallet
                     for (auto& tx : block.vtx) {
-                        if (tx.GetHash() == m.GetTxHash()) {
+                        uint256 txid = tx.GetHash();
+                        if (setAddedToWallet.count(txid))
+                            continue;
+                        if (txid == m.GetTxHash()) {
                             CWalletTx wtx(pwalletMain, tx);
                             wtx.nTimeReceived = block.GetBlockTime();
+                            wtx.hashBlock = block.GetHash();
+
                             pwalletMain->AddToWallet(wtx);
+                            setAddedToWallet.insert(txid);
                         }
                     }
                 }
@@ -3447,6 +3457,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     CAmount nValueIn = 0;
     unsigned int nMaxBlockSigOps = MAX_BLOCK_SIGOPS_CURRENT;
     vector<uint256> vSpendsInBlock;
+    uint256 hashBlock = block.GetHash();
     for (unsigned int i = 0; i < block.vtx.size(); i++) {
         const CTransaction& tx = block.vtx[i];
 
@@ -3482,8 +3493,25 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
                 //queue for db write after the 'justcheck' section has concluded
                 vSpends.emplace_back(make_pair(spend, tx.GetHash()));
-                if (!ContextualCheckZerocoinSpend(tx, spend, pindex))
+                if (!ContextualCheckZerocoinSpend(tx, spend, pindex, hashBlock))
                     return state.DoS(100, error("%s: failed to add block %s with invalid zerocoinspend", __func__, tx.GetHash().GetHex()), REJECT_INVALID);
+            }
+
+            // Check that zPIV mints are not already known
+            if (tx.IsZerocoinMint()) {
+                for (auto& out : tx.vout) {
+                    if (!out.IsZerocoinMint())
+                        continue;
+
+                    PublicCoin coin(Params().Zerocoin_Params(false));
+                    if (!TxOutToPublicCoin(out, coin, state))
+                        return state.DoS(100, error("%s: failed final check of zerocoinmint for tx %s", __func__, tx.GetHash().GetHex()));
+
+                    if (!ContextualCheckZerocoinMint(tx, coin, pindex))
+                        return state.DoS(100, error("%s: zerocoin mint failed contextual check", __func__));
+
+                    vMints.emplace_back(make_pair(coin, tx.GetHash()));
+                }
             }
         } else if (!tx.IsCoinBase()) {
             if (!view.HaveInputs(tx))
