@@ -4549,7 +4549,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
         txNew.vout.push_back(outMint);
 
         //store as CZerocoinMint for later use
-        LogPrintf("**** %s: new mint %s\n", __func__, dMint.ToString());
+        LogPrint("zero", "%s: new mint %s\n", __func__, dMint.ToString());
         vDMints.emplace_back(dMint);
     }
 
