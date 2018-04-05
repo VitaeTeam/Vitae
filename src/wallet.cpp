@@ -1663,8 +1663,8 @@ std::map<libzerocoin::CoinDenomination, CAmount> CWallet::GetMyZerocoinDistribut
         spread.insert(std::pair<libzerocoin::CoinDenomination, CAmount>(denom, 0));
     {
         LOCK(cs_wallet);
-        list<CMintMeta> listPubCoin = zpivTracker->ListMints(true, true, true);
-        for (auto& mint : listPubCoin)
+        set<CMintMeta> setMints = zpivTracker->ListMints(true, true, true);
+        for (auto& mint : setMints)
             spread.at(mint.denom)++;
     }
     return spread;
@@ -2072,9 +2072,9 @@ bool CWallet::SelectStakeCoins(std::list<CStakeInput*>& listInputs, CAmount nTar
     //zPIV
     if (GetBoolArg("-zpivstake", true) && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
         //Add zPIV
-        list<CMintMeta> vMints = zpivTracker->ListMints(true, true, true);
+        set<CMintMeta> setMints = zpivTracker->ListMints(true, true, true);
 
-        for (auto meta : vMints) {
+        for (auto meta : setMints) {
             if (meta.hashStake == 0) {
                 CZerocoinMint mint;
                 if (GetMint(meta.hashSerial, mint)) {
@@ -2126,8 +2126,8 @@ bool CWallet::MintableCoins()
 
     // zPIV
     if (nZpivBalance > 0) {
-        list<CMintMeta> vMints = zpivTracker->ListMints(true, true, true);
-        for (auto mint : vMints) {
+        set<CMintMeta> setMints = zpivTracker->ListMints(true, true, true);
+        for (auto mint : setMints) {
             if (mint.nVersion < CZerocoinMint::STAKABLE_VERSION)
                 continue;
             if (mint.nHeight > chainActive.Height() - Params().Zerocoin_RequiredStakeDepth())
@@ -2976,7 +2976,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         //iterates each utxo inside of CheckStakeKernelHash()
         nAttempts++;
         if (Stake(stakeInput, nBits, block.GetBlockTime(), nTxNewTime, hashProofOfStake)) {
-
+            LOCK(cs_main);
             //Double check that this will pass time requirements
             if (nTxNewTime <= chainActive.Tip()->GetMedianTimePast()) {
                 LogPrintf("CreateCoinStake() : kernel found, but it is too far in the past \n");
@@ -3030,7 +3030,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             //Mark mints as spent
             if (stakeInput->IsZPIV()) {
                 CZPivStake* z = (CZPivStake*)stakeInput;
-                if (!z->MarkSpent(this))
+                if (!z->MarkSpent(this, txNew.GetHash()))
                     return error("%s: failed to mark mint as used\n", __func__);
             }
 
@@ -4755,15 +4755,15 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
 
     // If not already given pre-selected mints, then select mints from the wallet
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    list<CMintMeta> listMints;
+    set<CMintMeta> setMints;
     CAmount nValueSelected = 0;
     int nCoinsReturned = 0; // Number of coins returned in change from function below (for debug)
     int nNeededSpends = 0;  // Number of spends which would be needed if selection failed
     const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVITAE transaction
     vector<CMintMeta> vMintsToFetch;
     if (vSelectedMints.empty()) {
-        listMints = zpivTracker->ListMints(true, true, true); // need to find mints to spend
-        if(listMints.empty()) {
+        setMints = zpivTracker->ListMints(true, true, true); // need to find mints to spend
+        if(setMints.empty()) {
             receipt.SetStatus(_("Failed to find Zerocoins in wallet.dat"), nStatus);
             return false;
         }
@@ -4777,6 +4777,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
 
         // Select the zVITAE mints to use in this spend
         std::map<libzerocoin::CoinDenomination, CAmount> DenomMap = GetMyZerocoinDistribution();
+        list<CMintMeta> listMints(setMints.begin(), setMints.end());
         vMintsToFetch = SelectMintsFromList(nValueToSelect, nValueSelected, nMaxSpends, fMinimizeChange,
                                              nCoinsReturned, listMints, DenomMap, nNeededSpends);
         for (auto& meta : vMintsToFetch) {
@@ -4954,8 +4955,8 @@ string CWallet::ResetMintZerocoin()
     long deletions = 0;
     CWalletDB walletdb(pwalletMain->strWalletFile);
 
-    list<CMintMeta> listMints = zpivTracker->ListMints(false, false, true);
-    vector<CMintMeta> vMintsToFind{ std::make_move_iterator(std::begin(listMints)), std::make_move_iterator(std::end(listMints)) };
+    set<CMintMeta> setMints = zpivTracker->ListMints(false, false, true);
+    vector<CMintMeta> vMintsToFind(setMints.begin(), setMints.end());
     vector<CMintMeta> vMintsMissing;
     vector<CMintMeta> vMintsToUpdate;
 
@@ -4986,7 +4987,7 @@ string CWallet::ResetSpentZerocoin()
     long removed = 0;
     CWalletDB walletdb(pwalletMain->strWalletFile);
 
-    list<CMintMeta> listMints = zpivTracker->ListMints(false, false, true);
+    set<CMintMeta> setMints = zpivTracker->ListMints(false, false, true);
     list<CZerocoinSpend> listSpends = walletdb.ListSpentCoins();
     list<CZerocoinSpend> listUnconfirmedSpends;
 
@@ -5004,7 +5005,7 @@ string CWallet::ResetSpentZerocoin()
     }
 
     for (CZerocoinSpend spend : listUnconfirmedSpends) {
-        for (CMintMeta meta : listMints) {
+        for (CMintMeta meta : setMints) {
             if (meta.hashSerial == GetSerialHash(spend.GetSerial())) {
                 removed++;
                 meta.isUsed = false;
@@ -5224,7 +5225,7 @@ bool CWallet::SpendZerocoin(CAmount nAmount, int nSecurityLevel, CWalletTx& wtxN
         //reset all mints
         for (CZerocoinMint mint : vMintsSelected) {
             uint256 hashPubcoin = GetPubCoinHash(mint.GetValue());
-            zpivTracker->SetPubcoinUsed(hashPubcoin, true);
+            zpivTracker->SetPubcoinNotUsed(hashPubcoin);
             pwalletMain->NotifyZerocoinChanged(pwalletMain, mint.GetValue().GetHex(), "New", CT_UPDATED);
         }
 
@@ -5250,9 +5251,10 @@ bool CWallet::SpendZerocoin(CAmount nAmount, int nSecurityLevel, CWalletTx& wtxN
     }
 
     //Set spent mints as used
+    uint256 txidSpend = wtxNew.GetHash();
     for (CZerocoinMint mint : vMintsSelected) {
         uint256 hashPubcoin = GetPubCoinHash(mint.GetValue());
-        zpivTracker->SetPubcoinUsed(hashPubcoin, true);
+        zpivTracker->SetPubcoinUsed(hashPubcoin, txidSpend);
 
         CMintMeta metaCheck = zpivTracker->GetMetaFromPubcoin(hashPubcoin);
         if (!metaCheck.isUsed) {
@@ -5263,7 +5265,7 @@ bool CWallet::SpendZerocoin(CAmount nAmount, int nSecurityLevel, CWalletTx& wtxN
 
     // write new Mints to db
     for (auto& dMint : vNewMints) {
-        dMint.SetTxHash(wtxNew.GetHash());
+        dMint.SetTxHash(txidSpend);
         zpivTracker->Add(dMint, true);
     }
 
@@ -5339,8 +5341,8 @@ bool CWallet::SetMintUnspent(const CBigNum& bnSerial)
         return error("%s: did not find mint", __func__);
 
     CMintMeta meta = zpivTracker->Get(hashSerial);
-    meta.isUsed = false;
-    return zpivTracker->UpdateState(meta);
+    zpivTracker->SetPubcoinNotUsed(meta.hashPubcoin);
+    return true;
 }
 
 bool CWallet::DatabaseMint(CDeterministicMint& dMint)

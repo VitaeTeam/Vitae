@@ -412,7 +412,7 @@ void PrivacyDialog::sendzVIT()
     // use mints from zPiv selector if applicable
     vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
-    if (!ZVitControlDialog::listSelectedMints.empty()) {
+    if (!ZVitControlDialog::setSelectedMints.empty()) {
         vMintsToFetch = ZVitControlDialog::GetSelectedMints();
 
         for (auto& meta : vMintsToFetch) {
@@ -468,8 +468,8 @@ void PrivacyDialog::sendzVIT()
             walletModel->updateAddressBookLabels(address.Get(), "(no label)", "send");
     }
 
-    // Clear zVITAE selector in case it was used
-    ZVitControlDialog::listSelectedMints.clear();
+    // Clear zvit selector in case it was used
+    ZVitControlDialog::setSelectedMints.clear();
     ui->labelzVitSelected_int->setText(QString("0"));
     ui->labelQuantitySelected_int->setText(QString("0"));
 
