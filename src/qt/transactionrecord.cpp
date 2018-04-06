@@ -85,12 +85,8 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
 
                 isminetype mine = wallet->IsMine(txout);
                 TransactionRecord sub(hash, nTime);
-<<<<<<< HEAD
-                sub.type = TransactionRecord::ZerocoinSpend_Change_zPhr;
-=======
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
-                sub.type = TransactionRecord::ZerocoinSpend_Change_zPiv;
->>>>>>> 00faff514... [Qt] Fix another instance of a wayward eye
+                sub.type = TransactionRecord::ZerocoinSpend_Change_zPhr;
                 sub.address = mapValue["zerocoinmint"];
                 sub.debit = -txout.nValue;
                 if (!fFeeAssigned) {
