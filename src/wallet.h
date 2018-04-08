@@ -105,7 +105,8 @@ enum ZerocoinSpendStatus {
     ZVIT_INVALID_WITNESS = 12,                      // Spend coin transaction did not verify
     ZVIT_BAD_SERIALIZATION = 13,                    // Transaction verification failed
     ZVIT_SPENT_USED_ZVIT = 14,                      // Coin has already been spend
-    ZVIT_TX_TOO_LARGE = 15                          // The transaction is larger than the max tx size
+    ZVIT_TX_TOO_LARGE = 15,                          // The transaction is larger than the max tx size
+    ZVIT_SPEND_V1_SEC_LEVEL
 };
 
 struct CompactTallyItem {
