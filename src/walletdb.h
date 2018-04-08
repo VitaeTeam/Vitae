@@ -178,7 +178,9 @@ public:
     bool ReadCurrentSeedHash(uint256& hashSeed);
     bool WriteZVITSeed(const uint256& hashSeed, const vector<unsigned char>& seed);
     bool ReadZVITSeed(const uint256& hashSeed, vector<unsigned char>& seed);
+    bool ReadZVITSeed_deprecated(uint256& seed);
     bool EraseZVITSeed();
+    bool EraseZVITSeed_deprecated();
 
     bool WriteZVITCount(const uint32_t& nCount);
     bool ReadZVITCount(uint32_t& nCount);
