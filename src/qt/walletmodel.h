@@ -212,6 +212,7 @@ public:
 
     void listZerocoinMints(std::set<CMintMeta>& setMints, bool fUnusedOnly = false, bool fMaturedOnly = false, bool fUpdateStatus = false);
 
+    string GetUniqueWalletBackupName();
     void loadReceiveRequests(std::vector<std::string>& vReceiveRequests);
     bool saveReceiveRequest(const std::string& sAddress, const int64_t nId, const std::string& sRequest);
 
@@ -278,6 +279,7 @@ signals:
 
     // MultiSig address added
     void notifyMultiSigChanged(bool fHaveMultiSig);
+
 public slots:
     /* Wallet status might have changed */
     void updateStatus();
@@ -293,7 +295,7 @@ public slots:
     void updateMultiSigFlag(bool fHaveMultiSig);
     /* Current, immature or unconfirmed balance might have changed - emit 'balanceChanged' if so */
     void pollBalanceChanged();
-    /* Update address book labels in teh database */
+    /* Update address book labels in the database */
     void updateAddressBookLabels(const CTxDestination& address, const string& strName, const string& strPurpose);
 };
 
