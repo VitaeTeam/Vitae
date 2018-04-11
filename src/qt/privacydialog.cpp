@@ -409,7 +409,7 @@ void PrivacyDialog::sendzVIT()
     ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware. \nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zPiv selector if applicable
+    // use mints from zPIV selector if applicable
     vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::setSelectedMints.empty()) {
@@ -476,7 +476,7 @@ void PrivacyDialog::sendzVIT()
     }
 
     if (walletModel && walletModel->getAddressTableModel()) {
-        // If zVITAE was spent successfully update the addressbook with the label
+        // If zVIT was spent successfully update the addressbook with the label
         std::string labelText = ui->addAsLabel->text().toStdString();
         if (!labelText.empty())
             walletModel->updateAddressBookLabels(address.Get(), labelText, "send");
@@ -802,7 +802,7 @@ void PrivacyDialog::updateSPORK16Status()
     else {
         // Mint zVIT
         ui->pushButtonMintzVIT->setEnabled(true);
-        ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of Vit to convert to zVit", 0));
+        ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of VIT to convert to zVIT", 0));
 
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(true);

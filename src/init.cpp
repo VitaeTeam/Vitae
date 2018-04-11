@@ -548,7 +548,7 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-enablezeromint=<n>", strprintf(_("Enable automatic Zerocoin minting (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-zeromintpercentage=<n>", strprintf(_("Percentage of automatically minted Zerocoin  (10-100, default: %u)"), 10));
     strUsage += HelpMessageOpt("-preferredDenom=<n>", strprintf(_("Preferred Denomination for automatically minted Zerocoin  (1/5/10/50/100/500/1000/5000), 0 for no preference. default: %u)"), 0));
-    strUsage += HelpMessageOpt("-backupzVit=<n>", strprintf(_("Enable automatic wallet backups triggered after each zVITAE minting (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-backupzvit=<n>", strprintf(_("Enable automatic wallet backups triggered after each zVITAE minting (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-reindexzerocoin=<n>", strprintf(_("Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)"), 0));
 
 //    strUsage += "  -anonymizevitaeamount=<n>     " + strprintf(_("Keep N VITAE anonymized (default: %u)"), 0) + "\n";

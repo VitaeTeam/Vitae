@@ -2688,7 +2688,7 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
-            "1. amount      (numeric, required) Enter an amount of Vit to convert to zVit\n"
+            "1. amount      (numeric, required) Enter an amount of Vit to convert to zVIT\n"
             "2. utxos       (string, optional) A json array of objects.\n"
             "                   Each object needs the txid (string) and vout (numeric)\n"
             "  [\n"
@@ -3100,7 +3100,7 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
 
             "\nArguments:\n"
             "1. \"include_spent\"        (bool, required) Include mints that have already been spent\n"
-            "2. \"denomination\"         (integer, optional) Export a specific denomination of zVit\n"
+            "2. \"denomination\"         (integer, optional) Export a specific denomination of zVIT\n"
 
             "\nResult:\n"
             "[                   (array of json object)\n"
@@ -3179,7 +3179,7 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
             "\nResult:\n"
             "{\n"
             "  \"added\": n,        (numeric) The quantity of zerocoin mints that were added\n"
-            "  \"value\": amount    (numeric) The total zVit value of zerocoin mints that were added\n"
+            "  \"value\": amount    (numeric) The total zVIT value of zerocoin mints that were added\n"
             "}\n"
 
             "\nExamples\n" +
@@ -3256,7 +3256,7 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
     if(fHelp || !params.empty())
         throw runtime_error(
             "reconsiderzerocoins\n"
-            "\nCheck archived zVit list to see if any mints were added to the blockchain.\n" +
+            "\nCheck archived zVIT list to see if any mints were added to the blockchain.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult:\n"
@@ -3341,11 +3341,11 @@ UniValue getzpivseed(const UniValue& params, bool fHelp)
     if(fHelp || !params.empty())
         throw runtime_error(
             "getzpivseed\n"
-            "\nCheck archived zPiv list to see if any mints were added to the blockchain.\n" +
+            "\nCheck archived zPIV list to see if any mints were added to the blockchain.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult\n"
-            "\"seed\" : s,  (string) The deterministic zpiv seed.\n"
+            "\"seed\" : s,  (string) The deterministic zPIV seed.\n"
 
             "\nExamples\n" +
             HelpExampleCli("getzpivseed", "") + HelpExampleRpc("getzpivseed", ""));
