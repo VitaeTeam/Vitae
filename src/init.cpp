@@ -1625,7 +1625,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         nStart = GetTimeMillis();
         bool fFirstRun = true;
         pwalletMain = new CWallet(strWalletFile);
-        zwalletMain = new CzPIVWallet(pwalletMain->strWalletFile);
         DBErrors nLoadWalletRet = pwalletMain->LoadWallet(fFirstRun);
         if (nLoadWalletRet != DB_LOAD_OK) {
             if (nLoadWalletRet == DB_CORRUPT)
@@ -1674,6 +1673,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
         LogPrintf("%s", strErrors.str());
         LogPrintf(" wallet      %15dms\n", GetTimeMillis() - nStart);
+        zwalletMain = new CzPIVWallet(pwalletMain->strWalletFile);
+        pwalletMain->setZWallet(zwalletMain);
 
         RegisterValidationInterface(pwalletMain);
 
@@ -1719,17 +1720,15 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         }
         fVerifyingBlocks = false;
 
-        //Inititalize zPIVWallet
+        //Inititalize zVITWallet
         uiInterface.InitMessage(_("Syncing zVIT wallet..."));
 
-        pwalletMain->setZWallet(zwalletMain);
         bool fEnableZVitBackups = GetBoolArg("-backupzVit", true);
         pwalletMain->setZVitAutoBackups(fEnableZVitBackups);
 
         //Load zerocoin mint hashes to memory
         pwalletMain->zpivTracker->Init();
         zwalletMain->LoadMintPoolFromDB();
-        //zwalletMain->RemoveMintsFromPool(pwalletMain->zpivTracker->GetSerialHashes());
         zwalletMain->SyncWithChain();
     }  // (!fDisableWallet)
 #else  // ENABLE_WALLET
