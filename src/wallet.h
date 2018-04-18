@@ -242,7 +242,7 @@ public:
     bool fWalletUnlockAnonymizeOnly;
     std::string strWalletFile;
     bool fBackupMints;
-    CzPIVTracker* zpivTracker;
+    std::unique_ptr<CzPIVTracker> zpivTracker;
 
     std::set<int64_t> setKeyPool;
     std::map<CKeyID, CKeyMetadata> mapKeyMetadata;
@@ -332,7 +332,7 @@ public:
     void setZWallet(CzPIVWallet* zwallet)
     {
         zwalletMain = zwallet;
-        zpivTracker = new CzPIVTracker(strWalletFile);
+        zpivTracker = std::unique_ptr<CzPIVTracker>(new CzPIVTracker(strWalletFile));
     }
 
     CzPIVWallet* getZWallet() { return zwalletMain; }
