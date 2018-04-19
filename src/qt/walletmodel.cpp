@@ -600,7 +600,6 @@ static void NotifyWalletBacked(WalletModel* model, const bool& fSuccess, const s
 
     message += _(filename.data());
 
-
     QMetaObject::invokeMethod(model, "message", Qt::QueuedConnection,
                               Q_ARG(QString, QString::fromStdString(title)),
                               Q_ARG(QString, QString::fromStdString(message)),
