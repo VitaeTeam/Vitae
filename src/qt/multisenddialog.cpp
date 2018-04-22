@@ -72,7 +72,7 @@ void MultiSendDialog::on_viewButton_clicked()
     std::pair<std::string, int> pMultiSend;
     std::string strMultiSendPrint = "";
     if (pwalletMain->isMultiSendEnabled()) {
-        if (pwalletMain->fMultiSendStake && pwalletMain->fMultiSendMasternodeReward && pwalletMain->fMultiSendMasternodeReward)
+        if (pwalletMain->fMultiSendStake && pwalletMain->fMultiSendMasternodeReward && pwalletMain->fMultiSendFundamentalnodeReward)
             strMultiSendPrint += "MultiSend Active for Stake, Masternode, and Fundamentalnode Rewards\n";
         else if (pwalletMain->fMultiSendStake && pwalletMain->fMultiSendMasternodeReward)
             strMultiSendPrint += "MultiSend Active for Stakes and Masternode Rewards\n";
