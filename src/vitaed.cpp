@@ -8,12 +8,14 @@
 #include "clientversion.h"
 #include "init.h"
 #include "main.h"
-#include "masternodeconfig.h"
+#include "fundamentalnodeconfig.h"
 #include "noui.h"
 #include "scheduler.h"
 #include "rpcserver.h"
 #include "ui_interface.h"
 #include "util.h"
+
+#include "masternodeconfig.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
@@ -103,10 +105,17 @@ bool AppInit(int argc, char* argv[])
             return false;
         }
 
-        // parse masternode.conf
+        // parse fundamentalnode.conf
         std::string strErr;
-        if (!masternodeConfig.read(strErr)) {
-            fprintf(stderr, "Error reading masternode configuration file: %s\n", strErr.c_str());
+        if (!fundamentalnodeConfig.read(strErr)) {
+            fprintf(stderr, "Error reading fundamentalnode configuration file: %s\n", strErr.c_str());
+            return false;
+        }
+
+        //mn
+        std::string strErrMn;
+        if (!masternodeConfig.read(strErrMn)) {
+            fprintf(stderr, "Error reading fundamentalnode configuration file: %s\n", strErrMn.c_str());
             return false;
         }
 

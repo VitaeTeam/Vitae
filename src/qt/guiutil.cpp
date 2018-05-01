@@ -161,7 +161,7 @@ bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out)
             fShouldReturnFalse = false;
         } else if (i->first == "amount") {
             if (!i->second.isEmpty()) {
-                if (!BitcoinUnits::parse(BitcoinUnits::PIV, i->second, &rv.amount)) {
+                if (!BitcoinUnits::parse(BitcoinUnits::VIT, i->second, &rv.amount)) {
                     return false;
                 }
             }
@@ -196,7 +196,7 @@ QString formatBitcoinURI(const SendCoinsRecipient& info)
     int paramCount = 0;
 
     if (info.amount) {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::PIV, info.amount, false, BitcoinUnits::separatorNever));
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::VIT, info.amount, false, BitcoinUnits::separatorNever));
         paramCount++;
     }
 
@@ -379,9 +379,9 @@ void openConfigfile()
 
 void openMNConfigfile()
 {
-    boost::filesystem::path pathConfig = GetMasternodeConfigFile();
+    boost::filesystem::path pathConfig = GetFundamentalnodeConfigFile();
 
-    /* Open masternode.conf with the associated application */
+    /* Open fundamentalnode.conf with the associated application */
     if (boost::filesystem::exists(pathConfig))
         QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
 }
@@ -576,7 +576,7 @@ DHMSTableWidgetItem::DHMSTableWidgetItem(const int64_t seconds) : QTableWidgetIt
 
 /**
  * Comparator overload to ensure that the "DHMS"-type durations as used in
- * the "active-since" list in the masternode tab are sorted by the elapsed
+ * the "active-since" list in the fundamentalnode tab are sorted by the elapsed
  * duration (versus the string value being sorted).
  * @param[in] item      Right hand side of the less than operator
  */

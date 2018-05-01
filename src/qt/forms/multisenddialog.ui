@@ -37,7 +37,7 @@
         <number>1</number>
        </property>
        <property name="text">
-        <string>MultiSend allows you to automatically send up to 100% of your stake or masternode reward to a list of other VITAE addresses after it matures.
+        <string>MultiSend allows you to automatically send up to 100% of your stake or fundamentalnode reward to a list of other VITAE addresses after it matures.
 To Add: enter percentage to give and VITAE address to add to the MultiSend vector.
 To Delete: Enter address to delete and press delete.
 MultiSend will not be activated unless you have clicked Activate</string>
@@ -81,9 +81,9 @@ MultiSend will not be activated unless you have clicked Activate</string>
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="multiSendMasternodeCheckBox">
+          <widget class="QCheckBox" name="multiSendFundamentalnodeCheckBox">
            <property name="text">
-            <string>Send For Masternode Rewards</string>
+            <string>Send For Fundamentalnode Rewards</string>
            </property>
           </widget>
          </item>

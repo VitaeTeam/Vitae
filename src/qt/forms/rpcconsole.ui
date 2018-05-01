@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>769</width>
-    <height>485</height>
+    <height>589</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_info">
       <attribute name="title">
@@ -244,14 +244,14 @@
         </widget>
        </item>
        <item row="10" column="0">
-        <widget class="QLabel" name="masternodeCountLabel">
+        <widget class="QLabel" name="fundamentalnodeCountLabel">
          <property name="text">
-          <string>Number of Masternodes</string>
+          <string>Number of Fundamentalnodes</string>
          </property>
         </widget>
        </item>
        <item row="10" column="1">
-        <widget class="QLabel" name="masternodeCount">
+        <widget class="QLabel" name="fundamentalnodeCount">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>

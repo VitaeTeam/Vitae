@@ -261,42 +261,47 @@ extern UniValue invalidateblock(const UniValue& params, bool fHelp);
 extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
 extern UniValue getinvalid(const UniValue& params, bool fHelp);
 
-extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcmasternode.cpp
+extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcfundamentalnode.cpp
 extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
-extern UniValue masternode(const UniValue& params, bool fHelp);
-extern UniValue listmasternodes(const UniValue& params, bool fHelp);
-extern UniValue getmasternodecount(const UniValue& params, bool fHelp);
-extern UniValue masternodeconnect(const UniValue& params, bool fHelp);
-extern UniValue masternodecurrent(const UniValue& params, bool fHelp);
-extern UniValue masternodedebug(const UniValue& params, bool fHelp);
-extern UniValue startmasternode(const UniValue& params, bool fHelp);
-extern UniValue createmasternodekey(const UniValue& params, bool fHelp);
-extern UniValue getmasternodeoutputs(const UniValue& params, bool fHelp);
-extern UniValue listmasternodeconf(const UniValue& params, bool fHelp);
-extern UniValue getmasternodestatus(const UniValue& params, bool fHelp);
-extern UniValue getmasternodewinners(const UniValue& params, bool fHelp);
-extern UniValue getmasternodescores(const UniValue& params, bool fHelp);
+extern UniValue fundamentalnode(const UniValue& params, bool fHelp);
+extern UniValue listfundamentalnodes(const UniValue& params, bool fHelp);
+extern UniValue getfundamentalnodecount(const UniValue& params, bool fHelp);
+extern UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp);
+extern UniValue fundamentalnodecurrent(const UniValue& params, bool fHelp);
+extern UniValue fundamentalnodedebug(const UniValue& params, bool fHelp);
+extern UniValue startfundamentalnode(const UniValue& params, bool fHelp);
+extern UniValue createfundamentalnodekey(const UniValue& params, bool fHelp);
+extern UniValue getfundamentalnodeoutputs(const UniValue& params, bool fHelp);
+extern UniValue listfundamentalnodeconf(const UniValue& params, bool fHelp);
+extern UniValue getfundamentalnodestatus(const UniValue& params, bool fHelp);
+extern UniValue getfundamentalnodewinners(const UniValue& params, bool fHelp);
+extern UniValue getfundamentalnodescores(const UniValue& params, bool fHelp);
 
-extern UniValue mnbudget(const UniValue& params, bool fHelp); // in rpcmasternode-budget.cpp
+extern UniValue fnbudget(const UniValue& params, bool fHelp); // in rpcfundamentalnode-budget.cpp
 extern UniValue preparebudget(const UniValue& params, bool fHelp);
 extern UniValue submitbudget(const UniValue& params, bool fHelp);
-extern UniValue mnbudgetvote(const UniValue& params, bool fHelp);
+extern UniValue fnbudgetvote(const UniValue& params, bool fHelp);
 extern UniValue getbudgetvotes(const UniValue& params, bool fHelp);
 extern UniValue getnextsuperblock(const UniValue& params, bool fHelp);
 extern UniValue getbudgetprojection(const UniValue& params, bool fHelp);
 extern UniValue getbudgetinfo(const UniValue& params, bool fHelp);
-extern UniValue mnbudgetrawvote(const UniValue& params, bool fHelp);
-extern UniValue mnfinalbudget(const UniValue& params, bool fHelp);
+extern UniValue fnbudgetrawvote(const UniValue& params, bool fHelp);
+extern UniValue fnfinalbudget(const UniValue& params, bool fHelp);
 extern UniValue checkbudgets(const UniValue& params, bool fHelp);
 
 extern UniValue getinfo(const UniValue& params, bool fHelp); // in rpcmisc.cpp
-extern UniValue mnsync(const UniValue& params, bool fHelp);
+extern UniValue fnsync(const UniValue& params, bool fHelp);
 extern UniValue spork(const UniValue& params, bool fHelp);
 extern UniValue validateaddress(const UniValue& params, bool fHelp);
 extern UniValue createmultisig(const UniValue& params, bool fHelp);
 extern UniValue verifymessage(const UniValue& params, bool fHelp);
 extern UniValue setmocktime(const UniValue& params, bool fHelp);
 extern UniValue getstakingstatus(const UniValue& params, bool fHelp);
+
+extern UniValue mnspork(const UniValue& params, bool fHelp);
+extern UniValue masternode(const UniValue& params, bool fHelp);
+extern UniValue masternodelist(const UniValue& params, bool fHelp);
+
 
 // in rest.cpp
 extern bool HTTPReq_REST(AcceptedConnection* conn,

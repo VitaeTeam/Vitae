@@ -31,7 +31,7 @@
 
 //VITAE only features
 
-extern bool fMasterNode;
+extern bool fFundamentalNode;
 extern bool fLiteMode;
 extern bool fEnableSwiftTX;
 extern int nSwiftTXDepth;
@@ -41,12 +41,19 @@ extern int nPreferredDenom;
 extern int nAnonymizeVitaeAmount;
 extern int nLiquidityProvider;
 extern bool fEnableZeromint;
-extern int64_t enforceMasternodePaymentsTime;
-extern std::string strMasterNodeAddr;
+extern int64_t enforceFundamentalnodePaymentsTime;
+extern std::string strFundamentalNodeAddr;
 extern int keysLoaded;
 extern bool fSucessfullyLoaded;
 extern std::vector<int64_t> obfuScationDenominations;
 extern std::string strBudgetMode;
+
+//masternodes
+extern bool fMasterNode;
+extern bool fMNLiteMode;
+extern int64_t enforceMasternodePaymentsTime;
+extern std::string strMasterNodeAddr;
+extern bool fMNSucessfullyLoaded;
 
 extern std::map<std::string, std::string> mapArgs;
 extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
@@ -116,6 +123,7 @@ bool TryCreateDirectory(const boost::filesystem::path& p);
 boost::filesystem::path GetDefaultDataDir();
 const boost::filesystem::path& GetDataDir(bool fNetSpecific = true);
 boost::filesystem::path GetConfigFile();
+boost::filesystem::path GetFundamentalnodeConfigFile();
 boost::filesystem::path GetMasternodeConfigFile();
 #ifndef WIN32
 boost::filesystem::path GetPidFile();

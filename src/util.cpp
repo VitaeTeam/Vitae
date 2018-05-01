@@ -106,10 +106,10 @@ std::string to_internal(const std::string&);
 using namespace std;
 
 // VITAE only features
-// Masternode
-bool fMasterNode = false;
-string strMasterNodePrivKey = "";
-string strMasterNodeAddr = "";
+// fundamentalnode
+bool fFundamentalNode = false;
+string strFundamentalNodePrivKey = "";
+string strFundamentalNodeAddr = "";
 bool fLiteMode = false;
 // SwiftX
 bool fEnableSwiftTX = true;
@@ -123,11 +123,19 @@ const int64_t AUTOMINT_DELAY = (60 * 5); // Wait at least 5 minutes until Automi
 int nAnonymizeVitaeAmount = 1000;
 int nLiquidityProvider = 0;
 /** Spork enforcement enabled time */
-int64_t enforceMasternodePaymentsTime = 4085657524;
+int64_t enforceFundamentalnodePaymentsTime = 4085657524;
 bool fSucessfullyLoaded = false;
 /** All denominations used by obfuscation */
 std::vector<int64_t> obfuScationDenominations;
 string strBudgetMode = "";
+
+bool fMasterNode = false;
+string strMasterNodePrivKey = "";
+string strMasterNodeAddr = "";
+bool fMNLiteMode = false;
+
+int64_t enforceMasternodePaymentsTime = 4085657524;
+bool fMNSucessfullyLoaded = false;
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
@@ -241,10 +249,10 @@ bool LogAcceptCategory(const char* category)
             if (ptrCategory->count(string("vitae"))) {
                 ptrCategory->insert(string("obfuscation"));
                 ptrCategory->insert(string("swiftx"));
-                ptrCategory->insert(string("masternode"));
-                ptrCategory->insert(string("mnpayments"));
+                ptrCategory->insert(string("fundamentalnode"));
+                ptrCategory->insert(string("fnpayments"));
                 ptrCategory->insert(string("zero"));
-                ptrCategory->insert(string("mnbudget"));
+                ptrCategory->insert(string("fnbudget"));
             }
         }
         const set<string>& setCategories = *ptrCategory.get();
@@ -499,9 +507,16 @@ boost::filesystem::path GetConfigFile()
     return pathConfigFile;
 }
 
+boost::filesystem::path GetFundamentalnodeConfigFile()
+{
+    boost::filesystem::path pathConfigFile(GetArg("-fnconf", "fundamentalnode.conf"));
+    if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir() / pathConfigFile;
+    return pathConfigFile;
+}
+
 boost::filesystem::path GetMasternodeConfigFile()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-mnconf", "masternode.conf"));
+    boost::filesystem::path pathConfigFile(GetArg("-fnconf", "masternode.conf"));
     if (!pathConfigFile.is_complete()) pathConfigFile = GetDataDir() / pathConfigFile;
     return pathConfigFile;
 }

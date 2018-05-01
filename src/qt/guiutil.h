@@ -114,7 +114,7 @@ void openDebugLogfile();
 // Open vitae.conf
 void openConfigfile();
 
-// Open masternode.conf
+// Open fundamentalnode.conf
 void openMNConfigfile();
 
 // Browse backup folder
@@ -182,7 +182,7 @@ private slots:
 
 /**
      * Extension to QTableWidgetItem that facilitates proper ordering for "DHMS"
-     * strings (primarily used in the masternode's "active" listing).
+     * strings (primarily used in the fundamentalnode's "active" listing).
      */
 class DHMSTableWidgetItem : public QTableWidgetItem
 {

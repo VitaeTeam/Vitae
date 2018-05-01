@@ -142,7 +142,7 @@ public:
     friend bool operator<(const CInv& a, const CInv& b);
 
     bool IsKnownType() const;
-    bool IsMasterNodeType() const;
+    bool IsFundamentalNodeType() const;
     const char* GetCommand() const;
     std::string ToString() const;
 
@@ -161,16 +161,24 @@ enum {
     MSG_TXLOCK_REQUEST,
     MSG_TXLOCK_VOTE,
     MSG_SPORK,
-    MSG_MASTERNODE_WINNER,
-    MSG_MASTERNODE_SCANNING_ERROR,
+    MSG_FUNDAMENTALNODE_WINNER,
+    MSG_FUNDAMENTALNODE_SCANNING_ERROR,
     MSG_BUDGET_VOTE,
     MSG_BUDGET_PROPOSAL,
     MSG_BUDGET_FINALIZED,
     MSG_BUDGET_FINALIZED_VOTE,
-    MSG_MASTERNODE_QUORUM,
+    MSG_FUNDAMENTALNODE_QUORUM,
+    MSG_FUNDAMENTALNODE_ANNOUNCE,
+    MSG_FUNDAMENTALNODE_PING,
+    MSG_DSTX,
+
+    //masternode
+     MSG_MN_SPORK,
+    MSG_MASTERNODE_WINNER,
+    MSG_MASTERNODE_SCANNING_ERROR,
     MSG_MASTERNODE_ANNOUNCE,
-    MSG_MASTERNODE_PING,
-    MSG_DSTX
+    MSG_MASTERNODE_PING
+
 };
 
 #endif // BITCOIN_PROTOCOL_H

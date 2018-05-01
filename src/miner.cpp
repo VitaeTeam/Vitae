@@ -10,7 +10,7 @@
 #include "amount.h"
 #include "hash.h"
 #include "main.h"
-#include "masternode-sync.h"
+#include "fundamentalnode-sync.h"
 #include "net.h"
 #include "pow.h"
 #include "primitives/block.h"
@@ -21,9 +21,11 @@
 #ifdef ENABLE_WALLET
 #include "wallet.h"
 #endif
-#include "masternode-payments.h"
+#include "fundamentalnode-payments.h"
 #include "accumulators.h"
 #include "spork.h"
+
+#include "masternodeman.h"
 
 #include <boost/thread.hpp>
 #include <boost/tuple/tuple.hpp>
@@ -150,6 +152,18 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         if (!fStakeFound)
             return NULL;
     }
+
+    bool bMasterNodePayment = false;
+
+    if ( Params().NetworkID() == CBaseChainParams::TESTNET ){
+        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS_TESTNET ){
+            bMasterNodePayment = true;
+        }
+    }else{
+        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS){
+            bMasterNodePayment = true;
+        }
+    }//
 
     // Largest block you're willing to create:
     unsigned int nBlockMaxSize = GetArg("-blockmaxsize", DEFAULT_BLOCK_MAX_SIZE);
@@ -346,6 +360,9 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
             CAmount nTxFees = view.GetValueIn(tx) - tx.GetValueOut();
 
+            if(nTxFees > FUNDAMENTALNODE_AMOUNT)
+                nTxFees = nTxFees - FUNDAMENTALNODE_AMOUNT;
+
             nTxSigOps += GetP2SHSigOpCount(tx, view);
             if (nBlockSigOps + nTxSigOps >= nMaxBlockSigOps)
                 continue;
@@ -392,8 +409,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         }
 
         if (!fProofOfStake) {
-            //Masternode and general budget payments
-            FillBlockPayee(txNew, nFees, fProofOfStake);
+            //Fundamentalnode and general budget payments
+            FillBlockPayee(txNew, nFees, fProofOfStake, bMasterNodePayment);
 
             //Make payee
             if (txNew.vout.size() > 1) {
@@ -537,7 +554,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
             }
 
             while (chainActive.Tip()->nTime < 1471482000 || vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || 
-                   nReserveBalance >= pwallet->GetBalance() || !masternodeSync.IsSynced()) {
+                   nReserveBalance >= pwallet->GetBalance() || !fundamentalnodeSync.IsSynced()) {
                 nLastCoinStakeSearchInterval = 0;
                 MilliSleep(5000);
                 if (!fGenerateBitcoins && !fProofOfStake)

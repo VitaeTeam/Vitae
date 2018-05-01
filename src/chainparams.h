@@ -77,8 +77,8 @@ public:
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
     int COINBASE_MATURITY() const { return nMaturity; }
     CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
-    /** The masternode count that we will allow the see-saw reward payments to be off by */
-    int MasternodeCountDrift() const { return nMasternodeCountDrift; }
+    /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
+    int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
     /** Make miner stop after a block is found. In RPC, don't return until nGenProcLimit blocks are generated */
     bool MineBlocksOnDemand() const { return fMineBlocksOnDemand; }
     /** In the future use NetworkIDString() for RPC fields */
@@ -92,7 +92,7 @@ public:
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
     std::string SporkKey() const { return strSporkKey; }
     std::string ObfuscationPoolDummyAddress() const { return strObfuscationPoolDummyAddress; }
-    int64_t StartMasternodePayments() const { return nStartMasternodePayments; }
+    int64_t StartFundamentalnodePayments() const { return nStartFundamentalnodePayments; }
     int64_t Budget_Fee_Confirmations() const { return nBudget_Fee_Confirmations; }
     CBaseChainParams::Network NetworkID() const { return networkID; }
 
@@ -134,7 +134,7 @@ protected:
     int64_t nTargetTimespan;
     int64_t nTargetSpacing;
     int nLastPOWBlock;
-    int nMasternodeCountDrift;
+    int nFundamentalnodeCountDrift;
     int nMaturity;
     int nModifierUpdateBlock;
     CAmount nMaxMoneyOut;
@@ -156,7 +156,7 @@ protected:
     int nPoolMaxTransactions;
     std::string strSporkKey;
     std::string strObfuscationPoolDummyAddress;
-    int64_t nStartMasternodePayments;
+    int64_t nStartFundamentalnodePayments;
     std::string zerocoinModulus;
     int nMaxZerocoinSpendsPerTransaction;
     CAmount nMinZerocoinMintFee;

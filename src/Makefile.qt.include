@@ -39,6 +39,7 @@ QT_FORMS_UI = \
   qt/forms/editaddressdialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
+  qt/forms/fundamentalnodelist.ui \
   qt/forms/masternodelist.ui \
   qt/forms/multisenddialog.ui \
   qt/forms/multisigdialog.ui\
@@ -76,6 +77,7 @@ QT_MOC_CPP = \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
   qt/moc_macnotificationhandler.cpp \
+  qt/moc_fundamentalnodelist.cpp \
   qt/moc_masternodelist.cpp \
   qt/moc_multisenddialog.cpp \
   qt/moc_multisigdialog.cpp\
@@ -151,6 +153,7 @@ BITCOIN_QT_H = \
   qt/intro.h \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
+  qt/fundamentalnodelist.h \
   qt/masternodelist.h \
   qt/multisenddialog.h \
   qt/multisigdialog.h\
@@ -223,6 +226,7 @@ RES_ICONS = \
   qt/res/icons/key.png \
   qt/res/icons/lock_closed.png \
   qt/res/icons/lock_open.png \
+  qt/res/icons/fundamentalnodes.png \
   qt/res/icons/masternodes.png \
   qt/res/icons/overview.png \
   qt/res/icons/qrcode.png \
@@ -262,6 +266,7 @@ BITCOIN_QT_CPP = \
   qt/csvmodelwriter.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
+  qt/fundamentalnodelist.cpp \
   qt/masternodelist.cpp \
   qt/networkstyle.cpp \
   qt/notificator.cpp \
@@ -291,6 +296,7 @@ BITCOIN_QT_CPP += \
   qt/coincontroltreewidget.cpp \
   qt/obfuscationconfig.cpp \
   qt/editaddressdialog.cpp \
+  qt/fundamentalnodelist.cpp \
   qt/masternodelist.cpp \
   qt/multisenddialog.cpp \
   qt/multisigdialog.cpp\

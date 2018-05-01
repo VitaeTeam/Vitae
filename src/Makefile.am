@@ -83,6 +83,7 @@ endif
 .PHONY: FORCE
 # vitae core #
 BITCOIN_CORE_H = \
+  activefundamentalnode.h \
   activemasternode.h \
   accumulators.h \
   accumulatormap.h \
@@ -126,11 +127,15 @@ BITCOIN_CORE_H = \
   limitedmap.h \
   main.h \
   masternode.h \
-  masternode-payments.h \
-  masternode-budget.h \
-  masternode-sync.h \
+  masternode-pos.h \
   masternodeman.h \
   masternodeconfig.h \
+  fundamentalnode.h \
+  fundamentalnode-payments.h \
+  fundamentalnode-budget.h \
+  fundamentalnode-sync.h \
+  fundamentalnodeman.h \
+  fundamentalnodeconfig.h \
   merkleblock.h \
   miner.h \
   mruset.h \
@@ -155,6 +160,7 @@ BITCOIN_CORE_H = \
   script/script_error.h \
   serialize.h \
   spork.h \
+  mn-spork.h \
   sporkdb.h \
   streams.h \
   sync.h \
@@ -189,8 +195,9 @@ obj/build.h: FORCE
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
 # server: shared between vitaed and vitae-qt
-libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS) $(BOOST_CPPFLAGS)
 libbitcoin_server_a_SOURCES = \
+  activemasternode.cpp \
   addrman.cpp \
   alert.cpp \
   bloom.cpp \
@@ -206,8 +213,8 @@ libbitcoin_server_a_SOURCES = \
   pow.cpp \
   rest.cpp \
   rpcblockchain.cpp \
-  rpcmasternode.cpp \
-  rpcmasternode-budget.cpp \
+  rpcfundamentalnode.cpp \
+  rpcfundamentalnode-budget.cpp \
   rpcmining.cpp \
   rpcmisc.cpp \
   rpcnet.cpp \
@@ -225,7 +232,7 @@ libbitcoin_server_a_SOURCES = \
 if ENABLE_ZMQ
 LIBBITCOIN_ZMQ=libbitcoin_zmq.a
 
-libbitcoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
+libbitcoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS) $(BOOST_CPPFLAGS)
 libbitcoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
@@ -237,22 +244,24 @@ endif
 # when wallet enabled
 
 libbitcoin_wallet_a_CFLAGS = -fPIC
-libbitcoin_wallet_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+libbitcoin_wallet_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(BOOST_CPPFLAGS)
 libbitcoin_wallet_a_SOURCES = \
+  activefundamentalnode.cpp \
   activemasternode.cpp \
   bip38.cpp \
   denomination_functions.cpp \
   obfuscation.cpp \
+  bitpool.cpp \
   obfuscation-relay.cpp \
   db.cpp \
   crypter.cpp \
   swifttx.cpp \
-  masternode.cpp \
-  masternode-budget.cpp \
-  masternode-payments.cpp \
-  masternode-sync.cpp \
-  masternodeconfig.cpp \
-  masternodeman.cpp \
+  fundamentalnode.cpp \
+  fundamentalnode-budget.cpp \
+  fundamentalnode-payments.cpp \
+  fundamentalnode-sync.cpp \
+  fundamentalnodeconfig.cpp \
+  fundamentalnodeman.cpp \
   rpcdump.cpp \
   primitives/zerocoin.cpp \
   rpcwallet.cpp \
@@ -264,7 +273,7 @@ libbitcoin_wallet_a_SOURCES = \
 
 # crypto primitives library
 crypto_libbitcoin_crypto_a_CFLAGS = -fPIC
-crypto_libbitcoin_crypto_a_CPPFLAGS = $(BITCOIN_CONFIG_INCLUDES)
+crypto_libbitcoin_crypto_a_CPPFLAGS = $(BITCOIN_CONFIG_INCLUDES) $(BOOST_CPPFLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sha1.cpp \
   crypto/sha256.cpp \
@@ -299,6 +308,7 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sph_types.h
 
 # libzerocoin library
+libzerocoin_libbitcoin_zerocoin_a_CPPFLAGS = $(BOOST_CPPFLAGS)
 libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/Accumulator.h \
   libzerocoin/AccumulatorProofOfKnowledge.h \
@@ -324,6 +334,7 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
 # common: shared between vitaed, and vitae-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
+  activemasternode.cpp \
   accumulators.cpp \
   accumulatormap.cpp \
   allocators.cpp \
@@ -336,6 +347,10 @@ libbitcoin_common_a_SOURCES = \
   primitives/block.cpp \
   primitives/transaction.cpp \
   primitives/zerocoin.cpp \
+  masternode.cpp \
+  masternode-pos.cpp \
+  masternodeman.cpp \
+  masternodeconfig.cpp \
   core_read.cpp \
   core_write.cpp \
   eccryptoverify.cpp \
@@ -353,13 +368,14 @@ libbitcoin_common_a_SOURCES = \
   script/standard.cpp \
   script/script_error.cpp \
   spork.cpp \
+  mn-spork.cpp \
   sporkdb.cpp \
   $(BITCOIN_CORE_H)
 
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libbitcoin_util_a_CPPFLAGS = $(BITCOIN_INCLUDES)
+libbitcoin_util_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(BOOST_CPPFLAGS)
 libbitcoin_util_a_SOURCES = \
   allocators.cpp \
   compat/strnlen.cpp \
@@ -487,7 +503,7 @@ endif
 
 libbitcoinconsensus_la_LDFLAGS = -no-undefined $(RELDFLAGS)
 libbitcoinconsensus_la_LIBADD = $(CRYPTO_LIBS) $(BOOST_LIBS)
-libbitcoinconsensus_la_CPPFLAGS = $(CRYPTO_CFLAGS) -I$(builddir)/obj -DBUILD_BITCOIN_INTERNAL
+libbitcoinconsensus_la_CPPFLAGS = $(CRYPTO_CFLAGS) $(BOOST_CPPFLAGS) -I$(builddir)/obj -DBUILD_BITCOIN_INTERNAL
 if USE_LIBSECP256K1
 libbitcoinconsensus_la_LIBADD += secp256k1/libsecp256k1.la
 endif

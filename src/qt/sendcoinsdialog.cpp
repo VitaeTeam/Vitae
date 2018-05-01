@@ -17,6 +17,8 @@
 #include "sendcoinsentry.h"
 #include "walletmodel.h"
 
+#include "util.h"
+
 #include "base58.h"
 #include "coincontrol.h"
 #include "ui_interface.h"
@@ -134,7 +136,7 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
     ui->customFee->setValue(settings.value("nTransactionFee").toLongLong());
     ui->checkBoxMinimumFee->setChecked(settings.value("fPayOnlyMinFee").toBool());
     ui->checkBoxFreeTx->setChecked(settings.value("fSendFreeTransactions").toBool());
-    ui->checkzPIV->hide();
+    ui->checkzVIT->hide();
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 }
 
@@ -214,6 +216,8 @@ SendCoinsDialog::~SendCoinsDialog()
 
 void SendCoinsDialog::on_sendButton_clicked()
 {
+    bool IsFundamentalNodePayment = false;
+
     if (!model || !model->getOptionsModel())
         return;
 
@@ -245,6 +249,13 @@ void SendCoinsDialog::on_sendButton_clicked()
 
     if (!valid || recipients.isEmpty()) {
         return;
+    }
+
+    if(ui->checkBoxFnPayment->isChecked()){
+            IsFundamentalNodePayment = true;
+            LogPrintf("IsFundamnetalNode is true. \n");
+    } else {
+        LogPrintf("IsFundamnetalNode is false. \n");
     }
 
     //set split block in model
@@ -327,22 +338,22 @@ void SendCoinsDialog::on_sendButton_clicked()
             fNewRecipientAllowed = true;
             return;
         }
-        send(recipients, strFee, formatted);
+        send(recipients, strFee, formatted, IsFundamentalNodePayment);
         return;
     }
     // already unlocked or not encrypted at all
-    send(recipients, strFee, formatted);
+    send(recipients, strFee, formatted, IsFundamentalNodePayment);
 }
 
-void SendCoinsDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QStringList formatted)
+void SendCoinsDialog::send(QList<SendCoinsRecipient> recipients, QString strFee, QStringList formatted, bool IsFundamentalNodePayment)
 {
     // prepare transaction for getting txFee earlier
     WalletModelTransaction currentTransaction(recipients);
     WalletModel::SendCoinsReturn prepareStatus;
     if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
-        prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
+        prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl, IsFundamentalNodePayment);
     else
-        prepareStatus = model->prepareTransaction(currentTransaction);
+        prepareStatus = model->prepareTransaction(currentTransaction,NULL, IsFundamentalNodePayment);
 
     // process prepareStatus and on error generate message shown to user
     processSendCoinsReturn(prepareStatus,

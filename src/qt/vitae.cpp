@@ -25,6 +25,7 @@
 #include "paymentserver.h"
 #include "walletmodel.h"
 #endif
+#include "fundamentalnodeconfig.h"
 #include "masternodeconfig.h"
 
 #include "init.h"
@@ -636,11 +637,18 @@ int main(int argc, char* argv[])
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
 
 #ifdef ENABLE_WALLET
-    /// 7a. parse masternode.conf
+    /// 7a. parse fundamentalnode.conf
     string strErr;
-    if (!masternodeConfig.read(strErr)) {
+    if (!fundamentalnodeConfig.read(strErr)) {
         QMessageBox::critical(0, QObject::tr("VITAE Core"),
-            QObject::tr("Error reading masternode configuration file: %1").arg(strErr.c_str()));
+            QObject::tr("Error reading fundamentalnode configuration file: %1").arg(strErr.c_str()));
+        return 0;
+    }
+
+    string strErrMN;
+    if (!masternodeConfig.read(strErrMN)) {
+        QMessageBox::critical(0, QObject::tr("VITAE Core"),
+            QObject::tr("Error reading masternode configuration file: %1").arg(strErrMN.c_str()));
         return 0;
     }
 

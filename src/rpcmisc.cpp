@@ -9,11 +9,12 @@
 #include "clientversion.h"
 #include "init.h"
 #include "main.h"
-#include "masternode-sync.h"
+#include "fundamentalnode-sync.h"
 #include "net.h"
 #include "netbase.h"
 #include "rpcserver.h"
 #include "spork.h"
+#include "mn-spork.h"
 #include "timedata.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
@@ -134,7 +135,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     return obj;
 }
 
-UniValue mnsync(const UniValue& params, bool fHelp)
+UniValue fnsync(const UniValue& params, bool fHelp)
 {
     std::string strMode;
     if (params.size() == 1)
@@ -142,7 +143,7 @@ UniValue mnsync(const UniValue& params, bool fHelp)
 
     if (fHelp || params.size() != 1 || (strMode != "status" && strMode != "reset")) {
         throw runtime_error(
-            "mnsync \"status|reset\"\n"
+            "fnsync \"status|reset\"\n"
             "\nReturns the sync status or resets sync.\n"
 
             "\nArguments:\n"
@@ -151,54 +152,54 @@ UniValue mnsync(const UniValue& params, bool fHelp)
             "\nResult ('status' mode):\n"
             "{\n"
             "  \"IsBlockchainSynced\": true|false,    (boolean) 'true' if blockchain is synced\n"
-            "  \"lastMasternodeList\": xxxx,        (numeric) Timestamp of last MN list message\n"
-            "  \"lastMasternodeWinner\": xxxx,      (numeric) Timestamp of last MN winner message\n"
-            "  \"lastBudgetItem\": xxxx,            (numeric) Timestamp of last MN budget message\n"
+            "  \"lastFundamentalnodeList\": xxxx,        (numeric) Timestamp of last FN list message\n"
+            "  \"lastFundamentalnodeWinner\": xxxx,      (numeric) Timestamp of last FN winner message\n"
+            "  \"lastBudgetItem\": xxxx,            (numeric) Timestamp of last FN budget message\n"
             "  \"lastFailure\": xxxx,           (numeric) Timestamp of last failed sync\n"
             "  \"nCountFailures\": n,           (numeric) Number of failed syncs (total)\n"
-            "  \"sumMasternodeList\": n,        (numeric) Number of MN list messages (total)\n"
-            "  \"sumMasternodeWinner\": n,      (numeric) Number of MN winner messages (total)\n"
-            "  \"sumBudgetItemProp\": n,        (numeric) Number of MN budget messages (total)\n"
-            "  \"sumBudgetItemFin\": n,         (numeric) Number of MN budget finalization messages (total)\n"
-            "  \"countMasternodeList\": n,      (numeric) Number of MN list messages (local)\n"
-            "  \"countMasternodeWinner\": n,    (numeric) Number of MN winner messages (local)\n"
-            "  \"countBudgetItemProp\": n,      (numeric) Number of MN budget messages (local)\n"
-            "  \"countBudgetItemFin\": n,       (numeric) Number of MN budget finalization messages (local)\n"
-            "  \"RequestedMasternodeAssets\": n, (numeric) Status code of last sync phase\n"
-            "  \"RequestedMasternodeAttempt\": n, (numeric) Status code of last sync attempt\n"
+            "  \"sumFundamentalnodeList\": n,        (numeric) Number of FN list messages (total)\n"
+            "  \"sumFundamentalnodeWinner\": n,      (numeric) Number of FN winner messages (total)\n"
+            "  \"sumBudgetItemProp\": n,        (numeric) Number of FN budget messages (total)\n"
+            "  \"sumBudgetItemFin\": n,         (numeric) Number of FN budget finalization messages (total)\n"
+            "  \"countFundamentalnodeList\": n,      (numeric) Number of FN list messages (local)\n"
+            "  \"countFundamentalnodeWinner\": n,    (numeric) Number of FN winner messages (local)\n"
+            "  \"countBudgetItemProp\": n,      (numeric) Number of FN budget messages (local)\n"
+            "  \"countBudgetItemFin\": n,       (numeric) Number of FN budget finalization messages (local)\n"
+            "  \"RequestedFundamentalnodeAssets\": n, (numeric) Status code of last sync phase\n"
+            "  \"RequestedFundamentalnodeAttempt\": n, (numeric) Status code of last sync attempt\n"
             "}\n"
 
             "\nResult ('reset' mode):\n"
             "\"status\"     (string) 'success'\n"
             "\nExamples:\n" +
-            HelpExampleCli("mnsync", "\"status\"") + HelpExampleRpc("mnsync", "\"status\""));
+            HelpExampleCli("fnsync", "\"status\"") + HelpExampleRpc("fnsync", "\"status\""));
     }
 
     if (strMode == "status") {
         UniValue obj(UniValue::VOBJ);
 
-        obj.push_back(Pair("IsBlockchainSynced", masternodeSync.IsBlockchainSynced()));
-        obj.push_back(Pair("lastMasternodeList", masternodeSync.lastMasternodeList));
-        obj.push_back(Pair("lastMasternodeWinner", masternodeSync.lastMasternodeWinner));
-        obj.push_back(Pair("lastBudgetItem", masternodeSync.lastBudgetItem));
-        obj.push_back(Pair("lastFailure", masternodeSync.lastFailure));
-        obj.push_back(Pair("nCountFailures", masternodeSync.nCountFailures));
-        obj.push_back(Pair("sumMasternodeList", masternodeSync.sumMasternodeList));
-        obj.push_back(Pair("sumMasternodeWinner", masternodeSync.sumMasternodeWinner));
-        obj.push_back(Pair("sumBudgetItemProp", masternodeSync.sumBudgetItemProp));
-        obj.push_back(Pair("sumBudgetItemFin", masternodeSync.sumBudgetItemFin));
-        obj.push_back(Pair("countMasternodeList", masternodeSync.countMasternodeList));
-        obj.push_back(Pair("countMasternodeWinner", masternodeSync.countMasternodeWinner));
-        obj.push_back(Pair("countBudgetItemProp", masternodeSync.countBudgetItemProp));
-        obj.push_back(Pair("countBudgetItemFin", masternodeSync.countBudgetItemFin));
-        obj.push_back(Pair("RequestedMasternodeAssets", masternodeSync.RequestedMasternodeAssets));
-        obj.push_back(Pair("RequestedMasternodeAttempt", masternodeSync.RequestedMasternodeAttempt));
+        obj.push_back(Pair("IsBlockchainSynced", fundamentalnodeSync.IsBlockchainSynced()));
+        obj.push_back(Pair("lastFundamentalnodeList", fundamentalnodeSync.lastFundamentalnodeList));
+        obj.push_back(Pair("lastFundamentalnodeWinner", fundamentalnodeSync.lastFundamentalnodeWinner));
+        obj.push_back(Pair("lastBudgetItem", fundamentalnodeSync.lastBudgetItem));
+        obj.push_back(Pair("lastFailure", fundamentalnodeSync.lastFailure));
+        obj.push_back(Pair("nCountFailures", fundamentalnodeSync.nCountFailures));
+        obj.push_back(Pair("sumFundamentalnodeList", fundamentalnodeSync.sumFundamentalnodeList));
+        obj.push_back(Pair("sumFundamentalnodeWinner", fundamentalnodeSync.sumFundamentalnodeWinner));
+        obj.push_back(Pair("sumBudgetItemProp", fundamentalnodeSync.sumBudgetItemProp));
+        obj.push_back(Pair("sumBudgetItemFin", fundamentalnodeSync.sumBudgetItemFin));
+        obj.push_back(Pair("countFundamentalnodeList", fundamentalnodeSync.countFundamentalnodeList));
+        obj.push_back(Pair("countFundamentalnodeWinner", fundamentalnodeSync.countFundamentalnodeWinner));
+        obj.push_back(Pair("countBudgetItemProp", fundamentalnodeSync.countBudgetItemProp));
+        obj.push_back(Pair("countBudgetItemFin", fundamentalnodeSync.countBudgetItemFin));
+        obj.push_back(Pair("RequestedFundamentalnodeAssets", fundamentalnodeSync.RequestedFundamentalnodeAssets));
+        obj.push_back(Pair("RequestedFundamentalnodeAttempt", fundamentalnodeSync.RequestedFundamentalnodeAttempt));
 
         return obj;
     }
 
     if (strMode == "reset") {
-        masternodeSync.Reset();
+        fundamentalnodeSync.Reset();
         return "success";
     }
     return "failure";
@@ -292,6 +293,45 @@ UniValue spork(const UniValue& params, bool fHelp)
         "<name> is the corresponding spork name, or 'show' to show all current spork settings, active to show which sporks are active"
         "<value> is a epoch datetime to enable or disable spork" +
         HelpRequiringPassphrase());
+}
+
+UniValue mnspork(const UniValue& params, bool fHelp)
+{
+    if(params.size() == 1 && params[0].get_str() == "show"){
+        std::map<int, CMNSporkMessage>::iterator it = mapMNSporksActive.begin();
+
+        //Object ret;
+                UniValue ret(UniValue::VOBJ);
+        while(it != mapMNSporksActive.end()) {
+            ret.push_back(Pair(mn_sporkManager.GetMNSporkNameByID(it->second.nMNSporkID), it->second.nValue));
+            it++;
+        }
+        return ret;
+    } else if (params.size() == 2){
+        int nMNSporkID = mn_sporkManager.GetMNSporkIDByName(params[0].get_str());
+        if(nMNSporkID == -1){
+            return "Invalid spork name";
+        }
+
+        // SPORK VALUE
+        int64_t nValue = stoi(params[1].get_str());
+                //TODO: Add core method.
+
+        //broadcast new spork
+        if(mn_sporkManager.UpdateMNSpork(nMNSporkID, nValue)){
+            return "success";
+        } else {
+            return "failure";
+
+        }
+
+    }
+
+    throw runtime_error(
+        "mnspork <name> [<value>]\n"
+        "<name> is the corresponding spork name, or 'show' to show all current spork settings"
+        "<value> is a epoch datetime to enable or disable mnspork"
+        + HelpRequiringPassphrase());
 }
 
 UniValue validateaddress(const UniValue& params, bool fHelp)
@@ -520,7 +560,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"walletunlocked\": true|false,     (boolean) if the wallet is unlocked\n"
             "  \"mintablecoins\": true|false,      (boolean) if the wallet has mintable coins\n"
             "  \"enoughcoins\": true|false,        (boolean) if available coins are greater than reserve balance\n"
-            "  \"mnsync\": true|false,             (boolean) if masternode data is synced\n"
+            "  \"fnsync\": true|false,             (boolean) if fundamentalnode data is synced\n"
             "  \"staking status\": true|false,     (boolean) if the wallet is staking or not\n"
             "}\n"
             "\nExamples:\n" +
@@ -534,7 +574,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
         obj.push_back(Pair("mintablecoins", pwalletMain->MintableCoins()));
         obj.push_back(Pair("enoughcoins", nReserveBalance <= pwalletMain->GetBalance()));
     }
-    obj.push_back(Pair("mnsync", masternodeSync.IsSynced()));
+    obj.push_back(Pair("fnsync", fundamentalnodeSync.IsSynced()));
 
     bool nStaking = false;
     if (mapHashedBlocks.count(chainActive.Tip()->nHeight))

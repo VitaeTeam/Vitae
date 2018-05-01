@@ -186,7 +186,7 @@ void OptionsDialog::setModel(OptionsModel* model)
     connect(ui->theme, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     connect(ui->lang, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
     connect(ui->thirdPartyTxUrls, SIGNAL(textChanged(const QString&)), this, SLOT(showRestartWarning()));
-    connect(ui->showMasternodesTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
+    connect(ui->showFundamentalnodesTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
 }
 
 void OptionsDialog::setMapper()
@@ -230,8 +230,8 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->thirdPartyTxUrls, OptionsModel::ThirdPartyTxUrls);
     mapper->addMapping(ui->checkBoxHideZeroBalances, OptionsModel::HideZeroBalances);
 
-    /* Masternode Tab */
-    mapper->addMapping(ui->showMasternodesTab, OptionsModel::ShowMasternodesTab);
+    /* Fundamentalnode Tab */
+    mapper->addMapping(ui->showFundamentalnodesTab, OptionsModel::ShowFundamentalnodesTab);
 }
 
 void OptionsDialog::enableOkButton()

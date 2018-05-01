@@ -360,8 +360,8 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             "        { ... }                       (json object) vote candidate\n"
             "        ,...\n"
             "  ],\n"
-            "  \"masternode_payments\" : true|false,         (boolean) true, if masternode payments are enabled\n"
-            "  \"enforce_masternode_payments\" : true|false  (boolean) true, if masternode payments are enforced\n"
+            "  \"fundamentalnode_payments\" : true|false,         (boolean) true, if fundamentalnode payments are enabled\n"
+            "  \"enforce_fundamentalnode_payments\" : true|false  (boolean) true, if fundamentalnode payments are enforced\n"
             "}\n"
 
             "\nExamples:\n" +
@@ -579,8 +579,8 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         result.push_back(Pair("payee_amount", ""));
     }
 
-    result.push_back(Pair("masternode_payments", pblock->nTime > Params().StartMasternodePayments()));
-    result.push_back(Pair("enforce_masternode_payments", true));
+    result.push_back(Pair("fundamentalnode_payments", pblock->nTime > Params().StartFundamentalnodePayments()));
+    result.push_back(Pair("enforce_fundamentalnode_payments", true));
 
     return result;
 }

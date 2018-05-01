@@ -7,7 +7,7 @@
 #include "coincontrol.h"
 #include "init.h"
 #include "main.h"
-#include "masternodeman.h"
+#include "fundamentalnodeman.h"
 #include "script/sign.h"
 #include "swifttx.h"
 #include "ui_interface.h"
@@ -26,16 +26,16 @@ using namespace boost;
 
 // The main object for accessing Obfuscation
 CObfuscationPool obfuScationPool;
-// A helper object for signing messages from Masternodes
+// A helper object for signing messages from Fundamentalnodes
 CObfuScationSigner obfuScationSigner;
 // The current Obfuscations in progress on the network
 std::vector<CObfuscationQueue> vecObfuscationQueue;
-// Keep track of the used Masternodes
-std::vector<CTxIn> vecMasternodesUsed;
+// Keep track of the used Fundamentalnodes
+std::vector<CTxIn> vecFundamentalnodesUsed;
 // Keep track of the scanning errors I've seen
 map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
-// Keep track of the active Masternode
-CActiveMasternode activeMasternode;
+// Keep track of the active Fundamentalnode
+CActiveFundamentalnode activeFundamentalnode;
 
 /* *** BEGIN OBFUSCATION MAGIC - PIV **********
     Copyright (c) 2014-2015, Dash Developers
@@ -45,8 +45,8 @@ CActiveMasternode activeMasternode;
 
 void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    if (fLiteMode) return; //disable all Obfuscation/Masternode related functionality
-    if (!masternodeSync.IsBlockchainSynced()) return;
+    if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
+    if (!fundamentalnodeSync.IsBlockchainSynced()) return;
 
     if (strCommand == "dsa") { //Obfuscation Accept Into Pool
 
@@ -55,15 +55,15 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
         if (pfrom->nVersion < ActiveProtocol()) {
             errorID = ERR_VERSION;
             LogPrintf("dsa -- incompatible version! \n");
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
 
             return;
         }
 
-        if (!fMasterNode) {
+        if (!fFundamentalNode) {
             errorID = ERR_NOT_A_MN;
-            LogPrintf("dsa -- not a Masternode! \n");
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            LogPrintf("dsa -- not a Fundamentalnode! \n");
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
 
             return;
         }
@@ -72,10 +72,10 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
         CTransaction txCollateral;
         vRecv >> nDenom >> txCollateral;
 
-        CMasternode* pmn = mnodeman.Find(activeMasternode.vin);
+        CFundamentalnode* pmn = mnodeman.Find(activeFundamentalnode.vin);
         if (pmn == NULL) {
             errorID = ERR_MN_LIST;
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
             return;
         }
 
@@ -84,18 +84,18 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
                 pmn->nLastDsq + mnodeman.CountEnabled(ActiveProtocol()) / 5 > mnodeman.nDsqCount) {
                 LogPrintf("dsa -- last dsq too recent, must wait. %s \n", pfrom->addr.ToString());
                 errorID = ERR_RECENT;
-                pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                 return;
             }
         }
 
         if (!IsCompatibleWithSession(nDenom, txCollateral, errorID)) {
             LogPrintf("dsa -- not compatible with existing transactions! \n");
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
             return;
         } else {
             LogPrintf("dsa -- is compatible, please submit! \n");
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_ACCEPTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_ACCEPTED, errorID);
             return;
         }
 
@@ -116,14 +116,14 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
 
         if (dsq.IsExpired()) return;
 
-        CMasternode* pmn = mnodeman.Find(dsq.vin);
+        CFundamentalnode* pmn = mnodeman.Find(dsq.vin);
         if (pmn == NULL) return;
 
         // if the queue is ready, submit if we can
         if (dsq.ready) {
-            if (!pSubmittedToMasternode) return;
-            if ((CNetAddr)pSubmittedToMasternode->addr != (CNetAddr)addr) {
-                LogPrintf("dsq - message doesn't match current Masternode - %s != %s\n", pSubmittedToMasternode->addr.ToString(), addr.ToString());
+            if (!pSubmittedToFundamentalnode) return;
+            if ((CNetAddr)pSubmittedToFundamentalnode->addr != (CNetAddr)addr) {
+                LogPrintf("dsq - message doesn't match current Fundamentalnode - %s != %s\n", pSubmittedToFundamentalnode->addr.ToString(), addr.ToString());
                 return;
             }
 
@@ -140,7 +140,7 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
             //don't allow a few nodes to dominate the queuing process
             if (pmn->nLastDsq != 0 &&
                 pmn->nLastDsq + mnodeman.CountEnabled(ActiveProtocol()) / 5 > mnodeman.nDsqCount) {
-                LogPrint("obfuscation", "dsq -- Masternode sending too many dsq messages. %s \n", pmn->addr.ToString());
+                LogPrint("obfuscation", "dsq -- Fundamentalnode sending too many dsq messages. %s \n", pmn->addr.ToString());
                 return;
             }
             mnodeman.nDsqCount++;
@@ -159,15 +159,15 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
         if (pfrom->nVersion < ActiveProtocol()) {
             LogPrintf("dsi -- incompatible version! \n");
             errorID = ERR_VERSION;
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
 
             return;
         }
 
-        if (!fMasterNode) {
-            LogPrintf("dsi -- not a Masternode! \n");
+        if (!fFundamentalNode) {
+            LogPrintf("dsi -- not a Fundamentalnode! \n");
             errorID = ERR_NOT_A_MN;
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
 
             return;
         }
@@ -182,7 +182,7 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
         if (!IsSessionReady()) {
             LogPrintf("dsi -- session not complete! \n");
             errorID = ERR_SESSION;
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
             return;
         }
 
@@ -190,7 +190,7 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
         if (!IsCompatibleWithEntries(out)) {
             LogPrintf("dsi -- not compatible with existing transactions! \n");
             errorID = ERR_EXISTING_TX;
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
             return;
         }
 
@@ -210,13 +210,13 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
                 if (o.scriptPubKey.size() != 25) {
                     LogPrintf("dsi - non-standard pubkey detected! %s\n", o.scriptPubKey.ToString());
                     errorID = ERR_NON_STANDARD_PUBKEY;
-                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                     return;
                 }
                 if (!o.scriptPubKey.IsNormalPaymentScript()) {
                     LogPrintf("dsi - invalid script! %s\n", o.scriptPubKey.ToString());
                     errorID = ERR_INVALID_SCRIPT;
-                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                     return;
                 }
             }
@@ -240,7 +240,7 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
             if (nValueIn > OBFUSCATION_POOL_MAX) {
                 LogPrintf("dsi -- more than Obfuscation pool max! %s\n", tx.ToString());
                 errorID = ERR_MAXIMUM;
-                pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                 return;
             }
 
@@ -248,13 +248,13 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
                 if (nValueIn - nValueOut > nValueIn * .01) {
                     LogPrintf("dsi -- fees are too high! %s\n", tx.ToString());
                     errorID = ERR_FEES;
-                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                     return;
                 }
             } else {
                 LogPrintf("dsi -- missing input tx! %s\n", tx.ToString());
                 errorID = ERR_MISSING_TX;
-                pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                 return;
             }
 
@@ -263,19 +263,19 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
                 if (!AcceptableInputs(mempool, state, CTransaction(tx), false, NULL, false, true)) {
                     LogPrintf("dsi -- transaction not valid! \n");
                     errorID = ERR_INVALID_TX;
-                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+                    pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
                     return;
                 }
             }
         }
 
         if (AddEntry(in, nAmount, txCollateral, out, errorID)) {
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_ACCEPTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_ACCEPTED, errorID);
             Check();
 
-            RelayStatus(sessionID, GetState(), GetEntriesCount(), MASTERNODE_RESET);
+            RelayStatus(sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_RESET);
         } else {
-            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), MASTERNODE_REJECTED, errorID);
+            pfrom->PushMessage("dssu", sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_REJECTED, errorID);
         }
 
     } else if (strCommand == "dssu") { //Obfuscation status update
@@ -283,9 +283,9 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
             return;
         }
 
-        if (!pSubmittedToMasternode) return;
-        if ((CNetAddr)pSubmittedToMasternode->addr != (CNetAddr)pfrom->addr) {
-            //LogPrintf("dssu - message doesn't match current Masternode - %s != %s\n", pSubmittedToMasternode->addr.ToString(), pfrom->addr.ToString());
+        if (!pSubmittedToFundamentalnode) return;
+        if ((CNetAddr)pSubmittedToFundamentalnode->addr != (CNetAddr)pfrom->addr) {
+            //LogPrintf("dssu - message doesn't match current Fundamentalnode - %s != %s\n", pSubmittedToFundamentalnode->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -325,16 +325,16 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
 
         if (success) {
             obfuScationPool.Check();
-            RelayStatus(obfuScationPool.sessionID, obfuScationPool.GetState(), obfuScationPool.GetEntriesCount(), MASTERNODE_RESET);
+            RelayStatus(obfuScationPool.sessionID, obfuScationPool.GetState(), obfuScationPool.GetEntriesCount(), FUNDAMENTALNODE_RESET);
         }
     } else if (strCommand == "dsf") { //Obfuscation Final tx
         if (pfrom->nVersion < ActiveProtocol()) {
             return;
         }
 
-        if (!pSubmittedToMasternode) return;
-        if ((CNetAddr)pSubmittedToMasternode->addr != (CNetAddr)pfrom->addr) {
-            //LogPrintf("dsc - message doesn't match current Masternode - %s != %s\n", pSubmittedToMasternode->addr.ToString(), pfrom->addr.ToString());
+        if (!pSubmittedToFundamentalnode) return;
+        if ((CNetAddr)pSubmittedToFundamentalnode->addr != (CNetAddr)pfrom->addr) {
+            //LogPrintf("dsc - message doesn't match current Fundamentalnode - %s != %s\n", pSubmittedToFundamentalnode->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -356,9 +356,9 @@ void CObfuscationPool::ProcessMessageObfuscation(CNode* pfrom, std::string& strC
             return;
         }
 
-        if (!pSubmittedToMasternode) return;
-        if ((CNetAddr)pSubmittedToMasternode->addr != (CNetAddr)pfrom->addr) {
-            //LogPrintf("dsc - message doesn't match current Masternode - %s != %s\n", pSubmittedToMasternode->addr.ToString(), pfrom->addr.ToString());
+        if (!pSubmittedToFundamentalnode) return;
+        if ((CNetAddr)pSubmittedToFundamentalnode->addr != (CNetAddr)pfrom->addr) {
+            //LogPrintf("dsc - message doesn't match current Fundamentalnode - %s != %s\n", pSubmittedToFundamentalnode->addr.ToString(), pfrom->addr.ToString());
             return;
         }
 
@@ -383,7 +383,7 @@ void CObfuscationPool::Reset()
     cachedLastSuccess = 0;
     lastNewBlock = 0;
     txCollateral = CMutableTransaction();
-    vecMasternodesUsed.clear();
+    vecFundamentalnodesUsed.clear();
     UnlockCoins();
     SetNull();
 }
@@ -398,7 +398,7 @@ void CObfuscationPool::SetNull()
     entriesCount = 0;
     lastEntryAccepted = 0;
     countEntriesAccepted = 0;
-    sessionFoundMasternode = false;
+    sessionFoundFundamentalnode = false;
 
     // Both sides
     state = POOL_STATUS_IDLE;
@@ -451,7 +451,7 @@ std::string CObfuscationPool::GetStatus()
     showingObfuScationMessage += 10;
     std::string suffix = "";
 
-    if (chainActive.Tip()->nHeight - cachedLastSuccess < minBlockSpacing || !masternodeSync.IsBlockchainSynced()) {
+    if (chainActive.Tip()->nHeight - cachedLastSuccess < minBlockSpacing || !fundamentalnodeSync.IsBlockchainSynced()) {
         return strAutoDenomResult;
     }
     switch (state) {
@@ -470,14 +470,14 @@ std::string CObfuscationPool::GetStatus()
         } else {
             std::string suffix = "";
             if (showingObfuScationMessage % 70 <= 40)
-                return strprintf(_("Submitted following entries to masternode: %u / %d"), entriesCount, GetMaxPoolTransactions());
+                return strprintf(_("Submitted following entries to fundamentalnode: %u / %d"), entriesCount, GetMaxPoolTransactions());
             else if (showingObfuScationMessage % 70 <= 50)
                 suffix = ".";
             else if (showingObfuScationMessage % 70 <= 60)
                 suffix = "..";
             else if (showingObfuScationMessage % 70 <= 70)
                 suffix = "...";
-            return strprintf(_("Submitted to masternode, waiting for more entries ( %u / %d ) %s"), entriesCount, GetMaxPoolTransactions(), suffix);
+            return strprintf(_("Submitted to fundamentalnode, waiting for more entries ( %u / %d ) %s"), entriesCount, GetMaxPoolTransactions(), suffix);
         }
     case POOL_STATUS_SIGNING:
         if (showingObfuScationMessage % 70 <= 40)
@@ -504,7 +504,7 @@ std::string CObfuscationPool::GetStatus()
             suffix = "..";
         else if (showingObfuScationMessage % 70 <= 70)
             suffix = "...";
-        return strprintf(_("Submitted to masternode, waiting in queue %s"), suffix);
+        return strprintf(_("Submitted to fundamentalnode, waiting in queue %s"), suffix);
         ;
     default:
         return strprintf(_("Unknown state: id = %u"), state);
@@ -512,14 +512,14 @@ std::string CObfuscationPool::GetStatus()
 }
 
 //
-// Check the Obfuscation progress and send client updates if a Masternode
+// Check the Obfuscation progress and send client updates if a Fundamentalnode
 //
 void CObfuscationPool::Check()
 {
-    if (fMasterNode) LogPrint("obfuscation", "CObfuscationPool::Check() - entries count %lu\n", entries.size());
+    if (fFundamentalNode) LogPrint("obfuscation", "CObfuscationPool::Check() - entries count %lu\n", entries.size());
     //printf("CObfuscationPool::Check() %d - %d - %d\n", state, anonTx.CountEntries(), GetTimeMillis()-lastTimeChanged);
 
-    if (fMasterNode) {
+    if (fFundamentalNode) {
         LogPrint("obfuscation", "CObfuscationPool::Check() - entries count %lu\n", entries.size());
 
         // If entries is full, then move on to the next phase
@@ -534,7 +534,7 @@ void CObfuscationPool::Check()
         LogPrint("obfuscation", "CObfuscationPool::Check() -- FINALIZE TRANSACTIONS\n");
         UpdateState(POOL_STATUS_SIGNING);
 
-        if (fMasterNode) {
+        if (fFundamentalNode) {
             CMutableTransaction txNew;
 
             // make our new transaction
@@ -560,7 +560,7 @@ void CObfuscationPool::Check()
     }
 
     // If we have all of the signatures, try to compile the transaction
-    if (fMasterNode && state == POOL_STATUS_SIGNING && SignaturesComplete()) {
+    if (fFundamentalNode && state == POOL_STATUS_SIGNING && SignaturesComplete()) {
         LogPrint("obfuscation", "CObfuscationPool::Check() -- SIGNING\n");
         UpdateState(POOL_STATUS_TRANSMISSION);
 
@@ -572,13 +572,13 @@ void CObfuscationPool::Check()
         LogPrint("obfuscation", "CObfuscationPool::Check() -- timeout, RESETTING\n");
         UnlockCoins();
         SetNull();
-        if (fMasterNode) RelayStatus(sessionID, GetState(), GetEntriesCount(), MASTERNODE_RESET);
+        if (fFundamentalNode) RelayStatus(sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_RESET);
     }
 }
 
 void CObfuscationPool::CheckFinalTransaction()
 {
-    if (!fMasterNode) return; // check and relay final tx only on masternode
+    if (!fFundamentalNode) return; // check and relay final tx only on fundamentalnode
 
     CWalletTx txNew = CWalletTx(pwalletMain, finalTransaction);
 
@@ -608,8 +608,8 @@ void CObfuscationPool::CheckFinalTransaction()
         CKey key2;
         CPubKey pubkey2;
 
-        if (!obfuScationSigner.SetKey(strMasterNodePrivKey, strError, key2, pubkey2)) {
-            LogPrintf("CObfuscationPool::Check() - ERROR: Invalid Masternodeprivkey: '%s'\n", strError);
+        if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, strError, key2, pubkey2)) {
+            LogPrintf("CObfuscationPool::Check() - ERROR: Invalid Fundamentalnodeprivkey: '%s'\n", strError);
             return;
         }
 
@@ -626,7 +626,7 @@ void CObfuscationPool::CheckFinalTransaction()
         if (!mapObfuscationBroadcastTxes.count(txNew.GetHash())) {
             CObfuscationBroadcastTx dstx;
             dstx.tx = txNew;
-            dstx.vin = activeMasternode.vin;
+            dstx.vin = activeFundamentalnode.vin;
             dstx.vchSig = vchSig;
             dstx.sigTime = sigTime;
 
@@ -645,7 +645,7 @@ void CObfuscationPool::CheckFinalTransaction()
         // Reset
         LogPrint("obfuscation", "CObfuscationPool::Check() -- COMPLETED -- RESETTING\n");
         SetNull();
-        RelayStatus(sessionID, GetState(), GetEntriesCount(), MASTERNODE_RESET);
+        RelayStatus(sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_RESET);
     }
 }
 
@@ -657,13 +657,13 @@ void CObfuscationPool::CheckFinalTransaction()
 // a client submits a transaction then refused to sign, there must be a cost. Otherwise they
 // would be able to do this over and over again and bring the mixing to a hault.
 //
-// How does this work? Messages to Masternodes come in via "dsi", these require a valid collateral
-// transaction for the client to be able to enter the pool. This transaction is kept by the Masternode
+// How does this work? Messages to Fundamentalnodes come in via "dsi", these require a valid collateral
+// transaction for the client to be able to enter the pool. This transaction is kept by the Fundamentalnode
 // until the transaction is either complete or fails.
 //
 void CObfuscationPool::ChargeFees()
 {
-    if (!fMasterNode) return;
+    if (!fFundamentalNode) return;
 
     //we don't need to charge collateral for every offence.
     int offences = 0;
@@ -766,7 +766,7 @@ void CObfuscationPool::ChargeFees()
 //  - Obfuscation is completely free, to pay miners we randomly pay the collateral of users.
 void CObfuscationPool::ChargeRandomFees()
 {
-    if (fMasterNode) {
+    if (fFundamentalNode) {
         int i = 0;
 
         BOOST_FOREACH (const CTransaction& txCollateral, vecSessionCollateral) {
@@ -802,10 +802,10 @@ void CObfuscationPool::ChargeRandomFees()
 //
 void CObfuscationPool::CheckTimeout()
 {
-    if (!fEnableZeromint && !fMasterNode) return;
+    if (!fEnableZeromint && !fFundamentalNode) return;
 
     // catching hanging sessions
-    if (!fMasterNode) {
+    if (!fFundamentalNode) {
         switch (state) {
         case POOL_STATUS_TRANSMISSION:
             LogPrint("obfuscation", "CObfuscationPool::CheckTimeout() -- Session complete -- Running Check()\n");
@@ -835,7 +835,7 @@ void CObfuscationPool::CheckTimeout()
     }
 
     int addLagTime = 0;
-    if (!fMasterNode) addLagTime = 10000; //if we're the client, give the server a few extra seconds before resetting.
+    if (!fFundamentalNode) addLagTime = 10000; //if we're the client, give the server a few extra seconds before resetting.
 
     if (state == POOL_STATUS_ACCEPTING_ENTRIES || state == POOL_STATUS_QUEUE) {
         c = 0;
@@ -850,8 +850,8 @@ void CObfuscationPool::CheckTimeout()
                     UnlockCoins();
                     SetNull();
                 }
-                if (fMasterNode) {
-                    RelayStatus(sessionID, GetState(), GetEntriesCount(), MASTERNODE_RESET);
+                if (fFundamentalNode) {
+                    RelayStatus(sessionID, GetState(), GetEntriesCount(), FUNDAMENTALNODE_RESET);
                 }
             } else
                 ++it2;
@@ -887,7 +887,7 @@ void CObfuscationPool::CheckTimeout()
 //
 void CObfuscationPool::CheckForCompleteQueue()
 {
-    if (!fEnableZeromint && !fMasterNode) return;
+    if (!fEnableZeromint && !fFundamentalNode) return;
 
     /* Check to see if we're ready for submissions from clients */
     //
@@ -899,7 +899,7 @@ void CObfuscationPool::CheckForCompleteQueue()
 
         CObfuscationQueue dsq;
         dsq.nDenom = sessionDenom;
-        dsq.vin = activeMasternode.vin;
+        dsq.vin = activeFundamentalnode.vin;
         dsq.time = GetTime();
         dsq.ready = true;
         dsq.Sign();
@@ -1009,7 +1009,7 @@ bool CObfuscationPool::IsCollateralValid(const CTransaction& txCollateral)
 //
 bool CObfuscationPool::AddEntry(const std::vector<CTxIn>& newInput, const CAmount& nAmount, const CTransaction& txCollateral, const std::vector<CTxOut>& newOutput, int& errorID)
 {
-    if (!fMasterNode) return false;
+    if (!fFundamentalNode) return false;
 
     BOOST_FOREACH (CTxIn in, newInput) {
         if (in.prevout.IsNull() || nAmount < 0) {
@@ -1109,13 +1109,13 @@ bool CObfuscationPool::SignaturesComplete()
 }
 
 //
-// Execute a Obfuscation denomination via a Masternode.
+// Execute a Obfuscation denomination via a Fundamentalnode.
 // This is only ran from clients
 //
 void CObfuscationPool::SendObfuscationDenominate(std::vector<CTxIn>& vin, std::vector<CTxOut>& vout, CAmount amount)
 {
-    if (fMasterNode) {
-        LogPrintf("CObfuscationPool::SendObfuscationDenominate() - Obfuscation from a Masternode is not supported currently.\n");
+    if (fFundamentalNode) {
+        LogPrintf("CObfuscationPool::SendObfuscationDenominate() - Obfuscation from a Fundamentalnode is not supported currently.\n");
         return;
     }
 
@@ -1135,9 +1135,9 @@ void CObfuscationPool::SendObfuscationDenominate(std::vector<CTxIn>& vin, std::v
     //    LogPrintf(" vout - %s\n", o.ToString());
 
 
-    // we should already be connected to a Masternode
-    if (!sessionFoundMasternode) {
-        LogPrintf("CObfuscationPool::SendObfuscationDenominate() - No Masternode has been selected yet.\n");
+    // we should already be connected to a Fundamentalnode
+    if (!sessionFoundFundamentalnode) {
+        LogPrintf("CObfuscationPool::SendObfuscationDenominate() - No Fundamentalnode has been selected yet.\n");
         UnlockCoins();
         SetNull();
         return;
@@ -1202,20 +1202,20 @@ void CObfuscationPool::SendObfuscationDenominate(std::vector<CTxIn>& vin, std::v
     Check();
 }
 
-// Incoming message from Masternode updating the progress of Obfuscation
+// Incoming message from Fundamentalnode updating the progress of Obfuscation
 //    newAccepted:  -1 mean's it'n not a "transaction accepted/not accepted" message, just a standard update
 //                  0 means transaction was not accepted
 //                  1 means transaction was accepted
 
 bool CObfuscationPool::StatusUpdate(int newState, int newEntriesCount, int newAccepted, int& errorID, int newSessionID)
 {
-    if (fMasterNode) return false;
+    if (fFundamentalNode) return false;
     if (state == POOL_STATUS_ERROR || state == POOL_STATUS_SUCCESS) return false;
 
     UpdateState(newState);
     entriesCount = newEntriesCount;
 
-    if (errorID != MSG_NOERR) strAutoDenomResult = _("Masternode:") + " " + GetMessageByID(errorID);
+    if (errorID != MSG_NOERR) strAutoDenomResult = _("Fundamentalnode:") + " " + GetMessageByID(errorID);
 
     if (newAccepted != -1) {
         lastEntryAccepted = newAccepted;
@@ -1228,36 +1228,36 @@ bool CObfuscationPool::StatusUpdate(int newState, int newEntriesCount, int newAc
         if (newAccepted == 1 && newSessionID != 0) {
             sessionID = newSessionID;
             LogPrintf("CObfuscationPool::StatusUpdate - set sessionID to %d\n", sessionID);
-            sessionFoundMasternode = true;
+            sessionFoundFundamentalnode = true;
         }
     }
 
     if (newState == POOL_STATUS_ACCEPTING_ENTRIES) {
         if (newAccepted == 1) {
             LogPrintf("CObfuscationPool::StatusUpdate - entry accepted! \n");
-            sessionFoundMasternode = true;
-            //wait for other users. Masternode will report when ready
+            sessionFoundFundamentalnode = true;
+            //wait for other users. Fundamentalnode will report when ready
             UpdateState(POOL_STATUS_QUEUE);
-        } else if (newAccepted == 0 && sessionID == 0 && !sessionFoundMasternode) {
-            LogPrintf("CObfuscationPool::StatusUpdate - entry not accepted by Masternode \n");
+        } else if (newAccepted == 0 && sessionID == 0 && !sessionFoundFundamentalnode) {
+            LogPrintf("CObfuscationPool::StatusUpdate - entry not accepted by Fundamentalnode \n");
             UnlockCoins();
             UpdateState(POOL_STATUS_ACCEPTING_ENTRIES);
-            DoAutomaticDenominating(); //try another Masternode
+            DoAutomaticDenominating(); //try another Fundamentalnode
         }
-        if (sessionFoundMasternode) return true;
+        if (sessionFoundFundamentalnode) return true;
     }
 
     return true;
 }
 
 //
-// After we receive the finalized transaction from the Masternode, we must
+// After we receive the finalized transaction from the Fundamentalnode, we must
 // check it to make sure it's what we want, then sign it if we agree.
 // If we refuse to sign, it's possible we'll be charged collateral
 //
 bool CObfuscationPool::SignFinalTransaction(CTransaction& finalTransactionNew, CNode* node)
 {
-    if (fMasterNode) return false;
+    if (fFundamentalNode) return false;
 
     finalTransaction = finalTransactionNew;
     LogPrintf("CObfuscationPool::SignFinalTransaction %s", finalTransaction.ToString());
@@ -1324,7 +1324,7 @@ bool CObfuscationPool::SignFinalTransaction(CTransaction& finalTransactionNew, C
         LogPrint("obfuscation", "CObfuscationPool::Sign - txNew:\n%s", finalTransaction.ToString());
     }
 
-    // push all of our signatures to the Masternode
+    // push all of our signatures to the Fundamentalnode
     if (sigs.size() > 0 && node != NULL)
         node->PushMessage("dss", sigs);
 
@@ -1346,7 +1346,7 @@ void CObfuscationPool::NewBlock()
 // Obfuscation transaction was completed (failed or successful)
 void CObfuscationPool::CompletedTransaction(bool error, int errorID)
 {
-    if (fMasterNode) return;
+    if (fFundamentalNode) return;
 
     if (error) {
         LogPrintf("CompletedTransaction -- error \n");
@@ -1383,7 +1383,7 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
     return false;  // Disabled until Obfuscation is completely removed
 
     if (!fEnableZeromint) return false;
-    if (fMasterNode) return false;
+    if (fFundamentalNode) return false;
     if (state == POOL_STATUS_ERROR || state == POOL_STATUS_SUCCESS) return false;
     if (GetEntriesCount() > 0) {
         strAutoDenomResult = _("Mixing in progress...");
@@ -1396,7 +1396,7 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
         return false;
     }
 
-    if (!masternodeSync.IsBlockchainSynced()) {
+    if (!fundamentalnodeSync.IsBlockchainSynced()) {
         strAutoDenomResult = _("Can't mix while sync in progress.");
         return false;
     }
@@ -1413,8 +1413,8 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
     }
 
     if (mnodeman.size() == 0) {
-        LogPrint("obfuscation", "CObfuscationPool::DoAutomaticDenominating - No Masternodes detected\n");
-        strAutoDenomResult = _("No Masternodes detected.");
+        LogPrint("obfuscation", "CObfuscationPool::DoAutomaticDenominating - No Fundamentalnodes detected\n");
+        strAutoDenomResult = _("No Fundamentalnodes detected.");
         return false;
     }
 
@@ -1486,8 +1486,8 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
 
     std::vector<CTxOut> vOut;
 
-    // initial phase, find a Masternode
-    if (!sessionFoundMasternode) {
+    // initial phase, find a Fundamentalnode
+    if (!sessionFoundFundamentalnode) {
         // Clean if there is anything left from previous session
         UnlockCoins();
         SetNull();
@@ -1519,12 +1519,12 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
             }
         }
 
-        //if we've used 90% of the Masternode list then drop all the oldest first
+        //if we've used 90% of the Fundamentalnode list then drop all the oldest first
         int nThreshold = (int)(mnodeman.CountEnabled(ActiveProtocol()) * 0.9);
-        LogPrint("obfuscation", "Checking vecMasternodesUsed size %d threshold %d\n", (int)vecMasternodesUsed.size(), nThreshold);
-        while ((int)vecMasternodesUsed.size() > nThreshold) {
-            vecMasternodesUsed.erase(vecMasternodesUsed.begin());
-            LogPrint("obfuscation", "  vecMasternodesUsed size %d threshold %d\n", (int)vecMasternodesUsed.size(), nThreshold);
+        LogPrint("obfuscation", "Checking vecFundamentalnodesUsed size %d threshold %d\n", (int)vecFundamentalnodesUsed.size(), nThreshold);
+        while ((int)vecFundamentalnodesUsed.size() > nThreshold) {
+            vecFundamentalnodesUsed.erase(vecFundamentalnodesUsed.begin());
+            LogPrint("obfuscation", "  vecFundamentalnodesUsed size %d threshold %d\n", (int)vecFundamentalnodesUsed.size(), nThreshold);
         }
 
         //don't use the queues all of the time for mixing
@@ -1545,8 +1545,8 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
                 if ((dsq.nDenom & (1 << 4))) continue;
 
                 bool fUsed = false;
-                //don't reuse Masternodes
-                BOOST_FOREACH (CTxIn usedVin, vecMasternodesUsed) {
+                //don't reuse Fundamentalnodes
+                BOOST_FOREACH (CTxIn usedVin, vecFundamentalnodesUsed) {
                     if (dsq.vin == usedVin) {
                         fUsed = true;
                         break;
@@ -1562,20 +1562,20 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
                     continue;
                 }
 
-                CMasternode* pmn = mnodeman.Find(dsq.vin);
+                CFundamentalnode* pmn = mnodeman.Find(dsq.vin);
                 if (pmn == NULL) {
-                    LogPrintf("DoAutomaticDenominating --- dsq vin %s is not in masternode list!", dsq.vin.ToString());
+                    LogPrintf("DoAutomaticDenominating --- dsq vin %s is not in fundamentalnode list!", dsq.vin.ToString());
                     continue;
                 }
 
-                LogPrintf("DoAutomaticDenominating --- attempt to connect to masternode from queue %s\n", pmn->addr.ToString());
+                LogPrintf("DoAutomaticDenominating --- attempt to connect to fundamentalnode from queue %s\n", pmn->addr.ToString());
                 lastTimeChanged = GetTimeMillis();
 
-                // connect to Masternode and submit the queue request
+                // connect to Fundamentalnode and submit the queue request
                 CNode* pnode = ConnectNode((CAddress)addr, NULL, true);
                 if (pnode != NULL) {
-                    pSubmittedToMasternode = pmn;
-                    vecMasternodesUsed.push_back(dsq.vin);
+                    pSubmittedToFundamentalnode = pmn;
+                    vecFundamentalnodesUsed.push_back(dsq.vin);
                     sessionDenom = dsq.nDenom;
 
                     pnode->PushMessage("dsa", sessionDenom, txCollateral);
@@ -1585,7 +1585,7 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
                     return true;
                 } else {
                     LogPrintf("DoAutomaticDenominating --- error connecting \n");
-                    strAutoDenomResult = _("Error connecting to Masternode.");
+                    strAutoDenomResult = _("Error connecting to Fundamentalnode.");
                     dsq.time = 0; //remove node
                     continue;
                 }
@@ -1599,10 +1599,10 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
 
         // otherwise, try one randomly
         while (i < 10) {
-            CMasternode* pmn = mnodeman.FindRandomNotInVec(vecMasternodesUsed, ActiveProtocol());
+            CFundamentalnode* pmn = mnodeman.FindRandomNotInVec(vecFundamentalnodesUsed, ActiveProtocol());
             if (pmn == NULL) {
-                LogPrintf("DoAutomaticDenominating --- Can't find random masternode!\n");
-                strAutoDenomResult = _("Can't find random Masternode.");
+                LogPrintf("DoAutomaticDenominating --- Can't find random fundamentalnode!\n");
+                strAutoDenomResult = _("Can't find random Fundamentalnode.");
                 return false;
             }
 
@@ -1613,11 +1613,11 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
             }
 
             lastTimeChanged = GetTimeMillis();
-            LogPrintf("DoAutomaticDenominating --- attempt %d connection to Masternode %s\n", i, pmn->addr.ToString());
+            LogPrintf("DoAutomaticDenominating --- attempt %d connection to Fundamentalnode %s\n", i, pmn->addr.ToString());
             CNode* pnode = ConnectNode((CAddress)pmn->addr, NULL, true);
             if (pnode != NULL) {
-                pSubmittedToMasternode = pmn;
-                vecMasternodesUsed.push_back(pmn->vin);
+                pSubmittedToFundamentalnode = pmn;
+                vecFundamentalnodesUsed.push_back(pmn->vin);
 
                 std::vector<CAmount> vecAmounts;
                 pwalletMain->ConvertList(vCoins, vecAmounts);
@@ -1630,13 +1630,13 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
                 strAutoDenomResult = _("Mixing in progress...");
                 return true;
             } else {
-                vecMasternodesUsed.push_back(pmn->vin); // postpone MN we wasn't able to connect to
+                vecFundamentalnodesUsed.push_back(pmn->vin); // postpone MN we wasn't able to connect to
                 i++;
                 continue;
             }
         }
 
-        strAutoDenomResult = _("No compatible Masternode found.");
+        strAutoDenomResult = _("No compatible Fundamentalnode found.");
         return false;
     }
 
@@ -1880,7 +1880,7 @@ bool CObfuscationPool::IsCompatibleWithSession(int64_t nDenom, CTransaction txCo
             //broadcast that I'm accepting entries, only if it's the first entry through
             CObfuscationQueue dsq;
             dsq.nDenom = nDenom;
-            dsq.vin = activeMasternode.vin;
+            dsq.vin = activeFundamentalnode.vin;
             dsq.time = GetTime();
             dsq.Sign();
             dsq.Relay();
@@ -2075,15 +2075,15 @@ std::string CObfuscationPool::GetMessageByID(int messageID)
     case ERR_MAXIMUM:
         return _("Value more than Obfuscation pool maximum allows.");
     case ERR_MN_LIST:
-        return _("Not in the Masternode list.");
+        return _("Not in the Fundamentalnode list.");
     case ERR_MODE:
         return _("Incompatible mode.");
     case ERR_NON_STANDARD_PUBKEY:
         return _("Non-standard public key detected.");
     case ERR_NOT_A_MN:
-        return _("This is not a Masternode.");
+        return _("This is not a Fundamentalnode.");
     case ERR_QUEUE_FULL:
-        return _("Masternode queue is full.");
+        return _("Fundamentalnode queue is full.");
     case ERR_RECENT:
         return _("Last Obfuscation was too recent.");
     case ERR_SESSION:
@@ -2102,16 +2102,16 @@ std::string CObfuscationPool::GetMessageByID(int messageID)
     }
 }
 
-bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey)
+bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, CTransaction &Tx, uint256 &hashBlock)
 {
     CScript payee2;
     payee2 = GetScriptForDestination(pubkey.GetID());
 
-    CTransaction txVin;
-    uint256 hash;
-    if (GetTransaction(vin.prevout.hash, txVin, hash, true)) {
-        BOOST_FOREACH (CTxOut out, txVin.vout) {
-            if (out.nValue == 10000 * COIN) {
+    //CTransaction txVin;
+    //uint256 hash;
+    if (GetTransaction(vin.prevout.hash, Tx, hashBlock, true)) {
+        BOOST_FOREACH (CTxOut out, Tx.vout) {
+            if (out.nValue == FN_MAGIC_AMOUNT ) {
                 if (out.scriptPubKey == payee2) return true;
             }
         }
@@ -2182,7 +2182,7 @@ bool CObfuScationSigner::VerifyMessage(CPubKey pubkey, vector<unsigned char>& vc
 
 bool CObfuscationQueue::Sign()
 {
-    if (!fMasterNode) return false;
+    if (!fFundamentalNode) return false;
 
     std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(time) + boost::lexical_cast<std::string>(ready);
 
@@ -2190,8 +2190,8 @@ bool CObfuscationQueue::Sign()
     CPubKey pubkey2;
     std::string errorMessage = "";
 
-    if (!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key2, pubkey2)) {
-        LogPrintf("CObfuscationQueue():Relay - ERROR: Invalid Masternodeprivkey: '%s'\n", errorMessage);
+    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, key2, pubkey2)) {
+        LogPrintf("CObfuscationQueue():Relay - ERROR: Invalid Fundamentalnodeprivkey: '%s'\n", errorMessage);
         return false;
     }
 
@@ -2221,14 +2221,14 @@ bool CObfuscationQueue::Relay()
 
 bool CObfuscationQueue::CheckSignature()
 {
-    CMasternode* pmn = mnodeman.Find(vin);
+    CFundamentalnode* pmn = mnodeman.Find(vin);
 
     if (pmn != NULL) {
         std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nDenom) + boost::lexical_cast<std::string>(time) + boost::lexical_cast<std::string>(ready);
 
         std::string errorMessage = "";
-        if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {
-            return error("CObfuscationQueue::CheckSignature() - Got bad Masternode address signature %s \n", vin.ToString().c_str());
+        if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+            return error("CObfuscationQueue::CheckSignature() - Got bad Fundamentalnode address signature %s \n", vin.ToString().c_str());
         }
 
         return true;
@@ -2248,7 +2248,7 @@ void CObfuscationPool::RelayFinalTransaction(const int sessionID, const CTransac
 
 void CObfuscationPool::RelayIn(const std::vector<CTxDSIn>& vin, const int64_t& nAmount, const CTransaction& txCollateral, const std::vector<CTxDSOut>& vout)
 {
-    if (!pSubmittedToMasternode) return;
+    if (!pSubmittedToFundamentalnode) return;
 
     std::vector<CTxIn> vin2;
     std::vector<CTxOut> vout2;
@@ -2259,7 +2259,7 @@ void CObfuscationPool::RelayIn(const std::vector<CTxDSIn>& vin, const int64_t& n
     BOOST_FOREACH (CTxDSOut out, vout)
         vout2.push_back(out);
 
-    CNode* pnode = FindNode(pSubmittedToMasternode->addr);
+    CNode* pnode = FindNode(pSubmittedToFundamentalnode->addr);
     if (pnode != NULL) {
         LogPrintf("RelayIn - found master, relaying message - %s \n", pnode->addr.ToString());
         pnode->PushMessage("dsi", vin2, nAmount, txCollateral, vout2);
@@ -2283,7 +2283,7 @@ void CObfuscationPool::RelayCompletedTransaction(const int sessionID, const bool
 //TODO: Rename/move to core
 void ThreadCheckObfuScationPool()
 {
-    if (fLiteMode) return; //disable all Obfuscation/Masternode related functionality
+    if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
 
     // Make this thread recognisable as the wallet flushing thread
     RenameThread("vitae-obfuscation");
@@ -2295,23 +2295,23 @@ void ThreadCheckObfuScationPool()
         //LogPrintf("ThreadCheckObfuScationPool::check timeout\n");
 
         // try to sync from all available nodes, one step at a time
-        masternodeSync.Process();
+        fundamentalnodeSync.Process();
 
-        if (masternodeSync.IsBlockchainSynced()) {
+        if (fundamentalnodeSync.IsBlockchainSynced()) {
             c++;
 
             // check if we should activate or ping every few minutes,
             // start right after sync is considered to be done
-            if (c % MASTERNODE_PING_SECONDS == 1) activeMasternode.ManageStatus();
+            if (c % FUNDAMENTALNODE_PING_SECONDS == 1) activeFundamentalnode.ManageStatus();
 
             if (c % 60 == 0) {
                 mnodeman.CheckAndRemove();
-                mnodeman.ProcessMasternodeConnections();
-                masternodePayments.CleanPaymentList();
+                mnodeman.ProcessFundamentalnodeConnections();
+                fundamentalnodePayments.CleanPaymentList();
                 CleanTransactionLocksList();
             }
 
-            //if(c % MASTERNODES_DUMP_SECONDS == 0) DumpMasternodes();
+            //if(c % FUNDAMENTALNODES_DUMP_SECONDS == 0) DumpFundamentalnodes();
 
             obfuScationPool.CheckTimeout();
             obfuScationPool.CheckForCompleteQueue();

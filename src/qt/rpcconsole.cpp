@@ -339,8 +339,8 @@ void RPCConsole::setClientModel(ClientModel* model)
         setNumBlocks(model->getNumBlocks());
         connect(model, SIGNAL(numBlocksChanged(int)), this, SLOT(setNumBlocks(int)));
 
-        setMasternodeCount(model->getMasternodeCountString());
-        connect(model, SIGNAL(strMasternodesChanged(QString)), this, SLOT(setMasternodeCount(QString)));
+        setFundamentalnodeCount(model->getFundamentalnodeCountString());
+        connect(model, SIGNAL(strFundamentalnodesChanged(QString)), this, SLOT(setFundamentalnodeCount(QString)));
 
         updateTrafficStats(model->getTotalBytesRecv(), model->getTotalBytesSent());
         connect(model, SIGNAL(bytesChanged(quint64, quint64)), this, SLOT(updateTrafficStats(quint64, quint64)));
@@ -617,9 +617,9 @@ void RPCConsole::setNumBlocks(int count)
         ui->lastBlockTime->setText(clientModel->getLastBlockDate().toString());
 }
 
-void RPCConsole::setMasternodeCount(const QString& strMasternodes)
+void RPCConsole::setFundamentalnodeCount(const QString& strFundamentalnodes)
 {
-    ui->masternodeCount->setText(strMasternodes);
+    ui->fundamentalnodeCount->setText(strFundamentalnodes);
 }
 
 void RPCConsole::on_lineEdit_returnPressed()

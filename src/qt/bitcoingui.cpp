@@ -30,6 +30,7 @@
 #endif
 
 #include "init.h"
+#include "fundamentalnodelist.h"
 #include "masternodelist.h"
 #include "ui_interface.h"
 #include "util.h"
@@ -79,6 +80,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             appMenuBar(0),
                                                                             overviewAction(0),
                                                                             historyAction(0),
+                                                                            fundamentalnodeAction(0),
                                                                             masternodeAction(0),
                                                                             quitAction(0),
                                                                             sendCoinsAction(0),
@@ -335,7 +337,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     tabGroup->addAction(historyAction);
 
     privacyAction = new QAction(QIcon(":/icons/privacy"), tr("&Privacy"), this);
-    privacyAction->setStatusTip(tr("Privacy Actions for zPIV"));
+    privacyAction->setStatusTip(tr("Privacy Actions for zVIT"));
     privacyAction->setToolTip(privacyAction->statusTip());
     privacyAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -348,6 +350,21 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
 #ifdef ENABLE_WALLET
 
     QSettings settings;
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction = new QAction(QIcon(":/icons/fundamentalnodes"), tr("&Fundamentalnodes"), this);
+        fundamentalnodeAction->setStatusTip(tr("Browse fundamentalnodes"));
+        fundamentalnodeAction->setToolTip(fundamentalnodeAction->statusTip());
+        fundamentalnodeAction->setCheckable(true);
+#ifdef Q_OS_MAC
+        fundamentalnodeAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_6));
+#else
+        fundamentalnodeAction->setShortcut(QKeySequence(Qt::ALT + Qt::Key_6));
+#endif
+        tabGroup->addAction(fundamentalnodeAction);
+        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+        connect(fundamentalnodeAction, SIGNAL(triggered()), this, SLOT(gotoFundamentalnodePage()));
+    }
+
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction = new QAction(QIcon(":/icons/masternodes"), tr("&Masternodes"), this);
         masternodeAction->setStatusTip(tr("Browse masternodes"));
@@ -429,8 +446,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     openRepairAction->setStatusTip(tr("Show wallet repair options"));
     openConfEditorAction = new QAction(QIcon(":/icons/edit"), tr("Open Wallet &Configuration File"), this);
     openConfEditorAction->setStatusTip(tr("Open configuration file"));
-    openMNConfEditorAction = new QAction(QIcon(":/icons/edit"), tr("Open &Masternode Configuration File"), this);
-    openMNConfEditorAction->setStatusTip(tr("Open Masternode configuration file"));
+    openMNConfEditorAction = new QAction(QIcon(":/icons/edit"), tr("Open &Fundamentalnode Configuration File"), this);
+    openMNConfEditorAction->setStatusTip(tr("Open Fundamentalnode configuration file"));
     showBackupsAction = new QAction(QIcon(":/icons/browse"), tr("Show Automatic &Backups"), this);
     showBackupsAction->setStatusTip(tr("Show automatically created wallet backups"));
 
@@ -561,6 +578,9 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(historyAction);
         toolbar->addAction(privacyAction);
         QSettings settings;
+        if (settings.value("fShowFundamentalnodesTab").toBool()) {
+            toolbar->addAction(fundamentalnodeAction);
+        }
         if (settings.value("fShowMasternodesTab").toBool()) {
             toolbar->addAction(masternodeAction);
         }
@@ -661,6 +681,9 @@ void BitcoinGUI::setWalletActionsEnabled(bool enabled)
     privacyAction->setEnabled(enabled);
     historyAction->setEnabled(enabled);
     QSettings settings;
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction->setEnabled(enabled);
+    }
     if (settings.value("fShowMasternodesTab").toBool()) {
         masternodeAction->setEnabled(enabled);
     }
@@ -794,6 +817,15 @@ void BitcoinGUI::gotoHistoryPage()
 {
     historyAction->setChecked(true);
     if (walletFrame) walletFrame->gotoHistoryPage();
+}
+
+void BitcoinGUI::gotoFundamentalnodePage()
+{
+    QSettings settings;
+    if (settings.value("fShowFundamentalnodesTab").toBool()) {
+        fundamentalnodeAction->setChecked(true);
+        if (walletFrame) walletFrame->gotoFundamentalnodePage();
+    }
 }
 
 void BitcoinGUI::gotoMasternodePage()
@@ -933,11 +965,11 @@ void BitcoinGUI::setNumBlocks(int count)
 
     // Set icon state: spinning if catching up, tick otherwise
     //    if(secs < 25*60) // 90*60 for bitcoin but we are 4x times faster
-    if (masternodeSync.IsBlockchainSynced()) {
+    if (fundamentalnodeSync.IsBlockchainSynced()) {
         QString strSyncStatus;
         tooltip = tr("Up to date") + QString(".<br>") + tooltip;
 
-        if (masternodeSync.IsSynced()) {
+        if (fundamentalnodeSync.IsSynced()) {
             progressBarLabel->setVisible(false);
             progressBar->setVisible(false);
             labelBlocksIcon->setPixmap(QIcon(":/icons/synced").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
@@ -956,16 +988,16 @@ void BitcoinGUI::setNumBlocks(int count)
                 walletFrame->showOutOfSyncWarning(false);
 #endif // ENABLE_WALLET
 
-            nAttempt = masternodeSync.RequestedMasternodeAttempt < MASTERNODE_SYNC_THRESHOLD ?
-                           masternodeSync.RequestedMasternodeAttempt + 1 :
-                           MASTERNODE_SYNC_THRESHOLD;
-            progress = nAttempt + (masternodeSync.RequestedMasternodeAssets - 1) * MASTERNODE_SYNC_THRESHOLD;
-            progressBar->setMaximum(4 * MASTERNODE_SYNC_THRESHOLD);
+            nAttempt = fundamentalnodeSync.RequestedFundamentalnodeAttempt < FUNDAMENTALNODE_SYNC_THRESHOLD ?
+                           fundamentalnodeSync.RequestedFundamentalnodeAttempt + 1 :
+                           FUNDAMENTALNODE_SYNC_THRESHOLD;
+            progress = nAttempt + (fundamentalnodeSync.RequestedFundamentalnodeAssets - 1) * FUNDAMENTALNODE_SYNC_THRESHOLD;
+            progressBar->setMaximum(4 * FUNDAMENTALNODE_SYNC_THRESHOLD);
             progressBar->setFormat(tr("Synchronizing additional data: %p%"));
             progressBar->setValue(progress);
         }
 
-        strSyncStatus = QString(masternodeSync.GetSyncStatus().c_str());
+        strSyncStatus = QString(fundamentalnodeSync.GetSyncStatus().c_str());
         progressBarLabel->setText(strSyncStatus);
         tooltip = strSyncStatus + QString("<br>") + tooltip;
     } else {

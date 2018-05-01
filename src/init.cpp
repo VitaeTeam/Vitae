@@ -12,17 +12,23 @@
 #include "init.h"
 
 #include "accumulators.h"
-#include "activemasternode.h"
+#include "activefundamentalnode.h"
 #include "addrman.h"
 #include "amount.h"
 #include "checkpoints.h"
 #include "compat/sanity.h"
 #include "key.h"
 #include "main.h"
-#include "masternode-budget.h"
-#include "masternode-payments.h"
+#include "fundamentalnode-budget.h"
+#include "fundamentalnode-payments.h"
+#include "fundamentalnodeconfig.h"
+#include "fundamentalnodeman.h"
+
+#include "activemasternode.h"
+#include "masternode-pos.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
+
 #include "miner.h"
 #include "net.h"
 #include "rpcserver.h"
@@ -189,9 +195,10 @@ void PrepareShutdown()
     StopNode();
     InterruptTorControl();
     StopTorControl();
+    DumpFundamentalnodes();
     DumpMasternodes();
     DumpBudgets();
-    DumpMasternodePayments();
+    DumpFundamentalnodePayments();
     UnregisterNodeSignals(GetNodeSignals());
 
     if (fFeeEstimatesInitialized) {
@@ -362,7 +369,7 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-onlynet=<net>", _("Only connect to nodes in network <net> (ipv4, ipv6 or onion)"));
     strUsage += HelpMessageOpt("-permitbaremultisig", strprintf(_("Relay non-P2SH multisig (default: %u)"), 1));
     strUsage += HelpMessageOpt("-peerbloomfilters", strprintf(_("Support filtering of blocks and transaction with bloom filters (default: %u)"), DEFAULT_PEERBLOOMFILTERS));
-    strUsage += HelpMessageOpt("-port=<port>", strprintf(_("Listen for connections on <port> (default: %u or testnet: %u)"), 51472, 51474));
+    strUsage += HelpMessageOpt("-port=<port>", strprintf(_("Listen for connections on <port> (default: %u or testnet: %u)"), 8765, 51474));
     strUsage += HelpMessageOpt("-proxy=<ip:port>", _("Connect through SOCKS5 proxy"));
     strUsage += HelpMessageOpt("-proxyrandomize", strprintf(_("Randomize credentials for every proxy connection. This enables Tor stream isolation (default: %u)"), 1));
     strUsage += HelpMessageOpt("-seednode=<ip>", _("Connect to a node to retrieve peer addresses, and disconnect"));
@@ -432,7 +439,7 @@ std::string HelpMessage(HelpMessageMode mode)
         strUsage += HelpMessageOpt("-stopafterblockimport", strprintf(_("Stop running after importing blocks from disk (default: %u)"), 0));
         strUsage += HelpMessageOpt("-sporkkey=<privkey>", _("Enable spork administration functionality with the appropriate private key."));
     }
-    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, tor, mempool, net, proxy, vitae, (obfuscation, swiftx, masternode, mnpayments, mnbudget, zero)"; // Don't translate these and qt below
+    string debugCategories = "addrman, alert, bench, coindb, db, lock, rand, rpc, selectcoins, tor, mempool, net, proxy, vitae, (obfuscation, swiftx, fundamentalnode, mnpayments, mnbudget, zero)"; // Don't translate these and qt below
     if (mode == HMM_BITCOIN_QT)
         debugCategories += ", qt";
     strUsage += HelpMessageOpt("-debug=<category>", strprintf(_("Output debugging information (default: %u, supplying <category> is optional)"), 0) + ". " +
@@ -462,7 +469,7 @@ std::string HelpMessage(HelpMessageMode mode)
     }
     strUsage += HelpMessageOpt("-shrinkdebugfile", _("Shrink debug.log file on client startup (default: 1 when no -debug)"));
     strUsage += HelpMessageOpt("-testnet", _("Use the test network"));
-    strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all VITAE specific functionality (Masternodes, Zerocoin, SwiftX, Budgeting) (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-litemode=<n>", strprintf(_("Disable all VITAE specific functionality (Fundamentalnodes, Zerocoin, SwiftX, Budgeting) (0-1, default: %u)"), 0));
 
 #ifdef ENABLE_WALLET
     strUsage += HelpMessageGroup(_("Staking options:"));
@@ -474,12 +481,12 @@ std::string HelpMessage(HelpMessageMode mode)
     }
 #endif
 
-    strUsage += HelpMessageGroup(_("Masternode options:"));
-    strUsage += HelpMessageOpt("-masternode=<n>", strprintf(_("Enable the client to act as a masternode (0-1, default: %u)"), 0));
-    strUsage += HelpMessageOpt("-mnconf=<file>", strprintf(_("Specify masternode configuration file (default: %s)"), "masternode.conf"));
-    strUsage += HelpMessageOpt("-mnconflock=<n>", strprintf(_("Lock masternodes from masternode configuration file (default: %u)"), 1));
-    strUsage += HelpMessageOpt("-masternodeprivkey=<n>", _("Set the masternode private key"));
-    strUsage += HelpMessageOpt("-masternodeaddr=<n>", strprintf(_("Set external address:port to get to this masternode (example: %s)"), "128.127.106.235:51472"));
+    strUsage += HelpMessageGroup(_("Fundamentalnode options:"));
+    strUsage += HelpMessageOpt("-fundamentalnode=<n>", strprintf(_("Enable the client to act as a fundamentalnode (0-1, default: %u)"), 0));
+    strUsage += HelpMessageOpt("-fnconf=<file>", strprintf(_("Specify fundamentalnode configuration file (default: %s)"), "fundamentalnode.conf"));
+    strUsage += HelpMessageOpt("-fnconflock=<n>", strprintf(_("Lock fundamentalnodes from fundamentalnode configuration file (default: %u)"), 1));
+    strUsage += HelpMessageOpt("-fundamentalnodeprivkey=<n>", _("Set the fundamentalnode private key"));
+    strUsage += HelpMessageOpt("-fundamentalnodeaddr=<n>", strprintf(_("Set external address:port to get to this fundamentalnode (example: %s)"), "128.127.106.235:8765"));
     strUsage += HelpMessageOpt("-budgetvotemode=<mode>", _("Change automatic finalized budget voting behavior. mode=auto: Vote for only exact finalized budget match to my generated budget. (string, default: auto)"));
 
     strUsage += HelpMessageGroup(_("Zerocoin options:"));
@@ -965,6 +972,12 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     {
         if (!sporkManager.SetPrivKey(GetArg("-sporkkey", "")))
             return InitError(_("Unable to sign spork message, wrong key?"));
+    }
+
+    if (mapArgs.count("-masternodepaymentkey")) // masternode payment priv key
+    {
+        if (!sporkManager.SetPrivKey(GetArg("-masternodepaymentkey", "")))
+            return InitError(_("Unable to sign masternodepaymentkey message, wrong key?"));
     }
 
     // Start the lightweight task scheduler thread
@@ -1599,19 +1612,32 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     // ********************************************************* Step 10: setup ObfuScation
 
-    uiInterface.InitMessage(_("Loading masternode cache..."));
+    uiInterface.InitMessage(_("Loading fundamentalnode cache..."));
 
-    CMasternodeDB mndb;
-    CMasternodeDB::ReadResult readResult = mndb.Read(mnodeman);
+    CFundamentalnodeDB mndb;
+    CFundamentalnodeDB::ReadResult readResult = mndb.Read(mnodeman);
+    if (readResult == CFundamentalnodeDB::FileError)
+        LogPrintf("Missing fundamentalnode cache file - fncache.dat, will try to recreate\n");
+    else if (readResult != CFundamentalnodeDB::Ok) {
+        LogPrintf("Error reading mncache.dat: ");
+        if (readResult == CFundamentalnodeDB::IncorrectFormat)
+            LogPrintf("magic is ok but data has invalid format, will try to recreate\n");
+        else
+            LogPrintf("file format is unknown or invalid, please fix it manually\n");
+    }
+
+    //TODO
+    /*CMasternodeDB mn_db;
+    CMasternodeDB::ReadResult read_Result = mn_db.Read(m_nodeman);
     if (readResult == CMasternodeDB::FileError)
-        LogPrintf("Missing masternode cache file - mncache.dat, will try to recreate\n");
+        LogPrintf("Missing fundamentalnode cache file - mncache.dat, will try to recreate\n");
     else if (readResult != CMasternodeDB::Ok) {
         LogPrintf("Error reading mncache.dat: ");
         if (readResult == CMasternodeDB::IncorrectFormat)
             LogPrintf("magic is ok but data has invalid format, will try to recreate\n");
         else
             LogPrintf("file format is unknown or invalid, please fix it manually\n");
-    }
+    }*/
 
     uiInterface.InitMessage(_("Loading budget cache..."));
 
@@ -1633,21 +1659,61 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     budget.ClearSeen();
 
 
-    uiInterface.InitMessage(_("Loading masternode payment cache..."));
+    uiInterface.InitMessage(_("Loading fundamentalnode payment cache..."));
 
-    CMasternodePaymentDB mnpayments;
-    CMasternodePaymentDB::ReadResult readResult3 = mnpayments.Read(masternodePayments);
+    CFundamentalnodePaymentDB mnpayments;
+    CFundamentalnodePaymentDB::ReadResult readResult3 = mnpayments.Read(fundamentalnodePayments);
 
-    if (readResult3 == CMasternodePaymentDB::FileError)
-        LogPrintf("Missing masternode payment cache - mnpayments.dat, will try to recreate\n");
-    else if (readResult3 != CMasternodePaymentDB::Ok) {
+    if (readResult3 == CFundamentalnodePaymentDB::FileError)
+        LogPrintf("Missing fundamentalnode payment cache - mnpayments.dat, will try to recreate\n");
+    else if (readResult3 != CFundamentalnodePaymentDB::Ok) {
         LogPrintf("Error reading mnpayments.dat: ");
-        if (readResult3 == CMasternodePaymentDB::IncorrectFormat)
+        if (readResult3 == CFundamentalnodePaymentDB::IncorrectFormat)
             LogPrintf("magic is ok but data has invalid format, will try to recreate\n");
         else
             LogPrintf("file format is unknown or invalid, please fix it manually\n");
     }
 
+    fFundamentalNode = GetBoolArg("-fundamentalnode", false);
+
+    if ((fFundamentalNode || fundamentalnodeConfig.getCount() > -1) && fTxIndex == false) {
+        return InitError("Enabling Fundamentalnode support requires turning on transaction indexing."
+                         "Please add txindex=1 to your configuration and start with -reindex");
+    }
+
+    if (fFundamentalNode) {
+        LogPrintf("IS FUNDAMNENTAL NODE\n");
+        strFundamentalNodeAddr = GetArg("-fundamentalnodeaddr", "");
+
+        LogPrintf(" addr %s\n", strFundamentalNodeAddr.c_str());
+
+        if (!strFundamentalNodeAddr.empty()) {
+            CService addrTest = CService(strFundamentalNodeAddr);
+            if (!addrTest.IsValid()) {
+                return InitError("Invalid -fundamentalnodeaddr address: " + strFundamentalNodeAddr);
+            }
+        }
+
+        strFundamentalNodePrivKey = GetArg("-fundamentalnodeprivkey", "");
+        if (!strFundamentalNodePrivKey.empty()) {
+            std::string errorMessage;
+
+            CKey key;
+            CPubKey pubkey;
+
+            if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, key, pubkey)) {
+                return InitError(_("Invalid fundamentalnodeprivkey. Please see documenation."));
+            }
+
+            activeFundamentalnode.pubKeyFundamentalnode = pubkey;
+
+        } else {
+            return InitError(_("You must specify a fundamentalnodeprivkey in the configuration. Please see documentation for help."));
+        }
+    }
+
+    //TODO
+    /*
     fMasterNode = GetBoolArg("-masternode", false);
 
     if ((fMasterNode || masternodeConfig.getCount() > -1) && fTxIndex == false) {
@@ -1684,16 +1750,85 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         } else {
             return InitError(_("You must specify a masternodeprivkey in the configuration. Please see documentation for help."));
         }
-    }
+    }*/
+
+    uiInterface.InitMessage(_("Loading masternode cache..."));
+
+        CMasternodeDB mn_db;
+        CMasternodeDB::ReadResult readResult4 = mn_db.Read(m_nodeman);
+        if (readResult4 == CMasternodeDB::FileError)
+            LogPrintf("Missing Masternode cache file - mncache.dat, will try to recreate\n");
+        else if (readResult4 != CMasternodeDB::Ok)
+        {
+            LogPrintf("Error reading mncache.dat: ");
+            if(readResult4 == CMasternodeDB::IncorrectFormat)
+                LogPrintf("magic is ok but data has invalid format, will try to recreate\n");
+            else
+                LogPrintf("file format is unknown or invalid, please fix it manually\n");
+        }
+
+        fMasterNode = GetBoolArg("-masternode", false);
+        if(fMasterNode) {
+            LogPrintf("Master NODE\n");
+            strMasterNodeAddr = GetArg("-masternodeaddr", "");
+
+            LogPrintf(" addr %s\n", strMasterNodeAddr.c_str());
+
+            if(!strMasterNodeAddr.empty()){
+                CService addrTest = CService(strMasterNodeAddr);
+                if (!addrTest.IsValid()) {
+                    return InitError("Invalid -fundamentalnodeaddr address: " + strMasterNodeAddr);
+                }
+            }
+
+            strMasterNodePrivKey = GetArg("-masternodeprivkey", "");
+            if(!strMasterNodePrivKey.empty()){
+                std::string errorMessage;
+
+                CKey key;
+                CPubKey pubkey;
+
+                if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key, pubkey))
+                {
+                    return InitError(_("Invalid masternodeprivkey. Please see documenation."));
+                }
+
+                activeMasternode.pubKeyMasternode = pubkey;
+
+            } else {
+                return InitError(_("You must specify a masternodeprivkey in the configuration. Please see documentation for help."));
+            }
+        }
+        if(GetBoolArg("-mnconflock", true)) {
+            LogPrintf("Locking Masternodes:\n");
+            uint256 mnTxHash;
+            BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+                LogPrintf("  %s %s\n", mne.getTxHash(), mne.getOutputIndex());
+                mnTxHash.SetHex(mne.getTxHash());
+                COutPoint outpoint = COutPoint(mnTxHash, boost::lexical_cast<unsigned int>(mne.getOutputIndex()));
+                pwalletMain->LockCoin(outpoint);
+            }
+        }
+
+
+            fMNLiteMode = GetBoolArg("-fmnlitemode", false);
+        if(fMasterNode && fMNLiteMode){
+            return InitError("You can not start a masternode in -promode=0 or -fpromode=1");
+        }
+
+        //fnSigner.InitCollateralAddress();
+
+
+
 
     //get the mode of budget voting for this masternode
     strBudgetMode = GetArg("-budgetvotemode", "auto");
 
-    if (GetBoolArg("-mnconflock", true) && pwalletMain) {
+    if (GetBoolArg("-fnconflock", true) && pwalletMain) {
         LOCK(pwalletMain->cs_wallet);
-        LogPrintf("Locking Masternodes:\n");
+        LogPrintf("Locking Fundamentalnodes:\n");
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
             LogPrintf("  %s %s\n", mne.getTxHash(), mne.getOutputIndex());
             mnTxHash.SetHex(mne.getTxHash());
             COutPoint outpoint = COutPoint(mnTxHash, boost::lexical_cast<unsigned int>(mne.getOutputIndex()));
@@ -1732,10 +1867,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     nSwiftTXDepth = GetArg("-swifttxdepth", nSwiftTXDepth);
     nSwiftTXDepth = std::min(std::max(nSwiftTXDepth, 0), 60);
 
-    //lite mode disables all Masternode and Obfuscation related functionality
+    //lite mode disables all Fundamentalnode and Obfuscation related functionality
     fLiteMode = GetBoolArg("-litemode", false);
-    if (fMasterNode && fLiteMode) {
-        return InitError("You can not start a masternode in litemode");
+    if (fFundamentalNode && fLiteMode) {
+        return InitError("You can not start a fundamentalnode in litemode");
     }
 
     LogPrintf("fLiteMode %d\n", fLiteMode);
@@ -1766,6 +1901,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
     obfuScationPool.InitCollateralAddress();
 
     threadGroup.create_thread(boost::bind(&ThreadCheckObfuScationPool));
+    threadGroup.create_thread(boost::bind(&ThreadBitPool));
 
     // ********************************************************* Step 11: start node
 

@@ -21,6 +21,7 @@
 #include "util.h"
 
 #ifdef ENABLE_WALLET
+#include "fundamentalnodeconfig.h"
 #include "masternodeconfig.h"
 #include "wallet.h"
 #include "walletdb.h"
@@ -62,7 +63,7 @@ void OptionsModel::Init()
 
     // Display
     if (!settings.contains("nDisplayUnit"))
-        settings.setValue("nDisplayUnit", BitcoinUnits::PIV);
+        settings.setValue("nDisplayUnit", BitcoinUnits::VIT);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
 
     if (!settings.contains("strThirdPartyTxUrls"))
@@ -91,6 +92,9 @@ void OptionsModel::Init()
         settings.setValue("nAnonymizeVitaeAmount", 1000);
 
     nAnonymizeVitaeAmount = settings.value("nAnonymizeVitaeAmount").toLongLong();
+
+    if (!settings.contains("fShowFundamentalnodesTab"))
+        settings.setValue("fShowFundamentalnodesTab", fundamentalnodeConfig.getCount());
 
     if (!settings.contains("fShowMasternodesTab"))
         settings.setValue("fShowMasternodesTab", masternodeConfig.getCount());
@@ -224,8 +228,8 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
 #ifdef ENABLE_WALLET
         case SpendZeroConfChange:
             return settings.value("bSpendZeroConfChange");
-        case ShowMasternodesTab:
-            return settings.value("fShowMasternodesTab");
+        case ShowFundamentalnodesTab:
+            return settings.value("fShowFundamentalnodesTab");
 #endif
         case StakeSplitThreshold:
             if (pwalletMain)
@@ -326,9 +330,9 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
                 setRestartRequired(true);
             }
             break;
-        case ShowMasternodesTab:
-            if (settings.value("fShowMasternodesTab") != value) {
-                settings.setValue("fShowMasternodesTab", value);
+        case ShowFundamentalnodesTab:
+            if (settings.value("fShowFundamentalnodesTab") != value) {
+                settings.setValue("fShowFundamentalnodesTab", value);
                 setRestartRequired(true);
             }
             break;

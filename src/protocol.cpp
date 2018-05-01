@@ -22,16 +22,22 @@ static const char* ppszTypeName[] =
         "tx lock request",
         "tx lock vote",
         "spork",
-        "mn winner",
-        "mn scan error",
-        "mn budget vote",
-        "mn budget proposal",
-        "mn budget finalized",
-        "mn budget finalized vote",
-        "mn quorum",
-        "mn announce",
-        "mn ping",
-        "dstx"};
+        "fn winner",
+        "fn scan error",
+        "fn budget vote",
+        "fn budget proposal",
+        "fn budget finalized",
+        "fn budget finalized vote",
+        "fn quorum",
+        "fn announce",
+        "fn ping",
+        "dstx",
+    "mn spork",
+    "mn winner",
+    "mn scan error",
+    "mn announce",
+    "mn ping"
+};
 
 CMessageHeader::CMessageHeader()
 {
@@ -136,7 +142,7 @@ bool CInv::IsKnownType() const
     return (type >= 1 && type < (int)ARRAYLEN(ppszTypeName));
 }
 
-bool CInv::IsMasterNodeType() const{
+bool CInv::IsFundamentalNodeType() const{
  	return (type >= 6);
 }
 

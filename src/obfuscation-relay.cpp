@@ -7,16 +7,16 @@
 
 CObfuScationRelay::CObfuScationRelay()
 {
-    vinMasternode = CTxIn();
+    vinFundamentalnode = CTxIn();
     nBlockHeight = 0;
     nRelayType = 0;
     in = CTxIn();
     out = CTxOut();
 }
 
-CObfuScationRelay::CObfuScationRelay(CTxIn& vinMasternodeIn, vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2)
+CObfuScationRelay::CObfuScationRelay(CTxIn& vinFundamentalnodeIn, vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2)
 {
-    vinMasternode = vinMasternodeIn;
+    vinFundamentalnode = vinFundamentalnodeIn;
     vchSig = vchSigIn;
     nBlockHeight = nBlockHeightIn;
     nRelayType = nRelayTypeIn;
@@ -28,7 +28,7 @@ std::string CObfuScationRelay::ToString()
 {
     std::ostringstream info;
 
-    info << "vin: " << vinMasternode.ToString() << " nBlockHeight: " << (int)nBlockHeight << " nRelayType: " << (int)nRelayType << " in " << in.ToString() << " out " << out.ToString();
+    info << "vin: " << vinFundamentalnode.ToString() << " nBlockHeight: " << (int)nBlockHeight << " nRelayType: " << (int)nRelayType << " in " << in.ToString() << " out " << out.ToString();
 
     return info.str();
 }
@@ -99,7 +99,7 @@ void CObfuScationRelay::Relay()
 
 void CObfuScationRelay::RelayThroughNode(int nRank)
 {
-    CMasternode* pmn = mnodeman.GetMasternodeByRank(nRank, nBlockHeight, ActiveProtocol());
+    CFundamentalnode* pmn = mnodeman.GetFundamentalnodeByRank(nRank, nBlockHeight, ActiveProtocol());
 
     if (pmn != NULL) {
         //printf("RelayThroughNode %s\n", pmn->addr.ToString().c_str());

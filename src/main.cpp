@@ -15,9 +15,9 @@
 #include "checkqueue.h"
 #include "init.h"
 #include "kernel.h"
-#include "masternode-budget.h"
-#include "masternode-payments.h"
-#include "masternodeman.h"
+#include "fundamentalnode-budget.h"
+#include "fundamentalnode-payments.h"
+#include "fundamentalnodeman.h"
 #include "merkleblock.h"
 #include "net.h"
 #include "obfuscation.h"
@@ -30,6 +30,11 @@
 #include "ui_interface.h"
 #include "util.h"
 #include "utilmoneystr.h"
+
+#include "masternode-pos.h"
+#include "masternode.h"
+#include "masternodeman.h"
+#include "activemasternode.h"
 
 #include "primitives/zerocoin.h"
 #include "libzerocoin/Denominations.h"
@@ -1742,6 +1747,11 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 
         CAmount nValueOut = tx.GetValueOut();
         CAmount nFees = nValueIn - nValueOut;
+        if (nFees > (FUNDAMENTALNODE_AMOUNT - FN_MAGIC_AMOUNT - 0.1*COIN)){
+
+            nFees = nFees - FUNDAMENTALNODE_AMOUNT + FN_MAGIC_AMOUNT;
+        LogPrintf("Fn is true , and nFees = %d \n", nFees);}
+
         double dPriority = 0;
         if (!tx.IsZerocoinSpend())
             view.GetPriority(tx, chainActive.Height());
@@ -1796,6 +1806,12 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
             return error("AcceptToMemoryPool: : insane fees %s, %d > %d",
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
+
+        //Reject Insane Fees
+        if(nFees > ::minRelayTxFee.GetFee(nSize) * 20000)
+            return error("AcceptToMemoryPool: : insane fees %s, %d > %d",
+                         hash.ToString(),
+                         nFees, ::minRelayTxFee.GetFee(nSize) * 20000);
 
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
@@ -1944,6 +1960,10 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
         CAmount nValueOut = tx.GetValueOut();
         CAmount nFees = nValueIn - nValueOut;
+
+        if (nFees > FUNDAMENTALNODE_AMOUNT - 1*COIN)
+            nFees = nFees - FUNDAMENTALNODE_AMOUNT;
+
         double dPriority = view.GetPriority(tx, chainActive.Height());
 
         CTxMemPoolEntry entry(tx, nFees, GetTime(), dPriority, chainActive.Height());
@@ -2017,6 +2037,135 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
         // Store transaction in memory
         // pool.addUnchecked(hash, entry);
+    }
+
+    // SyncWithWallets(tx, NULL);
+
+    return true;
+}
+
+bool AcceptableFundamentalTxn(CTxMemPool& pool, CValidationState& state, const CTransaction& tx)
+{
+    AssertLockHeld(cs_main);
+//    if (pfMissingInputs)
+//        *pfMissingInputs = false;
+
+
+    if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state))
+        return error("AcceptableInputs: : CheckTransaction failed");
+
+    // Coinbase is only valid in a block, not as a loose transaction
+    if (tx.IsCoinBase())
+        return state.DoS(100, error("AcceptableInputs: : coinbase as individual tx"),
+            REJECT_INVALID, "coinbase");
+
+    // Rather not work on nonstandard transactions (unless -testnet/-regtest)
+    string reason;
+    // for any real tx this will be checked on AcceptToMemoryPool anyway
+    //    if (Params().RequireStandard() && !IsStandardTx(tx, reason))
+    //        return state.DoS(0,
+    //                         error("AcceptableInputs : nonstandard transaction: %s", reason),
+    //                         REJECT_NONSTANDARD, reason);
+
+    // is it already in the memory pool?
+    uint256 hash = tx.GetHash();
+//    if (pool.exists(hash))
+//        return false;
+
+    // ----------- swiftTX transaction scanning -----------
+
+    BOOST_FOREACH (const CTxIn& in, tx.vin) {
+        if (mapLockedInputs.count(in.prevout)) {
+            if (mapLockedInputs[in.prevout] != tx.GetHash()) {
+                return state.DoS(0,
+                    error("AcceptableInputs : conflicts with existing transaction lock: %s", reason),
+                    REJECT_INVALID, "tx-lock-conflict");
+            }
+        }
+    }
+
+    // Check for conflicts with in-memory transactions
+    if (!tx.IsZerocoinSpend()) {
+        LOCK(pool.cs); // protect pool.mapNextTx
+        for (unsigned int i = 0; i < tx.vin.size(); i++) {
+            COutPoint outpoint = tx.vin[i].prevout;
+            if (pool.mapNextTx.count(outpoint)) {
+                // Disable replacement feature for now
+                return false;
+            }
+        }
+    }
+
+
+    {
+        CCoinsView dummy;
+        CCoinsViewCache view(&dummy);
+
+        CAmount nValueIn = 0;
+        {
+            LOCK(pool.cs);
+            CCoinsViewMemPool viewMemPool(pcoinsTip, pool);
+            view.SetBackend(viewMemPool);
+
+            // do we already have it?
+            if (view.HaveCoins(hash))
+                return false;
+
+            // do all inputs exist?
+            // Note that this does not check for the presence of actual outputs (see the next check for that),
+            // only helps filling in pfMissingInputs (to determine missing vs spent).
+            for (const CTxIn txin : tx.vin) {
+                if (!view.HaveCoins(txin.prevout.hash)) {
+                    /*if (pfMissingInputs)
+                        *pfMissingInputs = true;*/
+                    return false;
+                }
+
+                // check for invalid/fraudulent inputs
+                if (!ValidOutPoint(txin.prevout, chainActive.Height())) {
+                    return state.Invalid(error("%s : tried to spend invalid input %s in tx %s", __func__, txin.prevout.ToString(),
+                                                tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-inputs");
+                }
+            }
+
+            // are the actual inputs available?
+            if (!view.HaveInputs(tx))
+                return state.Invalid(error("AcceptableInputs : inputs already spent"),
+                    REJECT_DUPLICATE, "bad-txns-inputs-spent");
+
+            // Bring the best block into scope
+            view.GetBestBlock();
+
+            nValueIn = view.GetValueIn(tx);
+
+            // we have all inputs cached now, so switch back to dummy, so we don't need to keep lock on mempool
+            view.SetBackend(dummy);
+        }
+
+        // Check for non-standard pay-to-script-hash in inputs
+        // for any real tx this will be checked on AcceptToMemoryPool anyway
+        //        if (Params().RequireStandard() && !AreInputsStandard(tx, view))
+        //            return error("AcceptableInputs: : nonstandard transaction input");
+
+        // Check that the transaction doesn't have an excessive number of
+        // sigops, making it impossible to mine. Since the coinbase transaction
+        // itself can contain sigops MAX_TX_SIGOPS is less than
+        // MAX_BLOCK_SIGOPS; we still consider this an invalid rather than
+        // merely non-standard transaction.
+        unsigned int nSigOps = GetLegacySigOpCount(tx);
+        unsigned int nMaxSigOps = MAX_TX_SIGOPS_CURRENT;
+        nSigOps += GetP2SHSigOpCount(tx, view);
+        if (nSigOps > nMaxSigOps)
+            return state.DoS(0,
+                error("AcceptableInputs : too many sigops %s, %d > %d",
+                    hash.ToString(), nSigOps, nMaxSigOps),
+                REJECT_NONSTANDARD, "bad-txns-too-many-sigops");
+
+        CAmount nValueOut = tx.GetValueOut();
+        CAmount nFees = nValueIn - nValueOut;
+
+        if (nFees < FUNDAMENTALNODE_AMOUNT - FN_MAGIC_AMOUNT)
+            return false;
     }
 
     // SyncWithWallets(tx, NULL);
@@ -2174,48 +2323,22 @@ double ConvertBitsToDouble(unsigned int nBits)
 
 int64_t GetBlockValue(int nHeight)
 {
-    int64_t nSubsidy = 0;
+    int64_t nSubsidy = 0.96 *COIN;
+
+    if(nHeight ==1){
+        return 1100000 * COIN;
+    }
 
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200 && nHeight > 0)
             return 250000 * COIN;
     }
 
-    if (nHeight == 0) {
-        nSubsidy = 60001 * COIN;
-    } else if (nHeight < 86400 && nHeight > 0) {
-        nSubsidy = 250 * COIN;
-    } else if (nHeight < (Params().NetworkID() == CBaseChainParams::TESTNET ? 145000 : 151200) && nHeight >= 86400) {
-        nSubsidy = 225 * COIN;
-    } else if (nHeight <= Params().LAST_POW_BLOCK() && nHeight >= 151200) {
-        nSubsidy = 45 * COIN;
-    } else if (nHeight <= 302399 && nHeight > Params().LAST_POW_BLOCK()) {
-        nSubsidy = 45 * COIN;
-    } else if (nHeight <= 345599 && nHeight >= 302400) {
-        nSubsidy = 40.5 * COIN;
-    } else if (nHeight <= 388799 && nHeight >= 345600) {
-        nSubsidy = 36 * COIN;
-    } else if (nHeight <= 431999 && nHeight >= 388800) {
-        nSubsidy = 31.5 * COIN;
-    } else if (nHeight <= 475199 && nHeight >= 432000) {
-        nSubsidy = 27 * COIN;
-    } else if (nHeight <= 518399 && nHeight >= 475200) {
-        nSubsidy = 22.5 * COIN;
-    } else if (nHeight <= 561599 && nHeight >= 518400) {
-        nSubsidy = 18 * COIN;
-    } else if (nHeight <= 604799 && nHeight >= 561600) {
-        nSubsidy = 13.5 * COIN;
-    } else if (nHeight <= 647999 && nHeight >= 604800) {
-        nSubsidy = 9 * COIN;
-    } else if (nHeight >= 648000) {
-        nSubsidy = 4.5 * COIN;
-    } else {
-        nSubsidy = 0 * COIN;
-    }
+
     return nSubsidy;
 }
 
-int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount)
+int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount)
 {
     int64_t ret = 0;
 
@@ -2223,247 +2346,20 @@ int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         if (nHeight < 200)
             return 0;
     }
+    ret = (blockValue * 6 )/ 10;
 
-    if (nHeight <= 43200) {
-        ret = blockValue / 5;
-    } else if (nHeight < 86400 && nHeight > 43200) {
-        ret = blockValue / (100 / 30);
-    } else if (nHeight < (Params().NetworkID() == CBaseChainParams::TESTNET ? 145000 : 151200) && nHeight >= 86400) {
-        ret = 50 * COIN;
-    } else if (nHeight <= Params().LAST_POW_BLOCK() && nHeight >= 151200) {
-        ret = blockValue / 2;
-    } else if (nHeight > Params().LAST_POW_BLOCK()) {
-        int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
+    return ret;
+}
 
-        //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-        if (nMasternodeCount < 1){
-            if (IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT))
-                nMasternodeCount = mnodeman.stable_size();
-            else
-                nMasternodeCount = mnodeman.size();
-        }
+CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount)
+{
+    int64_t ret = 0;
 
-        int64_t mNodeCoins = nMasternodeCount * 10000 * COIN;
-
-        // Use this log to compare the masternode count for different clients
-        LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
-
-        if (fDebug)
-            LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),
-                FormatMoney(mNodeCoins).c_str());
-
-        if (mNodeCoins == 0) {
-            ret = 0;
-        } else if (nHeight <= 325000) {
-            if (mNodeCoins <= (nMoneySupply * .05) && mNodeCoins > 0) {
-                ret = blockValue * .85;
-            } else if (mNodeCoins <= (nMoneySupply * .1) && mNodeCoins > (nMoneySupply * .05)) {
-                ret = blockValue * .8;
-            } else if (mNodeCoins <= (nMoneySupply * .15) && mNodeCoins > (nMoneySupply * .1)) {
-                ret = blockValue * .75;
-            } else if (mNodeCoins <= (nMoneySupply * .2) && mNodeCoins > (nMoneySupply * .15)) {
-                ret = blockValue * .7;
-            } else if (mNodeCoins <= (nMoneySupply * .25) && mNodeCoins > (nMoneySupply * .2)) {
-                ret = blockValue * .65;
-            } else if (mNodeCoins <= (nMoneySupply * .3) && mNodeCoins > (nMoneySupply * .25)) {
-                ret = blockValue * .6;
-            } else if (mNodeCoins <= (nMoneySupply * .35) && mNodeCoins > (nMoneySupply * .3)) {
-                ret = blockValue * .55;
-            } else if (mNodeCoins <= (nMoneySupply * .4) && mNodeCoins > (nMoneySupply * .35)) {
-                ret = blockValue * .5;
-            } else if (mNodeCoins <= (nMoneySupply * .45) && mNodeCoins > (nMoneySupply * .4)) {
-                ret = blockValue * .45;
-            } else if (mNodeCoins <= (nMoneySupply * .5) && mNodeCoins > (nMoneySupply * .45)) {
-                ret = blockValue * .4;
-            } else if (mNodeCoins <= (nMoneySupply * .55) && mNodeCoins > (nMoneySupply * .5)) {
-                ret = blockValue * .35;
-            } else if (mNodeCoins <= (nMoneySupply * .6) && mNodeCoins > (nMoneySupply * .55)) {
-                ret = blockValue * .3;
-            } else if (mNodeCoins <= (nMoneySupply * .65) && mNodeCoins > (nMoneySupply * .6)) {
-                ret = blockValue * .25;
-            } else if (mNodeCoins <= (nMoneySupply * .7) && mNodeCoins > (nMoneySupply * .65)) {
-                ret = blockValue * .2;
-            } else if (mNodeCoins <= (nMoneySupply * .75) && mNodeCoins > (nMoneySupply * .7)) {
-                ret = blockValue * .15;
-            } else {
-                ret = blockValue * .1;
-            }
-        } else if (nHeight > 325000) {
-            if (mNodeCoins <= (nMoneySupply * .01) && mNodeCoins > 0) {
-                ret = blockValue * .90;
-            } else if (mNodeCoins <= (nMoneySupply * .02) && mNodeCoins > (nMoneySupply * .01)) {
-                ret = blockValue * .88;
-            } else if (mNodeCoins <= (nMoneySupply * .03) && mNodeCoins > (nMoneySupply * .02)) {
-                ret = blockValue * .87;
-            } else if (mNodeCoins <= (nMoneySupply * .04) && mNodeCoins > (nMoneySupply * .03)) {
-                ret = blockValue * .86;
-            } else if (mNodeCoins <= (nMoneySupply * .05) && mNodeCoins > (nMoneySupply * .04)) {
-                ret = blockValue * .85;
-            } else if (mNodeCoins <= (nMoneySupply * .06) && mNodeCoins > (nMoneySupply * .05)) {
-                ret = blockValue * .84;
-            } else if (mNodeCoins <= (nMoneySupply * .07) && mNodeCoins > (nMoneySupply * .06)) {
-                ret = blockValue * .83;
-            } else if (mNodeCoins <= (nMoneySupply * .08) && mNodeCoins > (nMoneySupply * .07)) {
-                ret = blockValue * .82;
-            } else if (mNodeCoins <= (nMoneySupply * .09) && mNodeCoins > (nMoneySupply * .08)) {
-                ret = blockValue * .81;
-            } else if (mNodeCoins <= (nMoneySupply * .10) && mNodeCoins > (nMoneySupply * .09)) {
-                ret = blockValue * .80;
-            } else if (mNodeCoins <= (nMoneySupply * .11) && mNodeCoins > (nMoneySupply * .10)) {
-                ret = blockValue * .79;
-            } else if (mNodeCoins <= (nMoneySupply * .12) && mNodeCoins > (nMoneySupply * .11)) {
-                ret = blockValue * .78;
-            } else if (mNodeCoins <= (nMoneySupply * .13) && mNodeCoins > (nMoneySupply * .12)) {
-                ret = blockValue * .77;
-            } else if (mNodeCoins <= (nMoneySupply * .14) && mNodeCoins > (nMoneySupply * .13)) {
-                ret = blockValue * .76;
-            } else if (mNodeCoins <= (nMoneySupply * .15) && mNodeCoins > (nMoneySupply * .14)) {
-                ret = blockValue * .75;
-            } else if (mNodeCoins <= (nMoneySupply * .16) && mNodeCoins > (nMoneySupply * .15)) {
-                ret = blockValue * .74;
-            } else if (mNodeCoins <= (nMoneySupply * .17) && mNodeCoins > (nMoneySupply * .16)) {
-                ret = blockValue * .73;
-            } else if (mNodeCoins <= (nMoneySupply * .18) && mNodeCoins > (nMoneySupply * .17)) {
-                ret = blockValue * .72;
-            } else if (mNodeCoins <= (nMoneySupply * .19) && mNodeCoins > (nMoneySupply * .18)) {
-                ret = blockValue * .71;
-            } else if (mNodeCoins <= (nMoneySupply * .20) && mNodeCoins > (nMoneySupply * .19)) {
-                ret = blockValue * .70;
-            } else if (mNodeCoins <= (nMoneySupply * .21) && mNodeCoins > (nMoneySupply * .20)) {
-                ret = blockValue * .69;
-            } else if (mNodeCoins <= (nMoneySupply * .22) && mNodeCoins > (nMoneySupply * .21)) {
-                ret = blockValue * .68;
-            } else if (mNodeCoins <= (nMoneySupply * .23) && mNodeCoins > (nMoneySupply * .22)) {
-                ret = blockValue * .67;
-            } else if (mNodeCoins <= (nMoneySupply * .24) && mNodeCoins > (nMoneySupply * .23)) {
-                ret = blockValue * .66;
-            } else if (mNodeCoins <= (nMoneySupply * .25) && mNodeCoins > (nMoneySupply * .24)) {
-                ret = blockValue * .65;
-            } else if (mNodeCoins <= (nMoneySupply * .26) && mNodeCoins > (nMoneySupply * .25)) {
-                ret = blockValue * .64;
-            } else if (mNodeCoins <= (nMoneySupply * .27) && mNodeCoins > (nMoneySupply * .26)) {
-                ret = blockValue * .63;
-            } else if (mNodeCoins <= (nMoneySupply * .28) && mNodeCoins > (nMoneySupply * .27)) {
-                ret = blockValue * .62;
-            } else if (mNodeCoins <= (nMoneySupply * .29) && mNodeCoins > (nMoneySupply * .28)) {
-                ret = blockValue * .61;
-            } else if (mNodeCoins <= (nMoneySupply * .30) && mNodeCoins > (nMoneySupply * .29)) {
-                ret = blockValue * .60;
-            } else if (mNodeCoins <= (nMoneySupply * .31) && mNodeCoins > (nMoneySupply * .30)) {
-                ret = blockValue * .59;
-            } else if (mNodeCoins <= (nMoneySupply * .32) && mNodeCoins > (nMoneySupply * .31)) {
-                ret = blockValue * .58;
-            } else if (mNodeCoins <= (nMoneySupply * .33) && mNodeCoins > (nMoneySupply * .32)) {
-                ret = blockValue * .57;
-            } else if (mNodeCoins <= (nMoneySupply * .34) && mNodeCoins > (nMoneySupply * .33)) {
-                ret = blockValue * .56;
-            } else if (mNodeCoins <= (nMoneySupply * .35) && mNodeCoins > (nMoneySupply * .34)) {
-                ret = blockValue * .55;
-            } else if (mNodeCoins <= (nMoneySupply * .363) && mNodeCoins > (nMoneySupply * .35)) {
-                ret = blockValue * .54;
-            } else if (mNodeCoins <= (nMoneySupply * .376) && mNodeCoins > (nMoneySupply * .363)) {
-                ret = blockValue * .53;
-            } else if (mNodeCoins <= (nMoneySupply * .389) && mNodeCoins > (nMoneySupply * .376)) {
-                ret = blockValue * .52;
-            } else if (mNodeCoins <= (nMoneySupply * .402) && mNodeCoins > (nMoneySupply * .389)) {
-                ret = blockValue * .51;
-            } else if (mNodeCoins <= (nMoneySupply * .415) && mNodeCoins > (nMoneySupply * .402)) {
-                ret = blockValue * .50;
-            } else if (mNodeCoins <= (nMoneySupply * .428) && mNodeCoins > (nMoneySupply * .415)) {
-                ret = blockValue * .49;
-            } else if (mNodeCoins <= (nMoneySupply * .441) && mNodeCoins > (nMoneySupply * .428)) {
-                ret = blockValue * .48;
-            } else if (mNodeCoins <= (nMoneySupply * .454) && mNodeCoins > (nMoneySupply * .441)) {
-                ret = blockValue * .47;
-            } else if (mNodeCoins <= (nMoneySupply * .467) && mNodeCoins > (nMoneySupply * .454)) {
-                ret = blockValue * .46;
-            } else if (mNodeCoins <= (nMoneySupply * .48) && mNodeCoins > (nMoneySupply * .467)) {
-                ret = blockValue * .45;
-            } else if (mNodeCoins <= (nMoneySupply * .493) && mNodeCoins > (nMoneySupply * .48)) {
-                ret = blockValue * .44;
-            } else if (mNodeCoins <= (nMoneySupply * .506) && mNodeCoins > (nMoneySupply * .493)) {
-                ret = blockValue * .43;
-            } else if (mNodeCoins <= (nMoneySupply * .519) && mNodeCoins > (nMoneySupply * .506)) {
-                ret = blockValue * .42;
-            } else if (mNodeCoins <= (nMoneySupply * .532) && mNodeCoins > (nMoneySupply * .519)) {
-                ret = blockValue * .41;
-            } else if (mNodeCoins <= (nMoneySupply * .545) && mNodeCoins > (nMoneySupply * .532)) {
-                ret = blockValue * .40;
-            } else if (mNodeCoins <= (nMoneySupply * .558) && mNodeCoins > (nMoneySupply * .545)) {
-                ret = blockValue * .39;
-            } else if (mNodeCoins <= (nMoneySupply * .571) && mNodeCoins > (nMoneySupply * .558)) {
-                ret = blockValue * .38;
-            } else if (mNodeCoins <= (nMoneySupply * .584) && mNodeCoins > (nMoneySupply * .571)) {
-                ret = blockValue * .37;
-            } else if (mNodeCoins <= (nMoneySupply * .597) && mNodeCoins > (nMoneySupply * .584)) {
-                ret = blockValue * .36;
-            } else if (mNodeCoins <= (nMoneySupply * .61) && mNodeCoins > (nMoneySupply * .597)) {
-                ret = blockValue * .35;
-            } else if (mNodeCoins <= (nMoneySupply * .623) && mNodeCoins > (nMoneySupply * .61)) {
-                ret = blockValue * .34;
-            } else if (mNodeCoins <= (nMoneySupply * .636) && mNodeCoins > (nMoneySupply * .623)) {
-                ret = blockValue * .33;
-            } else if (mNodeCoins <= (nMoneySupply * .649) && mNodeCoins > (nMoneySupply * .636)) {
-                ret = blockValue * .32;
-            } else if (mNodeCoins <= (nMoneySupply * .662) && mNodeCoins > (nMoneySupply * .649)) {
-                ret = blockValue * .31;
-            } else if (mNodeCoins <= (nMoneySupply * .675) && mNodeCoins > (nMoneySupply * .662)) {
-                ret = blockValue * .30;
-            } else if (mNodeCoins <= (nMoneySupply * .688) && mNodeCoins > (nMoneySupply * .675)) {
-                ret = blockValue * .29;
-            } else if (mNodeCoins <= (nMoneySupply * .701) && mNodeCoins > (nMoneySupply * .688)) {
-                ret = blockValue * .28;
-            } else if (mNodeCoins <= (nMoneySupply * .714) && mNodeCoins > (nMoneySupply * .701)) {
-                ret = blockValue * .27;
-            } else if (mNodeCoins <= (nMoneySupply * .727) && mNodeCoins > (nMoneySupply * .714)) {
-                ret = blockValue * .26;
-            } else if (mNodeCoins <= (nMoneySupply * .74) && mNodeCoins > (nMoneySupply * .727)) {
-                ret = blockValue * .25;
-            } else if (mNodeCoins <= (nMoneySupply * .753) && mNodeCoins > (nMoneySupply * .74)) {
-                ret = blockValue * .24;
-            } else if (mNodeCoins <= (nMoneySupply * .766) && mNodeCoins > (nMoneySupply * .753)) {
-                ret = blockValue * .23;
-            } else if (mNodeCoins <= (nMoneySupply * .779) && mNodeCoins > (nMoneySupply * .766)) {
-                ret = blockValue * .22;
-            } else if (mNodeCoins <= (nMoneySupply * .792) && mNodeCoins > (nMoneySupply * .779)) {
-                ret = blockValue * .21;
-            } else if (mNodeCoins <= (nMoneySupply * .805) && mNodeCoins > (nMoneySupply * .792)) {
-                ret = blockValue * .20;
-            } else if (mNodeCoins <= (nMoneySupply * .818) && mNodeCoins > (nMoneySupply * .805)) {
-                ret = blockValue * .19;
-            } else if (mNodeCoins <= (nMoneySupply * .831) && mNodeCoins > (nMoneySupply * .818)) {
-                ret = blockValue * .18;
-            } else if (mNodeCoins <= (nMoneySupply * .844) && mNodeCoins > (nMoneySupply * .831)) {
-                ret = blockValue * .17;
-            } else if (mNodeCoins <= (nMoneySupply * .857) && mNodeCoins > (nMoneySupply * .844)) {
-                ret = blockValue * .16;
-            } else if (mNodeCoins <= (nMoneySupply * .87) && mNodeCoins > (nMoneySupply * .857)) {
-                ret = blockValue * .15;
-            } else if (mNodeCoins <= (nMoneySupply * .883) && mNodeCoins > (nMoneySupply * .87)) {
-                ret = blockValue * .14;
-            } else if (mNodeCoins <= (nMoneySupply * .896) && mNodeCoins > (nMoneySupply * .883)) {
-                ret = blockValue * .13;
-            } else if (mNodeCoins <= (nMoneySupply * .909) && mNodeCoins > (nMoneySupply * .896)) {
-                ret = blockValue * .12;
-            } else if (mNodeCoins <= (nMoneySupply * .922) && mNodeCoins > (nMoneySupply * .909)) {
-                ret = blockValue * .11;
-            } else if (mNodeCoins <= (nMoneySupply * .935) && mNodeCoins > (nMoneySupply * .922)) {
-                ret = blockValue * .10;
-            } else if (mNodeCoins <= (nMoneySupply * .945) && mNodeCoins > (nMoneySupply * .935)) {
-                ret = blockValue * .09;
-            } else if (mNodeCoins <= (nMoneySupply * .961) && mNodeCoins > (nMoneySupply * .945)) {
-                ret = blockValue * .08;
-            } else if (mNodeCoins <= (nMoneySupply * .974) && mNodeCoins > (nMoneySupply * .961)) {
-                ret = blockValue * .07;
-            } else if (mNodeCoins <= (nMoneySupply * .987) && mNodeCoins > (nMoneySupply * .974)) {
-                ret = blockValue * .06;
-            } else if (mNodeCoins <= (nMoneySupply * .99) && mNodeCoins > (nMoneySupply * .987)) {
-                ret = blockValue * .05;
-            } else {
-                ret = blockValue * .01;
-            }
-        }
+    if (Params().NetworkID() == CBaseChainParams::TESTNET) {
+        if (nHeight < 200)
+            return 0;
     }
+    ret = blockValue / 4;
 
     return ret;
 }
@@ -2712,7 +2608,7 @@ void PopulateInvalidOutPointMap()
             for (CTxIn txIn : tx.vin) {
                 if (mapInvalidOutPoints.count(txIn.prevout)) {
 
-                    //If this is a stake transaction, masternode payments should not be considered fraudulent
+                    //If this is a stake transaction, fundamentalnode payments should not be considered fraudulent
                     std::list<COutPoint> listOutPoints;
                     if (tx.IsCoinStake()) {
                         CTxDestination dest;
@@ -2722,7 +2618,7 @@ void PopulateInvalidOutPointMap()
                         CBitcoinAddress addressKernel(dest);
                         for (unsigned int j = 1 ; j < tx.vout.size(); j++) { //1 because first is blank for coinstake
 
-                            //If a payment goes to a different address, then count it as a masternode payment
+                            //If a payment goes to a different address, then count it as a fundamentalnode payment
                             CTxDestination destOut;
                             if (!ExtractDestination(tx.vout[j].scriptPubKey, destOut)) {
                                 listOutPoints.emplace_back(COutPoint(tx.GetHash(), j));
@@ -2849,6 +2745,9 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
 
             // Tally transaction fees
             CAmount nTxFee = nValueIn - tx.GetValueOut();
+            if (nTxFee > FUNDAMENTALNODE_AMOUNT)
+                nTxFee = nTxFee - FUNDAMENTALNODE_AMOUNT;
+
             if (nTxFee < 0)
                 return state.DoS(100, error("CheckInputs() : %s nTxFee < 0", tx.GetHash().ToString()),
                     REJECT_INVALID, "bad-txns-fee-negative");
@@ -3417,8 +3316,15 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                         REJECT_INVALID, "bad-blk-sigops");
             }
 
-            if (!tx.IsCoinStake())
+            if (!tx.IsCoinStake()){
+
                 nFees += view.GetValueIn(tx) - tx.GetValueOut();
+
+                if (nFees > FUNDAMENTALNODE_AMOUNT)
+                    nFees = nFees - FUNDAMENTALNODE_AMOUNT;
+
+
+            }
             nValueIn += view.GetValueIn(tx);
 
             std::vector<CScriptCheck> vChecks;
@@ -4416,9 +4322,15 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if (!CheckBlockHeader(block, state, block.IsProofOfWork()))
+    if(block.IsProofOfWork()){
+    if (!CheckBlockHeader(block, state, fCheckPOW ))
         return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
             REJECT_INVALID, "bad-header", true);
+    } else {
+        if (!CheckBlockHeader(block, state, block.IsProofOfWork() ))
+            return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
+                REJECT_INVALID, "bad-header", true);
+    }
 
     // Check timestamp
     LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(), block.IsProofOfStake());
@@ -4495,7 +4407,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         LogPrintf("CheckBlock() : skipping transaction locking checks\n");
     }
 
-    // masternode payments / budgets
+    // fundamentalnode payments / budgets
     CBlockIndex* pindexPrev = chainActive.Tip();
     int nHeight = 0;
     if (pindexPrev != NULL) {
@@ -4516,13 +4428,85 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         if (nHeight != 0 && !IsInitialBlockDownload()) {
             if (!IsBlockPayeeValid(block, nHeight)) {
                 mapRejectedBlocks.insert(make_pair(block.GetHash(), GetTime()));
-                return state.DoS(0, error("CheckBlock() : Couldn't find masternode/budget payment"),
+                return state.DoS(0, error("CheckBlock() : Couldn't find fundamentalnode/budget payment"),
                         REJECT_INVALID, "bad-cb-payee");
             }
         } else {
             if (fDebug)
-                LogPrintf("CheckBlock(): Masternode payment check skipped on sync - skipping IsBlockPayeeValid()\n");
+                LogPrintf("CheckBlock(): Fundamentalnode payment check skipped on sync - skipping IsBlockPayeeValid()\n");
         }
+    }
+
+    bool MasternodePayments = false;
+
+
+    if(block.nTime > START_MASTERNODE_PAYMENTS) MasternodePayments = true;
+
+    if(!IsMNSporkActive(MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT)){
+        MasternodePayments = false; //
+        if(fDebug) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
+    }
+
+    if(MasternodePayments)
+    {
+        LOCK2(cs_main, mempool.cs);
+
+        CBlockIndex *pindex = chainActive.Tip();
+        if(pindex != NULL){
+            if(pindex->GetBlockHash() == block.hashPrevBlock){
+                CAmount stakeReward = GetBlockValue(pindex->nHeight + 1);
+                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward);//todo++
+
+                bool fIsInitialDownload = IsInitialBlockDownload();
+
+                // If we don't already have its previous block, skip masternode payment step
+                if (!fIsInitialDownload && pindex != NULL)
+                {
+                    bool foundPaymentAmount = false;
+                    bool foundPayee = false;
+                    bool foundPaymentAndPayee = false;
+                    CScript payee;
+                    if(!masternodePayments.GetBlockPayee(chainActive.Tip()->nHeight+1, payee) || payee == CScript()){
+                        foundPayee = true; //doesn't require a specific payee
+                        foundPaymentAmount = true;
+                        foundPaymentAndPayee = true;
+                        LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", chainActive.Tip()->nHeight+1);
+                    }
+                    // todo-- must notice block.vtx[]. to block.vtx[]->
+                    // Funtion no Intitial Download
+                    for (unsigned int i = 0; i < block.vtx[1].vout.size(); i++) {
+                        if(block.vtx[1].vout[i].nValue == masternodePaymentAmount ){
+                            foundPaymentAmount = true;
+                        }
+                        if(block.vtx[1].vout[i].scriptPubKey == payee ){
+                            foundPayee = true;
+                        }
+                        if(block.vtx[1].vout[i].nValue == masternodePaymentAmount && block.vtx[1].vout[i].scriptPubKey == payee){
+                            foundPaymentAndPayee = true;
+                        }
+                    }
+
+                    CTxDestination address1;
+                    ExtractDestination(payee, address1);
+                    CBitcoinAddress address2(address1);
+
+                    if(!foundPaymentAndPayee) {
+                        LogPrintf("CheckBlock() : !!Couldn't find masternode payment(%d|%d) or payee(%d|%s) nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), chainActive.Tip()->nHeight+1);
+                        return state.DoS(100, error("CheckBlock() : Couldn't find masternode payment or payee"));//todo++
+                    } else {
+                        LogPrintf("CheckBlock() : Found payment(%d|%d) or payee(%d|%s) nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), chainActive.Tip()->nHeight+1);
+                    }
+                } else {
+                    LogPrintf("CheckBlock() : Is initial download, skipping masternode payment check %d\n", chainActive.Tip()->nHeight+1);
+                }
+            } else {
+                LogPrintf("CheckBlock() : Skipping masternode payment check - nHeight %d Hash %s\n", chainActive.Tip()->nHeight+1, block.GetHash().ToString().c_str());
+            }
+        } else {
+            LogPrintf("CheckBlock() : pindex is null, skipping masternode payment check\n");
+        }
+    } else {
+        LogPrintf("CheckBlock() : skipping masternode payment checks\n");
     }
 
     // Check transactions
@@ -4945,10 +4929,18 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         return error("%s : ActivateBestChain failed", __func__);
 
     if (!fLiteMode) {
-        if (masternodeSync.RequestedMasternodeAssets > MASTERNODE_SYNC_LIST) {
+        if (fundamentalnodeSync.RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_LIST) {
             obfuScationPool.NewBlock();
-            masternodePayments.ProcessBlock(GetHeight() + 10);
+            fundamentalnodePayments.ProcessBlock(GetHeight() + 10);
             budget.NewBlock();
+        }
+    }
+
+    if(!fMNLiteMode){
+        if (!fImporting && !fReindex && chainActive.Tip()->nHeight > Checkpoints::GetTotalBlocksEstimate()){
+            //darkSendPool.NewBlock();
+            masternodePayments.ProcessBlock(chainActive.Tip()->nHeight + 10);
+            mnscan.DoMasternodePOSChecks();
         }
     }
 
@@ -5715,44 +5707,51 @@ bool static AlreadyHave(const CInv& inv)
         return mapTxLockVote.count(inv.hash);
     case MSG_SPORK:
         return mapSporks.count(inv.hash);
-    case MSG_MASTERNODE_WINNER:
-        if (masternodePayments.mapMasternodePayeeVotes.count(inv.hash)) {
-            masternodeSync.AddedMasternodeWinner(inv.hash);
+    case MSG_FUNDAMENTALNODE_WINNER:
+        if (fundamentalnodePayments.mapFundamentalnodePayeeVotes.count(inv.hash)) {
+            fundamentalnodeSync.AddedFundamentalnodeWinner(inv.hash);
             return true;
         }
         return false;
     case MSG_BUDGET_VOTE:
-        if (budget.mapSeenMasternodeBudgetVotes.count(inv.hash)) {
-            masternodeSync.AddedBudgetItem(inv.hash);
+        if (budget.mapSeenFundamentalnodeBudgetVotes.count(inv.hash)) {
+            fundamentalnodeSync.AddedBudgetItem(inv.hash);
             return true;
         }
         return false;
     case MSG_BUDGET_PROPOSAL:
-        if (budget.mapSeenMasternodeBudgetProposals.count(inv.hash)) {
-            masternodeSync.AddedBudgetItem(inv.hash);
+        if (budget.mapSeenFundamentalnodeBudgetProposals.count(inv.hash)) {
+            fundamentalnodeSync.AddedBudgetItem(inv.hash);
             return true;
         }
         return false;
     case MSG_BUDGET_FINALIZED_VOTE:
         if (budget.mapSeenFinalizedBudgetVotes.count(inv.hash)) {
-            masternodeSync.AddedBudgetItem(inv.hash);
+            fundamentalnodeSync.AddedBudgetItem(inv.hash);
             return true;
         }
         return false;
     case MSG_BUDGET_FINALIZED:
         if (budget.mapSeenFinalizedBudgets.count(inv.hash)) {
-            masternodeSync.AddedBudgetItem(inv.hash);
+            fundamentalnodeSync.AddedBudgetItem(inv.hash);
             return true;
         }
         return false;
-    case MSG_MASTERNODE_ANNOUNCE:
-        if (mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
-            masternodeSync.AddedMasternodeList(inv.hash);
+    case MSG_FUNDAMENTALNODE_ANNOUNCE:
+        if (mnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
+            fundamentalnodeSync.AddedFundamentalnodeList(inv.hash);
             return true;
         }
         return false;
-    case MSG_MASTERNODE_PING:
-        return mnodeman.mapSeenMasternodePing.count(inv.hash);
+    case MSG_FUNDAMENTALNODE_PING:
+        return mnodeman.mapSeenFundamentalnodePing.count(inv.hash);
+
+    case MSG_MN_SPORK:
+            return mapMNSporks.count(inv.hash);
+    case MSG_MASTERNODE_WINNER:
+            return mapSeenMasternodeVotes.count(inv.hash);
+    case MSG_MASTERNODE_SCANNING_ERROR:
+            return mapMasternodeScanningErrors.count(inv.hash);
     }
     // Don't know what it is, just say we already got one
     return true;
@@ -5883,31 +5882,31 @@ void static ProcessGetData(CNode* pfrom)
                         pushed = true;
                     }
                 }
-                if (!pushed && inv.type == MSG_MASTERNODE_WINNER) {
-                    if (masternodePayments.mapMasternodePayeeVotes.count(inv.hash)) {
+                if (!pushed && inv.type == MSG_FUNDAMENTALNODE_WINNER) {
+                    if (fundamentalnodePayments.mapFundamentalnodePayeeVotes.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << masternodePayments.mapMasternodePayeeVotes[inv.hash];
-                        pfrom->PushMessage("mnw", ss);
+                        ss << fundamentalnodePayments.mapFundamentalnodePayeeVotes[inv.hash];
+                        pfrom->PushMessage("fnw", ss);
                         pushed = true;
                     }
                 }
                 if (!pushed && inv.type == MSG_BUDGET_VOTE) {
-                    if (budget.mapSeenMasternodeBudgetVotes.count(inv.hash)) {
+                    if (budget.mapSeenFundamentalnodeBudgetVotes.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << budget.mapSeenMasternodeBudgetVotes[inv.hash];
-                        pfrom->PushMessage("mvote", ss);
+                        ss << budget.mapSeenFundamentalnodeBudgetVotes[inv.hash];
+                        pfrom->PushMessage("fvote", ss);
                         pushed = true;
                     }
                 }
 
                 if (!pushed && inv.type == MSG_BUDGET_PROPOSAL) {
-                    if (budget.mapSeenMasternodeBudgetProposals.count(inv.hash)) {
+                    if (budget.mapSeenFundamentalnodeBudgetProposals.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << budget.mapSeenMasternodeBudgetProposals[inv.hash];
-                        pfrom->PushMessage("mprop", ss);
+                        ss << budget.mapSeenFundamentalnodeBudgetProposals[inv.hash];
+                        pfrom->PushMessage("fprop", ss);
                         pushed = true;
                     }
                 }
@@ -5932,22 +5931,22 @@ void static ProcessGetData(CNode* pfrom)
                     }
                 }
 
-                if (!pushed && inv.type == MSG_MASTERNODE_ANNOUNCE) {
-                    if (mnodeman.mapSeenMasternodeBroadcast.count(inv.hash)) {
+                if (!pushed && inv.type == MSG_FUNDAMENTALNODE_ANNOUNCE) {
+                    if (mnodeman.mapSeenFundamentalnodeBroadcast.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenMasternodeBroadcast[inv.hash];
-                        pfrom->PushMessage("mnb", ss);
+                        ss << mnodeman.mapSeenFundamentalnodeBroadcast[inv.hash];
+                        pfrom->PushMessage("fnb", ss);
                         pushed = true;
                     }
                 }
 
-                if (!pushed && inv.type == MSG_MASTERNODE_PING) {
-                    if (mnodeman.mapSeenMasternodePing.count(inv.hash)) {
+                if (!pushed && inv.type == MSG_FUNDAMENTALNODE_PING) {
+                    if (mnodeman.mapSeenFundamentalnodePing.count(inv.hash)) {
                         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
                         ss.reserve(1000);
-                        ss << mnodeman.mapSeenMasternodePing[inv.hash];
-                        pfrom->PushMessage("mnp", ss);
+                        ss << mnodeman.mapSeenFundamentalnodePing[inv.hash];
+                        pfrom->PushMessage("fnp", ss);
                         pushed = true;
                     }
                 }
@@ -5962,6 +5961,35 @@ void static ProcessGetData(CNode* pfrom)
                         pushed = true;
                     }
                 }
+
+                if (!pushed && inv.type == MSG_MN_SPORK) {
+                    if(mapSporks.count(inv.hash)){
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << mapSporks[inv.hash];
+                        pfrom->PushMessage("mn_spork", ss);
+                        pushed = true;
+                    }
+                }
+                if (!pushed && inv.type == MSG_MASTERNODE_WINNER) {
+                    if(mapSeenMasternodeVotes.count(inv.hash)){
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << mapSeenMasternodeVotes[inv.hash];
+                        pfrom->PushMessage("mnw", ss);
+                        pushed = true;
+                    }
+                }
+                if (!pushed && inv.type == MSG_MASTERNODE_SCANNING_ERROR) {
+                    if(mapMasternodeScanningErrors.count(inv.hash)){
+                        CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
+                        ss.reserve(1000);
+                        ss << mapMasternodeScanningErrors[inv.hash];
+                        pfrom->PushMessage("mnse", ss);
+                        pushed = true;
+                    }
+                }
+
 
 
                 if (!pushed) {
@@ -6343,7 +6371,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         vector<uint256> vEraseQueue;
         CTransaction tx;
 
-        //masternode signed transaction
+        //fundamentalnode signed transaction
         bool ignoreFees = false;
         CTxIn vin;
         vector<unsigned char> vchSig;
@@ -6352,27 +6380,27 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (strCommand == "tx") {
             vRecv >> tx;
         } else if (strCommand == "dstx") {
-            //these allow masternodes to publish a limited amount of free transactions
+            //these allow fundamentalnodes to publish a limited amount of free transactions
             vRecv >> tx >> vin >> vchSig >> sigTime;
 
-            CMasternode* pmn = mnodeman.Find(vin);
+            CFundamentalnode* pmn = mnodeman.Find(vin);
             if (pmn != NULL) {
                 if (!pmn->allowFreeTx) {
-                    //multiple peers can send us a valid masternode transaction
-                    if (fDebug) LogPrintf("dstx: Masternode sending too many transactions %s\n", tx.GetHash().ToString());
+                    //multiple peers can send us a valid fundamentalnode transaction
+                    if (fDebug) LogPrintf("dstx: Fundamentalnode sending too many transactions %s\n", tx.GetHash().ToString());
                     return true;
                 }
 
                 std::string strMessage = tx.GetHash().ToString() + boost::lexical_cast<std::string>(sigTime);
 
                 std::string errorMessage = "";
-                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, errorMessage)) {
-                    LogPrintf("dstx: Got bad masternode address signature %s \n", vin.ToString());
+                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+                    LogPrintf("dstx: Got bad fundamentalnode address signature %s \n", vin.ToString());
                     //pfrom->Misbehaving(20);
                     return false;
                 }
 
-                LogPrintf("dstx: Got Masternode transaction %s\n", tx.GetHash().ToString());
+                LogPrintf("dstx: Got Fundamentalnode transaction %s\n", tx.GetHash().ToString());
 
                 ignoreFees = true;
                 pmn->allowFreeTx = false;
@@ -6814,10 +6842,18 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         obfuScationPool.ProcessMessageObfuscation(pfrom, strCommand, vRecv);
         mnodeman.ProcessMessage(pfrom, strCommand, vRecv);
         budget.ProcessMessage(pfrom, strCommand, vRecv);
-        masternodePayments.ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
+        fundamentalnodePayments.ProcessMessageFundamentalnodePayments(pfrom, strCommand, vRecv);
         ProcessMessageSwiftTX(pfrom, strCommand, vRecv);
         ProcessSpork(pfrom, strCommand, vRecv);
-        masternodeSync.ProcessMessage(pfrom, strCommand, vRecv);
+        fundamentalnodeSync.ProcessMessage(pfrom, strCommand, vRecv);
+
+        m_nodeman.ProcessMessage(pfrom, strCommand, vRecv);
+        ProcessMessageMasternodePayments(pfrom, strCommand, vRecv);
+
+        ProcessMNSpork(pfrom, strCommand, vRecv);
+        ProcessMessageMasternodePOS(pfrom, strCommand, vRecv);
+        ///TODO: ends
+
     }
 
 

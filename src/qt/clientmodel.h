@@ -52,7 +52,7 @@ public:
 
     //! Return number of connections, default is in- and outbound (total)
     int getNumConnections(unsigned int flags = CONNECTIONS_ALL) const;
-    QString getMasternodeCountString() const;
+    QString getFundamentalnodeCountString() const;
     int getNumBlocks() const;
     int getNumBlocksAtStartup();
 
@@ -81,7 +81,7 @@ private:
     BanTableModel *banTableModel;
 
     int cachedNumBlocks;
-    QString cachedMasternodeCountString;
+    QString cachedFundamentalnodeCountString;
     bool cachedReindexing;
     bool cachedImporting;
 
@@ -96,7 +96,7 @@ private:
 signals:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count);
-    void strMasternodesChanged(const QString& strMasternodes);
+    void strFundamentalnodesChanged(const QString& strFundamentalnodes);
     void alertsChanged(const QString& warnings);
     void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
 
