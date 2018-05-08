@@ -790,7 +790,9 @@ void PrivacyDialog::updateAutomintStatus()
 void PrivacyDialog::updateSPORK16Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    bool fButtonsEnabled =  ui->pushButtonMintzVIT->isEnabled();
+    bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE);
+    if (fMaintenanceMode && fButtonsEnabled) {
         // Mint zVIT
         ui->pushButtonMintzVIT->setEnabled(false);
         ui->pushButtonMintzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
@@ -798,11 +800,9 @@ void PrivacyDialog::updateSPORK16Status()
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(false);
         ui->pushButtonSpendzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
-    }
-    else {
+    } else if (!fMaintenanceMode && !fButtonsEnabled) {
         // Mint zVIT
         ui->pushButtonMintzVIT->setEnabled(true);
-        ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of VIT to convert to zVIT", 0));
 
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(true);
