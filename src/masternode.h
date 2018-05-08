@@ -38,7 +38,7 @@
 #define START_MASTERNODE_PAYMENTS_TESTNET 1511347576
 #define START_MASTERNODE_PAYMENTS 1511347576
 
-static const int64_t MASTERNODEAMOUNT = 25000 ;
+static const int64_t MASTERNODEAMOUNT = 20000 ;
 extern std::string strMasterNodePrivKey;
 
 using namespace std;
