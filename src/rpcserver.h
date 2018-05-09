@@ -293,6 +293,7 @@ extern UniValue verifychain(const UniValue& params, bool fHelp);
 extern UniValue getchaintips(const UniValue& params, bool fHelp);
 extern UniValue invalidateblock(const UniValue& params, bool fHelp);
 extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
+extern UniValue getaccumulatorvalues(const UniValue& params, bool fHelp);
 
 extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcfundamentalnode.cpp
 extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
