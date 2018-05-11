@@ -25,6 +25,7 @@
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
+#include "zpivchain.h"
 
 #include "masternode.h"
 
