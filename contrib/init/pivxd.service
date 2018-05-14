@@ -1,19 +1,19 @@
 [Unit]
-Description=PIVX's distributed currency daemon
+Description=VITAE's distributed currency daemon
 After=network.target
 
 [Service]
-User=pivx
-Group=pivx
+User=vitae
+Group=vitae
 
 Type=forking
-PIDFile=/var/lib/pivxd/pivxd.pid
+PIDFile=/var/lib/vitaed/vitaed.pid
 
-ExecStart=/usr/bin/pivxd -daemon -pid=/var/lib/pivxd/pivxd.pid \
-          -conf=/etc/pivx/pivx.conf -datadir=/var/lib/pivxd
+ExecStart=/usr/bin/vitaed -daemon -pid=/var/lib/vitaed/vitaed.pid \
+          -conf=/etc/vitae/vitae.conf -datadir=/var/lib/vitaed
 
-ExecStop=-/usr/bin/pivx-cli -conf=/etc/pivx/pivx.conf \
-         -datadir=/var/lib/pivxd stop
+ExecStop=-/usr/bin/vitae-cli -conf=/etc/vitae/vitae.conf \
+         -datadir=/var/lib/vitaed stop
 
 Restart=always
 PrivateTmp=true

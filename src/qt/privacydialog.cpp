@@ -14,7 +14,7 @@
 #include "sendcoinsentry.h"
 #include "walletmodel.h"
 #include "coincontrol.h"
-#include "zpivcontroldialog.h"
+#include "zVitcontroldialog.h"
 #include "spork.h"
 
 #include <QClipboard>
@@ -293,19 +293,19 @@ void PrivacyDialog::on_pushButtonSpendzVIT_clicked()
     sendzVIT();
 }
 
-void PrivacyDialog::on_pushButtonZPivControl_clicked()
+void PrivacyDialog::on_pushButtonZVitControl_clicked()
 {
     if (!walletModel || !walletModel->getOptionsModel())
         return;
 
-    ZPivControlDialog* zPivControl = new ZPivControlDialog(this);
-    zPivControl->setModel(walletModel);
-    zPivControl->exec();
+    ZVitControlDialog* zVitControl = new ZVitControlDialog(this);
+    zVitControl->setModel(walletModel);
+    zVitControl->exec();
 }
 
-void PrivacyDialog::setZPivControlLabels(int64_t nAmount, int nQuantity)
+void PrivacyDialog::setZVitControlLabels(int64_t nAmount, int nQuantity)
 {
-    ui->labelzPivSelected_int->setText(QString::number(nAmount));
+    ui->labelzVitSelected_int->setText(QString::number(nAmount));
     ui->labelQuantitySelected_int->setText(QString::number(nQuantity));
 }
 
@@ -411,10 +411,10 @@ void PrivacyDialog::sendzVIT()
     ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware. \nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zPiv selector if applicable
+    // use mints from zVit selector if applicable
     vector<CZerocoinMint> vMintsSelected;
-    if (!ZPivControlDialog::listSelectedMints.empty()) {
-        vMintsSelected = ZPivControlDialog::GetSelectedMints();
+    if (!ZVitControlDialog::listSelectedMints.empty()) {
+        vMintsSelected = ZVitControlDialog::GetSelectedMints();
     }
 
     // Spend zVIT
@@ -451,7 +451,7 @@ void PrivacyDialog::sendzVIT()
     }
 
     if (walletModel && walletModel->getAddressTableModel()) {
-        // If zPiv was spent successfully update the addressbook with the label
+        // If zVit was spent successfully update the addressbook with the label
         std::string labelText = ui->addAsLabel->text().toStdString();
         if (!labelText.empty())
             walletModel->updateAddressBookLabels(address.Get(), labelText, "send");
@@ -459,9 +459,9 @@ void PrivacyDialog::sendzVIT()
             walletModel->updateAddressBookLabels(address.Get(), "(no label)", "send");
     }
 
-    // Clear zpiv selector in case it was used
-    ZPivControlDialog::listSelectedMints.clear();
-    ui->labelzPivSelected_int->setText(QString("0"));
+    // Clear zVit selector in case it was used
+    ZVitControlDialog::listSelectedMints.clear();
+    ui->labelzVitSelected_int->setText(QString("0"));
     ui->labelQuantitySelected_int->setText(QString("0"));
 
     // Some statistics for entertainment
@@ -469,7 +469,7 @@ void PrivacyDialog::sendzVIT()
     CAmount nValueIn = 0;
     int nCount = 0;
     for (CZerocoinSpend spend : receipt.GetSpends()) {
-        strStats += tr("zPiv Spend #: ") + QString::number(nCount) + ", ";
+        strStats += tr("zVit Spend #: ") + QString::number(nCount) + ", ";
         strStats += tr("denomination: ") + QString::number(spend.GetDenomination()) + ", ";
         strStats += tr("serial: ") + spend.GetSerial().ToString().c_str() + "\n";
         strStats += tr("Spend is 1 of : ") + QString::number(spend.GetMintCount()) + " mints in the accumulator\n";
@@ -478,13 +478,13 @@ void PrivacyDialog::sendzVIT()
 
     CAmount nValueOut = 0;
     for (const CTxOut& txout: wtxNew.vout) {
-        strStats += tr("value out: ") + FormatMoney(txout.nValue).c_str() + " Piv, ";
+        strStats += tr("value out: ") + FormatMoney(txout.nValue).c_str() + " Vit, ";
         nValueOut += txout.nValue;
 
         strStats += tr("address: ");
         CTxDestination dest;
         if(txout.scriptPubKey.IsZerocoinMint())
-            strStats += tr("zPiv Mint");
+            strStats += tr("zVit Mint");
         else if(ExtractDestination(txout.scriptPubKey, dest))
             strStats += tr(CBitcoinAddress(dest).ToString().c_str());
         strStats += "\n";

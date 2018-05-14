@@ -183,7 +183,7 @@
     </message>
     </context>
 <context>
-    <name>ZPivControlDialog</name>
+    <name>ZVitControlDialog</name>
     </context>
 <context>
     <name>vitae-core</name>

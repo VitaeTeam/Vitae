@@ -1,6 +1,6 @@
 [Protocol]
-exec=pivx-qt '%u'
-protocol=pivx
+exec=vitae-qt '%u'
+protocol=vitae
 input=none
 output=none
 helper=true

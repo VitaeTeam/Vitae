@@ -176,16 +176,16 @@
         <translation>Wallet-Verschlüsselung bestätigen</translation>
     </message>
     <message>
-        <source>VITAE will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your PIVs from being stolen by malware infecting your computer.</source>
-        <translation>Die Anwendungs wird nun geschlossen um die Verschlüsselung abzuschließen. Bitte beachten Sie, dass auch Verschlüsselung nicht nicht vollständig vor Diebstahl ihrer PIVs durch Schadsoftware schützt, die ihren Computer befällt.</translation>
+        <source>VITAE will close now to finish the encryption process. Remember that encrypting your wallet cannot fully protect your VITs from being stolen by malware infecting your computer.</source>
+        <translation>Die Anwendungs wird nun geschlossen um die Verschlüsselung abzuschließen. Bitte beachten Sie, dass auch Verschlüsselung nicht nicht vollständig vor Diebstahl ihrer VITs durch Schadsoftware schützt, die ihren Computer befällt.</translation>
     </message>
     <message>
         <source>Are you sure you wish to encrypt your wallet?</source>
         <translation>Sind Sie sich sicher, dass Sie ihre Wallet verschlüsseln möchten?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR PIV&lt;/b&gt;!</source>
-        <translation>Warnung: Wenn Sie ihre Wallet verschlüsseln und Ihre Passphrase verlieren werden Sie &lt;b&gt;alle ihre PIVs verlieren&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
+        <translation>Warnung: Wenn Sie ihre Wallet verschlüsseln und Ihre Passphrase verlieren werden Sie &lt;b&gt;alle ihre VITs verlieren&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -618,8 +618,8 @@
         <translation>&amp;Privatsphäre</translation>
     </message>
     <message>
-        <source>Privacy Action for zPIV and Obfuscation</source>
-        <translation>Privatsphäre Aktion für zPIV und Verschleierung</translation>
+        <source>Privacy Action for zVIT and Obfuscation</source>
+        <translation>Privatsphäre Aktion für zVIT und Verschleierung</translation>
     </message>
     <message>
         <source>&amp;Masternodes</source>
@@ -1539,32 +1539,32 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
         <translation>Bitte den gewünschten Privatsphäre Level auswählen.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 PIV</source>
-        <translation>2 separate Masternodes verwenden um bis zu 10000 PIV zu mixen</translation>
+        <source>Use 2 separate masternodes to mix funds up to 10000 VIT</source>
+        <translation>2 separate Masternodes verwenden um bis zu 10000 VIT zu mixen</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 PIV</source>
-        <translation>8 separate Masternodes verwenden um bis zu 10000 PIV zu mixen</translation>
+        <source>Use 8 separate masternodes to mix funds up to 10000 VIT</source>
+        <translation>8 separate Masternodes verwenden um bis zu 10000 VIT zu mixen</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>16 separate Masternodes verwenden</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 PIV to anonymize 10000 PIV</source>
-        <translation>Diese Option ist die schnellst und kostet ungefähr ~0.025 PIV um 10000 PIV zu anonymisieren </translation>
+        <source>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</source>
+        <translation>Diese Option ist die schnellst und kostet ungefähr ~0.025 VIT um 10000 VIT zu anonymisieren </translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 PIV to anonymize 10000 PIV</source>
-        <translation>Diese Option ist angemessen schnell und kostet ungefähr  0.05 PIV um 10000 PIV zu anonymisieren</translation>
+        <source>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</source>
+        <translation>Diese Option ist angemessen schnell und kostet ungefähr  0.05 VIT um 10000 VIT zu anonymisieren</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
         <translation>Diese Option ist die langsamste und sicherste Option. Die Verwendung maximaler Anonymisierung kostet</translation>
     </message>
     <message>
-        <source>0.1 PIV per 10000 PIV you anonymize.</source>
-        <translation>0.1 PIV per 10000 PIV die anonymisiert werden.</translation>
+        <source>0.1 VIT per 10000 VIT you anonymize.</source>
+        <translation>0.1 VIT per 10000 VIT die anonymisiert werden.</translation>
     </message>
     <message>
         <source>Obfuscation Configuration</source>
@@ -1707,20 +1707,20 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Port mit &amp;UPnP mappen</translation>
     </message>
     <message>
-        <source>Percentage of incoming PIV which get automatically converted to zPIV via Zerocoin Protocol (min: 10%)</source>
-        <translation>Anteil des einkommenden PIV, welcher automatisch zu zPIV via Zerocoin Protokoll konvertiert wird (min: 10%)</translation>
+        <source>Percentage of incoming VIT which get automatically converted to zVIT via Zerocoin Protocol (min: 10%)</source>
+        <translation>Anteil des einkommenden VIT, welcher automatisch zu zVIT via Zerocoin Protokoll konvertiert wird (min: 10%)</translation>
     </message>
     <message>
-        <source>Percentage of autominted zPIV</source>
-        <translation>Prozentsatz der automatisierten zPIV</translation>
+        <source>Percentage of autominted zVIT</source>
+        <translation>Prozentsatz der automatisierten zVIT</translation>
     </message>
     <message>
-        <source>Wait with automatic conversion to Zerocoin until enough PIV for this denomination is available</source>
-        <translation>Warte mit automatischer Konvertierung zu Zerocoin, bis genügend PIV für diese Stückelung verfügbar ist</translation>
+        <source>Wait with automatic conversion to Zerocoin until enough VIT for this denomination is available</source>
+        <translation>Warte mit automatischer Konvertierung zu Zerocoin, bis genügend VIT für diese Stückelung verfügbar ist</translation>
     </message>
     <message>
-        <source>Preferred Automint zPIV Denomination</source>
-        <translation>Bevorzugte automatisierte zPIV Stückelung </translation>
+        <source>Preferred Automint zVIT Denomination</source>
+        <translation>Bevorzugte automatisierte zVIT Stückelung </translation>
     </message>
     <message>
         <source>Connect to the VITAE network through a SOCKS5 proxy.</source>
@@ -1854,8 +1854,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Formular</translation>
     </message>
     <message>
-        <source>PIV Balances</source>
-        <translation>PIV Bilanzen</translation>
+        <source>VIT Balances</source>
+        <translation>VIT Bilanzen</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1922,12 +1922,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Kombinierte Bilanz (einschließlich unreifer Coins)</translation>
     </message>
     <message>
-        <source>PIV:</source>
-        <translation>PIV:</translation>
+        <source>VIT:</source>
+        <translation>VIT:</translation>
     </message>
     <message>
-        <source>zPIV:</source>
-        <translation>zPIV:</translation>
+        <source>zVIT:</source>
+        <translation>zVIT:</translation>
     </message>
     <message>
         <source>0 %</source>
@@ -2055,12 +2055,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
 <context>
     <name>PrivacyDialog</name>
     <message>
-        <source>PIV which were anonymized via Zerocin Protocol</source>
-        <translation>PIV, die über das Zerocin-Protokoll anonymisiert wurden</translation>
+        <source>VIT which were anonymized via Zerocin Protocol</source>
+        <translation>VIT, die über das Zerocin-Protokoll anonymisiert wurden</translation>
     </message>
     <message>
-        <source>Zerocoin PIV (zPIV)</source>
-        <translation>Zerocoin PIV (zPIV)</translation>
+        <source>Zerocoin VIT (zVIT)</source>
+        <translation>Zerocoin VIT (zVIT)</translation>
     </message>
     <message>
         <source>Zerocoin Actions:</source>
@@ -2071,8 +2071,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Die angezeigte Information ist möglicherweise nicht mehr aktuell. Ihre Wallet synchronisiert sich automatisch mit dem VITAE-Netzwerk, nachdem eine Verbindung hergestellt wurde. Aber dieser Vorgang ist noch nicht abgeschlossen.</translation>
     </message>
     <message>
-        <source>Enter an amount of Piv to convert to zPiv</source>
-        <translation>Eingabe des Piv-Betrags, um in zPiv umzuwandeln</translation>
+        <source>Enter an amount of Vit to convert to zVit</source>
+        <translation>Eingabe des Vit-Betrags, um in zVit umzuwandeln</translation>
     </message>
     <message>
         <source>Mint Zerocoin</source>
@@ -2083,16 +2083,16 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>0</translation>
     </message>
     <message>
-        <source>zPIV</source>
-        <translation>zPIV</translation>
+        <source>zVIT</source>
+        <translation>zVIT</translation>
     </message>
     <message>
         <source>Available for Minting:</source>
         <translation>Verfügbar für Prägung:</translation>
     </message>
     <message>
-        <source>0.000 000 00 PIV</source>
-        <translation>0.000 000 00 PIV</translation>
+        <source>0.000 000 00 VIT</source>
+        <translation>0.000 000 00 VIT</translation>
     </message>
     <message>
         <source>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</source>
@@ -2127,12 +2127,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Status und/oder Mitteilungen aus der letzten Präge-Action</translation>
     </message>
     <message>
-        <source>zPiv Control</source>
-        <translation>zPiv Kontrolle</translation>
+        <source>zVit Control</source>
+        <translation>zVit Kontrolle</translation>
     </message>
     <message>
-        <source>zPiv Selected:</source>
-        <translation>zPiv Ausgewählt:</translation>
+        <source>zVit Selected:</source>
+        <translation>zVit Ausgewählt:</translation>
     </message>
     <message>
         <source>Quantity Selected:</source>
@@ -2151,8 +2151,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Verfügbare Bilanz:</translation>
     </message>
     <message>
-        <source>0 zPIV</source>
-        <translation>0 zPIV</translation>
+        <source>0 zVIT</source>
+        <translation>0 zVIT</translation>
     </message>
     <message>
         <source>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</source>
@@ -2387,8 +2387,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Erfolgreich geprägt</translation>
     </message>
     <message>
-        <source> zPIV in </source>
-        <translation> zPIV in </translation>
+        <source> zVIT in </source>
+        <translation> zVIT in </translation>
     </message>
     <message>
         <source> sec. Used denominations:
@@ -2481,8 +2481,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Ausgeben Zerocoin fehlgeschlagen mit Status =</translation>
     </message>
     <message>
-        <source>zPiv Spend #: </source>
-        <translation>zPIV Ausgeben #:</translation>
+        <source>zVit Spend #: </source>
+        <translation>zVIT Ausgeben #:</translation>
     </message>
     <message>
         <source>denomination: </source>
@@ -2505,8 +2505,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Adresse:</translation>
     </message>
     <message>
-        <source>zPiv Mint</source>
-        <translation>zPiv Prägen</translation>
+        <source>zVit Mint</source>
+        <translation>zVit Prägen</translation>
     </message>
     <message>
         <source>Sending successful, return code: </source>
@@ -3063,7 +3063,7 @@ Bitte haben Sie Geduld...</translation>
     <name>SendCoinsDialog</name>
     <message>
         <source>Send Coins</source>
-        <translation>PIVs überweisen</translation>
+        <translation>VITs überweisen</translation>
     </message>
     <message>
         <source>Coin Control Features</source>
@@ -3134,8 +3134,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>UTXO Größe:</translation>
     </message>
     <message>
-        <source>0 PIV</source>
-        <translation>0 PIV</translation>
+        <source>0 VIT</source>
+        <translation>0 VIT</translation>
     </message>
     <message>
         <source>Transaction Fee:</source>
@@ -3186,12 +3186,12 @@ Bitte haben Sie Geduld...</translation>
         <translation>Coins automatisch ausgewählt</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 uPIVs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 uPIVs in fee,&lt;br /&gt;while "at least" pays 1000 uPIVs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>Wenn die kundenspezifische Gebühr auf 1000 uPIVs eingestellt ist und die Transaktion nur 250 Bytes beträgt, dann zahlt man "pro Kilobyte" nur 250 uPIVs an Gebühr,&lt;br /&gt;während man "mindestens" 1000 uPIVs bezahlt. Für Transaktionen, die größer sind als ein Kilobyte, bezahlen sie mit Kilobyte.</translation>
+        <source>If the custom fee is set to 1000 uVITs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 uVITs in fee,&lt;br /&gt;while "at least" pays 1000 uVITs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>Wenn die kundenspezifische Gebühr auf 1000 uVITs eingestellt ist und die Transaktion nur 250 Bytes beträgt, dann zahlt man "pro Kilobyte" nur 250 uVITs an Gebühr,&lt;br /&gt;während man "mindestens" 1000 uVITs bezahlt. Für Transaktionen, die größer sind als ein Kilobyte, bezahlen sie mit Kilobyte.</translation>
     </message>
     <message>
-        <source>If the custom fee is set to 1000 uPIVs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 uPIVs in fee,&lt;br /&gt;while "total at least" pays 1000 uPIVs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
-        <translation>Wenn die kundenspezifische Gebühr auf 1000 uPIVs eingestellt ist und die Transaktion nur 250 Bytes beträgt, dann zahlt man "pro Kilobyte" nur 250 uPIVs an Gebühr,&lt;br /&gt;während man "insgesamt mindestens" 1000 uPIVs bezahlt. Für Transaktionen, die größer sind als ein Kilobyte, bezahlen sie mit Kilobyte.</translation>
+        <source>If the custom fee is set to 1000 uVITs and the transaction is only 250 bytes, then "per kilobyte" only pays 250 uVITs in fee,&lt;br /&gt;while "total at least" pays 1000 uVITs. For transactions bigger than a kilobyte both pay by kilobyte.</source>
+        <translation>Wenn die kundenspezifische Gebühr auf 1000 uVITs eingestellt ist und die Transaktion nur 250 Bytes beträgt, dann zahlt man "pro Kilobyte" nur 250 uVITs an Gebühr,&lt;br /&gt;während man "insgesamt mindestens" 1000 uVITs bezahlt. Für Transaktionen, die größer sind als ein Kilobyte, bezahlen sie mit Kilobyte.</translation>
     </message>
     <message>
         <source>Paying only the minimum fee is just fine as long as there is less transaction volume than space in the blocks.&lt;br /&gt;But be aware that this can end up in a never confirming transaction once there is more demand for VITAE transactions than the network can process.</source>
@@ -3242,8 +3242,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Empfänge&amp;r hinzufügen</translation>
     </message>
     <message>
-        <source>Anonymized PIV</source>
-        <translation>Anonymisierte PIV</translation>
+        <source>Anonymized VIT</source>
+        <translation>Anonymisierte VIT</translation>
     </message>
     <message>
         <source>SwiftTX</source>
@@ -3817,7 +3817,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
     <message>
         <source>Generated coins must mature %1 blocks before they can be spent. When you generated this block, it was broadcast to the network to be added to the block chain. If it fails to get into the chain, its state will change to "not accepted" and it won't be spendable. This may occasionally happen if another node generates a block within a few seconds of yours.</source>
-        <translation>Erzeugte PIVs müssen %1 Blöcke lang reifen, bevor sie ausgegeben werden können. Als Sie diesen Block erzeugten, wurde er an das Netzwerk übertragen, um ihn der Blockkette hinzuzufügen. Falls dies fehlschlägt wird der Status in "nicht angenommen" geändert und Sie werden keine PIVs gutgeschrieben bekommen. Das kann gelegentlich passieren, wenn ein anderer Knoten einen Block fast zeitgleich erzeugt.</translation>
+        <translation>Erzeugte VITs müssen %1 Blöcke lang reifen, bevor sie ausgegeben werden können. Als Sie diesen Block erzeugten, wurde er an das Netzwerk übertragen, um ihn der Blockkette hinzuzufügen. Falls dies fehlschlägt wird der Status in "nicht angenommen" geändert und Sie werden keine VITs gutgeschrieben bekommen. Das kann gelegentlich passieren, wenn ein anderer Knoten einen Block fast zeitgleich erzeugt.</translation>
     </message>
     <message>
         <source>Debug information</source>
@@ -3962,32 +3962,32 @@ Bitte haben Sie Geduld...</translation>
         <translation>Verschleiert</translation>
     </message>
     <message>
-        <source>Converted Piv to zPiv</source>
-        <translation>Umgewandeltes PIV zu zPIV</translation>
+        <source>Converted Vit to zVit</source>
+        <translation>Umgewandeltes VIT zu zVIT</translation>
     </message>
     <message>
-        <source>Spent zPiv</source>
-        <translation>Ausgeben zPIV</translation>
+        <source>Spent zVit</source>
+        <translation>Ausgeben zVIT</translation>
     </message>
     <message>
-        <source>Received Piv from zPiv</source>
-        <translation>Empfangene PIV von zPIV</translation>
+        <source>Received Vit from zVit</source>
+        <translation>Empfangene VIT von zVIT</translation>
     </message>
     <message>
-        <source>Minted Change as zPiv from zPiv Spend</source>
-        <translation>Geprägtes Wechselgeld als zPIV von zPIV Ausgabe</translation>
+        <source>Minted Change as zVit from zVit Spend</source>
+        <translation>Geprägtes Wechselgeld als zVIT von zVIT Ausgabe</translation>
     </message>
     <message>
-        <source>Converted zPiv to Piv</source>
-        <translation>Umgewandeltes zPIV zu PIV</translation>
+        <source>Converted zVit to Vit</source>
+        <translation>Umgewandeltes zVIT zu VIT</translation>
     </message>
     <message>
         <source>watch-only</source>
         <translation>nur beobachtet</translation>
     </message>
     <message>
-        <source>zPiv Accumulator</source>
-        <translation>zPIV Speicher</translation>
+        <source>zVit Accumulator</source>
+        <translation>zVIT Speicher</translation>
     </message>
     <message>
         <source>(n/a)</source>
@@ -4097,8 +4097,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Masternode Vergütung</translation>
     </message>
     <message>
-        <source>Received Piv from zPiv</source>
-        <translation>Empfangen PIV von zPIV</translation>
+        <source>Received Vit from zVit</source>
+        <translation>Empfangen VIT von zVIT</translation>
     </message>
     <message>
         <source>Zerocoin Mint</source>
@@ -4109,8 +4109,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Zerocoin Ausgabe</translation>
     </message>
     <message>
-        <source>Zerocoin Spend, Change in zPiv</source>
-        <translation>Zerocoin Ausgabe, Wechselgeld in zPIV</translation>
+        <source>Zerocoin Spend, Change in zVit</source>
+        <translation>Zerocoin Ausgabe, Wechselgeld in zVIT</translation>
     </message>
     <message>
         <source>Zerocoin Spend to Self</source>
@@ -4231,11 +4231,11 @@ Bitte haben Sie Geduld...</translation>
     <name>WalletModel</name>
     <message>
         <source>Send Coins</source>
-        <translation>PIVs überweisen</translation>
+        <translation>VITs überweisen</translation>
     </message>
     <message>
-        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 PIV.</source>
-        <translation>SwiftTX unterstützt das Versenden von Beträgen dieser Höhe noch nicht. Transaktionen sind zur Zeit auf maximal %1 PIV begrenzt.</translation>
+        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VIT.</source>
+        <translation>SwiftTX unterstützt das Versenden von Beträgen dieser Höhe noch nicht. Transaktionen sind zur Zeit auf maximal %1 VIT begrenzt.</translation>
     </message>
 </context>
 <context>
@@ -4278,10 +4278,10 @@ Bitte haben Sie Geduld...</translation>
     </message>
 </context>
 <context>
-    <name>ZPivControlDialog</name>
+    <name>ZVitControlDialog</name>
     <message>
-        <source>Select zPiv to Spend</source>
-        <translation>Auswahl zPIV als Ausgabe</translation>
+        <source>Select zVit to Spend</source>
+        <translation>Auswahl zVIT als Ausgabe</translation>
     </message>
     <message>
         <source>Quantity</source>
@@ -4292,8 +4292,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>0</translation>
     </message>
     <message>
-        <source>zPiv</source>
-        <translation>zPIV</translation>
+        <source>zVit</source>
+        <translation>zVIT</translation>
     </message>
     <message>
         <source>Select/Deselect All</source>
@@ -4379,12 +4379,12 @@ Bitte haben Sie Geduld...</translation>
         <translation>Befehl ausführen, wenn sich der beste Block ändert (%s in cmd wird durch Blockhash ersetzt)</translation>
     </message>
     <message>
-        <source>Fees (in PIV/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
-        <translation>Gebühren (in PIV/kB) kleiner als diese gelten als Null-Gebühr für die Weiterleitung (default: %s)</translation>
+        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
+        <translation>Gebühren (in VIT/kB) kleiner als diese gelten als Null-Gebühr für die Weiterleitung (default: %s)</translation>
     </message>
     <message>
-        <source>Fees (in PIV/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
-        <translation>Gebühren (in PIV/kB) kleiner als diese werden als Null-Gebühr für die Transaktionserstellung betrachtet (default: %s)</translation>
+        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>Gebühren (in VIT/kB) kleiner als diese werden als Null-Gebühr für die Transaktionserstellung betrachtet (default: %s)</translation>
     </message>
     <message>
         <source>Flush database activity from memory pool to disk log every &lt;n&gt; megabytes (default: %u)</source>

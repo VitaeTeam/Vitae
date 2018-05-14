@@ -252,7 +252,7 @@
                            </size>
                           </property>
                           <property name="toolTip">
-                           <string>Enter an amount of Piv to convert to zPiv</string>
+                           <string>Enter an amount of Vit to convert to zVit</string>
                           </property>
                           <property name="text">
                            <string>Mint Zerocoin</string>
@@ -304,7 +304,7 @@
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Enter an amount of Piv to convert to zPiv</string>
+                           <string>Enter an amount of Vit to convert to zVit</string>
                           </property>
                           <property name="text">
                            <string>0.000 000 00 VIT</string>
@@ -606,21 +606,21 @@
                          <number>0</number>
                         </property>
                         <item>
-                         <widget class="QPushButton" name="pushButtonZPivControl">
+                         <widget class="QPushButton" name="pushButtonZVitControl">
                           <property name="text">
-                           <string>zPiv Control</string>
+                           <string>zVit Control</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzPivSelected">
+                         <widget class="QLabel" name="labelzVitSelected">
                           <property name="text">
-                           <string>zPiv Selected:</string>
+                           <string>zVit Selected:</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzPivSelected_int">
+                         <widget class="QLabel" name="labelzVitSelected_int">
                           <property name="text">
                            <string>0</string>
                           </property>

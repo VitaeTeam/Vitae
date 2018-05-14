@@ -2,24 +2,24 @@
 
 # backward compatibility for existing gentoo layout
 #
-if [ -d "/var/lib/pivx/.pivx" ]; then
-	BITCOIND_DEFAULT_DATADIR="/var/lib/pivx/.pivx"
+if [ -d "/var/lib/vitae/.vitae" ]; then
+	BITCOIND_DEFAULT_DATADIR="/var/lib/vitae/.vitae"
 else
-	BITCOIND_DEFAULT_DATADIR="/var/lib/pivxd"
+	BITCOIND_DEFAULT_DATADIR="/var/lib/vitaed"
 fi
 
-BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/pivx/pivx.conf}
-BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/pivxd}
-BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/pivxd.pid}
+BITCOIND_CONFIGFILE=${BITCOIND_CONFIGFILE:-/etc/vitae/vitae.conf}
+BITCOIND_PIDDIR=${BITCOIND_PIDDIR:-/var/run/vitaed}
+BITCOIND_PIDFILE=${BITCOIND_PIDFILE:-${BITCOIND_PIDDIR}/vitaed.pid}
 BITCOIND_DATADIR=${BITCOIND_DATADIR:-${BITCOIND_DEFAULT_DATADIR}}
-BITCOIND_USER=${BITCOIND_USER:-pivx}
-BITCOIND_GROUP=${BITCOIND_GROUP:-pivx}
-BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/pivxd}
+BITCOIND_USER=${BITCOIND_USER:-vitae}
+BITCOIND_GROUP=${BITCOIND_GROUP:-vitae}
+BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/vitaed}
 
-name="PIVX Core Daemon"
-description="PIVX crypto-currency p2p network daemon"
+name="VITAE Core Daemon"
+description="VITAE crypto-currency p2p network daemon"
 
-command="/usr/bin/pivxd"
+command="/usr/bin/vitaed"
 command_args="-pid=\"${BITCOIND_PIDFILE}\" \
 		-conf=\"${BITCOIND_CONFIGFILE}\" \
 		-datadir=\"${BITCOIND_DATADIR}\" \
@@ -65,7 +65,7 @@ checkconfig()
 {
 	if ! grep -qs '^rpcpassword=' "${BITCOIND_CONFIGFILE}" ; then
 		eerror ""
-		eerror "ERROR: You must set a secure rpcpassword to run pivxd."
+		eerror "ERROR: You must set a secure rpcpassword to run vitaed."
 		eerror "The setting must appear in ${BITCOIND_CONFIGFILE}"
 		eerror ""
 		eerror "This password is security critical to securing wallets "
@@ -78,7 +78,7 @@ checkconfig()
 		eerror "It is also recommended that you also set alertnotify so you are "
 		eerror "notified of problems:"
 		eerror ""
-		eerror "ie: alertnotify=echo %%s | mail -s \"PIVX Alert\"" \
+		eerror "ie: alertnotify=echo %%s | mail -s \"VITAE Alert\"" \
 			"admin@foo.com"
 		eerror ""
 		return 1
