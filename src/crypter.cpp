@@ -255,7 +255,6 @@ bool CCryptoKeyStore::Unlock(const CKeyingMaterial& vMasterKeyIn)
 
         uint256 hashSeed;
         if (CWalletDB(pwalletMain->strWalletFile).ReadCurrentSeedHash(hashSeed)) {
-
             uint256 nSeed;
             if (!GetDeterministicSeed(hashSeed, nSeed)) {
                 return error("Failed to read zVIT seed from DB. Wallet is probably corrupt.");
