@@ -11,8 +11,8 @@
 
 #include "init.h"
 
-#include "accumulatorcheckpoints.h"
-#include "accumulators.h"
+#include "zvit/accumulatorcheckpoints.h"
+#include "zvit/accumulators.h"
 #include "activefundamentalnode.h"
 #include "addrman.h"
 #include "amount.h"
@@ -46,13 +46,12 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
-#include "zvitchain.h"
+#include "zvit/zvitchain.h"
 
 #ifdef ENABLE_WALLET
 #include "db.h"
 #include "wallet.h"
 #include "walletdb.h"
-#include "accumulators.h"
 
 #endif
 

@@ -70,10 +70,6 @@ endif
 BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
-  accumulators.h \
-  accumulatorcheckpoints.h \
-  accumulatorcheckpoints.json.h \
-  accumulatormap.h \
   addrman.h \
   alert.h \
   allocators.h \
@@ -95,9 +91,7 @@ BITCOIN_CORE_H = \
   compat/sanity.h \
   compressor.h \
   primitives/block.h \
-  primitives/deterministicmint.h \
   primitives/transaction.h \
-  primitives/zerocoin.h \
   core_io.h \
   crypter.h \
   denomination_functions.h \
@@ -134,7 +128,6 @@ BITCOIN_CORE_H = \
   fundamentalnodeconfig.h \
   merkleblock.h \
   miner.h \
-  mintpool.h \
   mruset.h \
   netbase.h \
   net.h \
@@ -182,11 +175,19 @@ BITCOIN_CORE_H = \
   wallet_ismine.h \
   walletdb.h \
   zvitchain.h \
-  zvittracker.h \
-  zvitwallet.h \
   genwit.h \
   concurrentqueue.h \
   lightzvitthread.h \
+  zvit/accumulators.h \
+  zvit/accumulatorcheckpoints.h \
+  zvit/accumulatorcheckpoints.json.h \
+  zvit/accumulatormap.h \
+  zvit/deterministicmint.h \
+  zvit/mintpool.h \
+  zvit/witness.h \
+  zvit/zerocoin.h \
+  zvit/zvittracker.h \
+  zvit/zvitwallet.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -271,17 +272,19 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
-  mintpool.cpp \
   rpcdump.cpp \
-  primitives/deterministicmint.cpp \
-  primitives/zerocoin.cpp \
+  zvit/deterministicmint.cpp \
+  zvit/zerocoin.cpp \
   rpcwallet.cpp \
   kernel.cpp \
   wallet.cpp \
   wallet_ismine.cpp \
   walletdb.cpp \
-  zvitwallet.cpp \
-  zvittracker.cpp \
+  zvit/accumulators.cpp \
+  zvit/mintpool.cpp \
+  zvit/witness.cpp \
+  zvit/zvitwallet.cpp \
+  zvit/zvittracker.cpp \
   stakeinput.cpp \
   genwit.cpp \
   lightzvitthread.cpp \
@@ -353,9 +356,9 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
   activemasternode.cpp \
-  accumulators.cpp \
-  accumulatorcheckpoints.cpp \
-  accumulatormap.cpp \
+  zvit/accumulators.cpp \
+  zvit/accumulatorcheckpoints.cpp \
+  zvit/accumulatormap.cpp \
   allocators.cpp \
   amount.cpp \
   base58.cpp \
@@ -364,13 +367,13 @@ libbitcoin_common_a_SOURCES = \
   coins.cpp \
   compressor.cpp \
   primitives/block.cpp \
-  primitives/deterministicmint.cpp \
+  zpiv/deterministicmint.cpp \
   primitives/transaction.cpp \
-  primitives/zerocoin.cpp \
   masternode.cpp \
   masternode-pos.cpp \
   masternodeman.cpp \
   masternodeconfig.cpp \
+  zvit/zerocoin.cpp \
   core_read.cpp \
   core_write.cpp \
   hash.cpp \
@@ -534,6 +537,13 @@ CLEANFILES += primitives/*.gcda primitives/*.gcno
 CLEANFILES += script/*.gcda script/*.gcno
 CLEANFILES += univalue/*.gcda univalue/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
+CLEANFILES += obj/build.h
+
+EXTRA_DIST = leveldb
+
+
+config/pivx-config.h: config/stamp-h1
+	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
 
 DISTCLEANFILES = obj/build.h
 

@@ -25,7 +25,7 @@
 #endif
 #include "fundamentalnode-payments.h"
 #include "validationinterface.h"
-#include "accumulators.h"
+#include "zvit/accumulators.h"
 #include "blocksignature.h"
 #include "spork.h"
 #include "invalid.h"

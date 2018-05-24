@@ -18,14 +18,14 @@
 #include "main.h"
 #include "primitives/block.h"
 #include "primitives/transaction.h"
-#include "primitives/zerocoin.h"
+#include "zpiv/zerocoin.h"
 #include "ui_interface.h"
 #include "util.h"
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
-#include "zvitwallet.h"
-#include "zvittracker.h"
+#include "zvit/zvitwallet.h"
+#include "zvit/zvittracker.h"
 
 #include <algorithm>
 #include <map>

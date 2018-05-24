@@ -10,7 +10,7 @@
 #define BITCOIN_RPCSERVER_H
 
 #include "amount.h"
-#include "primitives/zerocoin.h"
+#include "zvit/zerocoin.h"
 #include "rpcprotocol.h"
 #include "uint256.h"
 

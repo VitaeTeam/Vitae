@@ -15,11 +15,10 @@
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
-#include "accumulatormap.h"
-#include "accumulators.h"
+#include "zpiv/accumulatormap.h"
+#include "zpiv/accumulators.h"
 #include "wallet.h"
 #include "zvitchain.h"
-
 #include <stdint.h>
 #include <fstream>
 #include <iostream>
