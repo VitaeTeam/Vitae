@@ -53,7 +53,7 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 // + Contains no strange transactions
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-    (259201, uint256("1c9121bf9329a6234bfd1ea2d91515f19cd96990725265253f4b164283ade5dd"));
+    (0, uint256("0000041e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"));
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
@@ -162,7 +162,11 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("172.245.36.3", "172.245.36.3"));
+        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io")); // vitae
+		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
+		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 71);
@@ -256,10 +260,12 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "vitae-testnet.seed.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "vitae-testnet.seed2.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net"));
-        vSeeds.push_back(CDNSSeedData("88.198.192.110", "88.198.192.110"));
+        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io")); // vitae
+		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
+		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
+		
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet vitae addresses start with 'x' or 'y'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet vitae script addresses start with '8' or '9'
