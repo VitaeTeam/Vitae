@@ -256,10 +256,12 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "vitae-testnet.seed.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("fuzzbawls.pw", "vitae-testnet.seed2.fuzzbawls.pw"));
-        vSeeds.push_back(CDNSSeedData("s3v3nh4cks.ddns.net", "s3v3nh4cks.ddns.net"));
-        vSeeds.push_back(CDNSSeedData("88.198.192.110", "88.198.192.110"));
+        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io"));
+		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144"));
+		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187"));
+		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science"));
+		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science"));
+		
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet vitae addresses start with 'x' or 'y'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet vitae script addresses start with '8' or '9'
