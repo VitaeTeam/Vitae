@@ -162,7 +162,11 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("172.245.36.3", "172.245.36.3"));
+        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io")); // vitae
+		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
+		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 71);
@@ -256,11 +260,11 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io"));
-		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144"));
-		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187"));
-		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science"));
-		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science"));
+        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io")); // vitae
+		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
+		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
+		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
 		
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet vitae addresses start with 'x' or 'y'
