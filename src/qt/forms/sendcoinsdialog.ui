@@ -1676,13 +1676,6 @@
             </spacer>
            </item>
            <item>
-            <widget class="QCheckBox" name="checkBoxFnPayment">
-             <property name="text">
-              <string>FundamentalNode Payment</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_2">
              <property name="spacing">
               <number>3</number>
