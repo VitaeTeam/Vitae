@@ -68,7 +68,7 @@ background-color: qlineargradient(y1:0, y2: 1, stop: 0 #5dad71, stop: 0.75 #5dad
 border:0px solid #333;
 padding:1;
 margin:0;
-width: 70px;
+width: 110px;
 }
 
 QToolBar > QToolButton {
@@ -83,7 +83,7 @@ min-height:2.5em;
 padding: 0em 0em;
 font-size: 11px;
 color:#aaa;
-width: 80px;
+width: 100px;
 height: 60px;
 }
 

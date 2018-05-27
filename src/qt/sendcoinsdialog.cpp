@@ -251,12 +251,7 @@ void SendCoinsDialog::on_sendButton_clicked()
         return;
     }
 
-    if(ui->checkBoxFnPayment->isChecked()){
-            IsFundamentalNodePayment = true;
-            LogPrintf("IsFundamnetalNode is true. \n");
-    } else {
-        LogPrintf("IsFundamnetalNode is false. \n");
-    }
+    
 
     //set split block in model
     CoinControlDialog::coinControl->fSplitBlock = ui->splitBlockCheckBox->checkState() == Qt::Checked;
