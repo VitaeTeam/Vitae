@@ -7,7 +7,8 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "httpserver.h"
-#include "rpcprotocol.h"
+#include "rpc/protocol.h"
+
 #include "random.h"
 #include "tinyformat.h"
 #include "primitives/transaction.h"

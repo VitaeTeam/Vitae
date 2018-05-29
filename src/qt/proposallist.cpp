@@ -21,11 +21,9 @@
 #include "masternodeconfig.h"
 #include "masternodeman.h"
 #include "walletmodel.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
 #include "ui_interface.h"
 #include "utilmoneystr.h"
-
-#include "rpcserver.h"
 #include "util.h"
 
 #include <QComboBox>
