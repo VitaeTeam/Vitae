@@ -11,7 +11,7 @@
 #include "kernel.h"
 #include "consensus/validation.h"
 #include "main.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
 #include "sync.h"
 #include "txdb.h"
 #include "util.h"
