@@ -16,12 +16,14 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QWidget>
 
-AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel* model) : QDialog(parent),
-                                                                                           ui(new Ui::AskPassphraseDialog),
-                                                                                           mode(mode),
-                                                                                           model(model),
-                                                                                           fCapsLock(false)
+AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel* model, Context context) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
+                                                                                                            ui(new Ui::AskPassphraseDialog),
+                                                                                                            mode(mode),
+                                                                                                            model(model),
+                                                                                                            context(context),
+                                                                                                            fCapsLock(false)
 {
     ui->setupUi(this);
     this->setStyleSheet(GUIUtil::loadStyleSheet());

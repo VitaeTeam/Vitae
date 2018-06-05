@@ -16,7 +16,7 @@ std::set<std::string> ZVitControlDialog::setSelectedMints;
 std::set<CMintMeta> ZVitControlDialog::setMints;
 
 ZVitControlDialog::ZVitControlDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     ui(new Ui::ZVitControlDialog),
     model(0)
 {
