@@ -2328,6 +2328,18 @@ int64_t GetBlockValue(int nHeight)
     if(nHeight ==1){
         return 1100000 * COIN;
     }
+	if(nHeight >=259200 && nHeight<518400){
+        return 20 * COIN;
+    }
+	if(nHeight >=518400 && nHeight<777600){
+        return 15 * COIN;
+    }
+	if(nHeight >=777600 && nHeight<1036800){
+        return 10 * COIN;
+    }
+	if(nHeight >=1036800){
+        return 5 * COIN;
+    }
 
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200 && nHeight > 0)
