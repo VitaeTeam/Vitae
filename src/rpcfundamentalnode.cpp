@@ -1250,7 +1250,7 @@ UniValue fundamentalnodedebug (const UniValue& params, bool fHelp)
         return activeFundamentalnode.GetStatus();
 
     CTxIn vin = CTxIn();
-    CPubKey pubkey = CScript();
+    CPubKey pubkey;
     CKey key;
     if (!activeFundamentalnode.GetFundamentalNodeVin(vin, pubkey, key))
         throw runtime_error("Missing fundamentalnode input, please look at the documentation for instructions on fundamentalnode creation\n");
