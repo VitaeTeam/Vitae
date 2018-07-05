@@ -237,7 +237,7 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
 
 void PrivacyDialog::on_pushButtonMintReset_clicked()
 {
-    ui->TEMintStatus->setPlainText(tr("Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware. \nPlease be patient..."));
+    ui->TEMintStatus->setPlainText(tr("Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.\nPlease be patient..."));
     ui->TEMintStatus->repaint ();
 
     int64_t nTime = GetTimeMillis();
@@ -407,7 +407,7 @@ void PrivacyDialog::sendzVIT()
     }
 
     int64_t nTime = GetTimeMillis();
-    ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware. \nPlease be patient..."));
+    ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware.\nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
     // use mints from zPIV selector if applicable
@@ -461,7 +461,7 @@ void PrivacyDialog::sendzVIT()
         int nNeededSpends = receipt.GetNeededSpends(); // Number of spends we would need for this transaction
         const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVITAE transaction
         if (nNeededSpends > nMaxSpends) {
-            QString strStatusMessage = tr("Too much inputs (") + QString::number(nNeededSpends, 10) + tr(") needed. \nMaximum allowed: ") + QString::number(nMaxSpends, 10);
+            QString strStatusMessage = tr("Too much inputs (") + QString::number(nNeededSpends, 10) + tr(") needed.\nMaximum allowed: ") + QString::number(nMaxSpends, 10);
             strStatusMessage += tr("\nEither mint higher denominations (so fewer inputs are needed) or reduce the amount to spend.");
             QMessageBox::warning(this, tr("Spend Zerocoin"), strStatusMessage.toStdString().c_str(), QMessageBox::Ok, QMessageBox::Ok);
             ui->TEMintStatus->setPlainText(tr("Spend Zerocoin failed with status = ") +QString::number(receipt.GetStatus(), 10) + "\n" + "Message: " + QString::fromStdString(strStatusMessage.toStdString()));
