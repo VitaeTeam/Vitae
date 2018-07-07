@@ -2120,6 +2120,24 @@ bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, 
     return false;
 }
 
+bool CObfuScationSigner::IsMnVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, CTransaction &Tx, uint256 &hashBlock)
+{
+    CScript payee2;
+    payee2 = GetScriptForDestination(pubkey.GetID());
+
+    //CTransaction txVin;
+    //uint256 hash;
+    if (GetTransaction(vin.prevout.hash, Tx, hashBlock, true)) {
+        BOOST_FOREACH (CTxOut out, Tx.vout) {
+            if (out.nValue == 20000*COIN ) {
+                if (out.scriptPubKey == payee2) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 bool CObfuScationSigner::SetKey(std::string strSecret, std::string& errorMessage, CKey& key, CPubKey& pubkey)
 {
     CBitcoinSecret vchSecret;

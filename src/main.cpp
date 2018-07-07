@@ -4449,77 +4449,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
         }
     }
 
-    bool MasternodePayments = false;
-
-
-    if(block.nTime > START_MASTERNODE_PAYMENTS) MasternodePayments = true;
-
-    if(!IsMNSporkActive(MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT)){
-        MasternodePayments = false; //
-        if(fDebug) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
-    }
-
-    if(MasternodePayments)
-    {
-        LOCK2(cs_main, mempool.cs);
-
-        CBlockIndex *pindex = chainActive.Tip();
-        if(pindex != NULL){
-            if(pindex->GetBlockHash() == block.hashPrevBlock){
-                CAmount stakeReward = GetBlockValue(pindex->nHeight + 1);
-                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward);//todo++
-
-                bool fIsInitialDownload = IsInitialBlockDownload();
-
-                // If we don't already have its previous block, skip masternode payment step
-                if (!fIsInitialDownload && pindex != NULL)
-                {
-                    bool foundPaymentAmount = false;
-                    bool foundPayee = false;
-                    bool foundPaymentAndPayee = false;
-                    CScript payee;
-                    if(!masternodePayments.GetBlockPayee(chainActive.Tip()->nHeight+1, payee) || payee == CScript()){
-                        foundPayee = true; //doesn't require a specific payee
-                        foundPaymentAmount = true;
-                        foundPaymentAndPayee = true;
-                        LogPrintf("CheckBlock() : Using non-specific masternode payments %d\n", chainActive.Tip()->nHeight+1);
-                    }
-                    // todo-- must notice block.vtx[]. to block.vtx[]->
-                    // Funtion no Intitial Download
-                    for (unsigned int i = 0; i < block.vtx[1].vout.size(); i++) {
-                        if(block.vtx[1].vout[i].nValue == masternodePaymentAmount ){
-                            foundPaymentAmount = true;
-                        }
-                        if(block.vtx[1].vout[i].scriptPubKey == payee ){
-                            foundPayee = true;
-                        }
-                        if(block.vtx[1].vout[i].nValue == masternodePaymentAmount && block.vtx[1].vout[i].scriptPubKey == payee){
-                            foundPaymentAndPayee = true;
-                        }
-                    }
-
-                    CTxDestination address1;
-                    ExtractDestination(payee, address1);
-                    CBitcoinAddress address2(address1);
-
-                    if(!foundPaymentAndPayee) {
-                        LogPrintf("CheckBlock() : !!Couldn't find masternode payment(%d|%d) or payee(%d|%s) nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), chainActive.Tip()->nHeight+1);
-                        return state.DoS(100, error("CheckBlock() : Couldn't find masternode payment or payee"));//todo++
-                    } else {
-                        LogPrintf("CheckBlock() : Found payment(%d|%d) or payee(%d|%s) nHeight %d. \n", foundPaymentAmount, masternodePaymentAmount, foundPayee, address2.ToString().c_str(), chainActive.Tip()->nHeight+1);
-                    }
-                } else {
-                    LogPrintf("CheckBlock() : Is initial download, skipping masternode payment check %d\n", chainActive.Tip()->nHeight+1);
-                }
-            } else {
-                LogPrintf("CheckBlock() : Skipping masternode payment check - nHeight %d Hash %s\n", chainActive.Tip()->nHeight+1, block.GetHash().ToString().c_str());
-            }
-        } else {
-            LogPrintf("CheckBlock() : pindex is null, skipping masternode payment check\n");
-        }
-    } else {
-        LogPrintf("CheckBlock() : skipping masternode payment checks\n");
-    }
+    
 
     // Check transactions
     bool fZerocoinActive = block.GetBlockTime() > Params().Zerocoin_StartTime();
