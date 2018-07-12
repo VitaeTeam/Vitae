@@ -54,11 +54,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     if (IsMine(*wallet, outAddress)) {
                         isminetype mine = wallet->IsMine(wtx.vout[i]);
                         sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
-						if (i == 2) {
-							sub.type = TransactionRecord::FNReward;
-						} else {
-							sub.type = TransactionRecord::MNReward;
-						}
+                        if (i == 2) {
+                            sub.type = TransactionRecord::FNReward;
+                        } else {
+                            sub.type = TransactionRecord::MNReward;
+                        }
                         sub.address = CBitcoinAddress(outAddress).ToString();
                         sub.credit = wtx.vout[i].nValue;
                     }

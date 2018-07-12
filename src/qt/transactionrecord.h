@@ -79,7 +79,7 @@ public:
         SendToOther,
         RecvWithAddress,
         MNReward,
-		FNReward,
+        FNReward,
         RecvFromOther,
         SendToSelf,
         ZerocoinMint,
