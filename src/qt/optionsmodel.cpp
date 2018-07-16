@@ -230,6 +230,9 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("bSpendZeroConfChange");
         case ShowFundamentalnodesTab:
             return settings.value("fShowFundamentalnodesTab");
+	    case ShowMasternodesTab:
+            return settings.value("fShowMasternodesTab");
+			
 #endif
         case StakeSplitThreshold:
             if (pwalletMain)
@@ -333,6 +336,12 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
         case ShowFundamentalnodesTab:
             if (settings.value("fShowFundamentalnodesTab") != value) {
                 settings.setValue("fShowFundamentalnodesTab", value);
+                setRestartRequired(true);
+            }
+            break;
+	    case ShowMasternodesTab:
+            if (settings.value("fShowMasternodesTab") != value) {
+                settings.setValue("fShowMasternodesTab", value);
                 setRestartRequired(true);
             }
             break;

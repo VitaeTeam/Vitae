@@ -53,6 +53,7 @@ public:
     //! Return number of connections, default is in- and outbound (total)
     int getNumConnections(unsigned int flags = CONNECTIONS_ALL) const;
     QString getFundamentalnodeCountString() const;
+	QString getMasternodeCountString() const;
     int getNumBlocks() const;
     int getNumBlocksAtStartup();
 
@@ -82,6 +83,7 @@ private:
 
     int cachedNumBlocks;
     QString cachedFundamentalnodeCountString;
+	QString cachedMasternodeCountString;
     bool cachedReindexing;
     bool cachedImporting;
 
@@ -97,6 +99,7 @@ signals:
     void numConnectionsChanged(int count);
     void numBlocksChanged(int count);
     void strFundamentalnodesChanged(const QString& strFundamentalnodes);
+	void strMasternodesChanged(const QString& strMasternodes);
     void alertsChanged(const QString& warnings);
     void bytesChanged(quint64 totalBytesIn, quint64 totalBytesOut);
 

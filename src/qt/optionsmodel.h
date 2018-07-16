@@ -49,6 +49,7 @@ public:
         HideZeroBalances,    // bool
         AnonymizeVitaeAmount, //int
         ShowFundamentalnodesTab,  // bool
+		ShowMasternodesTab,  // bool
         Listen,              // bool
         StakeSplitThreshold, // int
         OptionIDRowCount,
