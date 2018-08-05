@@ -1331,7 +1331,8 @@ CAmount CWalletTx::GetLockedWatchOnlyCredit() const
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
         }
 
-        if (fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN) {
+        // Add masternode collaterals which are handled likc locked coins
+        else if (fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN) {
             nCredit += pwallet->GetCredit(txout, ISMINE_WATCH_ONLY);
         }
 
