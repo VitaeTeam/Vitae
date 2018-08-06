@@ -1197,11 +1197,8 @@ CAmount CWalletTx::GetLockedCredit() const
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
-        // Add fundamentalnode collaterals which are handled likc locked coins
-        if (/*fFundamentalNode &&*/ vout[i].nValue == FN_MAGIC_AMOUNT) {
-            nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
-        }
-        if (fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN) {
+        // Add fundamentalnode & masternode collaterals which are handled likc locked coins
+        else if (FundamentalNode && vout[i].nValue == FN_MAGIC_AMOUNT || fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN) {
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
