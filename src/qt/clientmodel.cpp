@@ -36,6 +36,7 @@ ClientModel::ClientModel(OptionsModel* optionsModel, QObject* parent) : QObject(
                                                                         banTableModel(0),
                                                                         cachedNumBlocks(0),
                                                                         cachedFundamentalnodeCountString(""),
+																		cachedMasternodeCountString(""),
                                                                         cachedReindexing(0), cachedImporting(0),
                                                                         numBlocksAtStartup(-1), pollTimer(0)
 {

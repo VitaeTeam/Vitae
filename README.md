@@ -1,4 +1,4 @@
-﻿VITAE Core integration/staging repository
+VITAE Core integration/staging repository
 =====================================
 
 [![Build Status](https://travis-ci.org/VITAE-Project/VITAE.svg?branch=master)](https://travis-ci.org/VITAE-Project/VITAE) [![GitHub version](https://badge.fury.io/gh/VITAE-Project%2FVITAE.svg)](https://badge.fury.io/gh/VITAE-Project%2FVITAE)
@@ -49,6 +49,9 @@ More information at [vitaetoken.io](http://www.vitaetoken.org)
 
 <table>
 <th>Phase</th><th>Block Height</th><th>Reward</th><th>Supernodes</th><th>Masternodes & Stakers</th><th>Budget</th>
-<tr><td>Phase 1</td><td>201-210000</td><td>30 VIT</td><td>60% (18 VIT)</td><td>40% (12 VIT)</td><td>0% (0 VIT)</td></tr>
-<tr><td>Phase 2</td><td>210001-???</td><td>25 VIT</td><td>60% (15 VIT)</td><td>40% (10 VIT)</td><td>0% (0 VIT)</td></tr>
+<tr><td>Phase 1</td><td>201-259200</td><td>30 VIT</td><td>60% (18 VIT)</td><td>40% (12 VIT)</td><td>0% (0 VIT)</td></tr>
+<tr><td>Phase 2</td><td>259200-518400</td><td>20 VIT</td><td>60% (12 VIT)</td><td>40% (8 VIT)</td><td>0% (0 VIT)</td></tr>
+<tr><td>Phase 3</td><td>518400-777600</td><td>15 VIT</td><td>60% (9 VIT)</td><td>40% (6 VIT)</td><td>0% (0 VIT)</td></tr>
+<tr><td>Phase 4</td><td>777600-1036800</td><td>10 VIT</td><td>60% (6 VIT)</td><td>40% (4 VIT)</td><td>0% (0 VIT)</td></tr>
+<tr><td>Phase 2</td><td>1036800-onward</td><td>5 VIT</td><td>60% (3 VIT)</td><td>40% (2 VIT)</td><td>0% (0 VIT)</td></tr>
 </table>
