@@ -2170,6 +2170,9 @@ bool AppInit2()
 
         // Run a thread to flush wallet periodically
         threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
+
+        // Run a thread to precompute any zPIV spends
+        threadGroup.create_thread(boost::bind(&ThreadPrecomputeSpends));
     }
 #endif
 
