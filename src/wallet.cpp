@@ -1198,11 +1198,7 @@ CAmount CWalletTx::GetLockedCredit() const
         }
 
         // Add fundamentalnode & masternode collaterals which are handled likc locked coins
-<<<<<<< HEAD
-        else if (fFundamentalNode && vout[i].nValue == FN_MAGIC_AMOUNT || fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN) {
-=======
         else if (fFundamentalNode && vout[i].nValue == FN_MAGIC_AMOUNT /*|| fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN*/) {
->>>>>>> seesawUpdate
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
