@@ -2352,9 +2352,14 @@ int64_t GetBlockValue(int nHeight)
 
 CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
 {
+
+<<<<<<< HEAD
         int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
         int64_t mNodeCoins = nMasternodeCount * 10000 * COIN;
-		int64_t ret = blockValue * .6 ;
+		int64_t ret = (blockValue * 6)/ 10;
+
+=======
+>>>>>>> cd138260ee3ca8556d05b1ef369f0bc7473c519b
         //if a mn count is inserted into the function we are looking for a specific result for a masternode count
         if (nMasternodeCount)
             mNodeCoins = nMasternodeCount * 20000 * COIN;
@@ -2365,6 +2370,11 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
         if (fDebug)
             LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),
                 FormatMoney(mNodeCoins).c_str());
+<<<<<<< HEAD
+
+=======
+        ret = (blockValue * 6)/ 10;
+>>>>>>> cd138260ee3ca8556d05b1ef369f0bc7473c519b
         if (mNodeCoins == 0) {
             ret = 0;
         } else if (nHeight < 325000) {
@@ -2601,12 +2611,85 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
             return 0;
     }
 
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+>>>>>>> cd138260ee3ca8556d05b1ef369f0bc7473c519b
+	int64_t mNodeCoins = nMasternodeCount * 20000 * COIN;
+	int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
+	//subtract Fundamentalnode reward
+	ret = blockValue * .4;
+	GetSeeSaw(nHeight, blockValue, nMasternodeCount)
+
+<<<<<<< HEAD
 	ret = GetSeeSaw(nHeight, blockValue, nMasternodeCount)
+=======
+=======
+	ret = GetSeeSaw(nHeight, blockValue, nMasternodeCount)
+>>>>>>> seesawUpdate
+>>>>>>> cd138260ee3ca8556d05b1ef369f0bc7473c519b
 
     return ret;
 }
 
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
+{
 
+    // Use this log to compare the masternode count for different clients
+    //LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
+
+ 
+    int64_t ret = 0;
+    if (mNodeCoins == 0) {
+        ret = 0;
+    } 
+
+        if (mNodeCoins <= (nMoneySupply * .05) && mNodeCoins > 0) {
+            ret = blockValue * .85;
+        } else if (mNodeCoins <= (nMoneySupply * .1) && mNodeCoins > (nMoneySupply * .05)) {
+            ret = blockValue * .8;
+        } else if (mNodeCoins <= (nMoneySupply * .15) && mNodeCoins > (nMoneySupply * .1)) {
+            ret = blockValue * .75;
+        } else if (mNodeCoins <= (nMoneySupply * .2) && mNodeCoins > (nMoneySupply * .15)) {
+            ret = blockValue * .7;
+        } else if (mNodeCoins <= (nMoneySupply * .25) && mNodeCoins > (nMoneySupply * .2)) {
+            ret = blockValue * .65;
+        } else if (mNodeCoins <= (nMoneySupply * .3) && mNodeCoins > (nMoneySupply * .25)) {
+            ret = blockValue * .6;
+        } else if (mNodeCoins <= (nMoneySupply * .35) && mNodeCoins > (nMoneySupply * .3)) {
+            ret = blockValue * .55;
+        } else if (mNodeCoins <= (nMoneySupply * .4) && mNodeCoins > (nMoneySupply * .35)) {
+            ret = blockValue * .5;
+        } else if (mNodeCoins <= (nMoneySupply * .45) && mNodeCoins > (nMoneySupply * .4)) {
+            ret = blockValue * .45;
+        } else if (mNodeCoins <= (nMoneySupply * .5) && mNodeCoins > (nMoneySupply * .45)) {
+            ret = blockValue * .4;
+        } else if (mNodeCoins <= (nMoneySupply * .55) && mNodeCoins > (nMoneySupply * .5)) {
+            ret = blockValue * .35;
+        } else if (mNodeCoins <= (nMoneySupply * .6) && mNodeCoins > (nMoneySupply * .55)) {
+            ret = blockValue * .3;
+        } else if (mNodeCoins <= (nMoneySupply * .65) && mNodeCoins > (nMoneySupply * .6)) {
+            ret = blockValue * .25;
+        } else if (mNodeCoins <= (nMoneySupply * .7) && mNodeCoins > (nMoneySupply * .65)) {
+            ret = blockValue * .2;
+        } else if (mNodeCoins <= (nMoneySupply * .75) && mNodeCoins > (nMoneySupply * .7)) {
+            ret = blockValue * .15;
+        } else {
+            ret = blockValue * .1;
+        }
+    }
+    return ret;
+}
+=======
+
+>>>>>>> seesawUpdate
+
+
+>>>>>>> cd138260ee3ca8556d05b1ef369f0bc7473c519b
 bool IsInitialBlockDownload()
 {
     LOCK(cs_main);

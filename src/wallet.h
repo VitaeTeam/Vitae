@@ -244,7 +244,6 @@ public:
     std::vector<std::pair<std::string, int> > vMultiSend;
     bool fMultiSendStake;
     bool fMultiSendFundamentalnodeReward;
-	bool fMultiSendMasternodeReward;
     bool fMultiSendNotify;
     std::string strMultiSendChangeAddress;
     int nLastMultiSendHeight;
@@ -296,7 +295,6 @@ public:
         vMultiSend.clear();
         fMultiSendStake = false;
         fMultiSendFundamentalnodeReward = false;
-		fMultiSendMasternodeReward = false;
         fMultiSendNotify = false;
         strMultiSendChangeAddress = "";
         nLastMultiSendHeight = 0;

@@ -633,11 +633,10 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
             }
         } else if (strType == "msettingsv2") //presstab HyperStake
         {
-            std::pair<std::pair<bool, bool, bool>, int> pSettings;
+            std::pair<std::pair<bool, bool>, int> pSettings;
             ssValue >> pSettings;
             pwallet->fMultiSendStake = pSettings.first.first;
             pwallet->fMultiSendFundamentalnodeReward = pSettings.first.second;
-			pwallet->fMultiSendMasternodeReward = pSettings.first.third;
             pwallet->nLastMultiSendHeight = pSettings.second;
         } else if (strType == "mdisabled") //presstab HyperStake
         {
