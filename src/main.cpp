@@ -2362,7 +2362,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
             mNodeCoins = nMasternodeCount * 20000 * COIN;
 
         // Use this log to compare the masternode count for different clients
-        LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
+        //LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
 
         if (fDebug)
             LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),
@@ -2611,7 +2611,7 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
 		ret = blockValue * .25;
 	}
 	else{
-	    ret = GetSeeSaw(nHeight, blockValue, nMasternodeCount)
+	    ret = GetSeeSaw(nHeight, blockValue, nMasternodeCount);
 	}
     return ret;
 }
