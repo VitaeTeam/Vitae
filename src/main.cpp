@@ -2590,7 +2590,7 @@ int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamen
             return 0;
     }
 
-	if(nHeight < 175538){
+	if(nHeight < 189750){
 	    ret = (blockValue * 6 )/ 10;
 	}
 	else{
@@ -2607,7 +2607,7 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         if (nHeight < 200)
             return 0;
     }
-	if(nHeight < 175538){
+	if(nHeight < 189750){
 		ret = blockValue * .25;
 	}
 	else{
