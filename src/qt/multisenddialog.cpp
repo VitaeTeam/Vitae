@@ -222,7 +222,7 @@ void MultiSendDialog::on_disableButton_clicked()
     std::string strRet = "";
     pwalletMain->setMultiSendDisabled();
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    if (!walletdb.WriteMSettings(false, false, pwalletMain->nLastMultiSendHeight))
+    if (!walletdb.WriteMSettings(false, false, false, pwalletMain->nLastMultiSendHeight))
         strRet = "MultiSend deactivated but writing settings to DB failed";
     else
         strRet = "MultiSend deactivated";

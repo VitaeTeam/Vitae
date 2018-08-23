@@ -2225,7 +2225,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Unable to activate MultiSend, check MultiSend vector");
         } else if (strCommand == "disable" || strCommand == "deactivate") {
             pwalletMain->setMultiSendDisabled();
-            if (!walletdb.WriteMSettings(false, false, pwalletMain->nLastMultiSendHeight))
+            if (!walletdb.WriteMSettings(false, false, false, pwalletMain->nLastMultiSendHeight))
                 throw JSONRPCError(RPC_DATABASE_ERROR, "MultiSend deactivated but writing settings to DB failed");
 
             return printMultiSend();

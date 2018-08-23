@@ -196,9 +196,9 @@ bool CWalletDB::WriteMSettings(bool fMultiSendStake, bool fMultiSendFundamentaln
 {
     nWalletDBUpdated++;
     std::pair<bool, bool> enabledMS(fMultiSendStake, fMultiSendFundamentalnode);
-	std::pair<bool, bool> enabledS(fMultiSendMasternode, nLastMultiSendHeight);
+	std::pair<bool, int> enabledS(fMultiSendMasternode, nLastMultiSendHeight);
 
-    std::pair<std::pair<bool, bool>, int> pSettings(enabledMS, enabledS);
+    std::pair<std::pair<bool, bool>, std::pair<bool, int>> pSettings(enabledMS, enabledS);
 
     return Write(std::string("msettingsv2"), pSettings, true);
 }
@@ -635,7 +635,7 @@ bool ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue, CW
             }
         } else if (strType == "msettingsv2") //presstab HyperStake
         {
-            std::pair<std::pair<bool, bool>,std:pair<bool, int>> pSettings;
+            std::pair<std::pair<bool, bool>,std::pair<bool, int>> pSettings;
             ssValue >> pSettings;
             pwallet->fMultiSendStake = pSettings.first.first;
             pwallet->fMultiSendFundamentalnodeReward = pSettings.first.second;
