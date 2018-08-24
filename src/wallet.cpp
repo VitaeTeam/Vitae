@@ -1198,7 +1198,7 @@ CAmount CWalletTx::GetLockedCredit() const
         }
 
         // Add fundamentalnode & masternode collaterals which are handled likc locked coins
-        else if (fFundamentalNode && vout[i].nValue == FN_MAGIC_AMOUNT || fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN) {
+        else if ((fFundamentalNode && vout[i].nValue == FN_MAGIC_AMOUNT) || (fMasterNode && vout[i].nValue == MASTERNODEAMOUNT*COIN)) {
             nCredit += pwallet->GetCredit(txout, ISMINE_SPENDABLE);
         }
 
@@ -4153,7 +4153,7 @@ bool CWallet::MultiSend()
 		bool sendMSonMNReward = fMultiSendMasternodeReward && outpoint.IsMasternodeReward(out.tx);
         bool sendMSOnStake = fMultiSendStake && out.tx->IsCoinStake() && !sendMSonMNReward; //output is either mnreward or stake reward, not both
 
-        if (!(sendMSOnStake || sendMSonMNReward))
+        if (!(sendMSOnStake || sendMSonMNReward || sendMSonFNReward))
             continue;
 
         CTxDestination destMyAddress;
