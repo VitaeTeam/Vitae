@@ -1,3 +1,4 @@
+// Copyright (c) 2017 The PIVX developers
 #ifndef BLOCKEXPLORER_H
 #define BLOCKEXPLORER_H
 

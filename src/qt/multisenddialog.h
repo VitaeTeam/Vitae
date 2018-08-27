@@ -1,3 +1,5 @@
+// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 #ifndef MULTISENDDIALOG_H
 #define MULTISENDDIALOG_H
 
