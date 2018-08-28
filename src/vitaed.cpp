@@ -115,7 +115,7 @@ bool AppInit(int argc, char* argv[])
         //mn
         std::string strErrMn;
         if (!masternodeConfig.read(strErrMn)) {
-            fprintf(stderr, "Error reading fundamentalnode configuration file: %s\n", strErrMn.c_str());
+            fprintf(stderr, "Error reading masternode configuration file: %s\n", strErrMn.c_str());
             return false;
         }
 

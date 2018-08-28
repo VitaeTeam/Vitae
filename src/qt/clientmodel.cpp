@@ -36,6 +36,7 @@ ClientModel::ClientModel(OptionsModel* optionsModel, QObject* parent) : QObject(
                                                                         banTableModel(0),
                                                                         cachedNumBlocks(0),
                                                                         cachedFundamentalnodeCountString(""),
+																		cachedMasternodeCountString(""),
                                                                         cachedReindexing(0), cachedImporting(0),
                                                                         numBlocksAtStartup(-1), pollTimer(0)
 {
@@ -80,6 +81,12 @@ QString ClientModel::getFundamentalnodeCountString() const
     if(nUnknown < 0) nUnknown = 0;
     return tr("Total: %1 (IPv4: %2 / IPv6: %3 / Tor: %4 / Unknown: %5)").arg(QString::number((int)mnodeman.size())).arg(QString::number((int)ipv4)).arg(QString::number((int)ipv6)).arg(QString::number((int)onion)).arg(QString::number((int)nUnknown));
 }
+
+QString ClientModel::getMasternodeCountString() const
+{
+    m_nodeman.CountMasternodesAboveProtocol(ActiveProtocol());
+    return tr("Total: %1").arg(QString::number((int)m_nodeman.size()));
+	}
 
 int ClientModel::getNumBlocks() const
 {

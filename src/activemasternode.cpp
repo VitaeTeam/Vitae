@@ -2,7 +2,9 @@
 //#include "core.h"
 #include "protocol.h"
 #include "activemasternode.h"
+#include "masternodeconfig.h"
 #include "masternodeman.h"
+#include "addrman.h"
 #include "main.h"
 #include "mn-spork.h"
 #include <boost/lexical_cast.hpp>
@@ -398,9 +400,32 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 {
     vector<COutput> vCoins;
     vector<COutput> filteredCoins;
+    vector<COutPoint> confLockedCoins;
+
+    // Temporary unlock MN coins from masternode.conf
+    if (GetBoolArg("-mnconflock", true)) {
+        uint256 mnTxHash;
+        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mn, masternodeConfig.getEntries()) {
+            mnTxHash.SetHex(mn.getTxHash());
+
+            int nIndex;
+            if(!mn.castOutputIndex(nIndex))
+                continue;
+
+            COutPoint outpoint = COutPoint(mnTxHash, nIndex);
+            confLockedCoins.push_back(outpoint);
+            pwalletMain->UnlockCoin(outpoint);
+        }
+    }
 
     // Retrieve all possible outputs
     pwalletMain->AvailableCoins(vCoins);
+
+	// Lock MN coins from masternode.conf back if they where temporary unlocked
+    if (!confLockedCoins.empty()) {
+        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+            pwalletMain->LockCoin(outpoint);
+    }
 
     // Filter
     BOOST_FOREACH(const COutput& out, vCoins)

@@ -124,6 +124,7 @@ private:
     QAction* openRepairAction;
     QAction* openConfEditorAction;
     QAction* openMNConfEditorAction;
+	QAction* openFNConfEditorAction;
     QAction* showBackupsAction;
     QAction* openAction;
     QAction* openBlockExplorerAction;

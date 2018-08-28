@@ -12,10 +12,17 @@ void CMasternodeConfig::add(std::string alias, std::string ip, std::string privK
 }
 
 bool CMasternodeConfig::read(std::string& strErr) {
-    boost::filesystem::ifstream streamConfig(GetMasternodeConfigFile());
+
+    boost::filesystem::path pathMasternodeConfigFile = GetMasternodeConfigFile();
+    boost::filesystem::ifstream streamConfig(pathMasternodeConfigFile);
+
     if (!streamConfig.good()) {
-        return true; // No masternode.conf file is OK
-    }
+        FILE* configFile = fopen(pathMasternodeConfigFile.string().c_str(), "a");
+        if (configFile != NULL) {
+            fclose(configFile);
+        }
+        return true; // Nothing to read, so just return    
+	}
 
     for(std::string line; std::getline(streamConfig, line); )
     {
@@ -68,5 +75,16 @@ bool CMasternodeConfig::read(std::string& strErr) {
     }
 
     streamConfig.close();
+    return true;
+}
+bool CMasternodeConfig::CMasternodeEntry::castOutputIndex(int &n)
+{
+    try {
+        n = std::stoi(outputIndex);
+    } catch (const std::exception e) {
+        LogPrintf("%s: %s on getOutputIndex\n", __func__, e.what());
+        return false;
+    }
+
     return true;
 }

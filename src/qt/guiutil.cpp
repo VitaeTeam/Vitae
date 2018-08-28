@@ -379,6 +379,15 @@ void openConfigfile()
 
 void openMNConfigfile()
 {
+    boost::filesystem::path pathConfig = GetMasternodeConfigFile();
+
+    /* Open fundamentalnode.conf with the associated application */
+    if (boost::filesystem::exists(pathConfig))
+        QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
+}
+
+void openFNConfigfile()
+{
     boost::filesystem::path pathConfig = GetFundamentalnodeConfigFile();
 
     /* Open fundamentalnode.conf with the associated application */

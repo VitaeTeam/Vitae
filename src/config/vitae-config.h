@@ -9,7 +9,7 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
 /* Version Build */
-#define CLIENT_VERSION_BUILD 1
+#define CLIENT_VERSION_BUILD 0
 
 /* Version is release */
 #define CLIENT_VERSION_IS_RELEASE true
@@ -18,7 +18,7 @@
 #define CLIENT_VERSION_MAJOR 4
 
 /* Minor version */
-#define CLIENT_VERSION_MINOR 1
+#define CLIENT_VERSION_MINOR 2
 
 /* Build revision */
 #define CLIENT_VERSION_REVISION 0
@@ -286,7 +286,8 @@
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "4.1.0"
 
-/* Define to necessary symbol if this constant uses a non-standard name on
+/* Define to necessary symbol if this constant
+ uses a non-standard name on
    your system. */
 /* #undef PTHREAD_CREATE_JOINABLE */
 

@@ -2077,6 +2077,7 @@ UniValue printMultiSend()
     UniValue act(UniValue::VOBJ);
     act.push_back(Pair("MultiSendStake Activated?", pwalletMain->fMultiSendStake));
     act.push_back(Pair("MultiSendFundamentalnode Activated?", pwalletMain->fMultiSendFundamentalnodeReward));
+	act.push_back(Pair("MultiSendMasternode Activated?", pwalletMain->fMultiSendMasternodeReward));
     ret.push_back(act);
 
     if (pwalletMain->vDisabledAddresses.size() >= 1) {
@@ -2172,7 +2173,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
 
             if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
                 pwalletMain->fMultiSendStake = true;
-                if (!walletdb.WriteMSettings(true, pwalletMain->fMultiSendFundamentalnodeReward, pwalletMain->nLastMultiSendHeight)) {
+                if (!walletdb.WriteMSettings(true, pwalletMain->fMultiSendFundamentalnodeReward, pwalletMain->fMultiSendMasternodeReward, pwalletMain->nLastMultiSendHeight)) {
                     UniValue obj(UniValue::VOBJ);
                     obj.push_back(Pair("error", "MultiSend activated but writing settings to DB failed"));
                     UniValue arr(UniValue::VARR);
@@ -2191,7 +2192,26 @@ UniValue multisend(const UniValue& params, bool fHelp)
             if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
                 pwalletMain->fMultiSendFundamentalnodeReward = true;
 
-                if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, true, pwalletMain->nLastMultiSendHeight)) {
+                if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, true, pwalletMain->fMultiSendMasternodeReward, pwalletMain->nLastMultiSendHeight)) {
+                    UniValue obj(UniValue::VOBJ);
+                    obj.push_back(Pair("error", "MultiSend activated but writing settings to DB failed"));
+                    UniValue arr(UniValue::VARR);
+                    arr.push_back(obj);
+                    arr.push_back(printMultiSend());
+                    return arr;
+                } else
+                    return printMultiSend();
+            }
+
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Unable to activate MultiSend, check MultiSend vector");
+        } else if (strCommand == "enablemasternode" || strCommand == "activatemasternode") {
+            if (pwalletMain->vMultiSend.size() < 1)
+                throw JSONRPCError(RPC_INVALID_REQUEST, "Unable to activate MultiSend, check MultiSend vector");
+
+            if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
+                pwalletMain->fMultiSendMasternodeReward = true;
+
+                if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, pwalletMain->fMultiSendFundamentalnodeReward, true, pwalletMain->nLastMultiSendHeight)) {
                     UniValue obj(UniValue::VOBJ);
                     obj.push_back(Pair("error", "MultiSend activated but writing settings to DB failed"));
                     UniValue arr(UniValue::VARR);
@@ -2205,7 +2225,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Unable to activate MultiSend, check MultiSend vector");
         } else if (strCommand == "disable" || strCommand == "deactivate") {
             pwalletMain->setMultiSendDisabled();
-            if (!walletdb.WriteMSettings(false, false, pwalletMain->nLastMultiSendHeight))
+            if (!walletdb.WriteMSettings(false, false, false, pwalletMain->nLastMultiSendHeight))
                 throw JSONRPCError(RPC_DATABASE_ERROR, "MultiSend deactivated but writing settings to DB failed");
 
             return printMultiSend();
@@ -2264,7 +2284,8 @@ UniValue multisend(const UniValue& params, bool fHelp)
             " clear - deletes the current MultiSend vector \n"
             " enablestake/activatestake - activates the current MultiSend vector to be activated on stake rewards\n"
             " enablefundamentalnode/activatefundamentalnode - activates the current MultiSend vector to be activated on fundamentalnode rewards\n"
-            " disable/deactivate - disables the current MultiSend vector \n"
+            " enablemasternode/activatemasternode - activates the current MultiSend vector to be activated on masternode rewards\n"
+			" disable/deactivate - disables the current MultiSend vector \n"
             " delete <Address #> - deletes an address from the MultiSend vector \n"
             " disable <address> - prevents a specific address from sending MultiSend transactions\n"
             " enableall - enables all addresses to be eligible to send MultiSend transactions\n"

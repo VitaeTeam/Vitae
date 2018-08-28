@@ -88,6 +88,8 @@ public slots:
     void setNumBlocks(int count);
     /** Set number of fundamentalnodes shown in the UI */
     void setFundamentalnodeCount(const QString& strFundamentalnodes);
+	/** Set number of masternodes shown in the UI */
+    void setMasternodeCount(const QString& strMasternodes);
     /** Go forward or back in history */
     void browseHistory(int offset);
     /** Scroll console view to end */
@@ -104,8 +106,10 @@ public slots:
     void showRepair();
     /** Open external (default) editor with vitae.conf */
     void showConfEditor();
-    /** Open external (default) editor with fundamentalnode.conf */
+    /** Open external (default) editor with masternode.conf */
     void showMNConfEditor();
+	/** Open external (default) editor with fundamentalnode.conf */
+    void showFNConfEditor();
     /** Handle selection of peer in peers list */
     void peerSelected(const QItemSelection& selected, const QItemSelection& deselected);
     /** Handle updated peer information */

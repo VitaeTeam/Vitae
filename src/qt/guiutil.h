@@ -114,8 +114,11 @@ void openDebugLogfile();
 // Open vitae.conf
 void openConfigfile();
 
-// Open fundamentalnode.conf
+// Open masternode.conf
 void openMNConfigfile();
+
+// Open fundamentalnode.conf
+void openFNConfigfile();
 
 // Browse backup folder
 void showBackups();
