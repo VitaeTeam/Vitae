@@ -10,7 +10,7 @@ VITAE is a cutting edge cryptocurrency, with many features not available in most
   technology used to secure the network and provide the above features, each Masternode is secured
   with a collateral of 20K VIT. Each Supernode secured with 10K VIT burn.
 
-More information at [vitaetoken.io](http://www.vitaetoken.org)
+More information at [vitaetoken.io](http://www.vitaetoken.io)
 
 ### Coin Specs
 <table>
