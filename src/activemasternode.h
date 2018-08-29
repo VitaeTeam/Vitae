@@ -1,7 +1,9 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2012 The Bitcoin developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #ifndef ACTIVEMASTERNODE_H
 #define ACTIVEMASTERNODE_H
 
@@ -31,29 +33,29 @@ public:
     std::string notCapableReason;
 
     CActiveMasternode()
-    {        
+    {
         status = MASTERNODE_NOT_PROCESSED;
     }
 
     /// Manage status of main Masternode
-    void ManageStatus(); 
+    void ManageStatus();
 
     /// Ping for main Masternode
-    bool Dseep(std::string& errorMessage); 
+    bool Dseep(std::string& errorMessage);
     /// Ping for any Masternode
-    bool Dseep(CTxIn vin, CService service, CKey key, CPubKey pubKey, std::string &retErrorMessage, bool stop); 
+    bool Dseep(CTxIn vin, CService service, CKey key, CPubKey pubKey, std::string &retErrorMessage, bool stop);
 
     /// Stop main Masternode
-    bool StopMasterNode(std::string& errorMessage); 
+    bool StopMasterNode(std::string& errorMessage);
     /// Stop remote Masternode
-    bool StopMasterNode(std::string strService, std::string strKeyMasternode, std::string& errorMessage); 
+    bool StopMasterNode(std::string strService, std::string strKeyMasternode, std::string& errorMessage);
     /// Stop any Masternode
-    bool StopMasterNode(CTxIn vin, CService service, CKey key, CPubKey pubKey, std::string& errorMessage); 
+    bool StopMasterNode(CTxIn vin, CService service, CKey key, CPubKey pubKey, std::string& errorMessage);
 
     /// Register remote Masternode
-    bool Register(std::string strService, std::string strKey, std::string txHash, std::string strOutputIndex, std::string strDonationAddress, std::string strDonationPercentage, std::string& errorMessage); 
+    bool Register(std::string strService, std::string strKey, std::string txHash, std::string strOutputIndex, std::string strDonationAddress, std::string strDonationPercentage, std::string& errorMessage);
     /// Register any Masternode
-    bool Register(CTxIn vin, CService service, CKey key, CPubKey pubKey, CKey keyMasternode, CPubKey pubKeyMasternode, CScript donationAddress, int donationPercentage, std::string &retErrorMessage); 
+    bool Register(CTxIn vin, CService service, CKey key, CPubKey pubKey, CKey keyMasternode, CPubKey pubKeyMasternode, CScript donationAddress, int donationPercentage, std::string &retErrorMessage);
 
     /// Get 5000DRK input that can be used for the Masternode
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);

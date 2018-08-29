@@ -3,10 +3,10 @@
  *
  * @brief      Denomination functions for the Zerocoin library.
  *
- * @copyright  Copyright 2017 VITAE Developers
+ * @copyright  Copyright 2017 PIVX Developers
  * @license    This project is released under the MIT license.
  **/
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
 
 #include "reverse_iterate.h"
 #include "util.h"

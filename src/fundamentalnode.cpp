@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -277,7 +277,7 @@ int64_t CFundamentalnode::GetLastPaid()
 
         if (fundamentalnodePayments.mapFundamentalnodeBlocks.count(BlockReading->nHeight)) {
             /*
-                Search for this payee, with at least 2 votes. This will aid in consensus allowing the network 
+                Search for this payee, with at least 2 votes. This will aid in consensus allowing the network
                 to converge on the same payees quickly, then keep the same schedule.
             */
             if (fundamentalnodePayments.mapFundamentalnodeBlocks[BlockReading->nHeight].HasPayeeWithVotes(mnpayee, 2)) {

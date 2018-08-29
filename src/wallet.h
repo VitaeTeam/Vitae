@@ -1,7 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -321,7 +322,7 @@ public:
     {
         fBackupMints = fEnabled;
     }
-    
+
     bool isMultiSendEnabled()
     {
         return fMultiSendFundamentalnodeReward || fMultiSendStake;
@@ -955,7 +956,7 @@ public:
     CAmount GetLockedCredit() const;
     CAmount GetDenominatedCredit(bool unconfirmed, bool fUseCache = true) const;
     CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache = true) const;
-    CAmount GetAvailableWatchOnlyCredit(const bool& fUseCache = true) const;        
+    CAmount GetAvailableWatchOnlyCredit(const bool& fUseCache = true) const;
     CAmount GetLockedWatchOnlyCredit() const;
 
     CAmount GetChange() const

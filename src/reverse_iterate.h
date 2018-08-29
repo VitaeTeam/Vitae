@@ -1,5 +1,7 @@
-// Copyright (c) 2017 The VITAE Core developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2015 The BITCOIN Core developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,21 +17,21 @@ template <typename T>
 class reverse_range
 {
     T &x;
-    
+
 public:
     reverse_range(T &x) : x(x) {}
-    
+
     auto begin() const -> decltype(this->x.rbegin())
     {
         return x.rbegin();
     }
-    
+
     auto end() const -> decltype(this->x.rend())
     {
         return x.rend();
     }
 };
- 
+
 template <typename T>
 reverse_range<T> reverse_iterate(T &x)
 {

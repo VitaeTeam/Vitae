@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -1083,7 +1083,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             filesystem::path chainstateDir = GetDataDir() / "chainstate";
             filesystem::path sporksDir = GetDataDir() / "sporks";
             filesystem::path zerocoinDir = GetDataDir() / "zerocoin";
-            
+
             LogPrintf("Deleting blockchain folders blocks, chainstate, sporks and zerocoin\n");
             // We delete in 4 individual steps in case one of the folder is missing already
             try {
@@ -1634,9 +1634,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
         else
             LogPrintf("file format is unknown or invalid, please fix it manually\n");
     }
-/*	
+/*
 	uiInterface.InitMessage(_("Loading masternode cache..."));
-    
+
     CMasternodeDB mn_db;
     CMasternodeDB::ReadResult read_Result = mn_db.Read(m_nodeman);
     if (readResult == CMasternodeDB::FileError)

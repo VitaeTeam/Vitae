@@ -1,7 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -122,7 +122,7 @@ public:
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
         nModifierUpdateBlock = 615800;
-        nZerocoinStartHeight = 209467; 
+        nZerocoinStartHeight = 209467;
         nZerocoinStartTime = 1536314400; // september 7, 2018 12:00:00 UTC
         nBlockEnforceSerialRange = 895400; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 908000; //Trigger a recalculation of accumulators
@@ -265,7 +265,7 @@ public:
 		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
 		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
 		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
-		
+
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet vitae addresses start with 'x' or 'y'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 19);  // Testnet vitae script addresses start with '8' or '9'

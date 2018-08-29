@@ -1,5 +1,9 @@
-
-
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 //#include "bignum.h"
 #include "sync.h"
@@ -22,8 +26,8 @@ std::map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
 CMasternodeScanning mnscan;
 CActiveMasternode activeMasternode;
 
-/* 
-    Masternode - Proof of Service 
+/*
+    Masternode - Proof of Service
 
     -- What it checks
 
@@ -32,17 +36,17 @@ CActiveMasternode activeMasternode;
 
     -- How it works
 
-    When a block comes in, DoMasternodePOS is executed if the client is a 
-    masternode. Using the deterministic ranking algorithm up to 1% of the masternode 
-    network is checked each block. 
+    When a block comes in, DoMasternodePOS is executed if the client is a
+    masternode. Using the deterministic ranking algorithm up to 1% of the masternode
+    network is checked each block.
 
-    A port is opened from Masternode A to Masternode B, if successful then nothing happens. 
+    A port is opened from Masternode A to Masternode B, if successful then nothing happens.
     If there is an error, a CMasternodeScanningError object is propagated with an error code.
     Errors are applied to the Masternodes and a score is incremented within the masternode object,
-    after a threshold is met, the masternode goes into an error state. Each cycle the score is 
-    decreased, so if the masternode comes back online it will return to the list. 
+    after a threshold is met, the masternode goes into an error state. Each cycle the score is
+    decreased, so if the masternode comes back online it will return to the list.
 
-    Masternodes in a error state do not receive payment. 
+    Masternodes in a error state do not receive payment.
 
     -- Future expansion
 
@@ -74,7 +78,7 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
 
         if(!mnse.IsValid())
         {
-            LogPrintf("MasternodePOS::mnse - Invalid object\n");   
+            LogPrintf("MasternodePOS::mnse - Invalid object\n");
             return;
         }
 
@@ -85,7 +89,7 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
         int nBlockHeight = chainActive.Tip()->nHeight;
         if(nBlockHeight - mnse.nBlockHeight > 10){
             LogPrintf("MasternodePOS::mnse - Too old\n");
-            return;   
+            return;
         }
 
         // Lowest masternodes in rank check the highest each block
@@ -183,7 +187,7 @@ void CMasternodeScanning::DoMasternodePOSChecks()
 bool CMasternodeScanningError::SignatureValid()
 {
     std::string errorMessage;
-    std::string strMessage = vinMasternodeA.ToString() + vinMasternodeB.ToString() + 
+    std::string strMessage = vinMasternodeA.ToString() + vinMasternodeB.ToString() +
         boost::lexical_cast<std::string>(nBlockHeight) + boost::lexical_cast<std::string>(nErrorType);
 
     CMasternode* pmn = m_nodeman.Find(vinMasternodeA);
@@ -214,7 +218,7 @@ bool CMasternodeScanningError::Sign()
 
     CKey key2;
     CPubKey pubkey2;
-    std::string strMessage = vinMasternodeA.ToString() + vinMasternodeB.ToString() + 
+    std::string strMessage = vinMasternodeA.ToString() + vinMasternodeB.ToString() +
         boost::lexical_cast<std::string>(nBlockHeight) + boost::lexical_cast<std::string>(nErrorType);
 
     if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key2, pubkey2))
