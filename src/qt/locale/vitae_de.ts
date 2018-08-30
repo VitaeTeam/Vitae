@@ -184,7 +184,7 @@
         <translation>Sind Sie sich sicher, dass Sie ihre Wallet verschlüsseln möchten?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
         <translation>Warnung: Wenn Sie ihre Wallet verschlüsseln und Ihre Passphrase verlieren werden Sie &lt;b&gt;alle ihre VITs verlieren&lt;/b&gt;!</translation>
     </message>
     <message>
@@ -618,8 +618,8 @@
         <translation>&amp;Privatsphäre</translation>
     </message>
     <message>
-        <source>Privacy Action for zVIT and Obfuscation</source>
-        <translation>Privatsphäre Aktion für zVIT und Verschleierung</translation>
+        <source>Privacy Action for zVITAE and Obfuscation</source>
+        <translation>Privatsphäre Aktion für zVITAE und Verschleierung</translation>
     </message>
     <message>
         <source>&amp;Masternodes</source>
@@ -1539,32 +1539,32 @@ Bitte Adresse überprüfen und nochmals versuchen.</translation>
         <translation>Bitte den gewünschten Privatsphäre Level auswählen.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>2 separate Masternodes verwenden um bis zu 10000 VIT zu mixen</translation>
+        <source>Use 2 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>2 separate Masternodes verwenden um bis zu 10000 VITAE zu mixen</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>8 separate Masternodes verwenden um bis zu 10000 VIT zu mixen</translation>
+        <source>Use 8 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>8 separate Masternodes verwenden um bis zu 10000 VITAE zu mixen</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>16 separate Masternodes verwenden</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</source>
-        <translation>Diese Option ist die schnellst und kostet ungefähr ~0.025 VIT um 10000 VIT zu anonymisieren </translation>
+        <source>This option is the quickest and will cost about ~0.025 VITAE to anonymize 10000 VITAE</source>
+        <translation>Diese Option ist die schnellst und kostet ungefähr ~0.025 VITAE um 10000 VITAE zu anonymisieren </translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</source>
-        <translation>Diese Option ist angemessen schnell und kostet ungefähr  0.05 VIT um 10000 VIT zu anonymisieren</translation>
+        <source>This option is moderately fast and will cost about 0.05 VITAE to anonymize 10000 VITAE</source>
+        <translation>Diese Option ist angemessen schnell und kostet ungefähr  0.05 VITAE um 10000 VITAE zu anonymisieren</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
         <translation>Diese Option ist die langsamste und sicherste Option. Die Verwendung maximaler Anonymisierung kostet</translation>
     </message>
     <message>
-        <source>0.1 VIT per 10000 VIT you anonymize.</source>
-        <translation>0.1 VIT per 10000 VIT die anonymisiert werden.</translation>
+        <source>0.1 VITAE per 10000 VITAE you anonymize.</source>
+        <translation>0.1 VITAE per 10000 VITAE die anonymisiert werden.</translation>
     </message>
     <message>
         <source>Obfuscation Configuration</source>
@@ -1707,20 +1707,20 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Port mit &amp;UPnP mappen</translation>
     </message>
     <message>
-        <source>Percentage of incoming VIT which get automatically converted to zVIT via Zerocoin Protocol (min: 10%)</source>
-        <translation>Anteil des einkommenden VIT, welcher automatisch zu zVIT via Zerocoin Protokoll konvertiert wird (min: 10%)</translation>
+        <source>Percentage of incoming VITAE which get automatically converted to zVITAE via Zerocoin Protocol (min: 10%)</source>
+        <translation>Anteil des einkommenden VITAE, welcher automatisch zu zVITAE via Zerocoin Protokoll konvertiert wird (min: 10%)</translation>
     </message>
     <message>
-        <source>Percentage of autominted zVIT</source>
-        <translation>Prozentsatz der automatisierten zVIT</translation>
+        <source>Percentage of autominted zVITAE</source>
+        <translation>Prozentsatz der automatisierten zVITAE</translation>
     </message>
     <message>
-        <source>Wait with automatic conversion to Zerocoin until enough VIT for this denomination is available</source>
-        <translation>Warte mit automatischer Konvertierung zu Zerocoin, bis genügend VIT für diese Stückelung verfügbar ist</translation>
+        <source>Wait with automatic conversion to Zerocoin until enough VITAE for this denomination is available</source>
+        <translation>Warte mit automatischer Konvertierung zu Zerocoin, bis genügend VITAE für diese Stückelung verfügbar ist</translation>
     </message>
     <message>
-        <source>Preferred Automint zVIT Denomination</source>
-        <translation>Bevorzugte automatisierte zVIT Stückelung </translation>
+        <source>Preferred Automint zVITAE Denomination</source>
+        <translation>Bevorzugte automatisierte zVITAE Stückelung </translation>
     </message>
     <message>
         <source>Connect to the VITAE network through a SOCKS5 proxy.</source>
@@ -1854,8 +1854,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Formular</translation>
     </message>
     <message>
-        <source>VIT Balances</source>
-        <translation>VIT Bilanzen</translation>
+        <source>VITAE Balances</source>
+        <translation>VITAE Bilanzen</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -1922,12 +1922,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Kombinierte Bilanz (einschließlich unreifer Coins)</translation>
     </message>
     <message>
-        <source>VIT:</source>
-        <translation>VIT:</translation>
+        <source>VITAE:</source>
+        <translation>VITAE:</translation>
     </message>
     <message>
-        <source>zVIT:</source>
-        <translation>zVIT:</translation>
+        <source>zVITAE:</source>
+        <translation>zVITAE:</translation>
     </message>
     <message>
         <source>0 %</source>
@@ -2055,12 +2055,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
 <context>
     <name>PrivacyDialog</name>
     <message>
-        <source>VIT which were anonymized via Zerocin Protocol</source>
-        <translation>VIT, die über das Zerocin-Protokoll anonymisiert wurden</translation>
+        <source>VITAE which were anonymized via Zerocin Protocol</source>
+        <translation>VITAE, die über das Zerocin-Protokoll anonymisiert wurden</translation>
     </message>
     <message>
-        <source>Zerocoin VIT (zVIT)</source>
-        <translation>Zerocoin VIT (zVIT)</translation>
+        <source>Zerocoin VITAE (zVITAE)</source>
+        <translation>Zerocoin VITAE (zVITAE)</translation>
     </message>
     <message>
         <source>Zerocoin Actions:</source>
@@ -2071,8 +2071,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Die angezeigte Information ist möglicherweise nicht mehr aktuell. Ihre Wallet synchronisiert sich automatisch mit dem VITAE-Netzwerk, nachdem eine Verbindung hergestellt wurde. Aber dieser Vorgang ist noch nicht abgeschlossen.</translation>
     </message>
     <message>
-        <source>Enter an amount of Vit to convert to zVit</source>
-        <translation>Eingabe des Vit-Betrags, um in zVit umzuwandeln</translation>
+        <source>Enter an amount of VITAE to convert to zVITAE</source>
+        <translation>Eingabe des VITAE-Betrags, um in zVITAE umzuwandeln</translation>
     </message>
     <message>
         <source>Mint Zerocoin</source>
@@ -2083,16 +2083,16 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>0</translation>
     </message>
     <message>
-        <source>zVIT</source>
-        <translation>zVIT</translation>
+        <source>zVITAE</source>
+        <translation>zVITAE</translation>
     </message>
     <message>
         <source>Available for Minting:</source>
         <translation>Verfügbar für Prägung:</translation>
     </message>
     <message>
-        <source>0.000 000 00 VIT</source>
-        <translation>0.000 000 00 VIT</translation>
+        <source>0.000 000 00 VITAE</source>
+        <translation>0.000 000 00 VITAE</translation>
     </message>
     <message>
         <source>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</source>
@@ -2127,12 +2127,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Status und/oder Mitteilungen aus der letzten Präge-Action</translation>
     </message>
     <message>
-        <source>zVit Control</source>
-        <translation>zVit Kontrolle</translation>
+        <source>zVITAE Control</source>
+        <translation>zVITAE Kontrolle</translation>
     </message>
     <message>
-        <source>zVit Selected:</source>
-        <translation>zVit Ausgewählt:</translation>
+        <source>zVITAE Selected:</source>
+        <translation>zVITAE Ausgewählt:</translation>
     </message>
     <message>
         <source>Quantity Selected:</source>
@@ -2151,8 +2151,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Verfügbare Bilanz:</translation>
     </message>
     <message>
-        <source>0 zVIT</source>
-        <translation>0 zVIT</translation>
+        <source>0 zVITAE</source>
+        <translation>0 zVITAE</translation>
     </message>
     <message>
         <source>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</source>
@@ -2387,8 +2387,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Erfolgreich geprägt</translation>
     </message>
     <message>
-        <source> zVIT in </source>
-        <translation> zVIT in </translation>
+        <source> zVITAE in </source>
+        <translation> zVITAE in </translation>
     </message>
     <message>
         <source> sec. Used denominations:
@@ -2481,8 +2481,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Ausgeben Zerocoin fehlgeschlagen mit Status =</translation>
     </message>
     <message>
-        <source>zVit Spend #: </source>
-        <translation>zVIT Ausgeben #:</translation>
+        <source>zVITAE Spend #: </source>
+        <translation>zVITAE Ausgeben #:</translation>
     </message>
     <message>
         <source>denomination: </source>
@@ -2505,8 +2505,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Adresse:</translation>
     </message>
     <message>
-        <source>zVit Mint</source>
-        <translation>zVit Prägen</translation>
+        <source>zVITAE Mint</source>
+        <translation>zVITAE Prägen</translation>
     </message>
     <message>
         <source>Sending successful, return code: </source>
@@ -3134,8 +3134,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>UTXO Größe:</translation>
     </message>
     <message>
-        <source>0 VIT</source>
-        <translation>0 VIT</translation>
+        <source>0 VITAE</source>
+        <translation>0 VITAE</translation>
     </message>
     <message>
         <source>Transaction Fee:</source>
@@ -3242,8 +3242,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Empfänge&amp;r hinzufügen</translation>
     </message>
     <message>
-        <source>Anonymized VIT</source>
-        <translation>Anonymisierte VIT</translation>
+        <source>Anonymized VITAE</source>
+        <translation>Anonymisierte VITAE</translation>
     </message>
     <message>
         <source>SwiftTX</source>
@@ -3962,32 +3962,32 @@ Bitte haben Sie Geduld...</translation>
         <translation>Verschleiert</translation>
     </message>
     <message>
-        <source>Converted Vit to zVit</source>
-        <translation>Umgewandeltes VIT zu zVIT</translation>
+        <source>Converted VITAE to zVITAE</source>
+        <translation>Umgewandeltes VITAE zu zVITAE</translation>
     </message>
     <message>
-        <source>Spent zVit</source>
-        <translation>Ausgeben zVIT</translation>
+        <source>Spent zVITAE</source>
+        <translation>Ausgeben zVITAE</translation>
     </message>
     <message>
-        <source>Received Vit from zVit</source>
-        <translation>Empfangene VIT von zVIT</translation>
+        <source>Received VITAE from zVITAE</source>
+        <translation>Empfangene VITAE von zVITAE</translation>
     </message>
     <message>
-        <source>Minted Change as zVit from zVit Spend</source>
-        <translation>Geprägtes Wechselgeld als zVIT von zVIT Ausgabe</translation>
+        <source>Minted Change as zVITAE from zVITAE Spend</source>
+        <translation>Geprägtes Wechselgeld als zVITAE von zVITAE Ausgabe</translation>
     </message>
     <message>
-        <source>Converted zVit to Vit</source>
-        <translation>Umgewandeltes zVIT zu VIT</translation>
+        <source>Converted zVITAE to VITAE</source>
+        <translation>Umgewandeltes zVITAE zu VITAE</translation>
     </message>
     <message>
         <source>watch-only</source>
         <translation>nur beobachtet</translation>
     </message>
     <message>
-        <source>zVit Accumulator</source>
-        <translation>zVIT Speicher</translation>
+        <source>zVITAE Accumulator</source>
+        <translation>zVITAE Speicher</translation>
     </message>
     <message>
         <source>(n/a)</source>
@@ -4097,8 +4097,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Masternode Vergütung</translation>
     </message>
     <message>
-        <source>Received Vit from zVit</source>
-        <translation>Empfangen VIT von zVIT</translation>
+        <source>Received VITAE from zVITAE</source>
+        <translation>Empfangen VITAE von zVITAE</translation>
     </message>
     <message>
         <source>Zerocoin Mint</source>
@@ -4109,8 +4109,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>Zerocoin Ausgabe</translation>
     </message>
     <message>
-        <source>Zerocoin Spend, Change in zVit</source>
-        <translation>Zerocoin Ausgabe, Wechselgeld in zVIT</translation>
+        <source>Zerocoin Spend, Change in zVITAE</source>
+        <translation>Zerocoin Ausgabe, Wechselgeld in zVITAE</translation>
     </message>
     <message>
         <source>Zerocoin Spend to Self</source>
@@ -4234,8 +4234,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>VITs überweisen</translation>
     </message>
     <message>
-        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VIT.</source>
-        <translation>SwiftTX unterstützt das Versenden von Beträgen dieser Höhe noch nicht. Transaktionen sind zur Zeit auf maximal %1 VIT begrenzt.</translation>
+        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VITAE.</source>
+        <translation>SwiftTX unterstützt das Versenden von Beträgen dieser Höhe noch nicht. Transaktionen sind zur Zeit auf maximal %1 VITAE begrenzt.</translation>
     </message>
 </context>
 <context>
@@ -4280,8 +4280,8 @@ Bitte haben Sie Geduld...</translation>
 <context>
     <name>ZVitControlDialog</name>
     <message>
-        <source>Select zVit to Spend</source>
-        <translation>Auswahl zVIT als Ausgabe</translation>
+        <source>Select zVITAE to Spend</source>
+        <translation>Auswahl zVITAE als Ausgabe</translation>
     </message>
     <message>
         <source>Quantity</source>
@@ -4292,8 +4292,8 @@ Bitte haben Sie Geduld...</translation>
         <translation>0</translation>
     </message>
     <message>
-        <source>zVit</source>
-        <translation>zVIT</translation>
+        <source>zVITAE</source>
+        <translation>zVITAE</translation>
     </message>
     <message>
         <source>Select/Deselect All</source>
@@ -4379,12 +4379,12 @@ Bitte haben Sie Geduld...</translation>
         <translation>Befehl ausführen, wenn sich der beste Block ändert (%s in cmd wird durch Blockhash ersetzt)</translation>
     </message>
     <message>
-        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
-        <translation>Gebühren (in VIT/kB) kleiner als diese gelten als Null-Gebühr für die Weiterleitung (default: %s)</translation>
+        <source>Fees (in VITAE/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
+        <translation>Gebühren (in VITAE/kB) kleiner als diese gelten als Null-Gebühr für die Weiterleitung (default: %s)</translation>
     </message>
     <message>
-        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
-        <translation>Gebühren (in VIT/kB) kleiner als diese werden als Null-Gebühr für die Transaktionserstellung betrachtet (default: %s)</translation>
+        <source>Fees (in VITAE/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>Gebühren (in VITAE/kB) kleiner als diese werden als Null-Gebühr für die Transaktionserstellung betrachtet (default: %s)</translation>
     </message>
     <message>
         <source>Flush database activity from memory pool to disk log every &lt;n&gt; megabytes (default: %u)</source>

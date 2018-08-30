@@ -58,7 +58,7 @@ QT_TRANSLATE_NOOP("vitae-core", ""
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Enable SwiftX, show confirmations for locked transactions (bool, default: %s)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
-"Enable automatic wallet backups triggered after each zVit minting (0-1, "
+"Enable automatic wallet backups triggered after each zVITAE minting (0-1, "
 "default: %u)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Enable spork administration functionality with the appropriate private key."),
@@ -89,10 +89,10 @@ QT_TRANSLATE_NOOP("vitae-core", ""
 "Execute command when the best block changes (%s in cmd is replaced by block "
 "hash)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
-"Fees (in VIT/Kb) smaller than this are considered zero fee for relaying "
+"Fees (in VITAE/Kb) smaller than this are considered zero fee for relaying "
 "(default: %s)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
-"Fees (in VIT/Kb) smaller than this are considered zero fee for transaction "
+"Fees (in VITAE/Kb) smaller than this are considered zero fee for transaction "
 "creation (default: %s)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Flush database activity from memory pool to disk log every <n> megabytes "
@@ -187,10 +187,10 @@ QT_TRANSLATE_NOOP("vitae-core", ""
 "Unable to locate enough Obfuscation denominated funds for this transaction."),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Unable to locate enough Obfuscation non-denominated funds for this "
-"transaction that are not equal 10000 VIT."),
+"transaction that are not equal 10000 VITAE."),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Unable to locate enough funds for this transaction that are not equal 10000 "
-"VIT."),
+"VITAE."),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: "
 "%s)"),
@@ -305,7 +305,7 @@ QT_TRANSLATE_NOOP("vitae-core", "Failed to listen on any port. Use -listen=0 if 
 QT_TRANSLATE_NOOP("vitae-core", "Failed to read block index"),
 QT_TRANSLATE_NOOP("vitae-core", "Failed to read block"),
 QT_TRANSLATE_NOOP("vitae-core", "Failed to write block index"),
-QT_TRANSLATE_NOOP("vitae-core", "Fee (in VIT/kB) to add to transactions you send (default: %s)"),
+QT_TRANSLATE_NOOP("vitae-core", "Fee (in VITAE/kB) to add to transactions you send (default: %s)"),
 QT_TRANSLATE_NOOP("vitae-core", "Finalizing transaction."),
 QT_TRANSLATE_NOOP("vitae-core", "Force safe mode (default: %u)"),
 QT_TRANSLATE_NOOP("vitae-core", "Found enough users, signing ( waiting %s )"),

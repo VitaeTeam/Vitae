@@ -43,53 +43,53 @@ frequently tested on them.
 Notable Changes
 ===============
 
-Zerocoin (zVIT) Protocol
+Zerocoin (zVITAE) Protocol
 ---------------------
 
-At long last, the zVIT release is here and the zerocoin protocol has been fully implemented! This allows users to send transactions with 100% fungible coins and absolutely zero history or link-ability to their previous owners.
+At long last, the zVITAE release is here and the zerocoin protocol has been fully implemented! This allows users to send transactions with 100% fungible coins and absolutely zero history or link-ability to their previous owners.
 
-The Zerocoin protocol allows user to convert (mint) their *VIT* to zerocoins, which we call *zVIT*. When zVIT are converted back to VIT there is no trail associated with the coins being sent, such as who originally minted those coins. Essentially the only thing the receiver of the zVIT transaction will see is that it came from the zerocoin protocol.
+The Zerocoin protocol allows user to convert (mint) their *VITAE* to zerocoins, which we call *zVITAE*. When zVITAE are converted back to VITAE there is no trail associated with the coins being sent, such as who originally minted those coins. Essentially the only thing the receiver of the zVITAE transaction will see is that it came from the zerocoin protocol.
 
-### zVIT Denominations
-zVIT comes in specific denominations of 1, 5, 10, 50, 100, 500, 1000, and 5000. A denomination is a similar concept to paper currency, where you can hold a $100 bill but there is no available $99 bill for you to hold.
+### zVITAE Denominations
+zVITAE comes in specific denominations of 1, 5, 10, 50, 100, 500, 1000, and 5000. A denomination is a similar concept to paper currency, where you can hold a $100 bill but there is no available $99 bill for you to hold.
 
-Other implementations of the zerocoin protocol only allow for spending of one denomination/zerocoin at a time. The VITAE implementation of zerocoin allows users to spend any amount of zVIT they would like (with certain limitations). If a user held two denominations of 5 and they send 7.75 to a merchant, the wallet will automatically grab the two denominations of 5 and then issue 2.25 VIT in change to the spender. There is currently a limit of up to 6 individual zerocoin `coins` that can be combined into a spend, where each `coin` could be a different or similar denomination
+Other implementations of the zerocoin protocol only allow for spending of one denomination/zerocoin at a time. The VITAE implementation of zerocoin allows users to spend any amount of zVITAE they would like (with certain limitations). If a user held two denominations of 5 and they send 7.75 to a merchant, the wallet will automatically grab the two denominations of 5 and then issue 2.25 VITAE in change to the spender. There is currently a limit of up to 6 individual zerocoin `coins` that can be combined into a spend, where each `coin` could be a different or similar denomination
 
 The VITAE zerocoin implementation is structured in such a way that denominations aren't needed to be known by the average user.
 
 ### Fees
-zVit transactions require more computation and disk space than typical VITAE transactions, and as such require a higher transaction fee in order to prevent network spam. Fees are only charged when minting zVit, each minted denomination is charged a flat rate of 0.01 Vit. zVit spends are not charged a transaction fee unless the change is minted into zVit, see the *Minting Change* section for details on fees for zVit spends with minted change.
+zVITAE transactions require more computation and disk space than typical VITAE transactions, and as such require a higher transaction fee in order to prevent network spam. Fees are only charged when minting zVITAE, each minted denomination is charged a flat rate of 0.01 VITAE. zVITAE spends are not charged a transaction fee unless the change is minted into zVITAE, see the *Minting Change* section for details on fees for zVITAE spends with minted change.
 
-### Converting VIT to zVIT (*zVIT Mint*)
-**GUI** - Conversion from VIT to zVIT can be done using the `Privacy Dialog` in the QT wallet. Enter the amount of VIT you would like to convert and click `Mint Zerocoin`.
+### Converting VITAE to zVITAE (*zVITAE Mint*)
+**GUI** - Conversion from VITAE to zVITAE can be done using the `Privacy Dialog` in the QT wallet. Enter the amount of VITAE you would like to convert and click `Mint Zerocoin`.
 
-**RPC** - Conversion from VIT to zVIT can be done using the `mintzerocoin` command.
+**RPC** - Conversion from VITAE to zVITAE can be done using the `mintzerocoin` command.
 
-**Automint** - The VITAE wallet is set to convert 10% of the wallets available VIT to zVIT automatically. This can be adjusted in the GUI within the Options dialog, which allows the preferred % to be adjusted as well as the ability to set the preferred zVIT denomination that will be minted. Automint is set to be triggered when additional blocks are added to the block chain and is programmed *not* to convert your coins all at once.
+**Automint** - The VITAE wallet is set to convert 10% of the wallets available VITAE to zVITAE automatically. This can be adjusted in the GUI within the Options dialog, which allows the preferred % to be adjusted as well as the ability to set the preferred zVITAE denomination that will be minted. Automint is set to be triggered when additional blocks are added to the block chain and is programmed *not* to convert your coins all at once.
 
 Automint can be disabled by adding `enablezeromint=0` to the wallet configuration file. The preferred mint % and denomination can also be set by the configuration file using `zeromintpercentage=<n>` and `preferredDenom=<n>`.
 
-### Converting zVIT to VIT (*zVIT Spend*)
-Redeeming zVIT is done by converting it back to VIT. With the 3.0.0 software release, users are not able to send zVIT to each other directly in an atomic fashion.
+### Converting zVITAE to VITAE (*zVITAE Spend*)
+Redeeming zVITAE is done by converting it back to VITAE. With the 3.0.0 software release, users are not able to send zVITAE to each other directly in an atomic fashion.
 
-**GUI** - Conversion from zVIT to VIT can be done using the `Privacy Dialog` in the QT wallet. Enter a VITAE address that you would like to Pay To, enter the amount of VIT the receiver should be sent, click `Spend Zerocoin`.
+**GUI** - Conversion from zVITAE to VITAE can be done using the `Privacy Dialog` in the QT wallet. Enter a VITAE address that you would like to Pay To, enter the amount of VITAE the receiver should be sent, click `Spend Zerocoin`.
 
-**RPC** - Conversion from zVIT to VIT can be done using the `spendzerocoin` command.
+**RPC** - Conversion from zVITAE to VITAE can be done using the `spendzerocoin` command.
 
 ### Advanced Use & Privacy Considerations
-**Security Level** - When spending zVIT, a user is prompted to enter a *Security Level* choosing from 1-100. In an indirect way, the Security Level parameter allows the user to choose how many coins to obfuscate their transaction with.
+**Security Level** - When spending zVITAE, a user is prompted to enter a *Security Level* choosing from 1-100. In an indirect way, the Security Level parameter allows the user to choose how many coins to obfuscate their transaction with.
 
 A Security Level of 1 for example would take all of the minted coins in the blockchain before your mint was added to the blockchain, and would then add any coins that were minted within the next 10 blocks as well. A Security Level of 2 would do the same thing, except add the next 20 blocks worth of mints. A **Security Level of 100 will add the maximum amount of mints** up to the current end of the blockchain.
 
 The higher the Security Level, the more computation and time it will take to spend. Although it takes longer, a level of 100 is recommended for transactions that need maximum anonymity.
 
 
-**Minting Change** - The VITAE implementation of the zerocoin protocol also allows the spender to choose how to receive their leftover change from a Spend transaction. For maximum anonymity it is recommended that the spender choose to receive the change in zVIT, which prevents situations where change from a zVIT spend that is redeemed in VIT is accidentally mixed with the rest of the users VIT, thus linking transactions back to a VITAE address.
+**Minting Change** - The VITAE implementation of the zerocoin protocol also allows the spender to choose how to receive their leftover change from a Spend transaction. For maximum anonymity it is recommended that the spender choose to receive the change in zVITAE, which prevents situations where change from a zVITAE spend that is redeemed in VITAE is accidentally mixed with the rest of the users VITAE, thus linking transactions back to a VITAE address.
 
-Since the lowest denomination of zVIT is 1, and a fee is required to mint zVIT, in most situations a high fee will be paid to mint change. The fee is the remainder of the change that cannot be converted back to zVIT. For example this would mean a spending a denomination of 10 that yields change of 6.75 in change, would issue zVIT denominations of 5 and 1 back to the sender with the remaining 0.75 that is unmintable being contributed as a fee.
+Since the lowest denomination of zVITAE is 1, and a fee is required to mint zVITAE, in most situations a high fee will be paid to mint change. The fee is the remainder of the change that cannot be converted back to zVITAE. For example this would mean a spending a denomination of 10 that yields change of 6.75 in change, would issue zVITAE denominations of 5 and 1 back to the sender with the remaining 0.75 that is unmintable being contributed as a fee.
 
-**zVIT Control**
-Similar to the concept of Coin Control in the QT wallet, zVIT Control allows users to select exactly which zVIT mints they would like to spend. This gives a flexibility to choose which denominations can be picked for a spend that wouldn't otherwise be available.
+**zVITAE Control**
+Similar to the concept of Coin Control in the QT wallet, zVITAE Control allows users to select exactly which zVITAE mints they would like to spend. This gives a flexibility to choose which denominations can be picked for a spend that wouldn't otherwise be available.
 
 
 Tor Service Integration Improvements
@@ -110,7 +110,7 @@ the code changes and accompanying discussion, both the pull request and
 git merge commit are mentioned.
 
 ### Broad Features
-- #264 `15e84e5` zVIT is here! (Fuzzbawls Mrs-X Presstab Spock VITAE)
+- #264 `15e84e5` zVITAE is here! (Fuzzbawls Mrs-X Presstab Spock VITAE)
 
 ### P2P Protocol and Network Code
 - #242 `0ecd77f` [P2P] Improve TOR service connectivity (Fuzzbawls)

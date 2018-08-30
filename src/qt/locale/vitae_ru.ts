@@ -180,8 +180,8 @@
         <translation>Вы действительно хотите зашифровать свой кошелек?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
-        <translation>Внимание: если вы зашифруете свой кошелёк и потеряете от него пароль, то вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ СВОИ VIT&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
+        <translation>Внимание: если вы зашифруете свой кошелёк и потеряете от него пароль, то вы &lt;b&gt;ПОТЕРЯЕТЕ ВСЕ СВОИ VITAE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -1504,32 +1504,32 @@ Please check the address and try again.</source>
         <translation>Выберите уровень конфиденциальности.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>Используйте 2 разные мастерноды для смешивания средств до 10000 VIT</translation>
+        <source>Use 2 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>Используйте 2 разные мастерноды для смешивания средств до 10000 VITAE</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>Используйте 8 разных мастернод для смешивания средств до 10000 VIT</translation>
+        <source>Use 8 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>Используйте 8 разных мастернод для смешивания средств до 10000 VITAE</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Используйте 16 разных мастернод</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</source>
-        <translation>Этот вариант является самым быстрым и будет стоить порядка ~0.025 VIT для анонимизации 10000 VIT</translation>
+        <source>This option is the quickest and will cost about ~0.025 VITAE to anonymize 10000 VITAE</source>
+        <translation>Этот вариант является самым быстрым и будет стоить порядка ~0.025 VITAE для анонимизации 10000 VITAE</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</source>
-        <translation>Это средний по скорости вариант и он будет стоить около 0.05 VIT для анонимизации 10000 VIT</translation>
+        <source>This option is moderately fast and will cost about 0.05 VITAE to anonymize 10000 VITAE</source>
+        <translation>Это средний по скорости вариант и он будет стоить около 0.05 VITAE для анонимизации 10000 VITAE</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
         <translation>Это самый медленный и безопасный вариант. Максимальная анонимность стоит</translation>
     </message>
     <message>
-        <source>0.1 VIT per 10000 VIT you anonymize.</source>
-        <translation>0.1 VIT за 10000 VIT которые вы собираетесь анонимизировать.</translation>
+        <source>0.1 VITAE per 10000 VITAE you anonymize.</source>
+        <translation>0.1 VITAE за 10000 VITAE которые вы собираетесь анонимизировать.</translation>
     </message>
     <message>
         <source>Obfuscation Configuration</source>
@@ -2570,8 +2570,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Изменить:</translation>
     </message>
     <message>
-        <source>0 VIT</source>
-        <translation>0 VIT</translation>
+        <source>0 VITAE</source>
+        <translation>0 VITAE</translation>
     </message>
     <message>
         <source>Transaction Fee:</source>

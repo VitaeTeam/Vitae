@@ -442,7 +442,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Buy VIT</string>
+      <string>Buy VITAE</string>
      </property>
      <property name="icon">
       <iconset resource="../vitae.qrc">
@@ -512,7 +512,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>VIT</string>
+      <string>VITAE</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -1704,7 +1704,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>VIT</string>
+      <string>VITAE</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="UnitsInputVIT">
@@ -1751,7 +1751,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Sell VIT</string>
+      <string>Sell VITAE</string>
      </property>
      <property name="icon">
       <iconset resource="../vitae">
@@ -1777,7 +1777,7 @@
          </font>
         </property>
         <property name="text">
-         <string>VIT Available:</string>
+         <string>VITAE Available:</string>
         </property>
        </widget>
       </item>
@@ -2221,7 +2221,7 @@
          </font>
         </property>
         <property name="text">
-         <string>VIT</string>
+         <string>VITAE</string>
         </property>
        </widget>
       </item>
@@ -2762,7 +2762,7 @@
       </font>
      </property>
      <property name="text">
-      <string>VIT Balance:</string>
+      <string>VITAE Balance:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_12">
@@ -2813,7 +2813,7 @@
       </font>
      </property>
      <property name="text">
-      <string>VIT Available:</string>
+      <string>VITAE Available:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_14">
@@ -2832,7 +2832,7 @@
       </font>
      </property>
      <property name="text">
-      <string>VIT Pending:</string>
+      <string>VITAE Pending:</string>
      </property>
     </widget>
     <widget class="QLabel" name="VITPendingLabel">
@@ -2928,7 +2928,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Bittrex VIT Deposit Address:</string>
+      <string>Bittrex VITAE Deposit Address:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="GenDepositBTN">

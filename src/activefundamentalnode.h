@@ -34,7 +34,7 @@ private:
     /// Register any Fundamentalnode
     bool Register(CTxIn vin, CService service, CKey key, CPubKey pubKey, CKey keyFundamentalnode, CPubKey pubKeyFundamentalnode, std::string& errorMessage);
 
-    /// Get 10000 VIT input that can be used for the Fundamentalnode
+    /// Get 10000 VITAE input that can be used for the Fundamentalnode
     bool GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex);
     bool GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
 
@@ -62,7 +62,7 @@ public:
     /// Register remote Fundamentalnode
     bool Register(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& errorMessage);
 
-    /// Get 10000 VIT input that can be used for the Fundamentalnode
+    /// Get 10000 VITAE input that can be used for the Fundamentalnode
     bool GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
     vector<COutput> SelectCoinsFundamentalnode();
 

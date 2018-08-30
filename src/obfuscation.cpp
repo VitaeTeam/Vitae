@@ -39,7 +39,7 @@ map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
 // Keep track of the active Fundamentalnode
 CActiveFundamentalnode activeFundamentalnode;
 
-/* *** BEGIN OBFUSCATION MAGIC - VIT **********
+/* *** BEGIN OBFUSCATION MAGIC - VITAE **********
     Copyright (c) 2014-2015, Dash Developers
         eduffield - evan@dashpay.io
         udjinm6   - udjinm6@dashpay.io
@@ -781,7 +781,7 @@ void CObfuscationPool::ChargeRandomFees()
                 with using it to stop abuse. Otherwise it could serve as an attack vector and
                 allow endless transaction that would bloat VITAE and make it unusable. To
                 stop these kinds of attacks 1 in 10 successful transactions are charged. This
-                adds up to a cost of 0.001 VIT per transaction on average.
+                adds up to a cost of 0.001 VITAE per transaction on average.
             */
             if (r <= 10) {
                 LogPrintf("CObfuscationPool::ChargeRandomFees -- charging random fees. %u\n", i);

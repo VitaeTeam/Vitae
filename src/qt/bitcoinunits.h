@@ -57,9 +57,9 @@ public:
       @note Source: https://en.bitcoin.it/wiki/Units . Please add only sensible ones
      */
     enum Unit {
-        VIT,
-        mVIT,
-        uVIT
+        VITAE,
+        mVITAE,
+        uVITAE
     };
 
     enum SeparatorStyle {
