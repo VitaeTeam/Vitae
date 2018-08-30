@@ -4199,11 +4199,15 @@ por ejemplo: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
     </message>
     <message>
         <source>Copyright (C) 2014-%i The Dash Core Developers</source>
-        <translation>Copyright (C) 2014-%i The Dash Core Developers</translation>
+        <translation>Copyright (C) 2014-%i The Dash Core Desarrolladores</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
-        <translation>Copyright (C) 2015-%i The VITAE Core Developers</translation>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation>Copyright (C) 2015-%i The PIVX Core Desarrolladores</translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <translation>Copyright (C) 2018 The VITAE Core Desarrolladores</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>

@@ -2802,8 +2802,12 @@ MultiSend: %1</translation>
         <translation>Copyright (C) 2014-%i The Dash Core Ontwikkelaars</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
-        <translation>Copyright (C) 2015-%i The VITAE Core Ontwikkelaars</translation>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation>Copyright (C) 2015-%i The PIVX Core Ontwikkelaars</translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <translation>Copyright (C) 2018 The VITAE Core Ontwikkelaars</translation>
     </message>
     <message>
         <source>Debugging/Testing options:</source>

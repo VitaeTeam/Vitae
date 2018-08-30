@@ -6439,7 +6439,12 @@ for example: alertnotify=echo %%s | mail -s &quot;VITAE Alert&quot; admin@foo.co
     </message>
     <message>
         <location line="+1"/>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Copyright (C) 2018The VITAE Core Developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

@@ -4156,15 +4156,19 @@ For eksempel: alertnotify=Echo %% | mail - s "VITAE ALARM!" e-mail@administrator
     </message>
     <message>
         <source>Copyright (C) 2009-%i The Bitcoin Core Developers</source>
-        <translation>Copyright (C) 2009-%i The Bitcoin Core Developers </translation>
+        <translation>Copyright (C) 2009-%i The Bitcoin Core Udviklere </translation>
     </message>
     <message>
         <source>Copyright (C) 2014-%i The Dash Core Developers</source>
-        <translation>Copyright (C) 2014-%i The Dash Core Developers </translation>
+        <translation>Copyright (C) 2014-%i The Dash Core Udviklere </translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
-        <translation>Copyright (C) 2015-%i The VITAE Core Developers</translation>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation>Copyright (C) 2015-%i The PIVX Core Udviklere </translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <translation>Copyright (C) 2018 The VITAE Core Udviklere </translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>
