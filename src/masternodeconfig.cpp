@@ -1,3 +1,9 @@
+// Copyright (c) 2014-2015 The Bitsend developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
+// Distributed under the MIT/X11 software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "net.h"
 #include "masternodeconfig.h"
@@ -21,7 +27,7 @@ bool CMasternodeConfig::read(std::string& strErr) {
         if (configFile != NULL) {
             fclose(configFile);
         }
-        return true; // Nothing to read, so just return    
+        return true; // Nothing to read, so just return
 	}
 
     for(std::string line; std::getline(streamConfig, line); )

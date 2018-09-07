@@ -1,7 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,7 +48,7 @@ bool fSendFreeTransactions = false;
 bool fPayAtLeastCustomFee = true;
 
 /**
- * Fees smaller than this (in uVit) are considered zero fee (for transaction creation)
+ * Fees smaller than this (in uVITAE) are considered zero fee (for transaction creation)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minTxFee 10 times higher
  * so it's still 10 times lower comparing to bitcoin.
  * Override with -mintxfee
@@ -1292,7 +1293,7 @@ CAmount CWalletTx::GetAvailableWatchOnlyCredit(const bool& fUseCache) const
     fAvailableWatchCreditCached = true;
     return nCredit;
 }
-    
+
 CAmount CWalletTx::GetLockedWatchOnlyCredit() const
 {
     if (pwallet == 0)
@@ -1619,7 +1620,7 @@ CAmount CWallet::GetUnconfirmedZerocoinBalance() const
     CAmount nUnconfirmed = 0;
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CZerocoinMint> listMints = walletdb.ListMintedCoins(true, false, true);
- 
+
     std::map<libzerocoin::CoinDenomination, int> mapUnconfirmed;
     for (const auto& denom : libzerocoin::zerocoinDenomList){
         mapUnconfirmed.insert(make_pair(denom, 0));
@@ -2248,13 +2249,13 @@ bool CWallet::SelectCoins(const CAmount& nTargetValue, set<pair<const CWalletTx*
         return (nValueRet >= nTargetValue);
     }
 
-    //if we're doing only denominated, we need to round up to the nearest .1 VIT
+    //if we're doing only denominated, we need to round up to the nearest .1 VITAE
     if (coin_type == ONLY_DENOMINATED) {
         // Make outputs by looping through denominations, from large to small
         BOOST_FOREACH (CAmount v, obfuScationDenominations) {
             BOOST_FOREACH (const COutput& out, vCoins) {
                 if (out.tx->vout[out.i].nValue == v                                               //make sure it's the denom we're looking for
-                    && nValueRet + out.tx->vout[out.i].nValue < nTargetValue + (0.1 * COIN) + 100 //round the amount up to .1 VIT over
+                    && nValueRet + out.tx->vout[out.i].nValue < nTargetValue + (0.1 * COIN) + 100 //round the amount up to .1 VITAE over
                     ) {
                     CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
                     int rounds = GetInputObfuscationRounds(vin);
@@ -2316,12 +2317,12 @@ bool CWallet::SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount 
 
             // Function returns as follows:
             //
-            // bit 0 - 10000 VIT+1 ( bit on if present )
-            // bit 1 - 1000 VIT+1
-            // bit 2 - 100 VIT+1
-            // bit 3 - 10 VIT+1
-            // bit 4 - 1 VIT+1
-            // bit 5 - .1 VIT+1
+            // bit 0 - 10000 VITAE+1 ( bit on if present )
+            // bit 1 - 1000 VITAE+1
+            // bit 2 - 100 VITAE+1
+            // bit 3 - 10 VITAE+1
+            // bit 4 - 1 VITAE+1
+            // bit 5 - .1 VITAE+1
 
             CTxIn vin = CTxIn(out.tx->GetHash(), out.i);
 
@@ -2713,9 +2714,9 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                     if (coin_type == ALL_COINS) {
                         strFailReason = _("Insufficient funds.");
                     } else if (coin_type == ONLY_NOT10000IFMN) {
-                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 VIT.");
+                        strFailReason = _("Unable to locate enough funds for this transaction that are not equal 10000 VITAE.");
                     } else if (coin_type == ONLY_NONDENOMINATED_NOT10000IFMN) {
-                        strFailReason = _("Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VIT.");
+                        strFailReason = _("Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VITAE.");
                     } else {
                         strFailReason = _("Unable to locate enough Obfuscation denominated funds for this transaction.");
                         strFailReason += " " + _("Obfuscation uses exact denominated amounts to send funds, you might simply need to anonymize some more coins.");
@@ -3942,7 +3943,7 @@ bool CWallet::GetDestData(const CTxDestination& dest, const std::string& key, st
 void CWallet::AutoZeromint()
 {
     // Don't bother Autominting if Zerocoin Protocol isn't active
-    if (GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) return;
+    if (GetAdjustedTime() > GetSporkValue(SPORK_17_ZEROCOIN_MAINTENANCE_MODE)) return;
 
     // Wait until blockchain + fundamentalnodes are fully synced and wallet is unlocked.
     if (!fundamentalnodeSync.IsSynced() || IsLocked()){
@@ -3964,32 +3965,32 @@ void CWallet::AutoZeromint()
     CAmount nMintAmount = 0;
     CAmount nToMintAmount = 0;
 
-    // zVIT are integers > 0, so we can't mint 10% of 9 VIT
+    // zVITAE are integers > 0, so we can't mint 10% of 9 VITAE
     if (nBalance < 10){
-        LogPrint("zero", "CWallet::AutoZeromint(): available balance (%ld) too small for minting zVIT\n", nBalance);
+        LogPrint("zero", "CWallet::AutoZeromint(): available balance (%ld) too small for minting zVITAE\n", nBalance);
         return;
     }
 
-    // Percentage of zVIT we already have
+    // Percentage of zVITAE we already have
     double dPercentage = 100 * (double)nZerocoinBalance / (double)(nZerocoinBalance + nBalance);
 
     // Check if minting is actually needed
     if(dPercentage >= nZeromintPercentage){
-        LogPrint("zero", "CWallet::AutoZeromint() @block %ld: percentage of existing zVIT (%lf%%) already >= configured percentage (%d%%). No minting needed...\n",
+        LogPrint("zero", "CWallet::AutoZeromint() @block %ld: percentage of existing zVITAE (%lf%%) already >= configured percentage (%d%%). No minting needed...\n",
                   chainActive.Tip()->nHeight, dPercentage, nZeromintPercentage);
         return;
     }
 
-    // zVIT amount needed for the target percentage
+    // zVITAE amount needed for the target percentage
     nToMintAmount = ((nZerocoinBalance + nBalance) * nZeromintPercentage / 100);
 
-    // zVIT amount missing from target (must be minted)
+    // zVITAE amount missing from target (must be minted)
     nToMintAmount = (nToMintAmount - nZerocoinBalance) / COIN;
 
-    // Use the biggest denomination smaller than the needed zVIT We'll only mint exact denomination to make minting faster.
+    // Use the biggest denomination smaller than the needed zVITAE We'll only mint exact denomination to make minting faster.
     // Exception: for big amounts use 6666 (6666 = 1*5000 + 1*1000 + 1*500 + 1*100 + 1*50 + 1*10 + 1*5 + 1) to create all
     // possible denominations to avoid having 5000 denominations only.
-    // If a preferred denomination is used (means nPreferredDenom != 0) do nothing until we have enough VIT to mint this denomination
+    // If a preferred denomination is used (means nPreferredDenom != 0) do nothing until we have enough VITAE to mint this denomination
 
     if (nPreferredDenom > 0){
         if (nToMintAmount >= nPreferredDenom)
@@ -4033,7 +4034,7 @@ void CWallet::AutoZeromint()
         nZerocoinBalance = GetZerocoinBalance(false);
         nBalance = GetUnlockedCoins();
         dPercentage = 100 * (double)nZerocoinBalance / (double)(nZerocoinBalance + nBalance);
-        LogPrintf("CWallet::AutoZeromint() @ block %ld: successfully minted %ld zVIT. Current percentage of zVIT: %lf%%\n",
+        LogPrintf("CWallet::AutoZeromint() @ block %ld: successfully minted %ld zVITAE. Current percentage of zVITAE: %lf%%\n",
                   chainActive.Tip()->nHeight, nMintAmount, dPercentage);
         // Re-adjust startup time to delay next Automint for 5 minutes
         nStartupTime = GetAdjustedTime();
@@ -4470,7 +4471,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
     }
 
     //any change that is less than 0.0100000 will be ignored and given as an extra fee
-    //also assume that a zerocoinspend that is minting the change will not have any change that goes to Vit
+    //also assume that a zerocoinspend that is minting the change will not have any change that goes to VITAE
     CAmount nChange = nValueIn - nTotalValue; // Fee already accounted for in nTotalValue
     if (nChange > 1 * CENT && !isZCSpendChange) {
         // Fill a vout to ourself using the largest contributing address
@@ -4484,7 +4485,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
             reservekey->ReturnKey();
     }
 
-    // Sign if these are vitae outputs - NOTE that zVit outputs are signed later in SoK
+    // Sign if these are vitae outputs - NOTE that zVITAE outputs are signed later in SoK
     if (!isZCSpendChange) {
         int nIn = 0;
         for (const std::pair<const CWalletTx*, unsigned int>& coin : setCoins) {
@@ -4571,7 +4572,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
         std::list<CBigNum> listCoinSpendSerial = CWalletDB(strWalletFile).ListSpentCoinsSerial();
         for (const CBigNum& item : listCoinSpendSerial) {
             if (spend.getCoinSerialNumber() == item) {
-                //Tried to spend an already spent zVit
+                //Tried to spend an already spent zVITAE
                 zerocoinSelected.SetUsed(true);
                 if (!CWalletDB(strWalletFile).WriteZerocoinMint(zerocoinSelected))
                     LogPrintf("%s failed to write zerocoinmint\n", __func__);
@@ -4607,7 +4608,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
     }
 
     if (nValue < 1) {
-        receipt.SetStatus(_("Value is below the the smallest available denomination (= 1) of zVit"), nStatus);
+        receipt.SetStatus(_("Value is below the the smallest available denomination (= 1) of zVITAE"), nStatus);
         return false;
     }
 
@@ -4620,7 +4621,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
     CAmount nValueSelected = 0;
     int nCoinsReturned = 0; // Number of coins returned in change from function below (for debug)
     int nNeededSpends = 0;  // Number of spends which would be needed if selection failed
-    const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVIT transaction
+    const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVITAE transaction
     if (vSelectedMints.empty()) {
         listMints = walletdb.ListMintedCoins(true, true, true); // need to find mints to spend
         if(listMints.empty()) {
@@ -4635,7 +4636,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
         if(!fWholeNumber)
             nValueToSelect = static_cast<CAmount>(ceil(dValue) * COIN);
 
-        // Select the zVit mints to use in this spend
+        // Select the zVITAE mints to use in this spend
         std::map<libzerocoin::CoinDenomination, CAmount> DenomMap = GetMyZerocoinDistribution();
         vSelectedMints = SelectMintsFromList(nValueToSelect, nValueSelected, nMaxSpends, fMinimizeChange,
                                              nCoinsReturned, listMints, DenomMap, nNeededSpends);
@@ -5065,7 +5066,7 @@ bool CWallet::SpendZerocoin(CAmount nAmount, int nSecurityLevel, CWalletTx& wtxN
         walletdb.WriteZerocoinMint(mint);
     }
 
-    receipt.SetStatus("Spend Successful", ZVIT_SPEND_OKAY);  // When we reach this point spending zVIT was successful
+    receipt.SetStatus("Spend Successful", ZVIT_SPEND_OKAY);  // When we reach this point spending zVITAE was successful
 
     return true;
 }

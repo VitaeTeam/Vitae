@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -237,7 +237,7 @@ void CFundamentalnodeSync::Process()
     if (tick++ % FUNDAMENTALNODE_SYNC_TIMEOUT != 0) return;
 
     if (IsSynced()) {
-        /* 
+        /*
             Resync if we lose all fundamentalnodes from sleep/wake or failure to sync originally
         */
         if (mnodeman.CountEnabled() == 0) {
@@ -366,10 +366,10 @@ void CFundamentalnodeSync::Process()
 
         if (pnode->nVersion >= ActiveProtocol()) {
             if (RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_BUDGET) {
-                
+
                 // We'll start rejecting votes if we accidentally get set as synced too soon
-                if (lastBudgetItem > 0 && lastBudgetItem < GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT * 2 && RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD) { 
-                    
+                if (lastBudgetItem > 0 && lastBudgetItem < GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT * 2 && RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD) {
+
                     // Hasn't received a new item in the last five seconds, so we'll move to the
                     GetNextAsset();
 

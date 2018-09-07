@@ -180,7 +180,7 @@
         <translation>Oletko varma että tahdot salata lompakkosi?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
         <translation>Varoitus: Jos salaat lompakkosi ja unohdat salausavaimesi, &lt;b&gt;menetät kaikki VITisi&lt;/b&gt;</translation>
     </message>
     <message>
@@ -1135,11 +1135,11 @@ Please check the address and try again.</source>
         <translation>Valitse yksityisyyden taso.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 VIT</source>
+        <source>Use 2 separate masternodes to mix funds up to 10000 VITAE</source>
         <translation>Käytä 2 erillistä masternodea sekoittaaksesi enintään 10000 VITAE</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 VIT</source>
+        <source>Use 8 separate masternodes to mix funds up to 10000 VITAE</source>
         <translation>Käytä 8 erillistä masternodea sekoittaaksesi enintään 10000 VITAE</translation>
     </message>
     <message>
@@ -1147,11 +1147,11 @@ Please check the address and try again.</source>
         <translation>Käytä 16 erillistä masternodea</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</source>
-        <translation>Tämä vaihtoehto on nopein ja maksaa noin ~0.025 VIT anonymoidaksesi 10000 VITAE</translation>
+        <source>This option is the quickest and will cost about ~0.025 VITAE to anonymize 10000 VITAE</source>
+        <translation>Tämä vaihtoehto on nopein ja maksaa noin ~0.025 VITAE anonymoidaksesi 10000 VITAE</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</source>
+        <source>This option is moderately fast and will cost about 0.05 VITAE to anonymize 10000 VITAE</source>
         <translation>Tämä vaihtoehto on suhteellisen nopea ja maksaa 0.05 VITAE anonymoidaksesi 10000 VITAE</translation>
     </message>
     <message>
@@ -1159,7 +1159,7 @@ Please check the address and try again.</source>
         <translation>Tämä on hitain ja turvallisin vaihtoehto. Täydesti anonymisoiminen ei maksa mitään.</translation>
     </message>
     <message>
-        <source>0.1 VIT per 10000 VIT you anonymize.</source>
+        <source>0.1 VITAE per 10000 VITAE you anonymize.</source>
         <translation>0.1 per 10000 VITAE, jotka anonymisoit.</translation>
     </message>
     <message>
@@ -1898,8 +1898,8 @@ Please check the address and try again.</source>
         <translation>Muutos:</translation>
     </message>
     <message>
-        <source>0 VIT</source>
-        <translation>0 VIT</translation>
+        <source>0 VITAE</source>
+        <translation>0 VITAE</translation>
     </message>
     <message>
         <source>Choose...</source>

@@ -252,7 +252,7 @@
                            </size>
                           </property>
                           <property name="toolTip">
-                           <string>Enter an amount of Vit to convert to zVit</string>
+                           <string>Enter an amount of VITAE to convert to zVITAE</string>
                           </property>
                           <property name="text">
                            <string>Mint Zerocoin</string>
@@ -278,7 +278,7 @@
                         <item>
                          <widget class="QLabel" name="labelzVIT_2">
                           <property name="text">
-                           <string>zVIT</string>
+                           <string>zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -304,10 +304,10 @@
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Enter an amount of Vit to convert to zVit</string>
+                           <string>Enter an amount of VITAE to convert to zVITAE</string>
                           </property>
                           <property name="text">
-                           <string>0.000 000 00 VIT</string>
+                           <string>0.000 000 00 VITAE</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -483,7 +483,7 @@
                              <enum>Qt::ActionsContextMenu</enum>
                             </property>
                             <property name="text">
-                             <string notr="true">0.00 VIT</string>
+                             <string notr="true">0.00 VITAE</string>
                             </property>
                             <property name="textInteractionFlags">
                              <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -608,14 +608,14 @@
                         <item>
                          <widget class="QPushButton" name="pushButtonZVitControl">
                           <property name="text">
-                           <string>zVit Control</string>
+                           <string>zVITAE Control</string>
                           </property>
                          </widget>
                         </item>
                         <item>
                          <widget class="QLabel" name="labelzVitSelected">
                           <property name="text">
-                           <string>zVit Selected:</string>
+                           <string>zVITAE Selected:</string>
                           </property>
                          </widget>
                         </item>
@@ -692,7 +692,7 @@
                         <item>
                          <widget class="QLabel" name="labelzVITBalanceText">
                           <property name="toolTip">
-                           <string>Available (mature and spendable) zVIT for spending</string>
+                           <string>Available (mature and spendable) zVITAE for spending</string>
                           </property>
                           <property name="text">
                            <string>Available Balance:</string>
@@ -711,12 +711,12 @@
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Available (mature and spendable) zVIT for spending
+                           <string>Available (mature and spendable) zVITAE for spending
 
-zVIT are mature when they have more than 20 confirmations AND more than 2 mints of the same denomination after them were minted</string>
+zVITAE are mature when they have more than 20 confirmations AND more than 2 mints of the same denomination after them were minted</string>
                           </property>
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -932,7 +932,7 @@ zVIT are mature when they have more than 20 confirmations AND more than 2 mints 
                            </size>
                           </property>
                           <property name="text">
-                           <string>zVIT</string>
+                           <string>zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1091,7 +1091,7 @@ zVIT are mature when they have more than 20 confirmations AND more than 2 mints 
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Total Balance including unconfirmed and immature zVIT</string>
+                           <string>Total Balance including unconfirmed and immature zVITAE</string>
                           </property>
                           <property name="text">
                            <string>Total Zerocoin  Balance:</string>
@@ -1129,10 +1129,10 @@ zVIT are mature when they have more than 20 confirmations AND more than 2 mints 
                            </font>
                           </property>
                           <property name="toolTip">
-                           <string>Total Balance including unconfirmed and immature zVIT</string>
+                           <string>Total Balance including unconfirmed and immature zVITAE</string>
                           </property>
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1589,14 +1589,14 @@ Immature: confirmed, but less than 2 mints of the same denomination after it was
                         <item>
                          <widget class="QLabel" name="label_AutoMintStatus">
                           <property name="toolTip">
-                           <string>Show the current status of automatic zVIT minting.
+                           <string>Show the current status of automatic zVITAE minting.
 
 To change the status (restart required):
 - enable: add 'enablezeromint=1' to vitae.conf
 - disable: add 'enablezeromint=0' to vitae.conf
 
 To change the percentage (no restart required):
-- menu Settings-&gt;Options-&gt;Percentage of autominted zVIT
+- menu Settings-&gt;Options-&gt;Percentage of autominted zVITAE
 
 </string>
                           </property>
@@ -1676,7 +1676,7 @@ To change the percentage (no restart required):
                            </font>
                           </property>
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1707,7 +1707,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount1">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1738,7 +1738,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount5">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1769,7 +1769,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount10">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1800,7 +1800,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount50">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1831,7 +1831,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount100">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1862,7 +1862,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount500">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1893,7 +1893,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount1000">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -1924,7 +1924,7 @@ To change the percentage (no restart required):
                         <item>
                          <widget class="QLabel" name="labelZsupplyAmount5000">
                           <property name="text">
-                           <string>0 zVIT</string>
+                           <string>0 zVITAE</string>
                           </property>
                          </widget>
                         </item>
@@ -2054,7 +2054,7 @@ To change the percentage (no restart required):
          <enum>Qt::ActionsContextMenu</enum>
         </property>
         <property name="text">
-         <string notr="true">0.000 000 00 VIT</string>
+         <string notr="true">0.000 000 00 VITAE</string>
         </property>
         <property name="textInteractionFlags">
          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -2136,7 +2136,7 @@ To change the percentage (no restart required):
            <enum>Qt::ActionsContextMenu</enum>
           </property>
           <property name="text">
-           <string notr="true">0.00 VIT</string>
+           <string notr="true">0.00 VITAE</string>
           </property>
           <property name="textInteractionFlags">
            <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
@@ -2358,7 +2358,7 @@ To change the percentage (no restart required):
          <enum>Qt::ActionsContextMenu</enum>
         </property>
         <property name="text">
-         <string notr="true">0.000 000 00 VIT</string>
+         <string notr="true">0.000 000 00 VITAE</string>
         </property>
         <property name="textInteractionFlags">
          <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>

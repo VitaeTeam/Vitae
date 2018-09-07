@@ -1,3 +1,5 @@
+// Copyright (c) 2014-2016 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
 
 //#include "core.h"
 #include "protocol.h"

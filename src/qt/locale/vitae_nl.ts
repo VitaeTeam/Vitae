@@ -180,8 +180,8 @@
         <translation>Weet u zeker dat u uw portemonnee wilt versleutelen?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
-        <translation>Waarschuwing: Als u uw portemonnee versleutelt en uw wachtwoord vergeet, zult u &lt;b&gt;AL UW VIT VERLIEZEN&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
+        <translation>Waarschuwing: Als u uw portemonnee versleutelt en uw wachtwoord vergeet, zult u &lt;b&gt;AL UW VITAE VERLIEZEN&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -1500,16 +1500,16 @@ MultiSend: %1</translation>
 <context>
     <name>PrivacyDialog</name>
     <message>
-        <source>Enter an amount of Vit to convert to zVit</source>
-        <translation>Vul de hoeveleheid in om Vit te converteren naar zVit</translation>
+        <source>Enter an amount of VITAE to convert to zVITAE</source>
+        <translation>Vul de hoeveleheid in om VITAE te converteren naar zVITAE</translation>
     </message>
     <message>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <source>zVIT</source>
-        <translation>zVIT</translation>
+        <source>zVITAE</source>
+        <translation>zVITAE</translation>
     </message>
     <message>
         <source>Reset</source>
@@ -2029,8 +2029,8 @@ MultiSend: %1</translation>
         <translation>Wijzig:</translation>
     </message>
     <message>
-        <source>0 VIT</source>
-        <translation>0 VIT</translation>
+        <source>0 VITAE</source>
+        <translation>0 VITAE</translation>
     </message>
     <message>
         <source>Transaction Fee:</source>
@@ -2739,8 +2739,8 @@ MultiSend: %1</translation>
 <context>
     <name>ZVitControlDialog</name>
     <message>
-        <source>Select zVit to Spend</source>
-        <translation>Selecteer zVit om te spenderen</translation>
+        <source>Select zVITAE to Spend</source>
+        <translation>Selecteer zVITAE om te spenderen</translation>
     </message>
     <message>
         <source>Quantity</source>
@@ -2751,8 +2751,8 @@ MultiSend: %1</translation>
         <translation>0</translation>
     </message>
     <message>
-        <source>zVit</source>
-        <translation>zVit</translation>
+        <source>zVITAE</source>
+        <translation>zVITAE</translation>
     </message>
     <message>
         <source>Select/Deselect All</source>
@@ -2802,8 +2802,12 @@ MultiSend: %1</translation>
         <translation>Copyright (C) 2014-%i The Dash Core Ontwikkelaars</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
-        <translation>Copyright (C) 2015-%i The VITAE Core Ontwikkelaars</translation>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation>Copyright (C) 2015-%i The PIVX Core Ontwikkelaars</translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <translation>Copyright (C) 2018 The VITAE Core Ontwikkelaars</translation>
     </message>
     <message>
         <source>Debugging/Testing options:</source>

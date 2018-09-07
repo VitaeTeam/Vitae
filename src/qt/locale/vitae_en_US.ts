@@ -184,8 +184,8 @@
         <translation>Are you sure you wish to encrypt your wallet?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
-        <translation>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
+        <translation>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -1544,32 +1544,32 @@ Please check the address and try again.</translation>
         <translation>Please select a privacy level.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>Use 2 separate masternodes to mix funds up to 10000 VIT</translation>
+        <source>Use 2 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>Use 2 separate masternodes to mix funds up to 10000 VITAE</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>Use 8 separate masternodes to mix funds up to 10000 VIT</translation>
+        <source>Use 8 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>Use 8 separate masternodes to mix funds up to 10000 VITAE</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Use 16 separate masternodes</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</source>
-        <translation>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</translation>
+        <source>This option is the quickest and will cost about ~0.025 VITAE to anonymize 10000 VITAE</source>
+        <translation>This option is the quickest and will cost about ~0.025 VITAE to anonymize 10000 VITAE</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</source>
-        <translation>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</translation>
+        <source>This option is moderately fast and will cost about 0.05 VITAE to anonymize 10000 VITAE</source>
+        <translation>This option is moderately fast and will cost about 0.05 VITAE to anonymize 10000 VITAE</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
         <translation>This is the slowest and most secure option. Using maximum anonymity will cost</translation>
     </message>
     <message>
-        <source>0.1 VIT per 10000 VIT you anonymize.</source>
-        <translation>0.1 VIT per 10000 VIT you anonymize.</translation>
+        <source>0.1 VITAE per 10000 VITAE you anonymize.</source>
+        <translation>0.1 VITAE per 10000 VITAE you anonymize.</translation>
     </message>
     <message>
         <source>Obfuscation Configuration</source>
@@ -1927,8 +1927,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Obfuscation Balance:</translation>
     </message>
     <message>
-        <source>0 VIT / 0 Rounds</source>
-        <translation>0 VIT / 0 Rounds</translation>
+        <source>0 VITAE / 0 Rounds</source>
+        <translation>0 VITAE / 0 Rounds</translation>
     </message>
     <message>
         <source>Enabled/Disabled</source>
@@ -2792,8 +2792,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>UTXO Size:</translation>
     </message>
     <message>
-        <source>0 VIT</source>
-        <translation>0 VIT</translation>
+        <source>0 VITAE</source>
+        <translation>0 VITAE</translation>
     </message>
     <message>
         <source>Transaction Fee:</source>
@@ -3840,8 +3840,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Send Coins</translation>
     </message>
     <message>
-        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VIT.</source>
-        <translation>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VIT.</translation>
+        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VITAE.</source>
+        <translation>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VITAE.</translation>
     </message>
 </context>
 <context>
@@ -3974,12 +3974,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Execute command when the best block changes (%s in cmd is replaced by block hash)</translation>
     </message>
     <message>
-        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
-        <translation>Fees (in VIT/Kb) smaller than this are considered zero fee for relaying (default: %s)</translation>
+        <source>Fees (in VITAE/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
+        <translation>Fees (in VITAE/Kb) smaller than this are considered zero fee for relaying (default: %s)</translation>
     </message>
     <message>
-        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
-        <translation>Fees (in VIT/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</translation>
+        <source>Fees (in VITAE/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>Fees (in VITAE/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</translation>
     </message>
     <message>
         <source>Flush database activity from memory pool to disk log every &lt;n&gt; megabytes (default: %u)</source>
@@ -4114,12 +4114,12 @@ for example: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Unable to locate enough Obfuscation denominated funds for this transaction.</translation>
     </message>
     <message>
-        <source>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VIT.</source>
-        <translation>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VIT.</translation>
+        <source>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VITAE.</source>
+        <translation>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VITAE.</translation>
     </message>
     <message>
-        <source>Unable to locate enough funds for this transaction that are not equal 10000 VIT.</source>
-        <translation>Unable to locate enough funds for this transaction that are not equal 10000 VIT.</translation>
+        <source>Unable to locate enough funds for this transaction that are not equal 10000 VITAE.</source>
+        <translation>Unable to locate enough funds for this transaction that are not equal 10000 VITAE.</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: %s)</source>
@@ -4282,8 +4282,12 @@ for example: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Copyright (C) 2014-%i The Dash Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
-        <translation>Copyright (C) 2015-%i The VITAE Core Developers</translation>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation>Copyright (C) 2015-%i The PIVX Core Developers</translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <translation>Copyright (C) 2018 The VITAE Core Developers</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>
@@ -4406,8 +4410,8 @@ for example: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Failed to read block</translation>
     </message>
     <message>
-        <source>Fee (in VIT/kB) to add to transactions you send (default: %s)</source>
-        <translation>Fee (in VIT/kB) to add to transactions you send (default: %s)</translation>
+        <source>Fee (in VITAE/kB) to add to transactions you send (default: %s)</source>
+        <translation>Fee (in VITAE/kB) to add to transactions you send (default: %s)</translation>
     </message>
     <message>
         <source>Finalizing transaction.</source>
@@ -4578,8 +4582,8 @@ for example: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Enable staking functionality (0-1, default: %u)</translation>
     </message>
     <message>
-        <source>Keep N VIT anonymized (default: %u)</source>
-        <translation>Keep N VIT anonymized (default: %u)</translation>
+        <source>Keep N VITAE anonymized (default: %u)</source>
+        <translation>Keep N VITAE anonymized (default: %u)</translation>
     </message>
     <message>
         <source>Keep at most &lt;n&gt; unconnectable transactions in memory (default: %u)</source>

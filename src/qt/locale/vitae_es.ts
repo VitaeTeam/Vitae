@@ -184,8 +184,8 @@
         <translation>¿Está seguro de que desea cifrar su monedero?</translation>
     </message>
     <message>
-        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VIT&lt;/b&gt;!</source>
-        <translation>Atención: Si cifra su monedero y pierde su contraseña, perderá &lt;b&gt; TODOS SUS VIT&lt;/b&gt;!</translation>
+        <source>Warning: If you encrypt your wallet and lose your passphrase, you will &lt;b&gt;LOSE ALL OF YOUR VITAE&lt;/b&gt;!</source>
+        <translation>Atención: Si cifra su monedero y pierde su contraseña, perderá &lt;b&gt; TODOS SUS VITAE&lt;/b&gt;!</translation>
     </message>
     <message>
         <source>Wallet encrypted</source>
@@ -618,8 +618,8 @@
         <translation>&amp;Privacidad</translation>
     </message>
     <message>
-        <source>Privacy Action for zVIT and Obfuscation</source>
-        <translation>Privacidad con zVIT y Ofuscación</translation>
+        <source>Privacy Action for zVITAE and Obfuscation</source>
+        <translation>Privacidad con zVITAE y Ofuscación</translation>
     </message>
     <message>
         <source>&amp;Masternodes</source>
@@ -1528,32 +1528,32 @@ Por favor compruebe la dirección e inténtelo de nuevo.</translation>
         <translation>Por favor selecciones un nivel de privacidad.</translation>
     </message>
     <message>
-        <source>Use 2 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>Use 2 nodos maestros diferentes para mezclar los fondos hasta los 10000 VIT</translation>
+        <source>Use 2 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>Use 2 nodos maestros diferentes para mezclar los fondos hasta los 10000 VITAE</translation>
     </message>
     <message>
-        <source>Use 8 separate masternodes to mix funds up to 10000 VIT</source>
-        <translation>Use 8 nodos maestros diferentes para mezclar fondos hasta los 10000 VIT</translation>
+        <source>Use 8 separate masternodes to mix funds up to 10000 VITAE</source>
+        <translation>Use 8 nodos maestros diferentes para mezclar fondos hasta los 10000 VITAE</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
         <translation>Use 16 nodos maestros diferentes</translation>
     </message>
     <message>
-        <source>This option is the quickest and will cost about ~0.025 VIT to anonymize 10000 VIT</source>
-        <translation>Esta opción es la más rápida y costará alrededor de ~0.025 VIT para anonimizar 10000 VIT</translation>
+        <source>This option is the quickest and will cost about ~0.025 VITAE to anonymize 10000 VITAE</source>
+        <translation>Esta opción es la más rápida y costará alrededor de ~0.025 VITAE para anonimizar 10000 VITAE</translation>
     </message>
     <message>
-        <source>This option is moderately fast and will cost about 0.05 VIT to anonymize 10000 VIT</source>
-        <translation>Esta opción es moderadamente rápida y costará cerca de 0.05 VIT para anonimizar 10000 VIT.</translation>
+        <source>This option is moderately fast and will cost about 0.05 VITAE to anonymize 10000 VITAE</source>
+        <translation>Esta opción es moderadamente rápida y costará cerca de 0.05 VITAE para anonimizar 10000 VITAE.</translation>
     </message>
     <message>
         <source>This is the slowest and most secure option. Using maximum anonymity will cost</source>
         <translation>Esta es la opción más lenta pero más segura. Usar el máximo anonimato costará</translation>
     </message>
     <message>
-        <source>0.1 VIT per 10000 VIT you anonymize.</source>
-        <translation>0.1 VIT por 10000 VIT que anonimizas.</translation>
+        <source>0.1 VITAE per 10000 VITAE you anonymize.</source>
+        <translation>0.1 VITAE por 10000 VITAE que anonimizas.</translation>
     </message>
     <message>
         <source>Obfuscation Configuration</source>
@@ -1696,16 +1696,16 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Mapear un puerto utilizando &amp;UPnP</translation>
     </message>
     <message>
-        <source>Percentage of incoming VIT which get automatically converted to zVIT via Zerocoin Protocol (min: 10%)</source>
-        <translation>Porcentaje de VITs entrantes que serán automáticamente convertidos a zVIT a través del Protocolo Zerocoin (mín: 10%)</translation>
+        <source>Percentage of incoming VITAE which get automatically converted to zVITAE via Zerocoin Protocol (min: 10%)</source>
+        <translation>Porcentaje de VITs entrantes que serán automáticamente convertidos a zVITAE a través del Protocolo Zerocoin (mín: 10%)</translation>
     </message>
     <message>
-        <source>Percentage of autominted zVIT</source>
-        <translation>Porcentaje de zVIT autogenerados</translation>
+        <source>Percentage of autominted zVITAE</source>
+        <translation>Porcentaje de zVITAE autogenerados</translation>
     </message>
     <message>
-        <source>Wait with automatic conversion to Zerocoin until enough VIT for this denomination is available</source>
-        <translation>Retrasar la conversión automática a Zerocoin hasta que hayan suficientes VIT disponibles para esta denominación</translation>
+        <source>Wait with automatic conversion to Zerocoin until enough VITAE for this denomination is available</source>
+        <translation>Retrasar la conversión automática a Zerocoin hasta que hayan suficientes VITAE disponibles para esta denominación</translation>
     </message>
     <message>
         <source>Connect to the VITAE network through a SOCKS5 proxy.</source>
@@ -1839,8 +1839,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Formulario</translation>
     </message>
     <message>
-        <source>VIT Balances</source>
-        <translation>Balances VIT</translation>
+        <source>VITAE Balances</source>
+        <translation>Balances VITAE</translation>
     </message>
     <message>
         <source>Available:</source>
@@ -2741,8 +2741,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Tamaño de UTXO:</translation>
     </message>
     <message>
-        <source>0 VIT</source>
-        <translation>0 VIT</translation>
+        <source>0 VITAE</source>
+        <translation>0 VITAE</translation>
     </message>
     <message>
         <source>Transaction Fee:</source>
@@ -3761,8 +3761,8 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Enviar Monedas</translation>
     </message>
     <message>
-        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VIT.</source>
-        <translation>SwiftTX no soporta el envío de importes tan altos todavía. Las transacciones están actualmente limitadas a %1 VIT.</translation>
+        <source>SwiftTX doesn't support sending values that high yet. Transactions are currently limited to %1 VITAE.</source>
+        <translation>SwiftTX no soporta el envío de importes tan altos todavía. Las transacciones están actualmente limitadas a %1 VITAE.</translation>
     </message>
 </context>
 <context>
@@ -3898,12 +3898,12 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Ejecutar comando cuando el mejor bloque cambie (%s en cmd es reemplazado por el block hash)</translation>
     </message>
     <message>
-        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
-        <translation>Comisiones (en VIT/Kb) menores a esta son consideradas gratuitas para la propagación de la transacción (default: %s)</translation>
+        <source>Fees (in VITAE/Kb) smaller than this are considered zero fee for relaying (default: %s)</source>
+        <translation>Comisiones (en VITAE/Kb) menores a esta son consideradas gratuitas para la propagación de la transacción (default: %s)</translation>
     </message>
     <message>
-        <source>Fees (in VIT/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
-        <translation>Comisiones (en VIT/Kb) menores a esta son consideradas gratuitas para la creación de la transacción (default: %s)</translation>
+        <source>Fees (in VITAE/Kb) smaller than this are considered zero fee for transaction creation (default: %s)</source>
+        <translation>Comisiones (en VITAE/Kb) menores a esta son consideradas gratuitas para la creación de la transacción (default: %s)</translation>
     </message>
     <message>
         <source>Flush database activity from memory pool to disk log every &lt;n&gt; megabytes (default: %u)</source>
@@ -4034,12 +4034,12 @@ por ejemplo: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Imposible localizar suficientes fondos denominados de Ofuscación para esta transacción.</translation>
     </message>
     <message>
-        <source>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VIT.</source>
-        <translation>Imposible localizar suficientes fondos no-denominados de Ofuscación para esta transacción que no es igual a 10000 VIT.</translation>
+        <source>Unable to locate enough Obfuscation non-denominated funds for this transaction that are not equal 10000 VITAE.</source>
+        <translation>Imposible localizar suficientes fondos no-denominados de Ofuscación para esta transacción que no es igual a 10000 VITAE.</translation>
     </message>
     <message>
-        <source>Unable to locate enough funds for this transaction that are not equal 10000 VIT.</source>
-        <translation>Imposible localizar fondos suficientes para esta transacción que no es igual a 10000 VIT.</translation>
+        <source>Unable to locate enough funds for this transaction that are not equal 10000 VITAE.</source>
+        <translation>Imposible localizar fondos suficientes para esta transacción que no es igual a 10000 VITAE.</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: %s)</source>
@@ -4199,11 +4199,15 @@ por ejemplo: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
     </message>
     <message>
         <source>Copyright (C) 2014-%i The Dash Core Developers</source>
-        <translation>Copyright (C) 2014-%i The Dash Core Developers</translation>
+        <translation>Copyright (C) 2014-%i The Dash Core Desarrolladores</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The VITAE Core Developers</source>
-        <translation>Copyright (C) 2015-%i The VITAE Core Developers</translation>
+        <source>Copyright (C) 2015-%i The PIVX Core Developers</source>
+        <translation>Copyright (C) 2015-%i The PIVX Core Desarrolladores</translation>
+    </message>
+    <message>
+        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <translation>Copyright (C) 2018 The VITAE Core Desarrolladores</translation>
     </message>
     <message>
         <source>Corrupted block database detected</source>
@@ -4326,8 +4330,8 @@ por ejemplo: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Falló al leer el bloque</translation>
     </message>
     <message>
-        <source>Fee (in VIT/kB) to add to transactions you send (default: %s)</source>
-        <translation>Comisión (en VIT/kB) para agregar a la transacción que envías (predeterminado: %s)</translation>
+        <source>Fee (in VITAE/kB) to add to transactions you send (default: %s)</source>
+        <translation>Comisión (en VITAE/kB) para agregar a la transacción que envías (predeterminado: %s)</translation>
     </message>
     <message>
         <source>Finalizing transaction.</source>

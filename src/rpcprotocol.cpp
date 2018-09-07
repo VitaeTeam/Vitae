@@ -1,7 +1,8 @@
 // Copyright (c) 2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -39,7 +40,7 @@ const size_t POST_READ_SIZE = 256 * 1024;
 
 /**
  * HTTP protocol
- * 
+ *
  * This ain't Apache.  We're just using HTTP header for the length field
  * and to be compatible with other JSON-RPC implementations.
  */
@@ -253,7 +254,7 @@ int ReadHTTPMessage(std::basic_istream<char>& stream, map<string, string>& mapHe
  * JSON-RPC protocol.  VITAE speaks version 1.0 for maximum compatibility,
  * but uses JSON-RPC 1.1/2.0 standards for parts of the 1.0 standard that were
  * unspecified (HTTP errors and contents of 'error').
- * 
+ *
  * 1.0 spec: http://json-rpc.org/wiki/specification
  * 1.2 spec: http://jsonrpc.org/historical/json-rpc-over-http.html
  * http://www.codeproject.com/KB/recipes/JSON_Spirit.aspx

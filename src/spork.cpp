@@ -1,5 +1,7 @@
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2016-2017 The VITAE developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -127,7 +129,8 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_13_ENABLE_SUPERBLOCKS) r = SPORK_13_ENABLE_SUPERBLOCKS_DEFAULT;
         if (nSporkID == SPORK_14_NEW_PROTOCOL_ENFORCEMENT) r = SPORK_14_NEW_PROTOCOL_ENFORCEMENT_DEFAULT;
         if (nSporkID == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) r = SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2_DEFAULT;
-        if (nSporkID == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) r = SPORK_16_ZEROCOIN_MAINTENANCE_MODE_DEFAULT;
+        if (nSporkID == SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3) r = SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3_DEFAULT;
+        if (nSporkID == SPORK_17_ZEROCOIN_MAINTENANCE_MODE) r = SPORK_17_ZEROCOIN_MAINTENANCE_MODE_DEFAULT;
 
         if (r == -1) LogPrintf("GetSpork::Unknown Spork %d\n", nSporkID);
     }
@@ -266,7 +269,8 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_13_ENABLE_SUPERBLOCKS") return SPORK_13_ENABLE_SUPERBLOCKS;
     if (strName == "SPORK_14_NEW_PROTOCOL_ENFORCEMENT") return SPORK_14_NEW_PROTOCOL_ENFORCEMENT;
     if (strName == "SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2") return SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2;
-    if (strName == "SPORK_16_ZEROCOIN_MAINTENANCE_MODE") return SPORK_16_ZEROCOIN_MAINTENANCE_MODE;
+    if (strName == "SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3") return SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3;
+    if (strName == "SPORK_17_ZEROCOIN_MAINTENANCE_MODE") return SPORK_17_ZEROCOIN_MAINTENANCE_MODE;
 
     return -1;
 }
@@ -283,7 +287,8 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_13_ENABLE_SUPERBLOCKS) return "SPORK_13_ENABLE_SUPERBLOCKS";
     if (id == SPORK_14_NEW_PROTOCOL_ENFORCEMENT) return "SPORK_14_NEW_PROTOCOL_ENFORCEMENT";
     if (id == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) return "SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2";
-    if (id == SPORK_16_ZEROCOIN_MAINTENANCE_MODE) return "SPORK_16_ZEROCOIN_MAINTENANCE_MODE";
+    if (id == SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3) return "SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3";
+    if (id == SPORK_17_ZEROCOIN_MAINTENANCE_MODE) return "SPORK_17_ZEROCOIN_MAINTENANCE_MODE";
 
     return "Unknown";
 }

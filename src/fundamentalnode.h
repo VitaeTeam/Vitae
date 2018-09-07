@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -103,7 +103,7 @@ public:
 };
 
 //
-// The Fundamentalnode Class. For managing the Obfuscation process. It contains the input of the 10000 VIT, signature to prove
+// The Fundamentalnode Class. For managing the Obfuscation process. It contains the input of the 10000 VITAE, signature to prove
 // it's the one who own that ip address and code for calculating the payment election.
 //
 class CFundamentalnode

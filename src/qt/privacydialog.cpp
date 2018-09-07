@@ -30,7 +30,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent),
     nDisplayUnit = 0; // just make sure it's not unitialized
     ui->setupUi(this);
 
-    // "Spending 999999 zVIT ought to be enough for anybody." - Bill Gates, 2017
+    // "Spending 999999 zVITAE ought to be enough for anybody." - Bill Gates, 2017
     ui->zVITpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
     ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );
 
@@ -106,12 +106,12 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent),
     ui->dummyHideWidget->hide(); // Dummy widget with elements to hide
 
     //temporary disable for maintenance
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(GetAdjustedTime() > GetSporkValue(SPORK_17_ZEROCOIN_MAINTENANCE_MODE)) {
         ui->pushButtonMintzVIT->setEnabled(false);
-        ui->pushButtonMintzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
+        ui->pushButtonMintzVIT->setToolTip(tr("zVITAE is currently disabled due to maintenance."));
 
         ui->pushButtonSpendzVIT->setEnabled(false);
-        ui->pushButtonSpendzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
+        ui->pushButtonSpendzVIT->setToolTip(tr("zVITAE is currently disabled due to maintenance."));
     }
 }
 
@@ -160,9 +160,9 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
     if (!walletModel || !walletModel->getOptionsModel())
         return;
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(GetAdjustedTime() > GetSporkValue(SPORK_17_ZEROCOIN_MAINTENANCE_MODE)) {
         QMessageBox::information(this, tr("Mint Zerocoin"),
-                                 tr("zVIT is currently undergoing maintenance."), QMessageBox::Ok,
+                                 tr("zVITAE is currently undergoing maintenance."), QMessageBox::Ok,
                                  QMessageBox::Ok);
         return;
     }
@@ -190,7 +190,7 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
         return;
     }
 
-    ui->TEMintStatus->setPlainText(tr("Minting ") + ui->labelMintAmountValue->text() + " zVIT...");
+    ui->TEMintStatus->setPlainText(tr("Minting ") + ui->labelMintAmountValue->text() + " zVITAE...");
     ui->TEMintStatus->repaint ();
 
     int64_t nTime = GetTimeMillis();
@@ -208,7 +208,7 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
     double fDuration = (double)(GetTimeMillis() - nTime)/1000.0;
 
     // Minting successfully finished. Show some stats for entertainment.
-    QString strStatsHeader = tr("Successfully minted ") + ui->labelMintAmountValue->text() + tr(" zVIT in ") +
+    QString strStatsHeader = tr("Successfully minted ") + ui->labelMintAmountValue->text() + tr(" zVITAE in ") +
                              QString::number(fDuration) + tr(" sec. Used denominations:\n");
 
     // Clear amount to avoid double spending when accidentally clicking twice
@@ -271,9 +271,9 @@ void PrivacyDialog::on_pushButtonSpendzVIT_clicked()
     if (!walletModel || !walletModel->getOptionsModel() || !pwalletMain)
         return;
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(GetAdjustedTime() > GetSporkValue(SPORK_17_ZEROCOIN_MAINTENANCE_MODE)) {
         QMessageBox::information(this, tr("Mint Zerocoin"),
-                                 tr("zVIT is currently undergoing maintenance."), QMessageBox::Ok, QMessageBox::Ok);
+                                 tr("zVITAE is currently undergoing maintenance."), QMessageBox::Ok, QMessageBox::Ok);
         return;
     }
 
@@ -285,11 +285,11 @@ void PrivacyDialog::on_pushButtonSpendzVIT_clicked()
             // Unlock wallet was cancelled
             return;
         }
-        // Wallet is unlocked now, sedn zVIT
+        // Wallet is unlocked now, sedn zVITAE
         sendzVIT();
         return;
     }
-    // Wallet already unlocked or not encrypted at all, send zVIT
+    // Wallet already unlocked or not encrypted at all, send zVITAE
     sendzVIT();
 }
 
@@ -342,14 +342,14 @@ void PrivacyDialog::sendzVIT()
         return;
     }
 
-    // Convert change to zVIT
+    // Convert change to zVITAE
     bool fMintChange = ui->checkBoxMintChange->isChecked();
 
     // Persist minimize change setting
     fMinimizeChange = ui->checkBoxMinimizeChange->isChecked();
     settings.setValue("fMinimizeChange", fMinimizeChange);
 
-    // Warn for additional fees if amount is not an integer and change as zVIT is requested
+    // Warn for additional fees if amount is not an integer and change as zVITAE is requested
     bool fWholeNumber = floor(dAmount) == dAmount;
     double dzFee = 0.0;
 
@@ -358,7 +358,7 @@ void PrivacyDialog::sendzVIT()
 
     if(!fWholeNumber && fMintChange){
         QString strFeeWarning = "You've entered an amount with fractional digits and want the change to be converted to Zerocoin.<br /><br /><b>";
-        strFeeWarning += QString::number(dzFee, 'f', 8) + " VIT </b>will be added to the standard transaction fees!<br />";
+        strFeeWarning += QString::number(dzFee, 'f', 8) + " VITAE </b>will be added to the standard transaction fees!<br />";
         QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm additional Fees"),
             strFeeWarning,
             QMessageBox::Yes | QMessageBox::Cancel,
@@ -385,7 +385,7 @@ void PrivacyDialog::sendzVIT()
 
     // General info
     QString strQuestionString = tr("Are you sure you want to send?<br /><br />");
-    QString strAmount = "<b>" + QString::number(dAmount, 'f', 8) + " zVIT</b>";
+    QString strAmount = "<b>" + QString::number(dAmount, 'f', 8) + " zVITAE</b>";
     QString strAddress = tr(" to address ") + QString::fromStdString(address.ToString()) + strAddressLabel + " <br />";
 
     if(ui->payTo->text().isEmpty()){
@@ -411,13 +411,13 @@ void PrivacyDialog::sendzVIT()
     ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware. \nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zVit selector if applicable
+    // use mints from zVITAE selector if applicable
     vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::listSelectedMints.empty()) {
         vMintsSelected = ZVitControlDialog::GetSelectedMints();
     }
 
-    // Spend zVIT
+    // Spend zVITAE
     CWalletTx wtxNew;
     CZerocoinSpendReceipt receipt;
     bool fSuccess = false;
@@ -433,7 +433,7 @@ void PrivacyDialog::sendzVIT()
     // Display errors during spend
     if (!fSuccess) {
         int nNeededSpends = receipt.GetNeededSpends(); // Number of spends we would need for this transaction
-        const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVIT transaction
+        const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVITAE transaction
         if (nNeededSpends > nMaxSpends) {
             QString strStatusMessage = tr("Too much inputs (") + QString::number(nNeededSpends, 10) + tr(") needed. \nMaximum allowed: ") + QString::number(nMaxSpends, 10);
             strStatusMessage += tr("\nEither mint higher denominations (so fewer inputs are needed) or reduce the amount to spend.");
@@ -451,7 +451,7 @@ void PrivacyDialog::sendzVIT()
     }
 
     if (walletModel && walletModel->getAddressTableModel()) {
-        // If zVit was spent successfully update the addressbook with the label
+        // If zVITAE was spent successfully update the addressbook with the label
         std::string labelText = ui->addAsLabel->text().toStdString();
         if (!labelText.empty())
             walletModel->updateAddressBookLabels(address.Get(), labelText, "send");
@@ -459,7 +459,7 @@ void PrivacyDialog::sendzVIT()
             walletModel->updateAddressBookLabels(address.Get(), "(no label)", "send");
     }
 
-    // Clear zVit selector in case it was used
+    // Clear zVITAE selector in case it was used
     ZVitControlDialog::listSelectedMints.clear();
     ui->labelzVitSelected_int->setText(QString("0"));
     ui->labelQuantitySelected_int->setText(QString("0"));
@@ -469,7 +469,7 @@ void PrivacyDialog::sendzVIT()
     CAmount nValueIn = 0;
     int nCount = 0;
     for (CZerocoinSpend spend : receipt.GetSpends()) {
-        strStats += tr("zVit Spend #: ") + QString::number(nCount) + ", ";
+        strStats += tr("zVITAE Spend #: ") + QString::number(nCount) + ", ";
         strStats += tr("denomination: ") + QString::number(spend.GetDenomination()) + ", ";
         strStats += tr("serial: ") + spend.GetSerial().ToString().c_str() + "\n";
         strStats += tr("Spend is 1 of : ") + QString::number(spend.GetMintCount()) + " mints in the accumulator\n";
@@ -478,13 +478,13 @@ void PrivacyDialog::sendzVIT()
 
     CAmount nValueOut = 0;
     for (const CTxOut& txout: wtxNew.vout) {
-        strStats += tr("value out: ") + FormatMoney(txout.nValue).c_str() + " Vit, ";
+        strStats += tr("value out: ") + FormatMoney(txout.nValue).c_str() + " VITAE, ";
         nValueOut += txout.nValue;
 
         strStats += tr("address: ");
         CTxDestination dest;
         if(txout.scriptPubKey.IsZerocoinMint())
-            strStats += tr("zVit Mint");
+            strStats += tr("zVITAE Mint");
         else if(ExtractDestination(txout.scriptPubKey, dest))
             strStats += tr(CBitcoinAddress(dest).ToString().c_str());
         strStats += "\n";
@@ -647,7 +647,7 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
 
         strDenomStats = strUnconfirmed + QString::number(mapDenomBalances.at(denom)) + " x " +
                         QString::number(nCoins) + " = <b>" +
-                        QString::number(nSumPerCoin) + " zVIT </b>";
+                        QString::number(nSumPerCoin) + " zVITAE </b>";
 
         switch (nCoins) {
             case libzerocoin::CoinDenomination::ZQ_ONE:
@@ -685,8 +685,8 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
         nLockedBalance = walletModel->getLockedBalance();
     }
 
-    ui->labelzAvailableAmount->setText(QString::number(zerocoinBalance/COIN) + QString(" zVIT "));
-    ui->labelzAvailableAmount_2->setText(QString::number(matureZerocoinBalance/COIN) + QString(" zVIT "));
+    ui->labelzAvailableAmount->setText(QString::number(zerocoinBalance/COIN) + QString(" zVITAE "));
+    ui->labelzAvailableAmount_2->setText(QString::number(matureZerocoinBalance/COIN) + QString(" zVITAE "));
     ui->labelzVITAmountValue->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance - immatureBalance - nLockedBalance, false, BitcoinUnits::separatorAlways));
 
     // Display AutoMint status
@@ -703,11 +703,11 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
     ui->label_AutoMintStatus->setText(strAutomintStatus);
 
     // Display global supply
-    ui->labelZsupplyAmount->setText(QString::number(chainActive.Tip()->GetZerocoinSupply()/COIN) + QString(" <b>zVIT </b> "));
+    ui->labelZsupplyAmount->setText(QString::number(chainActive.Tip()->GetZerocoinSupply()/COIN) + QString(" <b>zVITAE </b> "));
     for (auto denom : libzerocoin::zerocoinDenomList) {
         int64_t nSupply = chainActive.Tip()->mapZerocoinSupply.at(denom);
         QString strSupply = QString::number(nSupply) + " x " + QString::number(denom) + " = <b>" +
-                            QString::number(nSupply*denom) + " zVIT </b> ";
+                            QString::number(nSupply*denom) + " zVITAE </b> ";
         switch (denom) {
             case libzerocoin::CoinDenomination::ZQ_ONE:
                 ui->labelZsupplyAmount1->setText(strSupply);
