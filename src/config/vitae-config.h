@@ -21,7 +21,7 @@
 #define CLIENT_VERSION_MINOR 2
 
 /* Build revision */
-#define CLIENT_VERSION_REVISION 0
+#define CLIENT_VERSION_REVISION 1
 
 /* Version is release */
 #define COPYRIGHT_YEAR 2018
@@ -275,7 +275,7 @@
 #define PACKAGE_NAME "Vitae Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Vitae Core 4.1.0"
+#define PACKAGE_STRING "Vitae Core 4.2.1"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "vitae"
@@ -284,7 +284,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "4.1.0"
+#define PACKAGE_VERSION "4.2.1"
 
 /* Define to necessary symbol if this constant
  uses a non-standard name on

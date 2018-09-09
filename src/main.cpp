@@ -2351,23 +2351,30 @@ int64_t GetBlockValue(int nHeight)
     return nSubsidy;
 }
 
-CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
-{
+CAmount GetSeeSaw(int nHeight, int64_t blockValue){
+        
+		
+        int nMasternodeCount = 0 ;
+
+	    //if a mn count is inserted into the function we are looking for a specific result for a masternode count
+		if (IsSporkActive(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4))
+            nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
+        else
+            nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
 
         int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
-        int64_t mNodeCoins = nMasternodeCount * 10000 * COIN;
-		int64_t ret = (blockValue * 6)/ 10;
+        int64_t mNodeCoins = 0 ;
+        int64_t ret = blockValue;
 
-        //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-        if (nMasternodeCount)
-            mNodeCoins = nMasternodeCount * 20000 * COIN;
+		if(nMasternodeCount)
+           mNodeCoins = nMasternodeCount * 20000 * COIN ;
+
 
         // Use this log to compare the masternode count for different clients
-        //LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
+        LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
 
-        if (fDebug)
-            LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),
-                FormatMoney(mNodeCoins).c_str());
+        LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),FormatMoney(mNodeCoins).c_str());
+
         if (mNodeCoins == 0) {
             ret = 0;
         } else if (nHeight < 325000) {
@@ -2579,7 +2586,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
                 ret = blockValue * .01;
             }
         }
-    return ret;
+        return ret;
 }
 
 int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount)
@@ -2612,8 +2619,9 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
 		ret = blockValue * .25;
 	}
 	else{
-	    ret = GetSeeSaw(nHeight, blockValue, nMasternodeCount);
-	}
+        blockValue = blockValue * 0.6 ;
+        ret = GetSeeSaw(nHeight, blockValue);
+     }
     return ret;
 }
 
