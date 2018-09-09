@@ -2353,14 +2353,21 @@ int64_t GetBlockValue(int nHeight)
 
 CAmount GetSeeSaw(int nHeight, int64_t blockValue){
         
-        nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(ActiveProtocol())
+		
+        int nMasternodeCount = 0 ;
+
+	    //if a mn count is inserted into the function we are looking for a specific result for a masternode count
+		if (IsSporkActive(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4))
+            nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
+        else
+            nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
+
         int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
         int64_t mNodeCoins = 0 ;
         int64_t ret = blockValue;
 
-		//if a mn count is inserted into the function we are looking for a specific result for a masternode count
 		if(nMasternodeCount)
-        mNodeCoins = nMasternodeCount * 20000 * COIN ;
+           mNodeCoins = nMasternodeCount * 20000 * COIN ;
 
 
         // Use this log to compare the masternode count for different clients
