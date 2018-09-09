@@ -9,7 +9,7 @@
 #   a) creates 3 nodes, with an empty chain (no blocks).
 #   b) node0 mines a block
 #   c) node1 mines 32 blocks, so now node 0 has 60001Vit, node 1 has 4250Vit, node2 has none.
-#   d) node0 sends 601 Vit to node2, in two transactions (301 Vit, then 300 Vit).
+#   d) node0 sends 601 VITAE to node2, in two transactions (301 VITAE, then 300 VITAE).
 #   e) node0 mines a block, collects the fee on the second transaction
 #   f) node1 mines 16 blocks, to mature node0's just-mined block
 #   g) check that node0 has 100-21, node2 has 21
