@@ -54,11 +54,13 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
     (0, uint256("41e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"))
-	(191884,uint256("45b95a52b673fd9f620bed8d59c5cfb05db0ffc33225bc6778b08d251348b185"));
+	(191884,uint256("45b95a52b673fd9f620bed8d59c5cfb05db0ffc33225bc6778b08d251348b185"))
+	(204305,uint256("101cfe17653d7b5ea6bb15531d9344dd65837f96904599ebc054bc8f6fad355d")) //about when spork 15 activated
+	(204464,uint256("9d2f9808c10408899cfff44f6a3adc44690912dd0dcb3b530c45cd2ad9a31f0e")); //about when spork 16 activated
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1535522945, // * UNIX timestamp of last checkpoint block
-    403075,    // * total number of transactions between genesis and last checkpoint
+    1536066750, // * UNIX timestamp of last checkpoint block
+    430642,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
@@ -117,6 +119,7 @@ public:
         nTargetSpacing = 45;  // VITAE: 1 minute
         nMaturity = 8;
         nFundamentalnodeCountDrift = 20;
+		nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
 
         /** Height or Time Based Activations **/
@@ -189,7 +192,7 @@ public:
         fHeadersFirstSyncingActive = false;
 
         nPoolMaxTransactions = 3;
-        strSporkKey = "04fd2375653a3064623b8a9e179c34a4ffa9ee9afbc13e2218b37f5fa6cbe2f94ef874a216cbfddbcbf06b5951a9011d65dae988fb4469fabcfa29b9c8daf23c7e";
+        strSporkKey = "0400df637d811b0c7db73734535264c9a46abd7984e3f9058fa700cfbabe79c22e429e2f144049b89accde296820712462712155822b51f692a7759caae38a7030";
         strObfuscationPoolDummyAddress = "VjVqgZbamLZ3KmEKBZZzmZgvtqDWw7jsrL";
         nStartFundamentalnodePayments = 1524487214;
 
@@ -241,6 +244,7 @@ public:
         nLastPOWBlock = 200;
         nMaturity = 15;
         nFundamentalnodeCountDrift = 4;
+		nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
         nZerocoinStartHeight = 201576;

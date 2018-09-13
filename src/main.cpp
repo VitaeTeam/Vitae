@@ -1603,7 +1603,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         *pfMissingInputs = false;
 
     //Temporarily disable zerocoin for maintenance
-    if (GetAdjustedTime() > GetSporkValue(SPORK_17_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
+    if (GetAdjustedTime() > GetSporkValue(SPORK_18_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
         return state.DoS(10, error("AcceptToMemoryPool : Zerocoin transactions are temporarily disabled for maintenance"), REJECT_INVALID, "bad-tx");
 
     if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state))
@@ -2351,23 +2351,30 @@ int64_t GetBlockValue(int nHeight)
     return nSubsidy;
 }
 
-CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
-{
+CAmount GetSeeSaw(int nHeight, int64_t blockValue){
+        
+		
+        int nMasternodeCount = 0 ;
+
+	    //if a mn count is inserted into the function we are looking for a specific result for a masternode count
+		if (IsSporkActive(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4))
+            nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
+        else
+            nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
 
         int64_t nMoneySupply = chainActive.Tip()->nMoneySupply;
-        int64_t mNodeCoins = nMasternodeCount * 10000 * COIN;
-		int64_t ret = (blockValue * 6)/ 10;
+        int64_t mNodeCoins = 0 ;
+        int64_t ret = blockValue;
 
-        //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-        if (nMasternodeCount)
-            mNodeCoins = nMasternodeCount * 20000 * COIN;
+		if(nMasternodeCount)
+           mNodeCoins = nMasternodeCount * 20000 * COIN ;
+
 
         // Use this log to compare the masternode count for different clients
-        //LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
+        LogPrintf("Adjusting seesaw at height %d with %d masternodes (without drift: %d) at %ld\n", nHeight, nMasternodeCount, nMasternodeCount - Params().MasternodeCountDrift(), GetTime());
 
-        if (fDebug)
-            LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),
-                FormatMoney(mNodeCoins).c_str());
+        LogPrintf("GetMasternodePayment(): moneysupply=%s, nodecoins=%s \n", FormatMoney(nMoneySupply).c_str(),FormatMoney(mNodeCoins).c_str());
+
         if (mNodeCoins == 0) {
             ret = 0;
         } else if (nHeight < 325000) {
@@ -2579,7 +2586,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue, int nMasternodeCount)
                 ret = blockValue * .01;
             }
         }
-    return ret;
+        return ret;
 }
 
 int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount)
@@ -2612,8 +2619,9 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
 		ret = blockValue * .25;
 	}
 	else{
-	    ret = GetSeeSaw(nHeight, blockValue, nMasternodeCount);
-	}
+        blockValue = blockValue * 0.6 ;
+        ret = GetSeeSaw(nHeight, blockValue);
+     }
     return ret;
 }
 
@@ -3502,7 +3510,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 REJECT_INVALID, "bad-blk-sigops");
 
         //Temporarily disable zerocoin transactions for maintenance
-        if (block.nTime > GetSporkValue(SPORK_17_ZEROCOIN_MAINTENANCE_MODE) && !IsInitialBlockDownload() && tx.ContainsZerocoins()) {
+        if (block.nTime > GetSporkValue(SPORK_18_ZEROCOIN_MAINTENANCE_MODE) && !IsInitialBlockDownload() && tx.ContainsZerocoins()) {
             return state.DoS(100, error("ConnectBlock() : zerocoin transactions are currently in maintenance mode"));
         }
         if (tx.IsZerocoinSpend()) {
@@ -6226,7 +6234,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
                 !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
                 !pSporkDB->SporkExists(SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3) &&
-                !pSporkDB->SporkExists(SPORK_17_ZEROCOIN_MAINTENANCE_MODE);
+                !pSporkDB->SporkExists(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4) &&
+                !pSporkDB->SporkExists(SPORK_18_ZEROCOIN_MAINTENANCE_MODE);
 
         if (fMissingSporks || !fRequestedSporksIDB){
             LogPrintf("asking peer for sporks\n");
@@ -7051,17 +7060,17 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 int ActiveProtocol()
 {
 
-    // SPORK_15 was used for 70920. Leave it 'ON' so they don't see > 70925 nodes. They won't react to SPORK_16
+    // SPORK_16 was used for 70925. Leave it 'ON' so they don't see > 70926 nodes. They won't react to SPORK_17
     // messages because it's not in their code
 
-/*    if (IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
+/*    if (IsSporkActive(SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
 */
 
-    // SPORK_16 is used for 70925. Nodes < 70925 don't see it and still get their protocol version via SPORK_15 and their
+    // SPORK_17 is used for 70926. Nodes < 70925 don't see it and still get their protocol version via SPORK_16 and their
     // own ModifierUpgradeBlock()
 
-    if (IsSporkActive(SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3))
+    if (IsSporkActive(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }
