@@ -369,6 +369,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(hideZeroBalancesChanged(bool)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(hideOrphansChanged(bool)), this, SLOT(hideOrphans(bool)));
 
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
@@ -376,6 +377,10 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
     // update the display unit, to not use the default ("VITAE")
     updateDisplayUnit();
+
+    // Hide orphans
+    QSettings settings;
+    hideOrphans(settings.value("fHideOrphans", false).toBool());
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -403,4 +408,9 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::hideOrphans(bool fHide)
+{
+    filter->setHideOrphans(fHide);
 }
