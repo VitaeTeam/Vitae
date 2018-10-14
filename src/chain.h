@@ -22,7 +22,6 @@
 #include <vector>
 
 #include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 
 int64_t getStakeModifierV2SporkValue();
 
