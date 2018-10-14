@@ -5926,7 +5926,7 @@ Either mint higher denominations (so fewer inputs are needed) or reduce the amou
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZVitaeControlDialog</name>
     <message>
         <location filename="../forms/zVitcontroldialog.ui" line="+20"/>
         <source>Select zVITAE to Spend</source>

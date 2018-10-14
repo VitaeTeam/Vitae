@@ -14,16 +14,26 @@ class CZerocoinMint;
 class WalletModel;
 
 namespace Ui {
-class ZVitControlDialog;
+class ZVitaeControlDialog;
 }
 
-class ZVitControlDialog : public QDialog
+class CZVitaeControlWidgetItem : public QTreeWidgetItem
+{
+public:
+    explicit CZVitaeControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CZVitaeControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
+    explicit CZVitaeControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+
+    bool operator<(const QTreeWidgetItem &other) const;
+};
+
+class ZVitaeControlDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit ZVitControlDialog(QWidget *parent);
-    ~ZVitControlDialog();
+    explicit ZVitaeControlDialog(QWidget *parent);
+    ~ZVitaeControlDialog();
 
     void setModel(WalletModel* model);
 
@@ -32,7 +42,7 @@ public:
     static std::vector<CMintMeta> GetSelectedMints();
 
 private:
-    Ui::ZVitControlDialog *ui;
+    Ui::ZVitaeControlDialog *ui;
     WalletModel* model;
     PrivacyDialog* privacyDialog;
 
@@ -47,6 +57,7 @@ private:
         COLUMN_CONFIRMATIONS,
         COLUMN_ISSPENDABLE
     };
+    friend class CZVitaeControlWidgetItem;
 
 private slots:
     void updateSelection(QTreeWidgetItem* item, int column);

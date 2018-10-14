@@ -12,12 +12,20 @@
 using namespace std;
 using namespace libzerocoin;
 
-std::set<std::string> ZVitControlDialog::setSelectedMints;
-std::set<CMintMeta> ZVitControlDialog::setMints;
+std::set<std::string> ZVitaeControlDialog::setSelectedMints;
+std::set<CMintMeta> ZVitaeControlDialog::setMints;
 
-ZVitControlDialog::ZVitControlDialog(QWidget *parent) :
+bool CZVitaeControlWidgetItem::operator<(const QTreeWidgetItem &other) const {
+    int column = treeWidget()->sortColumn();
+    if (column == ZVitaeControlDialog::COLUMN_DENOMINATION || column == ZVitaeControlDialog::COLUMN_VERSION || column == ZVitaeControlDialog::COLUMN_CONFIRMATIONS)
+        return data(column, Qt::UserRole).toLongLong() < other.data(column, Qt::UserRole).toLongLong();
+    return QTreeWidgetItem::operator<(other);
+}
+
+
+ZVitaeControlDialog::ZVitaeControlDialog(QWidget *parent) :
     QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
-    ui(new Ui::ZVitControlDialog),
+    ui(new Ui::ZVitaeControlDialog),
     model(0)
 {
     ui->setupUi(this);
@@ -31,19 +39,19 @@ ZVitControlDialog::ZVitControlDialog(QWidget *parent) :
     connect(ui->pushButtonAll, SIGNAL(clicked()), this, SLOT(ButtonAllClicked()));
 }
 
-ZVitControlDialog::~ZVitControlDialog()
+ZVitaeControlDialog::~ZVitaeControlDialog()
 {
     delete ui;
 }
 
-void ZVitControlDialog::setModel(WalletModel *model)
+void ZVitaeControlDialog::setModel(WalletModel *model)
 {
     this->model = model;
     updateList();
 }
 
 //Update the tree widget
-void ZVitControlDialog::updateList()
+void ZVitaeControlDialog::updateList()
 {
     // need to prevent the slot from being called each time something is changed
     ui->treeWidget->blockSignals(true);
@@ -53,7 +61,7 @@ void ZVitControlDialog::updateList()
     QFlags<Qt::ItemFlag> flgTristate = Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
     map<libzerocoin::CoinDenomination, int> mapDenomPosition;
     for (auto denom : libzerocoin::zerocoinDenomList) {
-        QTreeWidgetItem* itemDenom(new QTreeWidgetItem);
+        CZVitaeControlWidgetItem* itemDenom(new CZVitaeControlWidgetItem);
         ui->treeWidget->addTopLevelItem(itemDenom);
 
         //keep track of where this is positioned in tree widget
@@ -61,6 +69,7 @@ void ZVitControlDialog::updateList()
 
         itemDenom->setFlags(flgTristate);
         itemDenom->setText(COLUMN_DENOMINATION, QString::number(denom));
+        itemDenom->setData(COLUMN_DENOMINATION, Qt::UserRole, QVariant((qlonglong) denom));
     }
 
     // select all unused coins - including not mature. Update status of coins too.
@@ -74,7 +83,7 @@ void ZVitControlDialog::updateList()
     for (const CMintMeta& mint : setMints) {
         // assign this mint to the correct denomination in the tree view
         libzerocoin::CoinDenomination denom = mint.denom;
-        QTreeWidgetItem *itemMint = new QTreeWidgetItem(ui->treeWidget->topLevelItem(mapDenomPosition.at(denom)));
+        CZVitaeControlWidgetItem *itemMint = new CZVitaeControlWidgetItem(ui->treeWidget->topLevelItem(mapDenomPosition.at(denom)));
 
         // if the mint is already selected, then it needs to have the checkbox checked
         std::string strPubCoinHash = mint.hashPubcoin.GetHex();
@@ -85,8 +94,10 @@ void ZVitControlDialog::updateList()
             itemMint->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
 
         itemMint->setText(COLUMN_DENOMINATION, QString::number(mint.denom));
+        itemMint->setData(COLUMN_DENOMINATION, Qt::UserRole, QVariant((qlonglong) denom));
         itemMint->setText(COLUMN_PUBCOIN, QString::fromStdString(strPubCoinHash));
         itemMint->setText(COLUMN_VERSION, QString::number(mint.nVersion));
+        itemMint->setData(COLUMN_VERSION, Qt::UserRole, QVariant((qlonglong) mint.nVersion));
 
         int nConfirmations = (mint.nHeight ? nBestHeight - mint.nHeight : 0);
         if (nConfirmations < 0) {
@@ -95,6 +106,7 @@ void ZVitControlDialog::updateList()
         }
 
         itemMint->setText(COLUMN_CONFIRMATIONS, QString::number(nConfirmations));
+        itemMint->setData(COLUMN_CONFIRMATIONS, Qt::UserRole, QVariant((qlonglong) nConfirmations));
 
         // check for maturity
         bool isMature = false;
@@ -128,7 +140,7 @@ void ZVitControlDialog::updateList()
 }
 
 // Update the list when a checkbox is clicked
-void ZVitControlDialog::updateSelection(QTreeWidgetItem* item, int column)
+void ZVitaeControlDialog::updateSelection(QTreeWidgetItem* item, int column)
 {
     // only want updates from non top level items that are available to spend
     if (item->parent() && column == COLUMN_CHECKBOX && !item->isDisabled()){
@@ -150,7 +162,7 @@ void ZVitControlDialog::updateSelection(QTreeWidgetItem* item, int column)
 }
 
 // Update the Quantity and Amount display
-void ZVitControlDialog::updateLabels()
+void ZVitaeControlDialog::updateLabels()
 {
     int64_t nAmount = 0;
     for (const CMintMeta& mint : setMints) {
@@ -166,7 +178,7 @@ void ZVitControlDialog::updateLabels()
     privacyDialog->setZVitControlLabels(nAmount, setSelectedMints.size());
 }
 
-std::vector<CMintMeta> ZVitControlDialog::GetSelectedMints()
+std::vector<CMintMeta> ZVitaeControlDialog::GetSelectedMints()
 {
     std::vector<CMintMeta> listReturn;
     for (const CMintMeta& mint : setMints) {
@@ -178,7 +190,7 @@ std::vector<CMintMeta> ZVitControlDialog::GetSelectedMints()
 }
 
 // select or deselect all of the mints
-void ZVitControlDialog::ButtonAllClicked()
+void ZVitaeControlDialog::ButtonAllClicked()
 {
     ui->treeWidget->blockSignals(true);
     Qt::CheckState state = Qt::Checked;

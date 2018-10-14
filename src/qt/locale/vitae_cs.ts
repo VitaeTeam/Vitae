@@ -2369,7 +2369,7 @@ Prosím zkontrolujte adresu a zkuste to znovu.</translation>
     </message>
     </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZVitaeControlDialog</name>
     <message>
         <source>0</source>
         <translation>0</translation>

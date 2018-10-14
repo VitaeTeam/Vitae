@@ -3775,7 +3775,7 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZVitaeControlDialog</name>
     <message>
         <source>0</source>
         <translation>0</translation>

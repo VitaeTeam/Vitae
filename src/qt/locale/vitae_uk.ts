@@ -367,7 +367,7 @@
     </message>
     </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZVitaeControlDialog</name>
     </context>
 <context>
     <name>vitae-core</name>

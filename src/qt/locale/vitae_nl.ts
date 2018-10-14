@@ -2737,7 +2737,7 @@ MultiSend: %1</translation>
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZVitaeControlDialog</name>
     <message>
         <source>Select zVITAE to Spend</source>
         <translation>Selecteer zVITAE om te spenderen</translation>

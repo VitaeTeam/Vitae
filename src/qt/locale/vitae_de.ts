@@ -4278,7 +4278,7 @@ Bitte haben Sie Geduld...</translation>
     </message>
 </context>
 <context>
-    <name>ZVitControlDialog</name>
+    <name>ZVitaeControlDialog</name>
     <message>
         <source>Select zVITAE to Spend</source>
         <translation>Auswahl zVITAE als Ausgabe</translation>

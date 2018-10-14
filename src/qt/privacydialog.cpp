@@ -297,7 +297,7 @@ void PrivacyDialog::on_pushButtonZVitControl_clicked()
     if (!walletModel || !walletModel->getOptionsModel())
         return;
 
-    ZVitControlDialog* zVitControl = new ZVitControlDialog(this);
+    ZVitaeControlDialog* zVitControl = new ZVitaeControlDialog(this);
     zVitControl->setModel(walletModel);
     zVitControl->exec();
 }
@@ -413,8 +413,8 @@ void PrivacyDialog::sendzVITAE()
     // use mints from zVITAE selector if applicable
     vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
-    if (!ZVitControlDialog::setSelectedMints.empty()) {
-        vMintsToFetch = ZVitControlDialog::GetSelectedMints();
+    if (!ZVitaeControlDialog::setSelectedMints.empty()) {
+        vMintsToFetch = ZVitaeControlDialog::GetSelectedMints();
 
         for (auto& meta : vMintsToFetch) {
             if (meta.nVersion < libzerocoin::PrivateCoin::PUBKEY_VERSION) {
@@ -486,7 +486,7 @@ void PrivacyDialog::sendzVITAE()
     }
 
     // Clear zvit selector in case it was used
-    ZVitControlDialog::setSelectedMints.clear();
+    ZVitaeControlDialog::setSelectedMints.clear();
     ui->labelzVitSelected_int->setText(QString("0"));
     ui->labelQuantitySelected_int->setText(QString("0"));
 
