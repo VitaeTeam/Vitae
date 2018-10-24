@@ -4011,6 +4011,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
     return true;
 }
 
+static int GetWitnessCommitmentIndex(const CBlock& block);
 bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig)
 {
     // These are checks that are independent of context.
@@ -4065,7 +4066,8 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
     if (block.IsProofOfStake()) {
         // Coinbase output should be empty if proof-of-stake block
-        if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
+        int commitpos = GetWitnessCommitmentIndex(block);
+        if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
@@ -4141,6 +4143,46 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
 
 bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 {
+    const CChainParams& chainParams = Params();
+//    const Consensus::Params& consensusParams = chainParams.GetConsensus();
+    if (pindexPrev == NULL)
+        return error("%s: null pindexPrev for block %s", __func__, block.GetHash().GetHex());
+
+    unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
+//    unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block, consensusParams, block.IsProofOfStake());
+
+//    if (block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= 68589)) {
+//        double n1 = ConvertBitsToDouble(block.nBits);
+//        double n2 = ConvertBitsToDouble(nBitsRequired);
+//
+//        if (abs(n1 - n2) > n1 * 0.5)
+//            return error("%s : incorrect proof of work (DGW pre-fork) - %f %f %f at %d", __func__, abs(n1 - n2), n1, n2, pindexPrev->nHeight + 1);
+//
+//        return true;
+//    }
+
+    if (block.IsProofOfWork() && pindexPrev->nHeight + 1 > chainParams.LAST_POW_BLOCK())
+        return error("%s: reject proof-of-work at height %d", __func__, pindexPrev->nHeight + 1);
+
+    if (block.nBits != nBitsRequired)
+        return error("%s: incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
+
+    if (block.IsProofOfStake()) {
+        uint256 hashProofOfStake;
+        uint256 hash = block.GetHash();
+
+        if(!CheckProofOfStake(block, hashProofOfStake)) {
+            LogPrintf("WARNING: ProcessBlock(): check proof-of-stake failed for block %s\n", hash.ToString().c_str());
+            return false;
+        }
+        if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
+            mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
+    }
+    return true;
+}
+/*
+bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
+{
     if (pindexPrev == NULL)
         return error("%s : null pindexPrev for block %s", __func__, block.GetHash().ToString().c_str());
 
@@ -4173,6 +4215,7 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 
     return true;
 }
+*/
 
 bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, CBlockIndex* const pindexPrev)
 {
