@@ -177,42 +177,8 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
     }
     else
     {
-        const CTxOut& txout = vtx[1].vout[1];
-
-        if (!Solver(txout.scriptPubKey, whichType, vSolutions))
-            return false;
-
-        if (whichType == TX_PUBKEYHASH)
-        {
-
-            CKeyID keyID;
-            keyID = CKeyID(uint160(vSolutions[0]));
-
-            CKey key;
-            if (!keystore.GetKey(keyID, key))
-                return false;
-
-            //vector<unsigned char> vchSig;
-            if (!key.Sign(GetHash(), vchBlockSig))
-                 return false;
-
-            return true;
-
-        }
-        else if(whichType == TX_PUBKEY)
-        {
-            CKeyID keyID;
-            keyID = CPubKey(vSolutions[0]).GetID();
-            CKey key;
-            if (!keystore.GetKey(keyID, key))
-                return false;
-
-            //vector<unsigned char> vchSig;
-            if (!key.Sign(GetHash(), vchBlockSig))
-                 return false;
-
-            return true;
-        }
+		// from Lux coin		
+        return vtx[0].vout[0].IsEmpty() && vtx.size() > 1 && vtx[1].IsCoinStake();
     }
 
     LogPrintf("Sign failed\n");
@@ -224,6 +190,11 @@ bool CBlock::CheckBlockSignature() const
     if (IsProofOfWork())
         return vchBlockSig.empty();
 
+    if (IsProofOfStake()) {
+		// from Lux coin		
+        return vtx[0].vout[0].IsEmpty();
+    }
+    
     std::vector<valtype> vSolutions;
     txnouttype whichType;
 
