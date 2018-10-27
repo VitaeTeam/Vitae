@@ -38,9 +38,9 @@ Instructions: Homebrew
 
 #### Install dependencies using Homebrew
 
-        brew install autoconf automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf qt5 libzmq
+        brew install autoconf automake berkeley-db4 libtool boost miniupnpc openssl pkg-config protobuf qt5 zeromq libevent
         
-        Note: On High Sierra (or when libzmq cannot be found), libzmq should be replaced with zeromq
+        Note: On OSX versions lower than High Sierra, zeromq should be replaced with libzmq
 
 ### Building `phored`
 
@@ -49,7 +49,11 @@ Instructions: Homebrew
         git clone https://github.com/phoreproject/Phore.git
         cd Phore
 
-2.  Build phored:
+2.  Make the Homebrew OpenSSL headers visible to the configure script  (do ```brew info openssl``` to find out why this is necessary, or if you use Homebrew with installation folders different from the default).
+         export LDFLAGS+=-L/usr/local/opt/openssl/lib
+        export CPPFLAGS+=-I/usr/local/opt/openssl/include
+        
+3.  Build phored:
         
         chmod +x share/genbuild.sh autogen.sh 
         ./autogen.sh
@@ -58,11 +62,11 @@ Instructions: Homebrew
 (note: if configure fails with libprotobuf not found see [Troubleshooting](#trouble) at the bottom)
 
 
-3.  It is also a good idea to build and run the unit tests:
+4.  It is also a good idea to build and run the unit tests:
 
         make check
 
-4.  (Optional) You can also install phored to your path:
+5.  (Optional) You can also install phored to your path:
 
         make install
 
@@ -127,7 +131,7 @@ Other commands:
     
 Troubleshooting:<a name="trouble"></a>
 ---------
-* brew install not working? Try replacing libzmq with zeromq in the brew install command
+* brew install not working? Try replacing zeromq with libzmq in the brew install command
                 
 * libprotobuf not found during ./configure? Make sure you have installed protobuf with `brew install protobuf` and then run `export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig` and try again
                 
