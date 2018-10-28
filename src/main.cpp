@@ -4065,9 +4065,11 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 REJECT_INVALID, "bad-cb-multiple");
 
     if (block.IsProofOfStake()) {
+        // Since we have moved segwit to second transaction, the first transaction vout size should be always 1
+        //int commitpos = GetWitnessCommitmentIndex(block);
+        //if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
         // Coinbase output should be empty if proof-of-stake block
-        int commitpos = GetWitnessCommitmentIndex(block);
-        if (block.vtx[0].vout.size() != (commitpos == -1 ? 1 : 2) || !block.vtx[0].vout[0].IsEmpty())
+        if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
