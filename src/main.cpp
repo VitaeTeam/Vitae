@@ -4421,7 +4421,11 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
             // The malleation check is ignored; as the transaction tree itself
             // already does not permit it, it is impossible to trigger in the
             // witness tree.
-            if (block.vtx[1].wit.vtxinwit.size() != 1 || block.vtx[1].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
+            if (block.vtx[1].wit.vtxinwit.size() != 1
+				|| block.vtx[1].wit.vtxinwit[0].scriptWitness.stack.size() != 1
+				|| block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0].size() != 2
+				|| block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0][0] != 32
+			) {
                 return state.DoS(100, error("%s : invalid witness nonce size", __func__), REJECT_INVALID, "bad-witness-nonce-size", true);
             }
             CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
