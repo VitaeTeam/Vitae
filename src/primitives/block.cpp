@@ -211,7 +211,7 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
 
             return true;
         }
-        else if(whichType == TX_WITNESS_V0_SCRIPTHASH || whichType == TX_WITNESS_V0_KEYHASH)
+        else if(whichType == TX_WITNESS_V0_KEYHASH)
         {
             CKeyID keyID;
             keyID = CKeyID(uint160(vSolutions[0]));
@@ -276,7 +276,7 @@ bool CBlock::CheckBlockSignature() const
         return pubkey.Verify(GetHash(), vchBlockSig);
 
     }
-    else if(whichType == TX_WITNESS_V0_SCRIPTHASH || whichType == TX_WITNESS_V0_KEYHASH)
+    else if(whichType == TX_WITNESS_V0_KEYHASH)
     {
         CPubKey pubkey;
         if (vchBlockSig.empty()) {
