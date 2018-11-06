@@ -386,7 +386,7 @@ bool CheckProofOfStake(const CBlock block, uint256& hashProofOfStake)
 
     //verify signature and script
     if (!VerifyScript(txin.scriptSig, txPrev.vout[txin.prevout.n].scriptPubKey,
-		tx.wit.vtxinwit.size() > 0 ? &tx.wit.vtxinwit[0].scriptWitness : NULL, STANDARD_SCRIPT_VERIFY_FLAGS, TransactionSignatureChecker(&tx, 0, txPrev.vout[txin.prevout.n].nValue)))
+        tx.wit.vtxinwit.size() > 0 ? &tx.wit.vtxinwit[0].scriptWitness : NULL, STANDARD_SCRIPT_VERIFY_FLAGS, TransactionSignatureChecker(&tx, 0, txPrev.vout[txin.prevout.n].nValue)))
         return error("CheckProofOfStake() : VerifySignature failed on coinstake %s", tx.GetHash().ToString().c_str());
 
     CBlockIndex* pindex = NULL;
