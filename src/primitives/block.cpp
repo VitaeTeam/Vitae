@@ -104,7 +104,7 @@ std::vector<uint256> CBlock::GetMerkleBranch(int nIndex) const
 uint256 CBlock::CheckMerkleBranch(uint256 hash, const std::vector<uint256>& vMerkleBranch, int nIndex)
 {
     if (nIndex == -1)
-		return uint256();
+        return uint256();
     for (std::vector<uint256>::const_iterator it(vMerkleBranch.begin()); it != vMerkleBranch.end(); ++it)
     {
         if (nIndex & 1)
@@ -219,16 +219,15 @@ bool CBlock::SignBlock(const CKeyStore& keystore)
             CKey key;
             if (!keystore.GetKey(keyID, key)) {
                 return false;
-			}
+            }
 
             if (!key.SignCompact(GetHash(), vchBlockSig)) {
                  return false;
-			 }
+            }
 
             return true;
-		}
-
-		LogPrintf("SignBlock: unknow kernel type: %d \n", whichType);
+        }
+        LogPrintf("SignBlock: unknow kernel type: %d \n", whichType);
     }
 
     LogPrintf("Sign failed\n");
@@ -280,24 +279,24 @@ bool CBlock::CheckBlockSignature() const
         CPubKey pubkey;
         if (vchBlockSig.empty()) {
             return false;
-		}
+        }
 
         if(! pubkey.RecoverCompact(GetHash(), vchBlockSig)) {
             return false;
-		}
+        }
 
-		if (!pubkey.IsValid()) {
-			return false;
-		}
-		
-		if(vtx.size() > 1 && vtx[1].wit.vtxinwit.size() > 0 && vtx[1].wit.vtxinwit[0].scriptWitness.stack.size() > 1) {
-			CPubKey pkey(vtx[1].wit.vtxinwit[0].scriptWitness.stack[1]);
-			if(pubkey != pkey) {
-				return false;
-			}
-		}
+        if (!pubkey.IsValid()) {
+            return false;
+        }
 
-		return true;
+        if(vtx.size() > 1 && vtx[1].wit.vtxinwit.size() > 0 && vtx[1].wit.vtxinwit[0].scriptWitness.stack.size() > 1) {
+            CPubKey pkey(vtx[1].wit.vtxinwit[0].scriptWitness.stack[1]);
+            if(pubkey != pkey) {
+                return false;
+            }
+        }
+
+        return true;
 
     }
 
