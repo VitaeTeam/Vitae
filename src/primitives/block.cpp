@@ -274,7 +274,6 @@ bool CBlock::CheckBlockSignature() const
             return false;
 
         return pubkey.Verify(GetHash(), vchBlockSig);
-
     }
     else if(whichType == TX_WITNESS_V0_KEYHASH)
     {

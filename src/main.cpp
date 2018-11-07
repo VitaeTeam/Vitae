@@ -4367,6 +4367,14 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos != -1) {
+            if (!IsSporkActive(SPORK_19_STAKING_ON_SEGWIT)) {
+                if (fDebug) {
+                    LogPrintf("CheckBlock() : staking-on-segwit is not enabled.\n");
+                }
+                return false;
+            }
+
+
             bool malleated = false;
             uint256 hashWitness = BlockWitnessMerkleRoot(block, &malleated);
             // The malleation check is ignored; as the transaction tree itself
