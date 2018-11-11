@@ -570,10 +570,9 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
     }
 
     CValidationState state;
-    CMutableTransaction tx = CMutableTransaction();
-    CTxOut vout = CTxOut(9999.99 * COIN, obfuScationPool.collateralPubKey);
-    tx.vin.push_back(vin);
-    tx.vout.push_back(vout);
+    uint256 hashBlock = 0;
+    CTransaction tx2, tx1;
+    GetTransaction(vin.prevout.hash, tx2, hashBlock, true);
 
     {
         TRY_LOCK(cs_main, lockMain);
@@ -584,8 +583,31 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
             return false;
         }
 
-        /*if (!AcceptableInputs(mempool, state, CTransaction(tx), false, NULL)) {
+        int64_t nValueIn = 0;
+
+        BOOST_FOREACH (const CTxIn& txin, tx2.vin) {
+            // First try finding the previous transaction in database
+            CTransaction txPrev;
+            uint256 hashBlockPrev;
+            if (!GetTransaction(txin.prevout.hash, txPrev, hashBlockPrev, true)) {
+                LogPrintf("CheckInputsAndAdd: failed to find vin transaction \n");
+                continue; // previous transaction not in main chain
+            }
+
+           nValueIn += txPrev.vout[txin.prevout.n].nValue;
+
+        }
+
+        if(nValueIn - tx2.GetValueOut() < FUNDAMENTALNODE_AMOUNT - FN_MAGIC_AMOUNT){
+            state.IsInvalid(nDoS);
+            return false;
+        }
+
+
+
+        /*if (!AcceptableFundamentalTxn(mempool, state, CTransaction(tx2))) {
             //set nDos
+            LogPrintf("AcceptableFN is false tx hash = %s \n", tx2.GetHash().GetHex());
             state.IsInvalid(nDoS);
             return false;
         }*/
@@ -603,9 +625,8 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
 
     // verify that sig time is legit in past
     // should be at least not earlier than block when 1000 VITAE tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
-    uint256 hashBlock = 0;
-    CTransaction tx2;
-    GetTransaction(vin.prevout.hash, tx2, hashBlock, true);
+
+
     BlockMap::iterator mi = mapBlockIndex.find(hashBlock);
     if (mi != mapBlockIndex.end() && (*mi).second) {
         CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 1000 VITAE tx -> 1 confirmation
