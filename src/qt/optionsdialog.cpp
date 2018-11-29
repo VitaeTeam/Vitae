@@ -169,6 +169,9 @@ void OptionsDialog::setModel(OptionsModel* model)
         mapper->setModel(model);
         setMapper();
         mapper->toFirst();
+
+        /* keep consistency for action triggered elsewhere */
+        connect(model, SIGNAL(hideOrphansChanged(bool)), this, SLOT(updateHideOrphans(bool)));
     }
 
     /* warn when one of the following settings changes by user action (placed here so init via mapper doesn't trigger them) */
@@ -229,6 +232,7 @@ void OptionsDialog::setMapper()
     mapper->addMapping(ui->unit, OptionsModel::DisplayUnit);
     mapper->addMapping(ui->thirdPartyTxUrls, OptionsModel::ThirdPartyTxUrls);
     mapper->addMapping(ui->checkBoxHideZeroBalances, OptionsModel::HideZeroBalances);
+    mapper->addMapping(ui->checkBoxHideOrphans, OptionsModel::HideOrphans);
 
     /* Fundamentalnode Tab */
     mapper->addMapping(ui->showFundamentalnodesTab, OptionsModel::ShowFundamentalnodesTab);
@@ -298,6 +302,12 @@ void OptionsDialog::showRestartWarning(bool fPersistent)
 void OptionsDialog::clearStatusLabel()
 {
     ui->statusLabel->clear();
+}
+
+void OptionsDialog::updateHideOrphans(bool fHide)
+{
+    if(ui->checkBoxHideOrphans->isChecked() != fHide)
+        ui->checkBoxHideOrphans->setChecked(fHide);
 }
 
 void OptionsDialog::doProxyIpChecks(QValidatedLineEdit* pUiProxyIp, QLineEdit* pUiProxyPort)
