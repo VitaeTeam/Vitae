@@ -56,15 +56,17 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (0, uint256("41e482b9b9691d98eefb48473405c0b8ec31b76df3797c74a78680ef818"))
 	(191884,uint256("45b95a52b673fd9f620bed8d59c5cfb05db0ffc33225bc6778b08d251348b185"))
 	(204305,uint256("101cfe17653d7b5ea6bb15531d9344dd65837f96904599ebc054bc8f6fad355d")) //about when spork 15 activated
-	(204464,uint256("9d2f9808c10408899cfff44f6a3adc44690912dd0dcb3b530c45cd2ad9a31f0e")); //about when spork 16 activated
+	(204464,uint256("9d2f9808c10408899cfff44f6a3adc44690912dd0dcb3b530c45cd2ad9a31f0e")) //about when spork 16 activated
+	(369647,uint256("82ba21a1afcb59ebdede612516d9c3bfed42e2e18baba172b971fd714d32bdf6"));
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1536066750, // * UNIX timestamp of last checkpoint block
-    430642,    // * total number of transactions between genesis and last checkpoint
+    1543517521, // * UNIX timestamp of last checkpoint block
+    781425,    // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
 
+//testnet
 static Checkpoints::MapCheckpoints mapCheckpointsTestnet =
     boost::assign::map_list_of(0, uint256("0x001"));
 static const Checkpoints::CCheckpointData dataTestnet = {
@@ -73,6 +75,7 @@ static const Checkpoints::CCheckpointData dataTestnet = {
     0,
     250};
 
+//regtest
 static Checkpoints::MapCheckpoints mapCheckpointsRegtest =
     boost::assign::map_list_of(0, uint256("0x001"));
 static const Checkpoints::CCheckpointData dataRegtest = {
@@ -165,11 +168,10 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io")); // vitae
 		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
 		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
-		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
-		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
+		vSeeds.push_back(CDNSSeedData("198.13.50.121", "198.13.50.121"));     //rasalghul supernode
+		vSeeds.push_back(CDNSSeedData("104.238.183.75", "104.238.183.75"));   //rasalghul masternode
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 71);
@@ -220,7 +222,7 @@ public:
 static CMainParams mainParams;
 
 /**
- * Testnet (v3)
+ * Testnet (v4)
  */
 class CTestNetParams : public CMainParams
 {
@@ -234,7 +236,7 @@ public:
         pchMessageStart[2] = 0x65;
         pchMessageStart[3] = 0xba;
         vAlertPubKey = ParseHex("000010e83b2703ccf322f7dbd62dd5855ac7c10bd055814ce121ba32607d573b8810c02c0582aed05b4deb9c4b77b26d92428c61256cd42774babea0a073b2ed0c9");
-        nDefaultPort = 51474;
+        nDefaultPort = 8763;
         nEnforceBlockUpgradeMajority = 51;
         nRejectBlockOutdatedMajority = 75;
         nToCheckBlockUpgradeMajority = 100;
@@ -264,11 +266,10 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("vitaetoken.io", "vitaetoken.io")); // vitae
 		vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
 		vSeeds.push_back(CDNSSeedData("209.182.216.187", "209.182.216.187")); // vitae fn
-		vSeeds.push_back(CDNSSeedData("p2pool.science", "p2pool.science")); // squid us-e
-		vSeeds.push_back(CDNSSeedData("uk.p2pool.science", "uk.p2pool.science")); // squid uk
+		vSeeds.push_back(CDNSSeedData("198.13.50.121", "198.13.50.121"));     //rasalghul
+		vSeeds.push_back(CDNSSeedData("104.238.183.75", "104.238.183.75"));   //rasalghul
 
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 139); // Testnet vitae addresses start with 'x' or 'y'
@@ -291,8 +292,7 @@ public:
         fTestnetToBeDeprecatedFieldRPC = true;
 
         nPoolMaxTransactions = 2;
-        strSporkKey = "04348C2F50F90267E64FACC65BFDC9D0EB147D090872FB97ABAE92E9A36E6CA60983E28E741F8E7277B11A7479B626AC115BA31463AC48178A5075C5A9319D4A38";
-        strObfuscationPoolDummyAddress = "y57cqfGRkekRyDRNeJiLtYVEbvhXrNbmox";
+        strSporkKey = "04cef2ceafa824fa3e5777989e032cf4d48ab3b5ccb83897c7892dd9fd72e69676355e18082e795b67d051b487c6852105db03160e547eeb81b20a608560974cb9";
         nStartFundamentalnodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
         nBudget_Fee_Confirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
                                        // here because we only have a 8 block finalization window on testnet
