@@ -531,7 +531,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
 
 int CFundamentalnodePayments::GetMinFundamentalnodePaymentsProto()
 {
-    if (IsSporkActive(SPORK_10_FUNDAMENTALNODE_PAY_UPDATED_NODES))
+    if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES))
         return ActiveProtocol();                          // Allow only updated peers
     else
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT; // Also allow old peers as long as they are allowed to run

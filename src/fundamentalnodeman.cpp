@@ -859,7 +859,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
     // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "obsee") { //ObfuScation Election Entry
 
-        if (IsSporkActive(SPORK_10_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
+        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
         CService addr;
@@ -1069,7 +1069,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
     else if (strCommand == "obseep") { //ObfuScation Election Entry Ping
 
-        if (IsSporkActive(SPORK_10_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
+        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
         vector<unsigned char> vchSig;

@@ -1603,7 +1603,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         *pfMissingInputs = false;
 
     //Temporarily disable zerocoin for maintenance
-    if (GetAdjustedTime() > GetSporkValue(SPORK_19_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
+    if (GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
         return state.DoS(10, error("AcceptToMemoryPool : Zerocoin transactions are temporarily disabled for maintenance"), REJECT_INVALID, "bad-tx");
 
     if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state))
@@ -3510,7 +3510,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 REJECT_INVALID, "bad-blk-sigops");
 
         //Temporarily disable zerocoin transactions for maintenance
-        if (block.nTime > GetSporkValue(SPORK_19_ZEROCOIN_MAINTENANCE_MODE) && !IsInitialBlockDownload() && tx.ContainsZerocoins()) {
+        if (block.nTime > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE) && !IsInitialBlockDownload() && tx.ContainsZerocoins()) {
             return state.DoS(100, error("ConnectBlock() : zerocoin transactions are currently in maintenance mode"));
         }
         if (tx.IsZerocoinSpend()) {
@@ -6236,7 +6236,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 !pSporkDB->SporkExists(SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3) &&
                 !pSporkDB->SporkExists(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4) &&
                 !pSporkDB->SporkExists(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5) &&
-                !pSporkDB->SporkExists(SPORK_19_ZEROCOIN_MAINTENANCE_MODE);
+                !pSporkDB->SporkExists(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
 
         if (fMissingSporks || !fRequestedSporksIDB){
             LogPrintf("asking peer for sporks\n");
