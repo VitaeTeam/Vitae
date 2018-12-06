@@ -500,6 +500,25 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         }
         pblocktemplate->vTxSigOpsCost[0] = WITNESS_SCALE_FACTOR * GetLegacySigOpCount(pblock->vtx[0]);
 
+        if (fProofOfStake) {
+            if (! IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+                bool fHaveWitness = false;
+                for (size_t t = 1; t < pblock->vtx.size(); t++) {
+                    if (!pblock->vtx[t].wit.IsNull()) {
+                        fHaveWitness = true;
+                        break;
+                    }
+                }
+                if (fHaveWitness) {
+                    if (fDebug) {
+                        LogPrintf("CreateNewBlock : staking-on-segwit block found but the feature is not enabled.\n");
+                    }
+                    return NULL;
+                }
+            }
+        }
+
+
         CValidationState state;
         if (!TestBlockValidity(state, *pblock, pindexPrev, false, false)) {
             mempool.clear();
