@@ -11,6 +11,7 @@
 #include "script/script.h"
 #include "serialize.h"
 #include "uint256.h"
+#include "util.h"
 
 #include <list>
 
@@ -294,6 +295,14 @@ struct CTxPair {
 
 struct CMutableTransaction;
 
+template <typename T>
+void checkVtxInWitSize(const T & tx, const char * tag)
+{
+    if (tx.wit.vtxinwit.size() > tx.vin.size()) {
+        LogPrintf("Error: tx.wit.vtxinwit.size() should not be larger than tx.vin.size()). vtxinwit.size()=%d vin.size()=%d tag=%s \n", (int)tx.wit.vtxinwit.size(), (int)tx.vin.size(), tag);
+    }
+}
+
 /**
  * Basic transaction serialization format:
  * - int32_t nVersion
@@ -345,7 +354,9 @@ inline void SerializeTransaction(TxType& tx, Stream& s, Operation ser_action, in
             throw std::ios_base::failure("Unknown transaction optional data");
         }
     } else {
+        checkVtxInWitSize(tx, "SerializeTransaction");
         assert(tx.wit.vtxinwit.size() <= tx.vin.size());
+
         if (fAllowWitness) {
             /* Check whether witnesses need to be serialized. */
             if (!tx.wit.IsNull()) {

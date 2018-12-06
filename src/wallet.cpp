@@ -2659,6 +2659,9 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
             while (true) {
                 txNew.vin.clear();
                 txNew.vout.clear();
+                // added to fix "assert(tx.wit.vtxinwit.size() <= tx.vin.size())" problem
+                txNew.wit.vtxinwit.clear();
+
                 wtxNew.fFromMe = true;
 
                 CAmount nTotalValue = nValue + nFeeRet;
