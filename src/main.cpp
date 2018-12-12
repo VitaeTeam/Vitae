@@ -4011,6 +4011,7 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
     return true;
 }
 
+static int GetWitnessCommitmentIndex(const CBlock& block);
 bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig)
 {
     // These are checks that are independent of context.
@@ -4064,8 +4065,24 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                 REJECT_INVALID, "bad-cb-multiple");
 
     if (block.IsProofOfStake()) {
+        int commitpos = GetWitnessCommitmentIndex(block);
+        if (commitpos >= 0) {
+            if (IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+                if (block.vtx[0].vout.size() != 2)
+                    return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+                if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
+                    return state.DoS(100, error("CheckBlock() : coinbase must be unspendable for proof-of-stake block"));
+            }
+            else {
+                return state.DoS(100, error("CheckBlock() : staking-on-segwit is not enabled"));
+            }
+        }
+        else {
+            if (block.vtx[0].vout.size() != 1)
+                return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
+        }
         // Coinbase output should be empty if proof-of-stake block
-        if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
+        if (!block.vtx[0].vout[0].IsEmpty())
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
 
         // Second transaction must be coinstake, the rest must not be
@@ -4139,25 +4156,20 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     return true;
 }
 
+// Modified according to Lux coin to make SegWit working
 bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 {
+    const CChainParams& chainParams = Params();
     if (pindexPrev == NULL)
-        return error("%s : null pindexPrev for block %s", __func__, block.GetHash().ToString().c_str());
+        return error("%s: null pindexPrev for block %s", __func__, block.GetHash().GetHex());
 
     unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
 
-    if (block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= 68589)) {
-        double n1 = ConvertBitsToDouble(block.nBits);
-        double n2 = ConvertBitsToDouble(nBitsRequired);
-
-        if (abs(n1 - n2) > n1 * 0.5)
-            return error("%s : incorrect proof of work (DGW pre-fork) - %f %f %f at %d", __func__, abs(n1 - n2), n1, n2, pindexPrev->nHeight + 1);
-
-        return true;
-    }
+    if (block.IsProofOfWork() && pindexPrev->nHeight + 1 > chainParams.LAST_POW_BLOCK())
+        return error("%s: reject proof-of-work at height %d", __func__, pindexPrev->nHeight + 1);
 
     if (block.nBits != nBitsRequired)
-        return error("%s : incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
+        return error("%s: incorrect proof of work at %d", __func__, pindexPrev->nHeight + 1);
 
     if (block.IsProofOfStake()) {
         uint256 hashProofOfStake;
@@ -4170,7 +4182,6 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
         if(!mapProofOfStake.count(hash)) // add to mapProofOfStake
             mapProofOfStake.insert(make_pair(hash, hashProofOfStake));
     }
-
     return true;
 }
 
@@ -4229,12 +4240,12 @@ static int GetWitnessCommitmentIndex(const CBlock& block)
 {
     int commitpos = -1;
     if(block.vtx.size() > 1) {
-		for (size_t o = 0; o < block.vtx[1].vout.size(); o++) {
-			if (block.vtx[1].vout[o].scriptPubKey.size() >= 38 && block.vtx[1].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[1].vout[o].scriptPubKey[1] == 0x24 && block.vtx[1].vout[o].scriptPubKey[2] == 0xaa && block.vtx[1].vout[o].scriptPubKey[3] == 0x21 && block.vtx[1].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[1].vout[o].scriptPubKey[5] == 0xed) {
-				commitpos = o;
-			}
-		}
-	}
+        for (size_t o = 0; o < block.vtx[0].vout.size(); o++) {
+            if (block.vtx[0].vout[o].scriptPubKey.size() >= 38 && block.vtx[0].vout[o].scriptPubKey[0] == OP_RETURN && block.vtx[0].vout[o].scriptPubKey[1] == 0x24 && block.vtx[0].vout[o].scriptPubKey[2] == 0xaa && block.vtx[0].vout[o].scriptPubKey[3] == 0x21 && block.vtx[0].vout[o].scriptPubKey[4] == 0xa9 && block.vtx[0].vout[o].scriptPubKey[5] == 0xed) {
+                commitpos = o;
+            }
+        }
+    }
     return commitpos;
 }
 
@@ -4242,10 +4253,10 @@ void UpdateUncommittedBlockStructures(CBlock& block, const CBlockIndex* pindexPr
 {
     int commitpos = GetWitnessCommitmentIndex(block);
     static const std::vector<unsigned char> nonce(32, 0x00);
-    if (commitpos != -1 && GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime && block.vtx[1].wit.IsEmpty()) {
-        block.vtx[1].wit.vtxinwit.resize(1);
-        block.vtx[1].wit.vtxinwit[0].scriptWitness.stack.resize(1);
-        block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0] = nonce;
+    if (commitpos != -1 && GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime && block.vtx[0].wit.IsEmpty()) {
+        block.vtx[0].wit.vtxinwit.resize(1);
+        block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.resize(1);
+        block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0] = nonce;
     }
 }
 
@@ -4276,8 +4287,8 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
             out.scriptPubKey[5] = 0xed;
             memcpy(&out.scriptPubKey[6], witnessroot.begin(), 32);
             commitment = std::vector<unsigned char>(out.scriptPubKey.begin(), out.scriptPubKey.end());
-            const_cast<std::vector<CTxOut>*>(&block.vtx[1].vout)->push_back(out);
-            block.vtx[1].UpdateHash();
+            const_cast<std::vector<CTxOut>*>(&block.vtx[0].vout)->push_back(out);
+            block.vtx[0].UpdateHash();
         }
     }
     UpdateUncommittedBlockStructures(block, pindexPrev);
@@ -4371,16 +4382,24 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos != -1) {
+            if (!IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+                if (fDebug) {
+                    LogPrintf("CheckBlock() : staking-on-segwit is not enabled.\n");
+                }
+                return false;
+            }
+
+
             bool malleated = false;
             uint256 hashWitness = BlockWitnessMerkleRoot(block, &malleated);
             // The malleation check is ignored; as the transaction tree itself
             // already does not permit it, it is impossible to trigger in the
             // witness tree.
-            if (block.vtx[1].wit.vtxinwit.size() != 1 || block.vtx[1].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
+            if (block.vtx[0].wit.vtxinwit.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.size() != 1 || block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0].size() != 32) {
                 return state.DoS(100, error("%s : invalid witness nonce size", __func__), REJECT_INVALID, "bad-witness-nonce-size", true);
             }
-            CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[1].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
-            if (memcmp(hashWitness.begin(), &block.vtx[1].vout[commitpos].scriptPubKey[6], 32)) {
+            CHash256().Write(hashWitness.begin(), 32).Write(&block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0][0], 32).Finalize(hashWitness.begin());
+            if (memcmp(hashWitness.begin(), &block.vtx[0].vout[commitpos].scriptPubKey[6], 32)) {
                 return state.DoS(100, error("%s : witness merkle commitment mismatch", __func__), REJECT_INVALID, "bad-witness-merkle-match", true);
             }
             fHaveWitness = true;
@@ -5901,6 +5920,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
         if (pfrom->nVersion < CADDR_TIME_VERSION && addrman.size() > 1000)
             return true;
         if (vAddr.size() > 1000) {
+            LOCK(cs_main);
             Misbehaving(pfrom->GetId(), 20);
             return error("message addr size() = %u", vAddr.size());
         }
