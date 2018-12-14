@@ -990,7 +990,7 @@
         <translation>ClauPública</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>L'estat s'actualitzarà automàticament en (seg):</translation>
     </message>
     <message>

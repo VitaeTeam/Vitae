@@ -36,8 +36,6 @@ QT_TS = \
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
-  qt/forms/privkeypage.ui \
-  qt/forms/outputspage.ui \
   qt/forms/configuremasternodepage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/bip38tooldialog.ui \
@@ -65,8 +63,6 @@ QT_FORMS_UI = \
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
-  qt/moc_privkeypage.cpp \
-  qt/moc_outputspage.cpp \
   qt/moc_configuremasternodepage.cpp \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
@@ -193,8 +189,6 @@ BITCOIN_QT_H = \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
-  qt/privkeypage.h \
-  qt/outputspage.h \
   qt/configuremasternodepage.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
@@ -316,8 +310,6 @@ endif
 if ENABLE_WALLET
 BITCOIN_QT_CPP += \
   qt/addressbookpage.cpp \
-  qt/privkeypage.cpp \
-  qt/outputspage.cpp \
   qt/configuremasternodepage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \

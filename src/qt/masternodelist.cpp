@@ -1,8 +1,6 @@
 #include "masternodelist.h"
 #include "ui_masternodelist.h"
 
-#include "privkeypage.h"
-#include "outputspage.h"
 #include "configuremasternodepage.h"
 
 #include "activemasternode.h"
@@ -99,18 +97,6 @@ void MasternodeList::showContextMenu(const QPoint& point)
 {
     QTableWidgetItem* item = ui->tableWidgetMyMasternodes->itemAt(point);
     if (item) contextMenu->exec(QCursor::pos());
-}
-
-void MasternodeList::on_getMNPrivKeyButton_clicked()
-{
-    PrivKeyPage dlg(this);
-    dlg.exec();
-}
-
-void MasternodeList::on_getOutputsButton_clicked()
-{
-    OutPutsPage dlg(this);
-    dlg.exec();
 }
 
 void MasternodeList::StartAlias(std::string strAlias)

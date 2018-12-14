@@ -1342,7 +1342,7 @@ Address: %4
         <translation>&amp;업데이트 상태</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>상태가 (초) 단위로 자동 업데이트됩니다:</translation>
     </message>
     <message>

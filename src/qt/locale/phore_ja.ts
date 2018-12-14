@@ -1420,7 +1420,7 @@ Address: %4
         <translation>&amp;ステータスアップデート</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>ステータスは自動的にアップデートされます。(秒):</translation>
     </message>
     <message>

@@ -1242,7 +1242,7 @@ MultiSend: %1</translation>
         <translation>&amp;Update stavu</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>Stav bude automaticky updateován za (sec):</translation>
     </message>
     <message>

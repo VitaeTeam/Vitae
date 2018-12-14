@@ -990,7 +990,7 @@ MultiWysyłlka: %1</translation>
         <translation>&amp;Status aktualizacji</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>Status będzie uaktualniany automatycznie (w sekundach)</translation>
     </message>
     <message>

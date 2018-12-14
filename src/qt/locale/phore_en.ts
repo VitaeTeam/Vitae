@@ -1744,7 +1744,7 @@ Address: %4
     </message>
     <message>
         <location line="+7"/>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

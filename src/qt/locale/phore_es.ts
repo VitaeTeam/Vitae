@@ -1342,7 +1342,7 @@ MultiEnvío: %1</translation>
         <translation>Estado de &amp;Actualización</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>El estado se actualizará automáticamente en (seg):</translation>
     </message>
     <message>

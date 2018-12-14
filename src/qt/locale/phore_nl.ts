@@ -1423,7 +1423,7 @@ MultiSend: %1</translation>
         <translation>&amp;Status bijwerken</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>Status wordt automatisch bijgewerkt in (sec):</translation>
     </message>
     <message>

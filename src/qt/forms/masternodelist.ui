@@ -271,24 +271,10 @@
                   <property name="bottomMargin">
                    <number>0</number>
                   </property>
-                  <item>
-                   <widget class="QPushButton" name="getMNPrivKeyButton">
-                    <property name="text">
-                     <string>G&amp;et MN Priv Key</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
-                   <widget class="QPushButton" name="getOutputsButton">
-                    <property name="text">
-                     <string>G&amp;et Outputs</string>
-                    </property>
-                   </widget>
-                  </item>
-                  <item>
+                 <item>
                    <widget class="QPushButton" name="configureMasternodeButton">
                     <property name="text">
-                     <string>C&amp;onfigure Masternode</string>
+                     <string>A&amp;dd Masternode</string>
                     </property>
                    </widget>
                   </item>
@@ -323,7 +309,7 @@
                   <item>
                    <widget class="QLabel" name="autoupdate_label">
                     <property name="text">
-                     <string>Status will be updated automatically in (sec):</string>
+                     <string>Update in (sec):</string>
                     </property>
                    </widget>
                   </item>

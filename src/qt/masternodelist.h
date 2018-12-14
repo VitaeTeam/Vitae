@@ -76,8 +76,6 @@ private Q_SLOTS:
     void on_startMissingButton_clicked();
 	void on_configureMasternodeButton_clicked();
 	void openEditConfigureMasternodePage(QString strAlias, QString strIP, QString strPrivKey, QString strTxHash, QString strOutputIndex, int count);
-    void on_getMNPrivKeyButton_clicked();
-	void on_getOutputsButton_clicked();
     void on_tableWidgetMyMasternodes_itemSelectionChanged();
     void on_UpdateButton_clicked();
 };

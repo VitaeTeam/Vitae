@@ -1298,7 +1298,7 @@ Adresse: %4
         <translation>&amp;opdateringsstatus</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>Status opdateres automatisk om (sek):</translation>
     </message>
     <message>

@@ -1342,7 +1342,7 @@ Address: %4
         <translation>&amp;Обнови състояние</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>Състоянието ще се обнови автоматично след (сек): </translation>
     </message>
     <message>

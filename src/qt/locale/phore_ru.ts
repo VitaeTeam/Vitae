@@ -1310,7 +1310,7 @@ MultiSend: %1</translation>
         <translation>&amp;Обновить состояние</translation>
     </message>
     <message>
-        <source>Status will be updated automatically in (sec):</source>
+        <source>Update in (sec):</source>
         <translation>Состояние будет автоматически обновлено через (сек):</translation>
     </message>
     <message>
