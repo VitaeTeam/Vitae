@@ -2078,7 +2078,7 @@ https://www.transifex.com/phore-project/phore-project-translations</translation>
         <translation>zPHRの残高</translation>
     </message>
     <message>
-        <source>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
+        <source>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
 These zPHR are spendable.</source>
         <translation>成熟: 20確認と同じdenominationでの3変換が必要です。
 その後zPHRは使用可能になります。</translation>

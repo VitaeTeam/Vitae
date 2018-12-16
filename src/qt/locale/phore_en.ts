@@ -2765,7 +2765,7 @@ If AutoMint is enabled this percentage will settle around the configured AutoMin
     <message>
         <location line="+14"/>
         <location line="+104"/>
-        <source>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
+        <source>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
 These zPHR are spendable.</source>
         <translation type="unfinished"></translation>
     </message>

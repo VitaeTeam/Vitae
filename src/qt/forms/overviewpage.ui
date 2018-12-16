@@ -823,7 +823,7 @@
                        <item row="1" column="0">
                         <widget class="QLabel" name="labelzBalanceMatureText">
                          <property name="toolTip">
-                          <string>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
+                          <string>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
 These zPHR are spendable.</string>
                          </property>
                          <property name="text">
@@ -840,7 +840,7 @@ These zPHR are spendable.</string>
                           </font>
                          </property>
                          <property name="toolTip">
-                          <string>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
+                          <string>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
 These zPHR are spendable.</string>
                          </property>
                          <property name="text">
