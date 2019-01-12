@@ -3239,7 +3239,7 @@ https://www.transifex.com/phore-project/phore-project-translations</translation>
         <translation>Copyright (C) 2014-%i Разработчики Dash Core</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The Phore Core Developers</source>
+        <source>Copyright (C) 2015-%i The Phore Developers</source>
         <translation>Copyright (C) 2015-%i Разработчики Phore Core</translation>
     </message>
     <message>

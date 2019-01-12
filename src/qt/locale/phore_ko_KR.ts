@@ -4702,7 +4702,7 @@ rpcpassword=%s
         <translation>Copyright (C) 2014-%i The Dash Core 개발자들</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The Phore Core Developers</source>
+        <source>Copyright (C) 2015-%i The Phore Developers</source>
         <translation>Copyright (C) 2015-%i The Phore Core 개발자</translation>
     </message>
     <message>

@@ -4536,7 +4536,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Phore Alert&quot; admin@foo.co
         <translation>Copyright (C) 2014-%i Dash コア開発者チーム</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The Phore Core Developers</source>
+        <source>Copyright (C) 2015-%i The Phore Developers</source>
         <translation>Copyright (C) 2015-%i Phore コア開発者チーム</translation>
     </message>
     <message>
@@ -5490,7 +5490,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Phore Alert&quot; admin@foo.co
         <translation>Copyright (C) 2015-%i PIVX コア開発者チーム</translation>
     </message>
     <message>
-        <source>Copyright (C) 2017-%i The Phore Core Developers</source>
+        <source>Copyright (C) 2017-%i The Phore Developers</source>
         <translation>Copyright (C) 2015-%i Phore コア開発者チーム {2017-?}</translation>
     </message>
     <message>
