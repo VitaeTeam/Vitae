@@ -5866,7 +5866,7 @@ bijvoorbeeld: alertnotify = echo %%s | mail -s &quot;Phore Alert&quot; admin@foo
         <translation>Copyright (C) 2014-%i The Dash Kernontwikkelaars</translation>
     </message>
     <message>
-        <source>Copyright (C) 2015-%i The Phore Core Developers</source>
+        <source>Copyright (C) 2015-%i The Phore Developers</source>
         <translation>Copyright (C) 2015-%i The Phore Kernontwikkelaars</translation>
     </message>
 	   <message>

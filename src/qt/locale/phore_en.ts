@@ -2765,7 +2765,7 @@ If AutoMint is enabled this percentage will settle around the configured AutoMin
     <message>
         <location line="+14"/>
         <location line="+104"/>
-        <source>Mature: more than 20 confirmation and more than 3 mints of the same denomination after it was minted.
+        <source>Mature: more than 20 confirmation and more than 1 mint of the same denomination after it was minted.
 These zPHR are spendable.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -6452,7 +6452,7 @@ for example: alertnotify=echo %%s | mail -s &quot;Phore Alert&quot; admin@foo.co
     </message>
     <message>
         <location line="+1"/>
-        <source>Copyright (C) 2015-%i The Phore Core Developers</source>
+        <source>Copyright (C) 2015-%i The Phore Developers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
