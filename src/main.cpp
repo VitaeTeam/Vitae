@@ -3192,8 +3192,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         if (!pblocktree->AddAddrIndex(vPosAddrid))
             return state.Error("Failed to write address index");
 
-    int64_t nTime21 = GetTimeMicros();
-
     // add new entries
     for (const CTransaction tx: block.vtx) {
         if (tx.IsCoinBase() || tx.IsZerocoinSpend())
@@ -3209,9 +3207,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             mapStakeSpent.erase(it->first);
         }
     }
-
-    int64_t nTime22 = GetTimeMicros();
-    LogPrint("bench", "    - blurgh: %.2fms\n", 0.001 * (nTime22 - nTime21));
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
