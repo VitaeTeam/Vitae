@@ -5,6 +5,7 @@
 #include <list>
 
 class CDeterministicMint;
+class CzPIVWallet;
 
 class CzVITTracker
 {
@@ -17,7 +18,7 @@ private:
 public:
     CzVITTracker(std::string strWalletFile);
     ~CzVITTracker();
-    void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false);
+    void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false, CzVITWallet* zPIVWallet = NULL);
     void Add(const CZerocoinMint& mint, bool isNew = false, bool isArchived = false);
     bool Archive(CMintMeta& meta);
     bool HasPubcoin(const CBigNum& bnValue) const;
@@ -34,7 +35,7 @@ public:
     std::vector<uint256> GetSerialHashes();
     std::vector<CMintMeta> GetMints(bool fConfirmedOnly) const;
     CAmount GetUnconfirmedBalance() const;
-    std::set<CMintMeta> ListMints(bool fUnusedOnly, bool fMatureOnly, bool fUpdateStatus);
+    std::set<CMintMeta> ListMints(bool fUnusedOnly, bool fMatureOnly, bool fUpdateStatus, bool fWrongSeed = false);
     void RemovePending(const uint256& txid);
     void SetPubcoinUsed(const uint256& hashPubcoin, const uint256& txid);
     void SetPubcoinNotUsed(const uint256& hashPubcoin);
