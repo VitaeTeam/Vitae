@@ -956,7 +956,7 @@ int GetZerocoinStartHeight()
 }
 
 libzerocoin::ZerocoinParams* GetZerocoinParams(int nHeight) {
-    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params(); 
+    return nHeight > Params().Zerocoin_LastOldParams() ? Params().Zerocoin_Params() : Params().OldZerocoin_Params();
 }
 
 void FindMints(vector<CMintMeta> vMintsToFind, vector<CMintMeta>& vMintsToUpdate, vector<CMintMeta>& vMissingMints)
@@ -1722,7 +1722,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
 
-        
+
         unsigned int scriptVerifyFlags = STANDARD_SCRIPT_VERIFY_FLAGS;
         if (!Params().RequireStandard()) {
             scriptVerifyFlags = GetArg("-promiscuousmempoolflags", scriptVerifyFlags);
@@ -1844,7 +1844,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
             }
         }
     }
-    
+
     // Check for conflicts with in-memory transactions
     if (!tx.IsZerocoinSpend()) {
         LOCK(pool.cs); // protect pool.mapNextTx
@@ -3021,7 +3021,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             if (!view.HaveInputs(tx))
                 return state.DoS(100, error("ConnectBlock() : inputs missing/spent"),
                     REJECT_INVALID, "bad-txns-inputs-missingorspent");
-            
+
             // Check that zPHR mints are not already known
             if (tx.IsZerocoinMint()) {
                 for (auto& out : tx.vout) {
@@ -3191,7 +3191,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     if (fAddrIndex)
         if (!pblocktree->AddAddrIndex(vPosAddrid))
             return state.Error("Failed to write address index");
-    
+
+    int64_t nTime21 = GetTimeMicros();
+
     // add new entries
     for (const CTransaction tx: block.vtx) {
         if (tx.IsCoinBase() || tx.IsZerocoinSpend())
@@ -3205,10 +3207,11 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end(); ++it) {
         if (it->second < pindex->nHeight - Params().MaxReorganizationDepth()) {
             mapStakeSpent.erase(it->first);
-        } else {
-            LogPrintf("stake out hash = %s height = %d\n", it->first.ToString(), it->second);
         }
     }
+
+    int64_t nTime22 = GetTimeMicros();
+    LogPrint("bench", "    - blurgh: %.2fms\n", 0.001 * (nTime22 - nTime21));
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
@@ -4346,7 +4349,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
         if(block.nVersion < Params().Zerocoin_HeaderVersion())
             return state.DoS(50, error("CheckBlockHeader() : block version must be above 4 after ZerocoinStartHeight"),
             REJECT_INVALID, "block-version");
-        
+
         vector<CBigNum> vBlockSerials;
         for (const CTransaction& tx : block.vtx) {
             if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime))
@@ -4549,6 +4552,26 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
     }
 
     int nHeight = pindex->nHeight;
+
+    if (block.IsProofOfStake()) {
+        LOCK(cs_main);
+
+        CCoinsViewCache coins(pcoinsTip);
+
+        if (!coins.HaveInputs(block.vtx[1])) {
+            // the inputs are spent at the chain tip so we should look at the recently spent outputs
+
+            for (CTxIn in : block.vtx[1].vin) {
+                auto it = mapStakeSpent.find(in.prevout);
+                if (it == mapStakeSpent.end()) {
+                    return false;
+                }
+                if (it->second <= pindexPrev->nHeight) {
+                    return false;
+                }
+            }
+        }
+    }
 
     // Write block to history file
     try {
