@@ -3196,16 +3196,23 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         if (tx.IsCoinBase() || tx.IsZerocoinSpend())
             continue;
         for (const CTxIn in: tx.vin) {
+            LogPrint("map", "mapStakeSpent: Insert %s | %u\n", in.prevout.ToString(), pindex->nHeight);
             mapStakeSpent.insert(std::make_pair(in.prevout, pindex->nHeight));
         }
     }
 
+    
     // delete old entries
-    for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end(); ++it) {
+    for (auto it = mapStakeSpent.begin(); it != mapStakeSpent.end();) {
         if (it->second < pindex->nHeight - Params().MaxReorganizationDepth()) {
-            mapStakeSpent.erase(it->first);
+            LogPrint("map", "mapStakeSpent: Erase %s | %u\n", it->first.ToString(), it->second);
+            it = mapStakeSpent.erase(it);
+        }
+        else {
+            it++;
         }
     }
+    
 
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
