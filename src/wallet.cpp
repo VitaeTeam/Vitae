@@ -54,6 +54,7 @@ bool bSpendZeroConfChange = true;
 bool bdisableSystemnotifications = false; // Those bubbles can be annoying and slow down the UI when you get lots of trx
 bool fSendFreeTransactions = false;
 bool fPayAtLeastCustomFee = true;
+bool fGlobalUnlockSpendCache = false;
 int64_t nStartupTime = GetTime(); //!< Client startup time for use with automint
 
 /**
@@ -4829,6 +4830,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
     while (nLockAttempts < 100) {
         TRY_LOCK(zpivTracker->cs_spendcache, lockSpendcache);
         if (!lockSpendcache) {
+            fGlobalUnlockSpendCache = true;
             MilliSleep(100);
             ++nLockAttempts;
             continue;
@@ -5679,6 +5681,10 @@ void CWallet::PrecomputeSpends()
                 if (!fLocked)
                     continue;
 
+                if (fGlobalUnlockSpendCache) {
+                    break;
+                }
+
                 // When we see a clear spend cache bool set to true, break out of the loop
                 // All cache data will be cleared at the beginning of the while loop above
                 if (fClearSpendCache) {
@@ -5759,7 +5765,7 @@ void CWallet::PrecomputeSpends()
 
                 CBlockIndex* pindexStop = chainActive[nHeightStop];
                 AccumulatorMap mapAccumulators(Params().Zerocoin_Params(false));
-                LogPrint("precompute", "%s: caching mint %s of denom %d start=%d stop=%d end=%s\n", __func__,
+                LogPrint("precompute","%s: caching mint %s of denom %d start=%d stop=%d end=%s\n", __func__,
                           witnessData->coin->getValue().GetHex().substr(0, 6),
                           ZerocoinDenominationToInt(witnessData->denom),
                           witnessData->nHeightAccStart, nHeightStop, witnessData->nHeightAccEnd);
@@ -5805,6 +5811,10 @@ void CWallet::PrecomputeSpends()
             }
             // Sleep for 150ms to allow any potential spend attempt
             MilliSleep(150);
+        }
+
+        if (fGlobalUnlockSpendCache) {
+            fGlobalUnlockSpendCache = false;
         }
 
         // On first load, and every 5 minutes clean up our cache with only valid unspent inputs
