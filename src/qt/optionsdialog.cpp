@@ -343,3 +343,8 @@ bool OptionsDialog::eventFilter(QObject* object, QEvent* event)
     }
     return QDialog::eventFilter(object, event);
 }
+
+void OptionsDialog::setCurrentIndex(int index)
+{
+    ui->tabWidget->setCurrentIndex(index);
+}
