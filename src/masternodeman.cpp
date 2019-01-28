@@ -590,7 +590,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        if(protocolVersion < PROTOCOL_VERSION) {
+        if(protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) {
             LogPrintf("dsee - ignoring outdated Masternode %s protocol version %d\n", vin.ToString().c_str(), protocolVersion);
             return;
         }
@@ -721,7 +721,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             this->Add(mn);
 
             // if it matches our Masternode privkey, then we've been remotely activated
-            if(pubkey2 == activeMasternode.pubKeyMasternode && protocolVersion == PROTOCOL_VERSION){
+            if(pubkey2 == activeMasternode.pubKeyMasternode && protocolVersion >= masternodePayments.GetMinMasternodePaymentsProto()){
                 activeMasternode.EnableHotColdMasterNode(vin, addr);
             }
 
@@ -764,7 +764,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         // see if we have this Masternode
         CMasternode* pmn = this->Find(vin);
-        if(pmn != NULL && pmn->protocolVersion >= PROTOCOL_VERSION)
+        if(pmn != NULL && pmn->protocolVersion >= masternodePayments.GetMinMasternodePaymentsProto())
         {
             // LogPrintf("dseep - Found corresponding mn for vin: %s\n", vin.ToString().c_str());
             // take this only if it's newer
