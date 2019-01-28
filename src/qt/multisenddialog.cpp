@@ -72,14 +72,23 @@ void MultiSendDialog::on_viewButton_clicked()
     std::pair<std::string, int> pMultiSend;
     std::string strMultiSendPrint = "";
     if (pwalletMain->isMultiSendEnabled()) {
-        if (pwalletMain->fMultiSendStake)
+        if (pwalletMain->fMultiSendStake && pwalletMain->fMultiSendMasternodeReward && pwalletMain->fMultiSendMasternodeReward)
+            strMultiSendPrint += "MultiSend Active for Stake, Masternode, and Fundamentalnode Rewards\n";
+        else if (pwalletMain->fMultiSendStake && pwalletMain->fMultiSendMasternodeReward)
+            strMultiSendPrint += "MultiSend Active for Stakes and Masternode Rewards\n";
+        else if (pwalletMain->fMultiSendStake && pwalletMain->fMultiSendFundamentalnodeReward)
+            strMultiSendPrint += "MultiSend Active for Stakes and Fundamentalnode Rewards\n";
+        else if (pwalletMain->fMultiSendFundamentalnodeReward && pwalletMain->fMultiSendMasternodeReward)
+            strMultiSendPrint += "MultiSend Active for Fundamentalnode and Masternode Rewards\n";
+        else if (pwalletMain->fMultiSendStake)
             strMultiSendPrint += "MultiSend Active for Stakes\n";
         else if (pwalletMain->fMultiSendFundamentalnodeReward)
             strMultiSendPrint += "MultiSend Active for Fundamentalnode Rewards\n";
-	    else if (pwalletMain->fMultiSendMasternodeReward)
+        else if (pwalletMain->fMultiSendMasternodeReward)
             strMultiSendPrint += "MultiSend Active for Masternode Rewards\n";
-    } else
+    } else {
         strMultiSendPrint += "MultiSend Not Active\n";
+    }
 
     for (int i = 0; i < (int)pwalletMain->vMultiSend.size(); i++) {
         pMultiSend = pwalletMain->vMultiSend[i];
