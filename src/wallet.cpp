@@ -2618,7 +2618,7 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
     if(IsFundamentalNodePayment){
         LogPrintf(" IsFundamentalNode inside createtransaction is true \n");
     } else{
-        LogPrintf(" IsFundamentalNode inside createtransaction is false \n");
+        //LogPrintf(" IsFundamentalNode inside createtransaction is false \n");
     }
 
     BOOST_FOREACH (const PAIRTYPE(CScript, CAmount) & s, vecSend) {
