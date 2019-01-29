@@ -590,7 +590,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        if(protocolVersion < masternodePayments.GetMinMasternodePaymentsProto()) {
+        if(protocolVersion < GetMinMasternodePaymentsProto()) {
             LogPrintf("dsee - ignoring outdated Masternode %s protocol version %d\n", vin.ToString().c_str(), protocolVersion);
             return;
         }
@@ -721,7 +721,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             this->Add(mn);
 
             // if it matches our Masternode privkey, then we've been remotely activated
-            if(pubkey2 == activeMasternode.pubKeyMasternode && protocolVersion >= masternodePayments.GetMinMasternodePaymentsProto()){
+            if(pubkey2 == activeMasternode.pubKeyMasternode && protocolVersion >= GetMinMasternodePaymentsProto()){
                 activeMasternode.EnableHotColdMasterNode(vin, addr);
             }
 
@@ -764,7 +764,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
         // see if we have this Masternode
         CMasternode* pmn = this->Find(vin);
-        if(pmn != NULL && pmn->protocolVersion >= masternodePayments.GetMinMasternodePaymentsProto())
+        if(pmn != NULL && pmn->protocolVersion >= GetMinMasternodePaymentsProto())
         {
             // LogPrintf("dseep - Found corresponding mn for vin: %s\n", vin.ToString().c_str());
             // take this only if it's newer
@@ -935,4 +935,12 @@ std::string CMasternodeMan::ToString() const
             ", nDsqCount: " << (int)nDsqCount;
 
     return info.str();
+}
+
+int CMasternodeMan::GetMinMasternodePaymentsProto()
+{
+    if (IsSporkActive(SPORK_19_MASTERNODE_PAY_UPDATED_NODES))
+        return ActiveProtocol();                          // Allow only updated peers
+    else
+        return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT; // Also allow old peers as long as they are allowed to run
 }
