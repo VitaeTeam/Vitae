@@ -148,6 +148,9 @@ public:
     void RelayMasternodeEntryPing(const CTxIn vin, const std::vector<unsigned char> vchSig, const int64_t nNow, const bool stop);
 
     void Remove(CTxIn vin);
+
+	// Get Masternode Protocol Version
+	int GetMinMasternodePaymentsProto();
 };
 
 #endif
