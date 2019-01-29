@@ -9,6 +9,7 @@
 #include "masternode.h"
 #include "activemasternode.h"
 #include "obfuscation.h"
+#include "spork.h"
 //#include "core.h"
 #include "main.h"
 #include "util.h"
@@ -939,7 +940,7 @@ std::string CMasternodeMan::ToString() const
 
 int CMasternodeMan::GetMinMasternodePaymentsProto()
 {
-    if (IsSporkActive(SPORK_19_MASTERNODE_PAY_UPDATED_NODES))
+    if (IsSporkActive(SPORK_21_MASTERNODE_PAY_UPDATED_NODES))
         return ActiveProtocol();                          // Allow only updated peers
     else
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT; // Also allow old peers as long as they are allowed to run
