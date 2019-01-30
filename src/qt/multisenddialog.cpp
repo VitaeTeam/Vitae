@@ -47,7 +47,7 @@ void MultiSendDialog::updateCheckBoxes()
 {
     ui->multiSendStakeCheckBox->setChecked(pwalletMain->fMultiSendStake);
     ui->multiSendFundamentalnodeCheckBox->setChecked(pwalletMain->fMultiSendFundamentalnodeReward);
-	ui->multiSendMasternodeCheckBox->setChecked(pwalletMain->fMultiSendMasternodeReward);
+    ui->multiSendMasternodeCheckBox->setChecked(pwalletMain->fMultiSendMasternodeReward);
 }
 
 void MultiSendDialog::on_addressBookButton_clicked()
@@ -212,7 +212,7 @@ void MultiSendDialog::on_activateButton_clicked()
     } else if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
         pwalletMain->fMultiSendStake = ui->multiSendStakeCheckBox->isChecked();
         pwalletMain->fMultiSendFundamentalnodeReward = ui->multiSendFundamentalnodeCheckBox->isChecked();
-		pwalletMain->fMultiSendMasternodeReward = ui->multiSendMasternodeCheckBox->isChecked();
+        pwalletMain->fMultiSendMasternodeReward = ui->multiSendMasternodeCheckBox->isChecked();
 
         CWalletDB walletdb(pwalletMain->strWalletFile);
         if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, pwalletMain->fMultiSendFundamentalnodeReward,pwalletMain->fMultiSendMasternodeReward, pwalletMain->nLastMultiSendHeight))

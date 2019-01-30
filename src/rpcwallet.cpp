@@ -2079,7 +2079,7 @@ UniValue printMultiSend()
     UniValue act(UniValue::VOBJ);
     act.push_back(Pair("MultiSendStake Activated?", pwalletMain->fMultiSendStake));
     act.push_back(Pair("MultiSendFundamentalnode Activated?", pwalletMain->fMultiSendFundamentalnodeReward));
-	act.push_back(Pair("MultiSendMasternode Activated?", pwalletMain->fMultiSendMasternodeReward));
+    act.push_back(Pair("MultiSendMasternode Activated?", pwalletMain->fMultiSendMasternodeReward));
     ret.push_back(act);
 
     if (pwalletMain->vDisabledAddresses.size() >= 1) {
@@ -2287,7 +2287,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
             " enablestake/activatestake - activates the current MultiSend vector to be activated on stake rewards\n"
             " enablefundamentalnode/activatefundamentalnode - activates the current MultiSend vector to be activated on fundamentalnode rewards\n"
             " enablemasternode/activatemasternode - activates the current MultiSend vector to be activated on masternode rewards\n"
-			" disable/deactivate - disables the current MultiSend vector \n"
+            " disable/deactivate - disables the current MultiSend vector \n"
             " delete <Address #> - deletes an address from the MultiSend vector \n"
             " disable <address> - prevents a specific address from sending MultiSend transactions\n"
             " enableall - enables all addresses to be eligible to send MultiSend transactions\n"

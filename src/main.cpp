@@ -1824,9 +1824,16 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                          hash.ToString(),
                          nFees, ::minRelayTxFee.GetFee(nSize) * 20000);
 
+        bool fCLTVHasMajority = CBlockIndex::IsSuperMajority(6, chainActive.Tip(), Params().EnforceBlockUpgradeMajority());
+
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        if (!CheckInputs(tx, state, view, true, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
+        int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
+
+        if (fCLTVHasMajority) {
+            flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+        }
+        if (!CheckInputs(tx, state, view, true, flags, true)) {
             return error("AcceptToMemoryPool: : ConnectInputs failed %s", hash.ToString());
         }
 
@@ -1839,7 +1846,12 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         // There is a similar check in CreateNewBlock() to prevent creating
         // invalid blocks, however allowing such transactions into the mempool
         // can be exploited as a DoS attack.
-        if (!CheckInputs(tx, state, view, true, MANDATORY_SCRIPT_VERIFY_FLAGS, true)) {
+        flags = STANDARD_SCRIPT_VERIFY_FLAGS;
+
+        if (fCLTVHasMajority) {
+            flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+        }
+        if (!CheckInputs(tx, state, view, true, flags, true)) {
             return error("AcceptToMemoryPool: : BUG! PLEASE REPORT THIS! ConnectInputs failed against MANDATORY but not STANDARD flags %s", hash.ToString());
         }
 
@@ -2025,9 +2037,15 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
                 hash.ToString(),
                 nFees, ::minRelayTxFee.GetFee(nSize) * 10000);
 
+        bool fCLTVHasMajority = CBlockIndex::IsSuperMajority(6, chainActive.Tip(), Params().EnforceBlockUpgradeMajority());
+
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        if (!CheckInputs(tx, state, view, false, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
+        int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
+        if (fCLTVHasMajority) {
+            flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+        }
+        if (!CheckInputs(tx, state, view, false, flags, true)) {
             return error("AcceptableInputs: : ConnectInputs failed %s", hash.ToString());
         }
 
@@ -2339,16 +2357,16 @@ int64_t GetBlockValue(int nHeight)
     if(nHeight ==1){
         return 1100000 * COIN;
     }
-	if(nHeight >=259200 && nHeight<518400){
+    if(nHeight >=259200 && nHeight<518400){
         return 20 * COIN;
     }
-	if(nHeight >=518400 && nHeight<777600){
+    if(nHeight >=518400 && nHeight<777600){
         return 15 * COIN;
     }
-	if(nHeight >=777600 && nHeight<1036800){
+    if(nHeight >=777600 && nHeight<1036800){
         return 10 * COIN;
     }
-	if(nHeight >=1036800){
+    if(nHeight >=1036800){
         return 5 * COIN;
     }
 
@@ -2366,8 +2384,8 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
 
         int nMasternodeCount = 0 ;
 
-	    //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-		if (IsSporkActive(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5))
+        //if a mn count is inserted into the function we are looking for a specific result for a masternode count
+        if (IsSporkActive(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5))
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
         else
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
@@ -2376,7 +2394,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
         int64_t mNodeCoins = 0 ;
         int64_t ret = blockValue;
 
-		if(nMasternodeCount)
+        if(nMasternodeCount)
            mNodeCoins = nMasternodeCount * 20000 * COIN ;
 
 
@@ -2608,12 +2626,12 @@ int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamen
             return 0;
     }
 
-	if(nHeight < 209467){
-	    ret = (blockValue * 6 )/ 10;
-	}
-	else{
-	    ret = (blockValue * 4 )/ 10;
-	}
+    if(nHeight < 209467){
+        ret = (blockValue * 6 )/ 10;
+    }
+    else{
+        ret = (blockValue * 4 )/ 10;
+    }
     return ret;
 }
 
@@ -2625,10 +2643,10 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         if (nHeight < 200)
             return 0;
     }
-	if(nHeight < 209467){
-		ret = blockValue * .25;
-	}
-	else{
+    if(nHeight < 209467){
+        ret = blockValue * .25;
+    }
+    else{
         blockValue = blockValue * 0.6 ;
         ret = GetSeeSaw(nHeight, blockValue);
      }
@@ -3463,6 +3481,12 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     bool fScriptChecks = pindex->nHeight >= Checkpoints::GetTotalBlocksEstimate();
 
+    // If scripts won't be checked anyways, don't bother seeing if CLTV is activated
+    bool fCLTVHasMajority = false;
+    if (fScriptChecks && pindex->pprev) {
+        fCLTVHasMajority = CBlockIndex::IsSuperMajority(6, pindex->pprev, Params().EnforceBlockUpgradeMajority());
+    }
+
     // Do not allow blocks that contain transactions which 'overwrite' older transactions,
     // unless those are already completely spent.
     // If such overwrites are allowed, coinbases and transactions depending upon those
@@ -3602,8 +3626,12 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             nValueIn += view.GetValueIn(tx);
 
             std::vector<CScriptCheck> vChecks;
-            if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
+            if (fCLTVHasMajority) {
+                flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
+            }
+            if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL)) {
                 return false;
+            }
             control.Add(vChecks);
         }
         nValueOut += tx.GetValueOut();
@@ -4837,8 +4865,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
         return state.DoS(0, error("%s : forked chain older than last checkpoint (height %d)", __func__, nHeight));
 
     // Reject block.nVersion=1 blocks when 95% (75% on testnet) of the network has upgraded:
-    if (block.nVersion < 2 &&
-        CBlockIndex::IsSuperMajority(2, pindexPrev, Params().RejectBlockOutdatedMajority())) {
+    if (block.nVersion < 2 && CBlockIndex::IsSuperMajority(2, pindexPrev, Params().RejectBlockOutdatedMajority())) {
         return state.Invalid(error("%s : rejected nVersion=1 block", __func__),
             REJECT_OBSOLETE, "bad-version");
     }
@@ -4846,6 +4873,12 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     // Reject block.nVersion=2 blocks when 95% (75% on testnet) of the network has upgraded:
     if (block.nVersion < 3 && CBlockIndex::IsSuperMajority(3, pindexPrev, Params().RejectBlockOutdatedMajority())) {
         return state.Invalid(error("%s : rejected nVersion=2 block", __func__),
+            REJECT_OBSOLETE, "bad-version");
+    }
+
+    // Reject block.nVersion=5 blocks when 95% (75% on testnet) of the network has upgraded:
+    if (block.nVersion < 6 && CBlockIndex::IsSuperMajority(6, pindexPrev, Params().RejectBlockOutdatedMajority())) {
+        return state.Invalid(error("%s : rejected nVersion=5 block", __func__),
             REJECT_OBSOLETE, "bad-version");
     }
 
@@ -4883,7 +4916,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
         }
 
     // Enforce block.nVersion=2 rule that the coinbase starts with serialized block height
-    // if 750 of the last 1,000 blocks are version 2 or greater (51/100 if testnet):
+    // if 75% blocks are version 2 or greater (51/100 if testnet):
     if (block.nVersion >= 2 &&
         CBlockIndex::IsSuperMajority(2, pindexPrev, Params().EnforceBlockUpgradeMajority())) {
         CScript expect = CScript() << nHeight;
