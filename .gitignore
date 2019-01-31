@@ -1,3 +1,16 @@
 
+# Eclipse stuff
+/.classpath
+/.project
+/.settings
+
+# Mac filesystem dust
+/.DS_Store
 src/qt/.DS_Store
 contrib/.DS_Store
+
+# log
+debug.log
+
+# python
+*.pyc
