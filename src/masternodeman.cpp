@@ -17,6 +17,8 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
+#define MN_WINNER_MINIMUM_AGE 8000    // Age in seconds. This should be > MASTERNODE_REMOVAL_SECONDS to avoid misconfigured new nodes in the list.
+
 CCriticalSection cs_process_message;
 
 /** Masternode manager */
@@ -296,6 +298,31 @@ int CMasternodeMan::CountEnabled()
     return i;
 }
 
+void CMasternodeMan::CountNetworks(int protocolVersion, int& ipv4, int& ipv6, int& onion)
+{
+    protocolVersion = protocolVersion == -1 ? GetMinMasternodePaymentsProto() : protocolVersion;
+
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+        mn.Check();
+        std::string strHost;
+        int port;
+        SplitHostPort(mn.addr.ToString(), port, strHost);
+        CNetAddr node = CNetAddr(strHost, false);
+        int nNetwork = node.GetNetwork();
+        switch (nNetwork) {
+            case 1 :
+                ipv4++;
+                break;
+            case 2 :
+                ipv6++;
+                break;
+            case 3 :
+                onion++;
+                break;
+        }
+    }
+}
+
 int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
 {
     int i = 0;
@@ -307,6 +334,32 @@ int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
     }
 
     return i;
+}
+
+int CMasternodeMan::stable_size ()
+{
+    int nStable_size = 0;
+    int nMinProtocol = ActiveProtocol();
+    int64_t nMasternode_Min_Age = MN_WINNER_MINIMUM_AGE;
+    int64_t nMasternode_Age = 0;
+
+    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+        if (mn.protocolVersion < nMinProtocol) {
+            continue; // Skip obsolete versions
+        }
+
+        nMasternode_Age = GetAdjustedTime() - mn.sigTime;
+        if ((nMasternode_Age) < nMasternode_Min_Age) {
+            continue; // Skip masternodes younger than (default) 8000 sec (MUST be > MASTERNODE_REMOVAL_SECONDS)
+        }
+        mn.Check ();
+        if (!mn.IsEnabled ())
+            continue; // Skip not-enabled masternodes
+
+        nStable_size++;
+    }
+
+    return nStable_size;
 }
 
 void CMasternodeMan::DsegUpdate(CNode* pnode)
@@ -349,7 +402,6 @@ return &mn;
 }
 return NULL;
 }
-
 
 CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins, int nMinimumAge, int nMinimumActiveSeconds)
 {

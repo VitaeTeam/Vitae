@@ -324,7 +324,6 @@ bool CMasternodePayments::Sign(CMasternodePaymentWinner& winner)
     return true;
 }
 
-
 uint64_t CMasternodePayments::CalculateScore(uint256 blockHash, CTxIn& vin)
 {
 
