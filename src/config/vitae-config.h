@@ -8,9 +8,6 @@
 /* Define if building universal (internal helper macro) */
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
-/* Version Build */
-#define CLIENT_VERSION_BUILD 0
-
 /* Version is release */
 #define CLIENT_VERSION_IS_RELEASE true
 
@@ -18,13 +15,16 @@
 #define CLIENT_VERSION_MAJOR 4
 
 /* Minor version */
-#define CLIENT_VERSION_MINOR 3
+#define CLIENT_VERSION_MINOR 4
 
 /* Build revision */
 #define CLIENT_VERSION_REVISION 0
 
+/* Version Build */
+#define CLIENT_VERSION_BUILD 3
+
 /* Version is release */
-#define COPYRIGHT_YEAR 2018
+#define COPYRIGHT_YEAR 2019
 
 /* Define to 1 to enable wallet functions */
 #define ENABLE_WALLET 1
@@ -269,22 +269,22 @@
 #define LT_OBJDIR ".libs/"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "www.vitae.org"
+#define PACKAGE_BUGREPORT "https://github.com/VitaeTeam/Vitae/issues"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "Vitae Core"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "Vitae Core 4.2.1"
+#define PACKAGE_STRING "Vitae Core 4.4.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "vitae"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL ""
+#define PACKAGE_URL "vitaetoken.io"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "4.2.1"
+#define PACKAGE_VERSION "4.4.0"
 
 /* Define to necessary symbol if this constant
  uses a non-standard name on
