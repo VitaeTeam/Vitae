@@ -149,3 +149,5 @@ libbitcoinconsensus.pc
 .idea
 CMakeLists.txt
 cmake-build-debug
+
+vitae-qt.pro
