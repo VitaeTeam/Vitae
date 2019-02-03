@@ -42,6 +42,7 @@ extern int nPreferredDenom;
 extern int nAnonymizeVitaeAmount;
 extern int nLiquidityProvider;
 extern bool fEnableZeromint;
+extern bool fEnableAutoConvert;
 extern int64_t enforceFundamentalnodePaymentsTime;
 extern std::string strFundamentalNodeAddr;
 extern int keysLoaded;
