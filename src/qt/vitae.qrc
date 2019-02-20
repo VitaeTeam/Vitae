@@ -34,6 +34,8 @@
         <file alias="overview">res/icons/overview.png</file>
         <file alias="fundamentalnodes">res/icons/fundamentalnodes.png</file>
 		<file alias="masternodes">res/icons/masternodes.png</file>
+        <file alias="governance">res/icons/governance.png</file>
+        <file alias="governance_dark">res/icons/governance_dark.png</file>
         <file alias="export">res/icons/export.png</file>
         <file alias="synced">res/icons/synced.png</file>
         <file alias="remove">res/icons/remove.png</file>
@@ -59,6 +61,10 @@
         <file alias="automint_active">res/icons/automint_active.png</file>
         <file alias="explorer">res/icons/explorer.png</file>
         <file alias="automint_inactive">res/icons/automint_inactive.png</file>
+        <file alias="yesvote">res/icons/yesvote.png</file>
+        <file alias="novote">res/icons/novote.png</file>
+        <file alias="abstainvote">res/icons/abstainvote.png</file>
+        <file alias="onion">res/icons/onion.png</file>
     </qresource>
     <qresource prefix="/css">
         <file alias="default">res/css/default.css</file>
