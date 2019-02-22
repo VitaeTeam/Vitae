@@ -229,6 +229,7 @@ public:
     bool SetMintUnspent(const CBigNum& bnSerial);
     bool UpdateMint(const CBigNum& bnValue, const int& nHeight, const uint256& txid, const libzerocoin::CoinDenomination& denom);
     string GetUniqueWalletBackupName(bool fzvitAuto) const;
+    void InitAutoConvertAddresses();
 
 
     /** Zerocin entry changed.
@@ -387,6 +388,8 @@ public:
     int64_t nTimeFirstKey;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
+
+    void PrecomputeSpends();
 
     //! check whether we are allowed to upgrade (or already support) to the named feature
     bool CanSupportFeature(enum WalletFeature wf)
