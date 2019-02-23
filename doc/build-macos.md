@@ -51,7 +51,7 @@ Instructions: Homebrew
 
 2.  Build vitaed:
 
-        ./autogen.sh && ./configure --with-gui=qt5 /configure CPPFLAGS='-I/usr/local/opt/openssl/include' LDFLAGS='-L/usr/local/opt/openssl/lib' && make
+        ./autogen.sh && ./configure CPPFLAGS='-I/usr/local/opt/openssl/include' LDFLAGS='-L/usr/local/opt/openssl/lib' && make
 
 3.  It is also a good idea to build and run the unit tests:
 
