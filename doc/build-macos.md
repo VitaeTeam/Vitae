@@ -57,10 +57,14 @@ Instructions: Homebrew
 
         make check
 
-4.  (Optional) You can also install vitaed to your path:
+4.  (Optional) You can also install vitaed to your path or skip to step 5 to create portable package:
 
         make install
 
+5.  (Optional) Portable package:
+
+        make deploy
+                
 Use Qt Creator as IDE
 ------------------------
 You can use Qt Creator as IDE, for debugging and for manipulating forms, etc.
