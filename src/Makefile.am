@@ -175,9 +175,6 @@ BITCOIN_CORE_H = \
   wallet_ismine.h \
   walletdb.h \
   zvitchain.h \
-  genwit.h \
-  concurrentqueue.h \
-  lightzvitthread.h \
   zvit/accumulators.h \
   zvit/accumulatorcheckpoints.h \
   zvit/accumulatorcheckpoints.json.h \
@@ -188,6 +185,9 @@ BITCOIN_CORE_H = \
   zvit/zerocoin.h \
   zvit/zvittracker.h \
   zvit/zvitwallet.h \
+  genwit.h \
+  concurrentqueue.h \
+  lightzvitthread.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
