@@ -10,7 +10,6 @@
 #include "init.h"
 #include "uint256.h"
 
-#include <boost/foreach.hpp>
 #include <openssl/aes.h>
 #include <openssl/evp.h>
 #include "wallet.h"

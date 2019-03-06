@@ -11,8 +11,6 @@
 #include "script/standard.h"
 #include "script/sign.h"
 
-#include <boost/foreach.hpp>
-
 typedef std::vector<unsigned char> valtype;
 
 unsigned int HaveKeys(const std::vector<valtype>& pubkeys, const CKeyStore& keystore)
