@@ -154,3 +154,8 @@ cmake-build-debug
 vitae-qt.pro
 src/config/vitae-config.h
 src/config/vitae-config.h.in
+moc_*
+*.tmp
+ui_*
+build*
+vitaed.*

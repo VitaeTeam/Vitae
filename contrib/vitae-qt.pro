@@ -658,3 +658,6 @@ TRANSLATIONS += src/qt/locale/vitae_bg.ts \
                 src/qt/locale/vitae_vi.ts \
                 src/qt/locale/vitae_zh_CN.ts \
                 src/qt/locale/vitae_zh_TW.ts
+
+DISTFILES += \
+    README.md
