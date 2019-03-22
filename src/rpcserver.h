@@ -309,6 +309,7 @@ extern UniValue reconsiderblock(const UniValue& params, bool fHelp);
 extern UniValue getaccumulatorvalues(const UniValue& params, bool fHelp);
 extern UniValue getaccumulatorwitness(const UniValue& params, bool fHelp);
 extern UniValue getmintsinblocks(const UniValue& params, bool fHelp);
+extern UniValue getserials(const UniValue& params, bool fHelp);
 extern UniValue getchecksumblock(const UniValue& params, bool fHelp);
 
 extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcfundamentalnode.cpp
