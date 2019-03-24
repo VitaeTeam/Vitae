@@ -55,7 +55,12 @@ QT_FORMS_UI = \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui \
   qt/forms/zVitcontroldialog.ui \
-  qt/vitae/forms/navmenuwidget.ui
+  qt/vitae/forms/navmenuwidget.ui \
+  qt/vitae/forms/lockunlock.ui \
+  qt/vitae/forms/expandablebutton.ui \
+  qt/vitae/forms/receivedialog.ui \
+  qt/vitae/forms/walletpassworddialog.ui \
+  qt/vitae/forms/topbar.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -113,7 +118,12 @@ QT_MOC_CPP = \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp \
   qt/moc_zVitcontroldialog.cpp \
-  qt/vitae/moc_navmenuwidget.cpp
+  qt/vitae/moc_navmenuwidget.cpp \
+  qt/vitae/moc_lockunlock.cpp \
+  qt/vitae/moc_expandablebutton.cpp \
+  qt/vitae/moc_receivedialog.cpp \
+  qt/vitae/moc_walletpassworddialog.cpp \
+  qt/vitae/moc_topbar.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -198,7 +208,13 @@ BITCOIN_QT_H = \
   qt/walletview.h \
   qt/winshutdownmonitor.h \
   qt/zVitcontroldialog.h \
-  qt/vitae/navmenuwidget.h
+  qt/vitae/navmenuwidget.h \
+  qt/vitae/lockunlock.h \
+  qt/vitae/receivedialog.h \
+  qt/vitae/qtutils.h \
+  qt/vitae/expandablebutton.h \
+  qt/vitae/walletpassworddialog.h \
+  qt/vitae/topbar.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -481,7 +497,13 @@ BITCOIN_QT_CPP += \
   qt/walletmodeltransaction.cpp \
   qt/walletview.cpp \
   qt/zVitcontroldialog.cpp \
-  qt/vitae/navmenuwidget.cpp
+  qt/vitae/navmenuwidget.cpp \
+  qt/vitae/lockunlock.cpp \
+  qt/vitae/receivedialog.cpp \
+  qt/vitae/qtutils.cpp \
+  qt/vitae/expandablebutton.cpp \
+  qt/vitae/walletpassworddialog.cpp \
+  qt/vitae/topbar.cpp
 
 endif
 
