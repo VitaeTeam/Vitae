@@ -60,7 +60,10 @@ QT_FORMS_UI = \
   qt/vitae/forms/expandablebutton.ui \
   qt/vitae/forms/receivedialog.ui \
   qt/vitae/forms/walletpassworddialog.ui \
-  qt/vitae/forms/topbar.ui
+  qt/vitae/forms/topbar.ui \
+  qt/vitae/forms/txdetaildialog.ui \
+  qt/vitae/forms/txrow.ui \
+  qt/vitae/forms/dashboardwidget.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -123,7 +126,10 @@ QT_MOC_CPP = \
   qt/vitae/moc_expandablebutton.cpp \
   qt/vitae/moc_receivedialog.cpp \
   qt/vitae/moc_walletpassworddialog.cpp \
-  qt/vitae/moc_topbar.cpp
+  qt/vitae/moc_topbar.cpp \
+  qt/vitae/moc_txdetaildialog.cpp \
+  qt/vitae/moc_txrow.cpp \
+  qt/vitae/moc_dashboardwidget.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -214,7 +220,10 @@ BITCOIN_QT_H = \
   qt/vitae/qtutils.h \
   qt/vitae/expandablebutton.h \
   qt/vitae/walletpassworddialog.h \
-  qt/vitae/topbar.h
+  qt/vitae/topbar.h \
+  qt/vitae/txdetaildialog.h \
+  qt/vitae/txrow.h \
+  qt/vitae/dashboardwidget.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -503,8 +512,17 @@ BITCOIN_QT_CPP += \
   qt/vitae/qtutils.cpp \
   qt/vitae/expandablebutton.cpp \
   qt/vitae/walletpassworddialog.cpp \
-  qt/vitae/topbar.cpp
+  qt/vitae/topbar.cpp \
+  qt/vitae/txdetaildialog.cpp \
+  qt/vitae/txrow.cpp \
+  qt/vitae/dashboardwidget.cpp
 
+BITCOIN_QT_CPP = $(BITCOIN_QT_BASE_CPP)
+if TARGET_WINDOWS
+BITCOIN_QT_CPP += $(BITCOIN_QT_WINDOWS_CPP)
+endif
+if ENABLE_WALLET
+BITCOIN_QT_CPP += $(BITCOIN_QT_WALLET_CPP)
 endif
 
 RES_IMAGES = \
