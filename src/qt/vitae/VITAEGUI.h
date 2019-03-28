@@ -18,6 +18,7 @@
 #include "qt/vitae/dashboardwidget.h"
 #include "qt/vitae/send.h"
 #include "qt/vitae/receivewidget.h"
+#include "qt/vitae/addresseswidget.h"
 
 
 class ClientModel;
@@ -49,6 +50,7 @@ public:
     void goToDashboard();
     void goToSend();
     void goToReceive();
+    void goToAddresses();
 
 #ifdef ENABLE_WALLET
     /** Set the wallet model.
@@ -92,6 +94,7 @@ private:
     DashboardWidget *dashboard;
     SendWidget *sendWidget;
     ReceiveWidget *receiveWidget;
+    AddressesWidget *addressesWidget;
 
 
     //

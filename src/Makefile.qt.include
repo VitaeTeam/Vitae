@@ -80,7 +80,9 @@ QT_FORMS_UI = \
   qt/vitae/forms/send.ui \
   qt/vitae/forms/addnewaddressdialog.ui \
   qt/vitae/forms/requestdialog.ui \
-  qt/vitae/forms/receivewidget.ui
+  qt/vitae/forms/receivewidget.ui \
+  qt/vitae/forms/tooltipmenu.ui \
+  qt/vitae/forms/addresseswidget.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -165,7 +167,9 @@ QT_MOC_CPP = \
   qt/vitae/moc_send.cpp \
   qt/vitae/moc_addnewaddressdialog.cpp \
   qt/vitae/moc_requestdialog.cpp \
-  qt/vitae/moc_receivewidget.cpp
+  qt/vitae/moc_receivewidget.cpp \
+  qt/vitae/moc_tooltipmenu.cpp \
+  qt/vitae/moc_addresseswidget.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -280,7 +284,9 @@ BITCOIN_QT_H = \
   qt/vitae/send.h \
   qt/vitae/addnewaddressdialog.h \
   qt/vitae/requestdialog.h \
-  qt/vitae/receivewidget.h
+  qt/vitae/receivewidget.h \
+  qt/vitae/tooltipmenu.h \
+  qt/vitae/addresseswidget.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -589,7 +595,10 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/send.cpp \
   qt/vitae/addnewaddressdialog.cpp \
   qt/vitae/requestdialog.cpp \
-  qt/vitae/receivewidget.cpp
+  qt/vitae/receivewidget.cpp \
+  qt/vitae/tooltipmenu.cpp \
+  qt/vitae/addresseswidget.cpp
+
 
 
 
