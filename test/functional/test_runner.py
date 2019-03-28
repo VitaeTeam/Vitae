@@ -73,22 +73,13 @@ BASE_SCRIPTS= [
 
     'p2p_pos_fakestake.py',
     'p2p_pos_fakestake_accepted.py',
-<<<<<<< HEAD
-    'zerocoin_valid_public_spend.py',
-    #'p2p_zpos_fakestake.py',
-    #'p2p_zpos_fakestake_accepted.py',
-    #'zerocoin_wrapped_serials.py',
-    #'feature_block.py',
-    #'rpc_fundrawtransaction.py',
-
-=======
     'p2p_zpos_fakestake.py',
     'p2p_zpos_fakestake_accepted.py',
     'zerocoin_wrapped_serials.py',
     # vv Tests less than 5m vv
     'feature_block.py',
     'rpc_fundrawtransaction.py',
->>>>>>> Merge #838: [RPC][Test] spendrawzerocoin + wrapped serials functional test
+
     # vv Tests less than 2m vv
     'feature_uacomment.py',
     'wallet_listreceivedby.py',
