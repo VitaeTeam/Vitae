@@ -20,6 +20,7 @@
 #include "qt/vitae/send.h"
 #include "qt/vitae/receivewidget.h"
 #include "qt/vitae/addresseswidget.h"
+#include "qt/vitae/privacywidget.h"
 
 
 class ClientModel;
@@ -52,6 +53,7 @@ public:
     void goToSend();
     void goToReceive();
     void goToAddresses();
+    void goToPrivacy();
 
 
     void resizeEvent(QResizeEvent *event) override;
@@ -97,6 +99,7 @@ private:
     SendWidget *sendWidget;
     ReceiveWidget *receiveWidget;
     AddressesWidget *addressesWidget;
+    PrivacyWidget *privacyWidget;
 
     //
     QSystemTrayIcon* trayIcon;
@@ -112,6 +115,7 @@ signals:
     void receivedURI(const QString& uri);
     /** Restart handling */
     void requestedRestart(QStringList args);
+
 };
 
 
