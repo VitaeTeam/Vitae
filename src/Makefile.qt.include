@@ -55,6 +55,8 @@ QT_FORMS_UI = \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui \
   qt/forms/zVitcontroldialog.ui \
+  qt/vitae/forms/coincontrolzpivdialog.ui \
+  qt/vitae/forms/snackbar.ui \
   qt/vitae/forms/navmenuwidget.ui \
   qt/vitae/forms/lockunlock.ui \
   qt/vitae/forms/expandablebutton.ui \
@@ -75,7 +77,10 @@ QT_FORMS_UI = \
   qt/vitae/forms/sendcustomfeedialog.ui \
   qt/vitae/forms/sendchangeaddressdialog.ui \
   qt/vitae/forms/sendmultirow.ui \
-  qt/vitae/forms/send.ui
+  qt/vitae/forms/send.ui \
+  qt/vitae/forms/addnewaddressdialog.ui \
+  qt/vitae/forms/requestdialog.ui \
+  qt/vitae/forms/receivewidget.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -133,6 +138,8 @@ QT_MOC_CPP = \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp \
   qt/moc_zVitcontroldialog.cpp \
+  qt/vitae/moc_coincontrolzpivdialog.cpp \
+  qt/vitae/moc_snackbar.cpp \
   qt/vitae/moc_navmenuwidget.cpp \
   qt/vitae/moc_lockunlock.cpp \
   qt/vitae/moc_expandablebutton.cpp \
@@ -155,7 +162,10 @@ QT_MOC_CPP = \
   qt/vitae/moc_sendcustomfeedialog.cpp \
   qt/vitae/moc_sendchangeaddressdialog.cpp \
   qt/vitae/moc_sendmultirow.cpp \
-  qt/vitae/moc_send.cpp
+  qt/vitae/moc_send.cpp \
+  qt/vitae/moc_addnewaddressdialog.cpp \
+  qt/vitae/moc_requestdialog.cpp \
+  qt/vitae/moc_receivewidget.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -240,9 +250,12 @@ BITCOIN_QT_H = \
   qt/walletview.h \
   qt/winshutdownmonitor.h \
   qt/zVitcontroldialog.h \
+  qt/vitae/coincontrolzpivdialog.h \
+  qt/vitae/snackbar.h \
   qt/vitae/navmenuwidget.h \
   qt/vitae/lockunlock.h \
   qt/vitae/receivedialog.h \
+  qt/vitae/furlistrow.h \
   qt/vitae/furabstractlistitemdelegate.h \
   qt/vitae/txviewholder.h \
   qt/vitae/qtutils.h \
@@ -264,7 +277,10 @@ BITCOIN_QT_H = \
   qt/vitae/sendcustomfeedialog.h \
   qt/vitae/sendchangeaddressdialog.h \
   qt/vitae/sendmultirow.h \
-  qt/vitae/send.h
+  qt/vitae/send.h \
+  qt/vitae/addnewaddressdialog.h \
+  qt/vitae/requestdialog.h \
+  qt/vitae/receivewidget.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -544,6 +560,8 @@ BITCOIN_QT_WALLET_CPP = \
   qt/walletmodeltransaction.cpp \
   qt/walletview.cpp \
   qt/zVitcontroldialog.cpp \
+  qt/vitae/coincontrolzpivdialog.cpp \
+  qt/vitae/snackbar.cpp \
   qt/vitae/navmenuwidget.cpp \
   qt/vitae/lockunlock.cpp \
   qt/vitae/receivedialog.cpp \
@@ -568,7 +586,10 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/sendcustomfeedialog.cpp \
   qt/vitae/sendchangeaddressdialog.cpp \
   qt/vitae/sendmultirow.cpp \
-  qt/vitae/send.cpp
+  qt/vitae/send.cpp \
+  qt/vitae/addnewaddressdialog.cpp \
+  qt/vitae/requestdialog.cpp \
+  qt/vitae/receivewidget.cpp
 
 
 
