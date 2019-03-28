@@ -63,7 +63,7 @@ NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :
 }
 
 void NavMenuWidget::onSendClicked(){
-    //window->goToSend();
+    window->goToSend();
 }
 
 void NavMenuWidget::onDashboardClicked(){

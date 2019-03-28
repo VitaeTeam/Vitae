@@ -4,7 +4,7 @@
 #include "qt/vitae/furlistrow.h"
 
 
-class TxViewHolder : public FurListRow
+class TxViewHolder : public FurListRow<QWidget*>
 {
 public:
     TxViewHolder();

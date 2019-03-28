@@ -101,9 +101,11 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 
         // Init
         dashboard = new DashboardWidget(this, this);
+        sendWidget = new SendWidget(this, this);
 
         // Add to parent
         stackedContainer->addWidget(dashboard);
+        stackedContainer->addWidget(sendWidget);
         stackedContainer->setCurrentWidget(dashboard);
 
     } else
@@ -149,7 +151,11 @@ void VITAEGUI::setClientModel(ClientModel* clientModel) {
 }
 
 void VITAEGUI::goToDashboard() {
+    stackedContainer->setCurrentWidget(dashboard);
+}
 
+void VITAEGUI::goToSend() {
+    stackedContainer->setCurrentWidget(sendWidget);
 }
 
 

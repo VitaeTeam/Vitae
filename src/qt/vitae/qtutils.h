@@ -7,6 +7,7 @@
 #include <QAbstractAnimation>
 #include <QPoint>
 #include <QString>
+#include <QColor>
 #include <QSettings>
 #include <QStandardPaths>
 #include "qt/vitae/VITAEGUI.h"
@@ -20,12 +21,14 @@ bool openDialogWithOpaqueBackground(QDialog *widget, VITAEGUI *gui, double posX 
 bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, VITAEGUI *gui);
 
 inline void openSnackbar(QWidget *parent, VITAEGUI *gui, QString text){
+    // TODO:Complete me..
     return;
 }
 
 
 // Helpers
 void updateStyle(QWidget* widget);
+QColor getRowColor(bool isLightTheme, bool isHovered, bool isSelected);
 
 // Settings
 QSettings* getSettings();
