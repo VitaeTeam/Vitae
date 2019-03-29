@@ -4,7 +4,7 @@
 #include "qt/vitae/furabstractlistitemdelegate.h"
 #include "qt/vitae/furlistrow.h"
 #include "transactiontablemodel.h"
-#include "qt/vitae/txrow.h"
+#include "qt/vitae/txviewholder.h"
 
 #include <QWidget>
 #include <QLineEdit>
@@ -60,13 +60,17 @@ private slots:
     void changeTheme(bool isLightTheme, QString &theme);
     void changeChartColors();
     void onSortTxPressed();
+    void updateDisplayUnit();
 private:
     Ui::DashboardWidget *ui;
     VITAEGUI* window;
     // Painter delegate
     FurAbstractListItemDelegate* txViewDelegate;
+    TxViewHolder* txHolder;
     // Model
+    WalletModel* walletModel;
     TransactionTableModel* txModel;
+    int nDisplayUnit = -1;
 
     /*
     // Chart
