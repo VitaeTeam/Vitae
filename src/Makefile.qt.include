@@ -85,7 +85,27 @@ QT_FORMS_UI = \
   qt/vitae/forms/addresseswidget.ui \
   qt/vitae/forms/defaultdialog.ui \
   qt/vitae/forms/denomgenerationdialog.ui \
-  qt/vitae/forms/privacywidget.ui
+  qt/vitae/forms/privacywidget.ui \
+  qt/vitae/settings/forms/settingsbackupwallet.ui \
+  qt/vitae/settings/forms/settingsbittoolwidget.ui \
+  qt/vitae/settings/forms/settingschangepasswordwidget.ui \
+  qt/vitae/settings/forms/settingsconsolewidget.ui \
+  qt/vitae/settings/forms/settingsdisplayoptionswidget.ui \
+  qt/vitae/settings/forms/settingsfaqwidget.ui \
+  qt/vitae/settings/forms/settingsinformationwidget.ui \
+  qt/vitae/settings/forms/settingslockwalletwidget.ui \
+  qt/vitae/settings/forms/settingsmainoptionswidget.ui \
+  qt/vitae/settings/forms/settingsmultisenddialog.ui \
+  qt/vitae/settings/forms/settingsmultisendwidget.ui \
+  qt/vitae/settings/forms/settingsnetworkmonitorwidget.ui \
+  qt/vitae/settings/forms/settingsnetworkwidget.ui \
+  qt/vitae/settings/forms/settingsopenurlwidget.ui \
+  qt/vitae/settings/forms/settingspeerslistwidget.ui \
+  qt/vitae/settings/forms/settingssignmessagewidgets.ui \
+  qt/vitae/settings/forms/settingswalletoptionswidget.ui \
+  qt/vitae/settings/forms/settingswalletrepairwidget.ui \
+  qt/vitae/settings/forms/settingswindowoptionswidget.ui \
+  qt/vitae/settings/forms/settingswidget.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -175,7 +195,27 @@ QT_MOC_CPP = \
   qt/vitae/moc_addresseswidget.cpp \
   qt/vitae/moc_defaultdialog.cpp \
   qt/vitae/moc_denomgenerationdialog.cpp \
-  qt/vitae/moc_privacywidget.cpp
+  qt/vitae/moc_privacywidget.cpp \
+  qt/vitae/settings/moc_settingsbackupwallet.cpp \
+  qt/vitae/settings/moc_settingsbittoolwidget.cpp \
+  qt/vitae/settings/moc_settingschangepasswordwidget.cpp \
+  qt/vitae/settings/moc_settingsconsolewidget.cpp \
+  qt/vitae/settings/moc_settingsdisplayoptionswidget.cpp \
+  qt/vitae/settings/moc_settingsfaqwidget.cpp \
+  qt/vitae/settings/moc_settingsinformationwidget.cpp \
+  qt/vitae/settings/moc_settingslockwalletwidget.cpp \
+  qt/vitae/settings/moc_settingsmainoptionswidget.cpp \
+  qt/vitae/settings/moc_settingsmultisenddialog.cpp \
+  qt/vitae/settings/moc_settingsmultisendwidget.cpp \
+  qt/vitae/settings/moc_settingsnetworkmonitorwidget.cpp \
+  qt/vitae/settings/moc_settingsnetworkwidget.cpp \
+  qt/vitae/settings/moc_settingsopenurlwidget.cpp \
+  qt/vitae/settings/moc_settingspeerslistwidget.cpp \
+  qt/vitae/settings/moc_settingssignmessagewidgets.cpp \
+  qt/vitae/settings/moc_settingswalletoptionswidget.cpp \
+  qt/vitae/settings/moc_settingswalletrepairwidget.cpp \
+  qt/vitae/settings/moc_settingswindowoptionswidget.cpp \
+  qt/vitae/settings/moc_settingswidget.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -295,7 +335,27 @@ BITCOIN_QT_H = \
   qt/vitae/addresseswidget.h \
   qt/vitae/defaultdialog.h \
   qt/vitae/denomgenerationdialog.h \
-  qt/vitae/privacywidget.h
+  qt/vitae/privacywidget.h \
+  qt/vitae/settings/settingsbackupwallet.h \
+  qt/vitae/settings/settingsbittoolwidget.h \
+  qt/vitae/settings/settingschangepasswordwidget.h \
+  qt/vitae/settings/settingsconsolewidget.h \
+  qt/vitae/settings/settingsdisplayoptionswidget.h \
+  qt/vitae/settings/settingsfaqwidget.h \
+  qt/vitae/settings/settingsinformationwidget.h \
+  qt/vitae/settings/settingslockwalletwidget.h \
+  qt/vitae/settings/settingsmainoptionswidget.h \
+  qt/vitae/settings/settingsmultisenddialog.h \
+  qt/vitae/settings/settingsmultisendwidget.h \
+  qt/vitae/settings/settingsnetworkmonitorwidget.h \
+  qt/vitae/settings/settingsnetworkwidget.h \
+  qt/vitae/settings/settingsopenurlwidget.h \
+  qt/vitae/settings/settingspeerslistwidget.h \
+  qt/vitae/settings/settingssignmessagewidgets.h \
+  qt/vitae/settings/settingswalletoptionswidget.h \
+  qt/vitae/settings/settingswalletrepairwidget.h \
+  qt/vitae/settings/settingswindowoptionswidget.h \
+  qt/vitae/settings/settingswidget.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -609,10 +669,27 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/addresseswidget.cpp \
   qt/vitae/defaultdialog.cpp \
   qt/vitae/denomgenerationdialog.cpp \
-  qt/vitae/privacywidget.cpp
-
-
-
+  qt/vitae/privacywidget.cpp \
+  qt/vitae/settings/settingsbackupwallet.cpp \
+  qt/vitae/settings/settingsbittoolwidget.cpp \
+  qt/vitae/settings/settingschangepasswordwidget.cpp \
+  qt/vitae/settings/settingsconsolewidget.cpp \
+  qt/vitae/settings/settingsdisplayoptionswidget.cpp \
+  qt/vitae/settings/settingsfaqwidget.cpp \
+  qt/vitae/settings/settingsinformationwidget.cpp \
+  qt/vitae/settings/settingslockwalletwidget.cpp \
+  qt/vitae/settings/settingsmainoptionswidget.cpp \
+  qt/vitae/settings/settingsmultisenddialog.cpp \
+  qt/vitae/settings/settingsmultisendwidget.cpp \
+  qt/vitae/settings/settingsnetworkmonitorwidget.cpp \
+  qt/vitae/settings/settingsnetworkwidget.cpp \
+  qt/vitae/settings/settingsopenurlwidget.cpp \
+  qt/vitae/settings/settingspeerslistwidget.cpp \
+  qt/vitae/settings/settingssignmessagewidgets.cpp \
+  qt/vitae/settings/settingswalletoptionswidget.cpp \
+  qt/vitae/settings/settingswalletrepairwidget.cpp \
+  qt/vitae/settings/settingswindowoptionswidget.cpp \
+  qt/vitae/settings/settingswidget.cpp
 
 
 
