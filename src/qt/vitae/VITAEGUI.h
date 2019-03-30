@@ -68,6 +68,14 @@ public slots:
     void goToSettings();
 
     void connectActions();
+    /** Notify the user of an event from the core network or transaction handling code.
+       @param[in] title     the message box / notification title
+       @param[in] message   the displayed text
+       @param[in] style     modality and style definitions (icon and used buttons - buttons only for message boxes)
+                            @see CClientUIInterface::MessageBoxFlags
+       @param[in] ret       pointer to a bool that will be modified to whether Ok was clicked (modal only)
+    */
+    void message(const QString& title, const QString& message, unsigned int style, bool* ret = nullptr);
 
 #ifdef ENABLE_WALLET
     /** Set the wallet model.
@@ -96,7 +104,7 @@ private:
 
     // Frame
     NavMenuWidget *navMenu;
-    TopBar *topBar;
+    TopBar *topBar = nullptr;
     QStackedWidget *stackedContainer;
 
     DashboardWidget *dashboard = nullptr;
@@ -109,8 +117,8 @@ private:
     RPCConsole* rpcConsole = nullptr;
 
     //
-    QSystemTrayIcon* trayIcon;
-    Notificator* notificator;
+    QSystemTrayIcon* trayIcon = nullptr;
+    Notificator* notificator = nullptr;
 
     QLabel *op = nullptr;
     bool opEnabled = false;
@@ -118,6 +126,10 @@ private:
     void createTrayIcon(const NetworkStyle* networkStyle);
 
     void showTop(QWidget *view);
+
+private slots:
+    /** Show window if hidden, unminimize when minimized, rise when obscured or show if hidden and fToggleHidden is true */
+    void showNormalIfMinimized(bool fToggleHidden = false);
 
 signals:
     /** Signal raised when a URI was entered or dragged to the GUI */

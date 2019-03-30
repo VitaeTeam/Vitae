@@ -263,13 +263,18 @@ void TopBar::setClientModel(ClientModel *model){
         setNumBlocks(clientModel->getNumBlocks());
         connect(clientModel, SIGNAL(numBlocksChanged(int)), this, SLOT(setNumBlocks(int)));
 
+        connect(clientModel->getOptionsModel(), SIGNAL(zeromintEnableChanged(bool)), this, SLOT(updateAutoMintStatus()));
+
     }
 }
 
-void TopBar::setNumConnections(int count)
-{
+void TopBar::updateAutoMintStatus(){
+    ui->pushButtonMint->setButtonText(fEnableZeromint ? tr("Automint enabled") : tr("Automint disabled"));
+    ui->pushButtonMint->setChecked(fEnableZeromint);
+}
+
+void TopBar::setNumConnections(int count) {
     ui->pushButtonConnection->setChecked(count > 0);
-    // TODO: Check if really want to put the number of connections here
     ui->pushButtonConnection->setButtonText(tr("%n active connection(s)", "", count));
 }
 
@@ -347,7 +352,6 @@ void TopBar::setNumBlocks(int count) {
 
     ui->pushButtonSync->setButtonText(tr(text.data()));
 
-    // TODO: Complete me.. add master nodes sync..
 
 }
 
