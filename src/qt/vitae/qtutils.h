@@ -9,6 +9,7 @@
 #include <QString>
 #include <QColor>
 #include <QSettings>
+#include <QPixmap>
 #include <QStandardPaths>
 #include "qt/vitae/VITAEGUI.h"
 
@@ -25,6 +26,8 @@ inline void openSnackbar(QWidget *parent, VITAEGUI *gui, QString text){
     return;
 }
 
+//
+QPixmap encodeToQr(QString str, QString &errorStr);
 
 // Helpers
 void updateStyle(QWidget* widget);

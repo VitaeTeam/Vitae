@@ -19,6 +19,7 @@
 #include "qt/platformstyle.h"
 #include "wallet.h"
 #include "walletmodel.h"
+#include "addresstablemodel.h"
 
 #include "fundamentalnode-sync.h"
 
@@ -108,7 +109,7 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
 
     // QR image
 
-    QPixmap pixmap(":/res/img/img-qr-test.png");
+    QPixmap pixmap("://img-qr-test");
     ui->btnQr->setIcon(
                 QIcon(pixmap.scaled(
                          70,
@@ -223,13 +224,16 @@ void TopBar::lockDropdownMouseLeave(){
 }
 
 void TopBar::onBtnReceiveClicked(){
-    mainWindow->showHide(true);
-    ReceiveDialog* receiveDialog = new ReceiveDialog(mainWindow);
-    if(openDialogWithOpaqueBackground(receiveDialog, mainWindow)){
-        // TODO: Complete me..
-        //mainWindow->openSnackbar("Address Copied");
-    }
+    if(walletModel) {
+        mainWindow->showHide(true);
+        ReceiveDialog *receiveDialog = new ReceiveDialog(mainWindow);
 
+        receiveDialog->updateQr(walletModel->getAddressTableModel()->getLastUnusedAddress());
+        if (openDialogWithOpaqueBackground(receiveDialog, mainWindow)) {
+            // TODO: Complete me..
+            //mainWindow->openSnackbar("Address Copied");
+        }
+    }
 }
 
 void TopBar::showTop(){
