@@ -204,6 +204,7 @@ VITAEGUI::~VITAEGUI() {
 void VITAEGUI::setClientModel(ClientModel* clientModel) {
     this->clientModel = clientModel;
     // TODO: Complete me..
+    topBar->setClientModel(clientModel);
 }
 
 
