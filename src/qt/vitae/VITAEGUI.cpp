@@ -224,6 +224,13 @@ void VITAEGUI::setClientModel(ClientModel* clientModel) {
 }
 
 
+void PIVXGUI::messageInfo(const QString& text){
+    if(!this->snackBar) this->snackBar = new SnackBar(this, this);
+    this->snackBar->setText(text);
+    this->snackBar->resize(this->width(), snackBar->height());
+    openDialog(this->snackBar, this);
+}
+
 /**
  * TODO remove QMessageBox for the snackbar..
  */
