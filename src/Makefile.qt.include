@@ -79,6 +79,7 @@ QT_FORMS_UI = \
   qt/vitae/forms/sendmultirow.ui \
   qt/vitae/forms/send.ui \
   qt/vitae/forms/addnewaddressdialog.ui \
+  qt/vitae/forms/addnewcontactdialog.ui \
   qt/vitae/forms/requestdialog.ui \
   qt/vitae/forms/receivewidget.ui \
   qt/vitae/forms/tooltipmenu.ui \
@@ -190,6 +191,7 @@ QT_MOC_CPP = \
   qt/vitae/moc_sendmultirow.cpp \
   qt/vitae/moc_send.cpp \
   qt/vitae/moc_addnewaddressdialog.cpp \
+  qt/vitae/moc_addnewcontactdialog.cpp \
   qt/vitae/moc_requestdialog.cpp \
   qt/vitae/moc_receivewidget.cpp \
   qt/vitae/moc_tooltipmenu.cpp \
@@ -331,6 +333,7 @@ BITCOIN_QT_H = \
   qt/vitae/sendmultirow.h \
   qt/vitae/send.h \
   qt/vitae/addnewaddressdialog.h \
+  qt/vitae/addnewcontactdialog.h \
   qt/vitae/requestdialog.h \
   qt/vitae/receivewidget.h \
   qt/vitae/tooltipmenu.h \
@@ -666,6 +669,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/sendmultirow.cpp \
   qt/vitae/send.cpp \
   qt/vitae/addnewaddressdialog.cpp \
+  qt/vitae/addnewcontactdialog.cpp \
   qt/vitae/requestdialog.cpp \
   qt/vitae/receivewidget.cpp \
   qt/vitae/tooltipmenu.cpp \
