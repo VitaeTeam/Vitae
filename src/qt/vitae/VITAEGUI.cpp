@@ -277,6 +277,7 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
     // Display message
     if (style & CClientUIInterface::MODAL) {
         // Check for buttons, use OK as default, if none was supplied
+        LogPrintf("ERROR PIVXGUI..");
         QMessageBox::StandardButton buttons;
         if (!(buttons = (QMessageBox::StandardButton)(style & CClientUIInterface::BTN_MASK)))
             buttons = QMessageBox::Ok;
