@@ -90,7 +90,7 @@ ReceiveWidget::ReceiveWidget(VITAEGUI* _window, QWidget *parent) :
 
     // Address
 
-    ui->labelAddress->setText("D7VFR83SQbiezrW72hjcWJtcfip5krte2Z ");
+    ui->labelAddress->setText("No address ");
     ui->labelAddress->setProperty("cssClass", "label-address-box");
 
     ui->labelDate->setText("Dec. 19, 2018");

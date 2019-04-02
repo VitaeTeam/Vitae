@@ -393,7 +393,6 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
                             const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance){
 
     CAmount nLockedBalance = 0;
-    CAmount nWatchOnlyLockedBalance = 0;
     if (!walletModel) {
         nLockedBalance = walletModel->getLockedBalance();
     }
@@ -401,7 +400,7 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     // PIV Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount pivAvailableBalance = balance - immatureBalance - nLockedBalance;
-    CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
+    //CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
 
     // zPIV Balance
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;

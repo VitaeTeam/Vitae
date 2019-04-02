@@ -16,6 +16,9 @@ public:
     explicit SettingsInformationWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsInformationWidget();
 
+
+    void loadClientModel() override;
+
 private:
     Ui::SettingsInformationWidget *ui;
 };

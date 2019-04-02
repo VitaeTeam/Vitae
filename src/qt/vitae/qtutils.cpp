@@ -110,6 +110,7 @@ QPixmap encodeToQr(QString str, QString &errorStr){
             return QPixmap::fromImage(myImage);
         }
     }
+    return QPixmap();
     */
 }
 
