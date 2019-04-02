@@ -90,8 +90,8 @@ public slots:
 
 protected:
 
-    void changeEvent(QEvent* e);
-    void closeEvent(QCloseEvent* event);
+    void changeEvent(QEvent* e) override;
+    void closeEvent(QCloseEvent* event) override;
 
     /*
     void dragEnterEvent(QDragEnterEvent* event);

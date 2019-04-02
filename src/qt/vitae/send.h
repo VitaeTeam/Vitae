@@ -8,6 +8,7 @@
 #include "qt/vitae/sendmultirow.h"
 #include <list>
 
+static const int MAX_SEND_POPUP_ENTRIES = 8;
 
 class VITAEGUI;
 class ClientModel;
