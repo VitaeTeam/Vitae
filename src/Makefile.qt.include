@@ -318,6 +318,7 @@ BITCOIN_QT_H = \
   qt/vitae/topbar.h \
   qt/vitae/txdetaildialog.h \
   qt/vitae/txrow.h \
+  qt/vitae/AddressFilterProxyModel.h \
   qt/vitae/dashboardwidget.h \
   qt/vitae/coincontrolpivwidget.h \
   qt/vitae/coincontrolzpivdialog.h \
@@ -654,6 +655,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/topbar.cpp \
   qt/vitae/txdetaildialog.cpp \
   qt/vitae/txrow.cpp \
+  qt/vitae/AddressFilterProxyModel.cpp \
   qt/vitae/dashboardwidget.cpp \
   qt/vitae/coincontrolpivwidget.cpp \
   qt/vitae/coincontrolzpivdialog.cpp \

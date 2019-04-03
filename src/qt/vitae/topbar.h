@@ -28,6 +28,8 @@ public:
 
     void setWalletModel(WalletModel *model);
     void setClientModel(ClientModel *model);
+
+    void encryptWallet();
 public slots:
     void updateBalances(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                         const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
@@ -38,17 +40,21 @@ public slots:
     void setNumBlocks(int count);
     void updateAutoMintStatus();
 
+signals:
+    // Fired when a message should be reported to the user
+    void message(const QString& title, const QString& message, unsigned int style);
+
 private slots:
     void onBtnReceiveClicked();
     void onThemeClicked();
     void onBtnLockClicked();
     void lockDropdownMouseLeave();
     void lockDropdownClicked(const StateClicked&);
+    void refreshStatus();
 private:
     Ui::TopBar *ui;
     VITAEGUI* mainWindow;
     LockUnlock *lockUnlockWidget = nullptr;
-    bool chkBtnLock,chkBtnUnlock, chkBtnStaking;
     WalletModel *walletModel;
     ClientModel *clientModel;
 
