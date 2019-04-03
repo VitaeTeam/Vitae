@@ -41,6 +41,7 @@ private:
     Ui::AddressesWidget *ui;
 
     VITAEGUI* window;
+    WalletModel *walletModel;
 
     FurAbstractListItemDelegate* delegate;
     AddressTableModel* addressTablemodel;

@@ -113,13 +113,6 @@ AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     shadowEffect->setBlurRadius(6);
 
 
-    QGraphicsDropShadowEffect* shadowEffect2 = new QGraphicsDropShadowEffect();
-    shadowEffect2->setColor(QColor(0, 0, 0, 22));
-    shadowEffect2->setXOffset(0);
-    shadowEffect2->setYOffset(3);
-    shadowEffect2->setBlurRadius(6);
-
-
     ui->layoutNewContact->setProperty("cssClass", "container-options");
 
 
@@ -142,7 +135,7 @@ AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     ui->lineEditAddress->setPlaceholderText("e.g D7VFR83SQbiezrW72hjc…");
     ui->lineEditAddress->setProperty("cssClass", "edit-primary");
     ui->lineEditAddress->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    ui->lineEditAddress->setGraphicsEffect(shadowEffect2);
+    ui->lineEditAddress->setGraphicsEffect(shadowEffect);
 
 
     // Buttons
@@ -172,8 +165,16 @@ void AddressesWidget::handleAddressClicked(const QModelIndex &index){
 }
 
 void AddressesWidget::setWalletModel(WalletModel *model){
-    addressTablemodel = model->getAddressTableModel();
-    ui->listAddresses->setModel(this->addressTablemodel);
+    this->walletModel = model;
+    if(model) {
+        addressTablemodel = model->getAddressTableModel();
+        ui->listAddresses->setModel(this->addressTablemodel);
+
+        if(addressTablemodel->size() == 0){
+            ui->emptyContainer->setVisible(true);
+            ui->lineEditAddress->setVisible(false);
+        }
+    }
 }
 
 void AddressesWidget::onStoreContactClicked(){

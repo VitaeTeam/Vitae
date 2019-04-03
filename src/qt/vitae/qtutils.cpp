@@ -82,7 +82,7 @@ bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, VITAEGUI *gui){
     return res;
 }
 
-QPixmap encodeToQr(QString str, QString &errorStr){
+QPixmap encodeToQr(QString str, QString &errorStr, QColor qrColor){
     return QPixmap();
     // upstream-error
     /*
@@ -102,7 +102,7 @@ QPixmap encodeToQr(QString str, QString &errorStr){
             unsigned char* p = code->data;
             for (int y = 0; y < code->width; y++) {
                 for (int x = 0; x < code->width; x++) {
-                    myImage.setPixel(x + 4, y + 4, ((*p & 1) ? 0x0 : 0xffffff));
+                    myImage.setPixel(x + 4, y + 4, ((*p & 1) ? qrColor.rgb() : 0xffffff));
                     p++;
                 }
             }
