@@ -336,10 +336,12 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
                 *ret = r == QMessageBox::Ok;
         } else
             notificator->notify((Notificator::Class) nNotifyIcon, strTitle, message);
+
+    // TODO: Furszy remove this please..
     } catch (std::exception &e){
-        LogPrintf("ERROR VITAEGUI..\n");
-        LogPrintf(e.what());
-        LogPrintf("ERROR VITAEGUI..\n");
+        LogPrintf("ERROR in message VITAEGUI.. %s\n", e.what());
+    } catch (...){
+        LogPrintf("ERROR in message  VITAEGUI..\n");
     }
 }
 
@@ -363,6 +365,13 @@ void VITAEGUI::showNormalIfMinimized(bool fToggleHidden)
         hide();
 }
 
+void PIVXGUI::detectShutdown() {
+    if (ShutdownRequested()) {
+        if (rpcConsole)
+            rpcConsole->hide();
+        qApp->quit();
+    }
+}
 
 void VITAEGUI::goToDashboard(){
     if(stackedContainer->currentWidget() != dashboard){
@@ -508,11 +517,11 @@ static bool ThreadSafeMessageBox(VITAEGUI* gui, const std::string& message, cons
     bool ret = false;
     // In case of modal message, use blocking connection to wait for user to click a button
     QMetaObject::invokeMethod(gui, "message",
-                              modal ? GUIUtil::blockingGUIThreadConnection() : Qt::QueuedConnection,
-                              Q_ARG(QString, QString::fromStdString(caption)),
-                              Q_ARG(QString, QString::fromStdString(message)),
-                              Q_ARG(unsigned int, style),
-                              Q_ARG(bool*, &ret));
+              modal ? GUIUtil::blockingGUIThreadConnection() : Qt::QueuedConnection,
+              Q_ARG(QString, QString::fromStdString(caption)),
+              Q_ARG(QString, QString::fromStdString(message)),
+              Q_ARG(unsigned int, style),
+              Q_ARG(bool*, &ret));
     return ret;
 }
 
