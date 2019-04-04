@@ -5,6 +5,7 @@
 #include "qt/vitae/furlistrow.h"
 #include "transactiontablemodel.h"
 #include "qt/vitae/txviewholder.h"
+#include "transactionfilterproxy.h"
 
 #include <QWidget>
 #include <QLineEdit>
@@ -68,6 +69,7 @@ private:
     VITAEGUI* window;
     // Painter delegate
     FurAbstractListItemDelegate* txViewDelegate;
+    TransactionFilterProxy* filter;
     TxViewHolder* txHolder;
     // Model
     WalletModel* walletModel;

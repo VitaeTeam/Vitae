@@ -48,9 +48,9 @@ private:
     VITAEGUI* window;
     WalletModel *walletModel;
 
-    FurAbstractListItemDelegate* delegate;
-    AddressTableModel* addressTablemodel;
-    AddressFilterProxyModel *filter;
+    FurAbstractListItemDelegate* delegate = nullptr;
+    AddressTableModel* addressTablemodel = nullptr;
+    AddressFilterProxyModel *filter = nullptr;
 
     bool isOnMyAddresses = true;
     TooltipMenu* menu = nullptr;
