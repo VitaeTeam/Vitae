@@ -21,6 +21,7 @@
 #include "wallet.h"
 #include "walletdb.h" // for BackupWallet
 #include <stdint.h>
+#include "primitives/deterministicmint.h"
 
 #include <QDebug>
 #include <QSet>
@@ -429,6 +430,13 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction& tran
     checkBalanceChanged(); // update balance immediately, otherwise there could be a short noticeable delay until pollBalanceChanged hits
 
     return SendCoinsReturn(OK);
+}
+
+bool WalletModel::mintCoins(CAmount value, CCoinControl* coinControl ,std::string &strError){
+    CWalletTx wtx;
+    vector<CDeterministicMint> vMints;
+    strError = wallet->MintZerocoin(value, wtx, vMints, coinControl);
+    return strError.empty();
 }
 
 OptionsModel* WalletModel::getOptionsModel()
