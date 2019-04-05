@@ -2,7 +2,9 @@
 #define PRIVACYWIDGET_H
 
 #include "qt/vitae/furabstractlistitemdelegate.h"
+#include "qt/vitae/txviewholder.h"
 #include "transactiontablemodel.h"
+#include "transactionfilterproxy.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -34,11 +36,19 @@ private slots:
     void onRescanMintsClicked();
     void onResetZeroClicked();
     void onTotalZpivClicked();
+    void showList();
+    void onMintClicked();
+
+signals:
+    void message(const QString& title, const QString& message, unsigned int style);
 private:
     Ui::PrivacyWidget *ui;
     VITAEGUI* window;
+    WalletModel* walletModel;
     FurAbstractListItemDelegate *delegate = nullptr;
-    TransactionTableModel* model = nullptr;
+    TransactionTableModel* txModel = nullptr;
+    TxViewHolder *txHolder = nullptr;
+    TransactionFilterProxy* filter = nullptr;
 };
 
 #endif // PRIVACYWIDGET_H
