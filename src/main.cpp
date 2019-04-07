@@ -2891,13 +2891,17 @@ void ThreadScriptCheck()
     scriptcheckqueue.Thread();
 }
 
+
 void RecalculateZVITMinted()
 {
     CBlockIndex *pindex = chainActive[Params().Zerocoin_StartHeight()];
-    int nHeightEnd = chainActive.Height();
+    uiInterface.ShowProgress(_("Recalculating minted zVITAE..."), 0);
     while (true) {
-        if (pindex->nHeight % 1000 == 0)
+        if (pindex->nHeight % 1000 == 0){
             LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
+            int percent = std::max(1, std::min(99, (int)((double)(pindex->nHeight - Params().Zerocoin_StartHeight()) * 100 / (chainActive.Height() - Params().Zerocoin_StartHeight()))));
+            uiInterface.ShowProgress(_("Recalculating minted zVITAE..."), percent);
+        }
 
         //overwrite possibly wrong vMintsInBlock data
         CBlock block;
@@ -2911,19 +2915,24 @@ void RecalculateZVITMinted()
         for (auto mint : listMints)
             pindex->vMintDenominationsInBlock.emplace_back(mint.GetDenomination());
 
-        if (pindex->nHeight < nHeightEnd)
+        if (pindex->nHeight < chainActive.Height())
             pindex = chainActive.Next(pindex);
         else
             break;
     }
+    uiInterface.ShowProgress("", 100);
 }
 
 void RecalculateZVITSpent()
 {
     CBlockIndex* pindex = chainActive[Params().Zerocoin_StartHeight()];
+    uiInterface.ShowProgress(_("Recalculating spent zVITAE..."), 0);
     while (true) {
-        if (pindex->nHeight % 1000 == 0)
+        if (pindex->nHeight % 1000 == 0){
             LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
+            int percent = std::max(1, std::min(99, (int)((double)(pindex->nHeight - Params().Zerocoin_StartHeight()) * 100 / (chainActive.Height() - Params().Zerocoin_StartHeight()))));
+            uiInterface.ShowProgress(_("Recalculating spent zVITAE..."), percent);
+        }
 
         //Rewrite zVITAE supply
         CBlock block;
@@ -2964,16 +2973,20 @@ bool RecalculateVITSupply(int nHeightStart)
     if (nHeightStart == Params().Zerocoin_StartHeight())
         nSupplyPrev = CAmount(649916627717750);
 
+    uiInterface.ShowProgress(_("Recalculating VITAE supply..."), 0);
     while (true) {
-        if (pindex->nHeight % 1000 == 0)
+        if (pindex->nHeight % 1000 == 0) {
             LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
+            int percent = std::max(1, std::min(99, (int)((double)((pindex->nHeight - nHeightStart) * 100) / (chainActive.Height() - nHeightStart))));
+            uiInterface.ShowProgress(_("Recalculating VITAE supply..."), percent);
+        }
 
         CBlock block;
         assert(ReadBlockFromDisk(block, pindex));
 
         CAmount nValueIn = 0;
         CAmount nValueOut = 0;
-        for (const CTransaction tx : block.vtx) {
+        for (const CTransaction& tx : block.vtx) {
             for (unsigned int i = 0; i < tx.vin.size(); i++) {
                 if (tx.IsCoinBase())
                     break;
@@ -3021,6 +3034,7 @@ bool RecalculateVITSupply(int nHeightStart)
         else
             break;
     }
+    uiInterface.ShowProgress("", 100);
     return true;
 }
 
