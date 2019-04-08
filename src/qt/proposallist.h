@@ -1,17 +1,19 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
-// Copyright (c) 2019 The Phore Developers
-// Distributed under the MIT software license, see the accompanying
+// Copyright (c) 2018 The Phore developers
+// Copyright (c) 2018 The Curium developers
+// Copyright (c) 2017-2018 The Bulwark Developers
+// Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_QT_PROPOSALLIST_H
 #define BITCOIN_QT_PROPOSALLIST_H
 
+#include "columnalignedlayout.h"
 #include "guiutil.h"
 #include "proposaltablemodel.h"
-#include "columnalignedlayout.h"
-#include <QWidget>
+
 #include <QKeyEvent>
 #include <QTimer>
+#include <QWidget>
 
 class ProposalFilterProxy;
 
@@ -50,14 +52,16 @@ public:
     };
 
     enum ColumnWidths {
-        PROPOSAL_COLUMN_WIDTH = 150,
-        AMOUNT_COLUMN_WIDTH = 150,		
-        START_DATE_COLUMN_WIDTH = 100,
-        END_DATE_COLUMN_WIDTH = 100,
-        YES_VOTES_COLUMN_WIDTH = 100,
-        NO_VOTES_COLUMN_WIDTH = 100,
-        ABSTAIN_COLUMN_WIDTH = 100,
-        VOTES_NEEDED_COLUMN_WIDTH = 150,
+        PROPOSAL_COLUMN_WIDTH = 300,
+        AMOUNT_COLUMN_WIDTH = 110,
+        START_DATE_COLUMN_WIDTH = 90,
+        END_DATE_COLUMN_WIDTH = 90,
+        TOTAL_PAYMENT_COLUMN_WIDTH = 80,
+        REMAINING_PAYMENT_COLUMN_WIDTH = 80,
+        YES_VOTES_COLUMN_WIDTH = 60,
+        NO_VOTES_COLUMN_WIDTH = 60,
+        ABSTAIN_COLUMN_WIDTH = 60,
+        VOTES_NEEDED_COLUMN_WIDTH = 110,
         MINIMUM_COLUMN_WIDTH = 23
     };
 
@@ -70,6 +74,8 @@ private:
     QLineEdit *proposalWidget;
     QLineEdit *startDateWidget;
     QLineEdit *endDateWidget;
+    QLineEdit *totalPaymentCountWidget;
+    QLineEdit *remainingPaymentCountWidget;
     QTimer *timer;
 
     QLineEdit *yesVotesWidget;
@@ -81,15 +87,16 @@ private:
 
     QMenu *contextMenu;
 
-    //LineEdit *startDateRangeWidget;
     QLineEdit *proposalStartDate;
-
-    //QLineEdit *endDateRangeWidget;
     QLineEdit *proposalEndDate;
+
     ColumnAlignedLayout *hlayout;
 
-    //QWidget *createStartDateRangeWidget();
-    //QWidget *createEndDateRangeWidget();
+    /* Header - Info/Projection */
+    QComboBox *proposalTypeCombo;
+    QHBoxLayout *headLayout;
+    /* End Header - Info/Projection */
+
     void vote_click_handler(const std::string voteString);
 
     GUIUtil::TableViewLastColumnResizingFixer *columnResizingFixer;
@@ -97,9 +104,9 @@ private:
     virtual void resizeEvent(QResizeEvent* event);
 
 private Q_SLOTS:
+    void createProposal();
+    void proposalType(int type);
     void contextualMenu(const QPoint &);
-    //void startDateRangeChanged();
-    //void endDateRangeChanged();
     void voteYes();
     void voteNo();
     void voteAbstain();
@@ -114,6 +121,8 @@ public Q_SLOTS:
     void changedProposal(const QString &proposal);
     void chooseStartDate(const QString &startDate);
     void chooseEndDate(const QString &endDate);
+    void changedTotalPaymentCount(const QString &totalPaymentCount);
+    void changedRemainingPaymentCount(const QString &remainingPaymentCount);
     void changedYesVotes(const QString &minYesVotes);
     void changedNoVotes(const QString &minNoVotes);
     void changedAbstainVotes(const QString &minAbstainVotes);

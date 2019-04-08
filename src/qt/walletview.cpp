@@ -133,11 +133,14 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
         masternodeListPage = new MasternodeList();
         addWidget(masternodeListPage);
     }
-	
-    proposalListPage = new ProposalList();
-    
-    addWidget(proposalListPage);	
-	
+	    
+    QVBoxLayout* vbox_2 = new QVBoxLayout();
+    proposalList = new ProposalList(this);
+    vbox_2->addWidget(proposalList);
+    vbox_2->setStretch(1, 1);
+    proposalListPage = new QWidget(this);
+    proposalListPage->setLayout(vbox_2);
+    addWidget(proposalListPage);
 
     // Clicking on a transaction on the overview pre-selects the transaction on the transaction history page
     connect(overviewPage, SIGNAL(transactionClicked(QModelIndex)), transactionView, SLOT(focusTransaction(QModelIndex)));
