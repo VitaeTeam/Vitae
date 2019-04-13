@@ -437,6 +437,36 @@ bool WalletModel::mintCoins(CAmount value, CCoinControl* coinControl ,std::strin
     return strError.empty();
 }
 
+bool WalletModel::sendZpiv(
+        vector<CZerocoinMint> &vMintsSelected,
+        bool fMintChange,
+        bool fMinimizeChange,
+        CZerocoinSpendReceipt &receipt,
+        std::list<std::pair<CBitcoinAddress*, CAmount>> outputs,
+        std::string changeAddress
+        ){
+
+    CBitcoinAddress *changeAdd = (!changeAddress.empty()) ? new CBitcoinAddress(changeAddress) : nullptr;
+    CAmount value = 0;
+    for(std::pair<CBitcoinAddress*, CAmount> pair : outputs){
+        value += pair.second;
+    }
+
+    CWalletTx wtxNew;
+    return wallet->SpendZerocoin(
+            value,
+            100,
+            wtxNew,
+            receipt,
+            vMintsSelected,
+            fMintChange,
+            fMinimizeChange,
+            outputs,
+            changeAdd
+    );
+
+}
+
 bool WalletModel::convertBackZpiv(
         CAmount value,
         std::vector<CZerocoinMint> &vMintsSelected,
@@ -460,6 +490,7 @@ bool WalletModel::convertBackZpiv(
             vMintsSelected,
             fMintChange,
             fMinimizeChange,
+            std::list<std::pair<CBitcoinAddress*, CAmount>>(),
             &addressTo
     );
 }
