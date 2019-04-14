@@ -13,6 +13,12 @@
 #include <QStandardPaths>
 #include "qt/vitae/VITAEGUI.h"
 
+static Qt::Modifier SHORT_KEY
+#ifdef Q_OS_MAC
+        = Qt::CTRL;
+#else
+        = Qt::ALT;
+#endif
 
 bool openDialog(QDialog *widget, VITAEGUI *gui);
 void closeDialog(QDialog *widget, VITAEGUI *gui);

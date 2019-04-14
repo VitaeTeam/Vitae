@@ -17,6 +17,9 @@ public:
     explicit NavMenuWidget(VITAEGUI* mainWindow, QWidget *parent = nullptr);
     ~NavMenuWidget();
 
+public slots:
+    void selectSettings();
+
 private slots:
     void onSendClicked();
     void onDashboardClicked();
@@ -29,6 +32,8 @@ private:
     Ui::NavMenuWidget *ui;
 
     VITAEGUI* window;
+
+    void connectActions();
 };
 
 #endif // NAVMENUWIDGET_H
