@@ -201,7 +201,11 @@ VITAEGUI::~VITAEGUI() {
 }
 
 
-
+/** Get restart command-line parameters and request restart */
+void PIVXGUI::handleRestart(QStringList args){
+    if (!ShutdownRequested())
+        emit requestedRestart(args);
+}
 
 
 void VITAEGUI::setClientModel(ClientModel* clientModel) {
@@ -214,6 +218,9 @@ void VITAEGUI::setClientModel(ClientModel* clientModel) {
 
         // Receive and report messages from client model
         connect(clientModel, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
+
+        // Get restart command-line parameters and handle restart
+        connect(settingsWidget, &SettingsWidget::handleRestart, [this](QStringList arg){handleRestart(arg);});
 
         if (rpcConsole) {
             rpcConsole->setClientModel(clientModel);
