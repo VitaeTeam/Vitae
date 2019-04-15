@@ -16,8 +16,13 @@ public:
     explicit SettingsBackupWallet(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsBackupWallet();
 
+private slots:
+    void backupWallet();
+    void selectFileOutput();
+
 private:
     Ui::SettingsBackupWallet *ui;
+    QString filename;
 };
 
 #endif // SETTINGSBACKUPWALLET_H
