@@ -170,8 +170,7 @@ void AddressesWidget::handleAddressClicked(const QModelIndex &index){
         this->menu = new TooltipMenu(window, this);
         this->menu->setWalletModel(walletModel);
         connect(this->menu, SIGNAL(message(QString, QString, unsigned int, bool* ret)), this, SIGNAL(message(QString, QString, unsigned int, bool* ret)));
-    }
-    else {
+    }else {
         this->menu->hide();
         // TODO: update view..
     }
@@ -201,7 +200,6 @@ void AddressesWidget::setWalletModel(WalletModel *model){
 }
 
 void AddressesWidget::onStoreContactClicked(){
-
     if (walletModel) {
         QString label = ui->lineEditName->text();
         QString address = ui->lineEditAddress->text();
@@ -247,7 +245,6 @@ void AddressesWidget::changeTheme(bool isLightTheme, QString& theme){
     updateStyle(this);
 }
 
-AddressesWidget::~AddressesWidget()
-{
+AddressesWidget::~AddressesWidget(){
     delete ui;
 }
