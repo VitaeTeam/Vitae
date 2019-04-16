@@ -7,6 +7,7 @@
 #include "qt/vitae/sendcustomfeedialog.h"
 #include "qt/vitae/coincontrolzpivdialog.h"
 #include "qt/vitae/coincontrolpivwidget.h"
+#include "coincontroldialog.h"
 #include "qt/vitae/sendconfirmdialog.h"
 #include "qt/vitae/myaddressrow.h"
 #include "optionsmodel.h"
@@ -22,8 +23,7 @@ SendWidget::SendWidget(VITAEGUI* _window, QWidget *parent) :
     ui(new Ui::send),
     window(_window),
     coinIcon(new QPushButton()),
-    btnContacts(new QPushButton()),
-    coinControl(new CCoinControl())
+    btnContacts(new QPushButton())
 {
     ui->setupUi(this);
 
@@ -202,7 +202,7 @@ void SendWidget::setModel(WalletModel* model) {
 }
 
 void SendWidget::clearAll(){
-    coinControl->SetNull();
+    CoinControlDialog::coinControl->SetNull();
     clearEntries();
 }
 
@@ -314,7 +314,7 @@ bool SendWidget::send(QList<SendCoinsRecipient> recipients){
     //if (model->getOptionsModel()->getCoinControlFeatures()) // coin control enabled
     //    prepareStatus = model->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
     //else
-    prepareStatus = walletModel->prepareTransaction(currentTransaction, coinControl);
+    prepareStatus = walletModel->prepareTransaction(currentTransaction, CoinControlDialog::coinControl);
 
 
     // process prepareStatus and on error generate message shown to user
@@ -348,7 +348,7 @@ bool SendWidget::send(QList<SendCoinsRecipient> recipients){
 
         // TODO: Update
         if (sendStatus.status == WalletModel::OK) {
-            //CoinControlDialog::coinControl->UnSelectAll();
+            CoinControlDialog::coinControl->UnSelectAll();
             //coinControlUpdateLabels();
             //
             clearAll();
@@ -547,7 +547,7 @@ void SendWidget::onChangeAddressClicked(){
         if(dialog->selected) {
             QString ret;
             if (dialog->getAddress(walletModel, &ret)) {
-                coinControl->destChange = CBitcoinAddress(ret.toStdString()).Get();
+                CoinControlDialog::coinControl->destChange = CBitcoinAddress(ret.toStdString()).Get();
             }else{
                 emit message("", tr("Invalid change address"), CClientUIInterface::MSG_INFORMATION_SNACK);
             }
@@ -563,13 +563,16 @@ void SendWidget::onChangeCustomFeeClicked(){
 
 void SendWidget::onCoinControlClicked()
 {
-    window->showHide(true);
     if(isPIV){
-        CoinControlPivWidget* dialog = new CoinControlPivWidget(window);
-        openDialogWithOpaqueBackgroundY(dialog, window, 6.5, 5);
+        //CoinControlPivWidget* dialog = new CoinControlPivWidget(window);
+        CoinControlDialog *dialog = new CoinControlDialog();
+        dialog->setModel(walletModel);
+        dialog->exec();
+        //openDialogWithOpaqueBackgroundFullScreen(dialog, window);
     }else{
+        window->showHide(true);
         CoinControlZpivDialog* dialog = new CoinControlZpivDialog(window);
-        openDialogWithOpaqueBackgroundY(dialog, window, 6.5, 5);
+        openDialogWithOpaqueBackgroundFullScreen(dialog, window);
     }
 }
 
