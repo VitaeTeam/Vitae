@@ -106,7 +106,9 @@ QT_FORMS_UI = \
   qt/vitae/settings/forms/settingswalletoptionswidget.ui \
   qt/vitae/settings/forms/settingswalletrepairwidget.ui \
   qt/vitae/settings/forms/settingswindowoptionswidget.ui \
-  qt/vitae/settings/forms/settingswidget.ui
+  qt/vitae/settings/forms/settingswidget.ui \
+  qt/vitae/forms/welcomecontentwidget.ui \
+  qt/vitae/forms/splash.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
@@ -218,7 +220,9 @@ QT_MOC_CPP = \
   qt/vitae/settings/moc_settingswalletoptionswidget.cpp \
   qt/vitae/settings/moc_settingswalletrepairwidget.cpp \
   qt/vitae/settings/moc_settingswindowoptionswidget.cpp \
-  qt/vitae/settings/moc_settingswidget.cpp
+  qt/vitae/settings/moc_settingswidget.cpp \
+  qt/vitae/moc_welcomecontentwidget.cpp \
+  qt/vitae/moc_splash.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -361,7 +365,9 @@ BITCOIN_QT_H = \
   qt/vitae/settings/settingswalletoptionswidget.h \
   qt/vitae/settings/settingswalletrepairwidget.h \
   qt/vitae/settings/settingswindowoptionswidget.h \
-  qt/vitae/settings/settingswidget.h
+  qt/vitae/settings/settingswidget.h \
+  qt/vitae/welcomecontentwidget.h \
+  qt/vitae/splash.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -698,8 +704,9 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/settings/settingswalletoptionswidget.cpp \
   qt/vitae/settings/settingswalletrepairwidget.cpp \
   qt/vitae/settings/settingswindowoptionswidget.cpp \
-  qt/vitae/settings/settingswidget.cpp
-
+  qt/vitae/settings/settingswidget.cpp \
+  qt/vitae/welcomecontentwidget.cpp \
+  qt/vitae/splash.cpp
 
 
 BITCOIN_QT_CPP = $(BITCOIN_QT_BASE_CPP)
