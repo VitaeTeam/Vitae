@@ -6,7 +6,6 @@
 #include "qt/vitae/settings/settingsbackupwallet.h"
 #include "qt/vitae/settings/settingsbittoolwidget.h"
 #include "qt/vitae/settings/settingssignmessagewidgets.h"
-#include "qt/vitae/settings/settingschangepasswordwidget.h"
 #include "qt/vitae/settings/settingswalletrepairwidget.h"
 #include "qt/vitae/settings/settingsnetworkwidget.h"
 #include "qt/vitae/settings/settingswalletoptionswidget.h"
@@ -56,7 +55,6 @@ private slots:
     // Wallet Configuration
 
     void onConfigurationClicked();
-    void onChangePasswordClicked();
     void onBipToolClicked();
     void onMultisendClicked();
 
@@ -93,7 +91,6 @@ private:
     SettingsBackupWallet *settingsBackupWallet;
     SettingsBitToolWidget *settingsBitToolWidget;
     SettingsSignMessageWidgets *settingsSingMessageWidgets;
-    SettingsChangePasswordWidget *settingsChangePasswordWidget;
     SettingsWalletRepairWidget *settingsWalletRepairWidget;
     SettingsNetworkWidget *settingsNetworkWidget;
     SettingsWalletOptionsWidget *settingsWalletOptionsWidget;

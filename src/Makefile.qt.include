@@ -89,7 +89,6 @@ QT_FORMS_UI = \
   qt/vitae/forms/privacywidget.ui \
   qt/vitae/settings/forms/settingsbackupwallet.ui \
   qt/vitae/settings/forms/settingsbittoolwidget.ui \
-  qt/vitae/settings/forms/settingschangepasswordwidget.ui \
   qt/vitae/settings/forms/settingsconsolewidget.ui \
   qt/vitae/settings/forms/settingsdisplayoptionswidget.ui \
   qt/vitae/settings/forms/settingsfaqwidget.ui \
@@ -199,7 +198,6 @@ QT_MOC_CPP = \
   qt/vitae/moc_privacywidget.cpp \
   qt/vitae/settings/moc_settingsbackupwallet.cpp \
   qt/vitae/settings/moc_settingsbittoolwidget.cpp \
-  qt/vitae/settings/moc_settingschangepasswordwidget.cpp \
   qt/vitae/settings/moc_settingsconsolewidget.cpp \
   qt/vitae/settings/moc_settingsdisplayoptionswidget.cpp \
   qt/vitae/settings/moc_settingsfaqwidget.cpp \
@@ -340,7 +338,6 @@ BITCOIN_QT_H = \
   qt/vitae/privacywidget.h \
   qt/vitae/settings/settingsbackupwallet.h \
   qt/vitae/settings/settingsbittoolwidget.h \
-  qt/vitae/settings/settingschangepasswordwidget.h \
   qt/vitae/settings/settingsconsolewidget.h \
   qt/vitae/settings/settingsdisplayoptionswidget.h \
   qt/vitae/settings/settingsfaqwidget.h \
@@ -675,7 +672,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/privacywidget.cpp \
   qt/vitae/settings/settingsbackupwallet.cpp \
   qt/vitae/settings/settingsbittoolwidget.cpp \
-  qt/vitae/settings/settingschangepasswordwidget.cpp \
   qt/vitae/settings/settingsconsolewidget.cpp \
   qt/vitae/settings/settingsdisplayoptionswidget.cpp \
   qt/vitae/settings/settingsfaqwidget.cpp \
