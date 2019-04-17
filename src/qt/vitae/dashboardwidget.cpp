@@ -1,6 +1,6 @@
 #include "qt/vitae/dashboardwidget.h"
 #include "qt/vitae/forms/ui_dashboardwidget.h"
-#include "qt/vitae/txdetaildialog.h"
+#include "qt/vitae/sendconfirmdialog.h"
 #include "qt/vitae/txrow.h"
 #include "qt/vitae/qtutils.h"
 #include "walletmodel.h"
@@ -176,7 +176,8 @@ void DashboardWidget::handleTransactionClicked(const QModelIndex &index){
     QModelIndex rIndex = (filter) ? filter->mapToSource(index) : index;
 
     window->showHide(true);
-    TxDetailDialog *dialog = new TxDetailDialog(window);
+    TxDetailDialog *dialog = new TxDetailDialog(window, false);
+    dialog->setData(walletModel, rIndex);
     openDialogWithOpaqueBackgroundY(dialog, window, 3, 6);
 
     // Back to regular status
