@@ -171,6 +171,9 @@ void VITAEGUI::connectActions() {
         settingsWidget->showDebugConsole();
         goToSettings();
     });
+
+    connect(settingsWidget, &SettingsWidget::showHide, this, &PIVXGUI::showHide);
+    connect(settingsWidget, &SettingsWidget::execDialog, this, &PIVXGUI::execDialog);
 }
 
 
@@ -441,6 +444,10 @@ void VITAEGUI::resizeEvent(QResizeEvent* event){
     showHide(opEnabled);
     // Notify
     emit windowResizeEvent(event);
+}
+
+bool VITAEGUI::execDialog(QDialog *dialog, int xDiv, int yDiv){
+    return openDialogWithOpaqueBackgroundY(dialog, this);
 }
 
 void VITAEGUI::showHide(bool show){
