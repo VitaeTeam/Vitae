@@ -564,7 +564,9 @@ RES_ICONS = \
   qt/vitae/res/img/img-welcome-step4.png \
   qt/vitae/res/img/ic-check-locked-off.svg \
   qt/vitae/res/img/ic-nav-address-hover.svg \
-  qt/vitae/res/img/ic-update-liliac.svg
+  qt/vitae/res/img/ic-update-liliac.svg \
+  qt/vitae/res/img/ic-arrow-drop-down-purple.svg \
+  qt/vitae/res/img/ic-arrow-drop-up-purple.svg
 
 BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
