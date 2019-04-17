@@ -94,14 +94,10 @@ QT_FORMS_UI = \
   qt/vitae/settings/forms/settingsdisplayoptionswidget.ui \
   qt/vitae/settings/forms/settingsfaqwidget.ui \
   qt/vitae/settings/forms/settingsinformationwidget.ui \
-  qt/vitae/settings/forms/settingslockwalletwidget.ui \
   qt/vitae/settings/forms/settingsmainoptionswidget.ui \
   qt/vitae/settings/forms/settingsmultisenddialog.ui \
   qt/vitae/settings/forms/settingsmultisendwidget.ui \
-  qt/vitae/settings/forms/settingsnetworkmonitorwidget.ui \
   qt/vitae/settings/forms/settingsnetworkwidget.ui \
-  qt/vitae/settings/forms/settingsopenurlwidget.ui \
-  qt/vitae/settings/forms/settingspeerslistwidget.ui \
   qt/vitae/settings/forms/settingssignmessagewidgets.ui \
   qt/vitae/settings/forms/settingswalletoptionswidget.ui \
   qt/vitae/settings/forms/settingswalletrepairwidget.ui \
@@ -208,14 +204,10 @@ QT_MOC_CPP = \
   qt/vitae/settings/moc_settingsdisplayoptionswidget.cpp \
   qt/vitae/settings/moc_settingsfaqwidget.cpp \
   qt/vitae/settings/moc_settingsinformationwidget.cpp \
-  qt/vitae/settings/moc_settingslockwalletwidget.cpp \
   qt/vitae/settings/moc_settingsmainoptionswidget.cpp \
   qt/vitae/settings/moc_settingsmultisenddialog.cpp \
   qt/vitae/settings/moc_settingsmultisendwidget.cpp \
-  qt/vitae/settings/moc_settingsnetworkmonitorwidget.cpp \
   qt/vitae/settings/moc_settingsnetworkwidget.cpp \
-  qt/vitae/settings/moc_settingsopenurlwidget.cpp \
-  qt/vitae/settings/moc_settingspeerslistwidget.cpp \
   qt/vitae/settings/moc_settingssignmessagewidgets.cpp \
   qt/vitae/settings/moc_settingswalletoptionswidget.cpp \
   qt/vitae/settings/moc_settingswalletrepairwidget.cpp \
@@ -353,14 +345,10 @@ BITCOIN_QT_H = \
   qt/vitae/settings/settingsdisplayoptionswidget.h \
   qt/vitae/settings/settingsfaqwidget.h \
   qt/vitae/settings/settingsinformationwidget.h \
-  qt/vitae/settings/settingslockwalletwidget.h \
   qt/vitae/settings/settingsmainoptionswidget.h \
   qt/vitae/settings/settingsmultisenddialog.h \
   qt/vitae/settings/settingsmultisendwidget.h \
-  qt/vitae/settings/settingsnetworkmonitorwidget.h \
   qt/vitae/settings/settingsnetworkwidget.h \
-  qt/vitae/settings/settingsopenurlwidget.h \
-  qt/vitae/settings/settingspeerslistwidget.h \
   qt/vitae/settings/settingssignmessagewidgets.h \
   qt/vitae/settings/settingswalletoptionswidget.h \
   qt/vitae/settings/settingswalletrepairwidget.h \
@@ -692,14 +680,10 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/settings/settingsdisplayoptionswidget.cpp \
   qt/vitae/settings/settingsfaqwidget.cpp \
   qt/vitae/settings/settingsinformationwidget.cpp \
-  qt/vitae/settings/settingslockwalletwidget.cpp \
   qt/vitae/settings/settingsmainoptionswidget.cpp \
   qt/vitae/settings/settingsmultisenddialog.cpp \
   qt/vitae/settings/settingsmultisendwidget.cpp \
-  qt/vitae/settings/settingsnetworkmonitorwidget.cpp \
   qt/vitae/settings/settingsnetworkwidget.cpp \
-  qt/vitae/settings/settingsopenurlwidget.cpp \
-  qt/vitae/settings/settingspeerslistwidget.cpp \
   qt/vitae/settings/settingssignmessagewidgets.cpp \
   qt/vitae/settings/settingswalletoptionswidget.cpp \
   qt/vitae/settings/settingswalletrepairwidget.cpp \
