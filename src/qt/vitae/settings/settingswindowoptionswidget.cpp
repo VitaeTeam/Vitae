@@ -1,6 +1,7 @@
 #include "qt/vitae/settings/settingswindowoptionswidget.h"
 #include "qt/vitae/settings/settingswindowoptionswidget.h"
 #include "qt/vitae/settings/forms/ui_settingswindowoptionswidget.h"
+#include "optionsmodel.h"
 
 SettingsWindowOptionsWidget::SettingsWindowOptionsWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
@@ -39,6 +40,14 @@ SettingsWindowOptionsWidget::SettingsWindowOptionsWidget(VITAEGUI* _window, QWid
 
     ui->pushButtonReset->setText("Reset to default");
     ui->pushButtonReset->setProperty("cssClass", "btn-secundary");
+}
+
+void SettingsWindowOptionsWidget::setMapper(QDataWidgetMapper *mapper){
+    /* Window */
+#ifndef Q_OS_MAC
+    mapper->addMapping(ui->checkBoxMinTaskbar, OptionsModel::MinimizeToTray);
+    mapper->addMapping(ui->checkBoxMinClose, OptionsModel::MinimizeOnClose);
+#endif
 }
 
 SettingsWindowOptionsWidget::~SettingsWindowOptionsWidget()

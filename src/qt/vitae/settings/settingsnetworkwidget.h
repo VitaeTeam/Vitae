@@ -2,6 +2,7 @@
 #define SETTINGSNETWORKWIDGET_H
 
 #include <QWidget>
+#include <QDataWidgetMapper>
 #include "qt/vitae/pwidget.h"
 
 namespace Ui {
@@ -15,6 +16,8 @@ class SettingsNetworkWidget : public PWidget
 public:
     explicit SettingsNetworkWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsNetworkWidget();
+
+    void setMapper(QDataWidgetMapper *mapper);
 
 private:
     Ui::SettingsNetworkWidget *ui;
