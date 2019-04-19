@@ -812,7 +812,24 @@ bool WalletModel::getPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const
     return wallet->GetPubKey(address, vchPubKeyOut);
 }
 
-CBitcoinAddress WalletModel::getNewAddress(const std::string & label) const{
+int64_t WalletModel::getKeyCreationTime(const CPubKey& key){
+    return pwalletMain->GetKeyCreationTime(key);
+}
+
+int64_t WalletModel::getKeyCreationTime(const CBitcoinAddress& address){
+    if(this->isMine(address)) {
+        CKeyID keyID;
+        if (address.GetKeyID(keyID)) {
+            CPubKey key;
+            if (getPubKey(keyID, key)) {
+                return getKeyCreationTime(key);
+            }
+        }
+    }
+    return 0;
+}
+
+CBitcoinAddress WalletModel::getNewAddress(std::string label) const{
     if (!wallet->IsLocked())
         wallet->TopUpKeyPool();
 
