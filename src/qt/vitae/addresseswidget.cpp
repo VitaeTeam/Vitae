@@ -91,6 +91,7 @@ AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     ui->btnAddContact->setTitleClassAndText("btn-title-grey", "Add new contact");
     ui->btnAddContact->setSubTitleClassAndText("text-subtitle", "Generate a new address to receive tokens.");
     ui->btnAddContact->setRightIconClass("ic-arrow-down");
+    ui->btnAddContact->isActive(false);
 
 
     // List Addresses
