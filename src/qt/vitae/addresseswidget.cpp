@@ -81,7 +81,6 @@ AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     ui->labelTitle->setText("Contacts");
     ui->labelTitle->setProperty("cssClass", "text-title-screen");
 
-
     /* Subtitle */
 
     ui->labelSubtitle1->setText("You can add a new one in the options menu to the side.");
@@ -91,8 +90,6 @@ AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     ui->btnAddContact->setTitleClassAndText("btn-title-grey", "Add new contact");
     ui->btnAddContact->setSubTitleClassAndText("text-subtitle", "Generate a new address to receive tokens.");
     ui->btnAddContact->setRightIconClass("ic-arrow-down");
-    ui->btnAddContact->isActive(false);
-
 
     // List Addresses
 
