@@ -368,17 +368,17 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::Obfuscated:
         return tr("Obfuscated");
     case TransactionRecord::ZerocoinMint:
-        return tr("Converted VITAE to zVITAE");
+        return tr("Converted VIT to zVIT");
     case TransactionRecord::ZerocoinSpend:
-        return tr("Spent zVITAE");
+        return tr("Spent zVIT");
     case TransactionRecord::RecvFromZerocoinSpend:
-        return tr("Received VITAE from zVITAE");
+        return tr("Received VIT from zVIT");
     case TransactionRecord::ZerocoinSpend_Change_zVit:
-        return tr("Minted Change as zVITAE from zVITAE Spend");
+        return tr("Minted Change as zVIT from zVIT Spend");
     case TransactionRecord::ZerocoinSpend_FromMe:
-        return tr("Converted zVITAE to VITAE");
-
+        return tr("Converted zVIT to VIT");
     default:
+        std::cout << "Type: " << wtx->type << std::endl;
         return QString();
     }
 }
