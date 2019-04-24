@@ -431,15 +431,14 @@ RES_ICONS = \
   qt/vitae/res/img/ic-check-mint-off.svg \
   qt/vitae/res/img/ic-nav-dashboard-active.svg \
   qt/vitae/res/img/ic-wallet-status-locked.svg \
-  qt/vitae/res/img/bg-splash.jpg \
+  qt/pivx/res/img/bg-splash.svg \
+  qt/vitae/res/img/bg-splash.png \
   qt/vitae/res/img/ic-check-mint.svg \
   qt/vitae/res/img/ic-nav-dashboard-hover.svg \
   qt/vitae/res/img/ic-wallet-status-staking.svg \
-  qt/vitae/res/img/bg-splash@2x.jpg \
   qt/vitae/res/img/ic-check-peers-off.svg \
   qt/vitae/res/img/ic-nav-dashboard.svg \
   qt/vitae/res/img/ic-wallet-status-unlocked.svg \
-  qt/vitae/res/img/bg-splash@3x.jpg \
   qt/vitae/res/img/ic-check-peers.svg \
   qt/vitae/res/img/ic-nav-master-active.svg \
   qt/vitae/res/img/ic-watch-password-white.svg \
