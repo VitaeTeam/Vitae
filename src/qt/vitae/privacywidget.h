@@ -1,10 +1,12 @@
 #ifndef PRIVACYWIDGET_H
 #define PRIVACYWIDGET_H
 
+#include "qt/vitae/pwidget.h"
 #include "qt/vitae/furabstractlistitemdelegate.h"
 #include "qt/vitae/txviewholder.h"
 #include "transactiontablemodel.h"
 #include "transactionfilterproxy.h"
+#include "coincontroldialog.h"
 
 #include <QLabel>
 #include <QWidget>
@@ -20,7 +22,7 @@ QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
 
-class PrivacyWidget : public QWidget
+class PrivacyWidget : public PWidget
 {
     Q_OBJECT
 
@@ -28,7 +30,7 @@ public:
     explicit PrivacyWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~PrivacyWidget();
 
-    void setWalletModel(WalletModel *_model);
+    void loadWalletModel() override;
 private slots:
     void changeTheme(bool isLightTheme, QString &theme);
     void onCoinControlClicked();
@@ -45,12 +47,11 @@ signals:
     void message(const QString& title, const QString& message, unsigned int style);
 private:
     Ui::PrivacyWidget *ui;
-    VITAEGUI* window;
-    WalletModel* walletModel;
     FurAbstractListItemDelegate *delegate = nullptr;
     TransactionTableModel* txModel = nullptr;
     TxViewHolder *txHolder = nullptr;
     TransactionFilterProxy* filter = nullptr;
+    CoinControlDialog *coinControlDialog = nullptr;
 
 
     int nDisplayUnit;
