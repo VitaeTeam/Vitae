@@ -44,7 +44,6 @@ public:
 private:
     Ui::ZVitControlDialog *ui;
     WalletModel* model;
-    PrivacyDialog* privacyDialog;
 
     void updateList();
     void updateLabels();

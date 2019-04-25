@@ -54,8 +54,8 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui \
-  qt/forms/zVitcontroldialog.ui \
   qt/vitae/forms/coincontrolzpivdialog.ui \
+  qt/forms/zVitcontroldialog.ui \
   qt/vitae/forms/snackbar.ui \
   qt/vitae/forms/navmenuwidget.ui \
   qt/vitae/forms/lockunlock.ui \
@@ -67,7 +67,6 @@ QT_FORMS_UI = \
   qt/vitae/forms/txrow.ui \
   qt/vitae/forms/dashboardwidget.ui \
   qt/vitae/forms/coincontrolpivwidget.ui \
-  qt/vitae/forms/coincontrolzpivdialog.ui \
   qt/vitae/forms/addresslabelrow.ui \
   qt/vitae/forms/contactdropdownrow.ui \
   qt/vitae/forms/optionbutton.ui \
@@ -160,8 +159,8 @@ QT_MOC_CPP = \
   qt/moc_walletframe.cpp \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp \
-  qt/vitae/moc_pwidget.cpp \
   qt/moc_zVitcontroldialog.cpp \
+  qt/vitae/moc_pwidget.cpp \
   qt/vitae/moc_coincontrolzpivdialog.cpp \
   qt/vitae/moc_snackbar.cpp \
   qt/vitae/moc_navmenuwidget.cpp \
@@ -175,7 +174,6 @@ QT_MOC_CPP = \
   qt/vitae/moc_txrow.cpp \
   qt/vitae/moc_dashboardwidget.cpp \
   qt/vitae/moc_coincontrolpivwidget.cpp \
-  qt/vitae/moc_coincontrolzpivdialog.cpp \
   qt/vitae/moc_addresslabelrow.cpp \
   qt/vitae/moc_contactdropdownrow.cpp \
   qt/vitae/moc_optionbutton.cpp \
@@ -315,7 +313,6 @@ BITCOIN_QT_H = \
   qt/vitae/AddressFilterProxyModel.h \
   qt/vitae/dashboardwidget.h \
   qt/vitae/coincontrolpivwidget.h \
-  qt/vitae/coincontrolzpivdialog.h \
   qt/vitae/addresslabelrow.h \
   qt/vitae/contactdropdownrow.h \
   qt/vitae/optionbutton.h \
@@ -650,7 +647,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/AddressFilterProxyModel.cpp \
   qt/vitae/dashboardwidget.cpp \
   qt/vitae/coincontrolpivwidget.cpp \
-  qt/vitae/coincontrolzpivdialog.cpp \
   qt/vitae/addresslabelrow.cpp \
   qt/vitae/contactdropdownrow.cpp \
   qt/vitae/contactsdropdown.cpp \
