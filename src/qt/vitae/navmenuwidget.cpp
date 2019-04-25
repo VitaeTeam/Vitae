@@ -3,6 +3,7 @@
 #include <QFile>
 #include "qt/vitae/VITAEGUI.h"
 #include "qt/vitae/qtutils.h"
+#include "clientversion.h"
 
 NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :
     QWidget(parent),
@@ -18,7 +19,7 @@ NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :
     ui->imgLogo->setProperty("cssClass", "img-nav-logo");
 
     // App version
-    ui->labelVersion->setText("v 1.0.0");
+    ui->labelVersion->setText("v 4.0.0");//QString(tr("v %1")).arg(QString::fromStdString(FormatFullVersion())));
     ui->labelVersion->setProperty("cssClass", "text-title-white");
 
     // Buttons
