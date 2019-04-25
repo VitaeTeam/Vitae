@@ -93,11 +93,11 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
 
     ui->pushButtonLock->setButtonClassStyle("cssClass", "btn-check-lock");
 
-    ui->pushButtonTheme->setButtonClassStyle("cssClass", "btn-check-theme");
-
     if(isLightTheme()){
+        ui->pushButtonTheme->setButtonClassStyle("cssClass", "btn-check-theme-light");
         ui->pushButtonTheme->setButtonText("Light Theme");
     }else{
+        ui->pushButtonTheme->setButtonClassStyle("cssClass", "btn-check-theme-dark");
         ui->pushButtonTheme->setButtonText("Dark Theme");
     }
 
@@ -138,9 +138,13 @@ void TopBar::onThemeClicked(){
     //mainWindow->changeTheme(lightTheme);
 
     if(lightTheme){
-        ui->pushButtonTheme->setText2("Light Theme");
+        ui->pushButtonTheme->setButtonClassStyle("cssClass", "btn-check-theme-light",  true);
+        ui->pushButtonTheme->setButtonText("Light Theme");
+        updateStyle(ui->pushButtonTheme);
     }else{
-        ui->pushButtonTheme->setText2("Dark Theme");
+        ui->pushButtonTheme->setButtonClassStyle("cssClass", "btn-check-theme-dark", true);
+        ui->pushButtonTheme->setButtonText("Dark Theme");
+        updateStyle(ui->pushButtonTheme);
     }
 }
 
