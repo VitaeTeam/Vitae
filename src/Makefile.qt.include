@@ -539,6 +539,8 @@ RES_ICONS = \
   qt/vitae/res/img/ic-switch-on.svg \
   qt/vitae/res/img/img-qr-test.png \
   qt/vitae/res/img/ic-check-box.svg \
+  qt/vitae/res/img/ic-check-box-indeterminate.svg \
+  qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
   qt/vitae/res/img/ic-label-liliac.svg \
   qt/vitae/res/img/ic-transaction-mint.svg \
   qt/vitae/res/img/ic-transaction-mint-inactive.svg \
@@ -554,7 +556,7 @@ RES_ICONS = \
   qt/vitae/res/img/img-welcome-step2.png \
   qt/vitae/res/img/ic-check-dark.svg \
   qt/vitae/res/img/ic-mint.svg \
-  qt/vitae/res/img/ic-transaction-staked.svg \
+  qt/vitae/res/img/ic-transaction-sent.svg \
   qt/vitae/res/img/ic-transaction-staked-inactive.svg \
   qt/vitae/res/img/img-welcome-step3.png \
   qt/vitae/res/img/ic-check-liliac-on.svg \
