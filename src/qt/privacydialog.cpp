@@ -34,13 +34,13 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     nDisplayUnit = 0; // just make sure it's not unitialized
     ui->setupUi(this);
 
-    // "Spending 999999 zVITAE ought to be enough for anybody." - Bill Gates, 2017
+    // "Spending 999999 zVIT ought to be enough for anybody." - Bill Gates, 2017
     ui->zVITpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
-    ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );
+    //ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );     // disable MINT
 
     // Default texts for (mini-) coincontrol
-    ui->labelCoinControlQuantity->setText (tr("Coins automatically selected"));
-    ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));
+    //ui->labelCoinControlQuantity->setText (tr("Coins automatically selected"));       // disable MINT
+    //ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));         // disable MINT
     ui->labelzVITSyncStatus->setText("(" + tr("out of sync") + ")");
 
     // Sunken frame for minting messages
@@ -50,6 +50,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     ui->TEMintStatus->setPlainText(tr("Mint Status: Okay"));
 
     // Coin Control signals
+    /*                                                                            [disable MINT and coinControl]
     connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
 
     // Coin Control: clipboard actions
@@ -59,6 +60,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     connect(clipboardAmountAction, SIGNAL(triggered()), this, SLOT(coinControlClipboardAmount()));
     ui->labelCoinControlQuantity->addAction(clipboardQuantityAction);
     ui->labelCoinControlAmount->addAction(clipboardAmountAction);
+    */
 
     // Denomination labels
     ui->labelzDenom1Text->setText(tr("Denom. with value <b>1</b>:"));
@@ -156,6 +158,8 @@ void PrivacyDialog::on_addressBookButton_clicked()
     }
 }
 
+/* disable MINT
+ *
 void PrivacyDialog::on_pushButtonMintzVIT_clicked()
 {
     if (!walletModel || !walletModel->getOptionsModel())
@@ -236,7 +240,7 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
 
     return;
 }
-
+*/
 void PrivacyDialog::on_pushButtonMintReset_clicked()
 {
     ui->TEMintStatus->setPlainText(tr("Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.\nPlease be patient..."));
@@ -522,6 +526,8 @@ void PrivacyDialog::on_payTo_textChanged(const QString& address)
     updateLabel(address);
 }
 
+/* DISABLE MINTs: no need for coinCointrol
+
 // Coin Control: copy label "Quantity" to clipboard
 void PrivacyDialog::coinControlClipboardQuantity()
 {
@@ -563,7 +569,7 @@ void PrivacyDialog::coinControlUpdateLabels()
         ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));
     }
 }
-
+*/
 
 void PrivacyDialog::on_pushButtonShowDenoms_clicked()
 {
@@ -709,7 +715,6 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
     ui->labelzAvailableAmount->setText(QString::number(zerocoinBalance/COIN) + QString(" zVITAE "));
     ui->labelzAvailableAmount_2->setText(QString::number(matureZerocoinBalance/COIN) + QString(" zVITAE "));
     ui->labelzAvailableAmount_4->setText(QString::number(zerocoinBalance/COIN) + QString(" zVITAE "));
-    ui->labelzVITAmountValue->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance - immatureBalance - nLockedBalance, false, BitcoinUnits::separatorAlways));
 
     // Display AutoMint status
     updateAutomintStatus();
@@ -800,20 +805,22 @@ void PrivacyDialog::updateAutomintStatus()
 
 void PrivacyDialog::updateSPORK20Status()
 {
-    // Update/enable labels, buttons and tooltips depending on the current SPORK_20 status
-    bool fButtonsEnabled =  ui->pushButtonMintzVIT->isEnabled();
+    // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
+    //bool fButtonsEnabled =  ui->pushButtonMintzPIV->isEnabled();
+    bool fButtonsEnabled = false;
     bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
-        // Mint zVIT
-        ui->pushButtonMintzVIT->setEnabled(false);
-        ui->pushButtonMintzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
+        // Mint zPIV
+        //ui->pushButtonMintzPIV->setEnabled(false);
+        //ui->pushButtonMintzPIV->setToolTip(tr("zPIV is currently disabled due to maintenance."));
 
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(false);
         ui->pushButtonSpendzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
     } else if (!fMaintenanceMode && !fButtonsEnabled) {
         // Mint zVIT
-        ui->pushButtonMintzVIT->setEnabled(true);
+        //ui->pushButtonMintzVIT->setEnabled(true);
+        //ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of VIT to convert to zVIT", 0));
 
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(true);
