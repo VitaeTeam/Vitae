@@ -185,6 +185,7 @@ BITCOIN_CORE_H = \
   zvit/zerocoin.h \
   zvit/zvittracker.h \
   zvit/zvitwallet.h \
+  zvit/zvitmodule.h \
   genwit.h \
   concurrentqueue.h \
   lightzvitthread.h \
@@ -287,6 +288,7 @@ libbitcoin_wallet_a_SOURCES = \
   zvit/zvittracker.cpp \
   stakeinput.cpp \
   genwit.cpp \
+  zvit/zvitmodule.cpp \
   lightzvitthread.cpp \
   $(BITCOIN_CORE_H)
 
