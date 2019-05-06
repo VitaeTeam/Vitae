@@ -55,6 +55,7 @@ QT_FORMS_UI = \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui \
   qt/vitae/forms/coincontrolzpivdialog.ui \
+  qt/vitae/forms/loadingdialog.ui \
   qt/forms/zVitcontroldialog.ui \
   qt/vitae/forms/snackbar.ui \
   qt/vitae/forms/navmenuwidget.ui \
@@ -159,6 +160,7 @@ QT_MOC_CPP = \
   qt/moc_walletframe.cpp \
   qt/moc_walletmodel.cpp \
   qt/moc_walletview.cpp \
+  qt/vitae/moc_loadingdialog.cpp \
   qt/moc_zVitcontroldialog.cpp \
   qt/vitae/moc_pwidget.cpp \
   qt/vitae/moc_coincontrolzpivdialog.cpp \
@@ -292,6 +294,7 @@ BITCOIN_QT_H = \
   qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
+  qt/pivx/loadingdialog.h \
   qt/walletview.h \
   qt/winshutdownmonitor.h \
   qt/zVitcontroldialog.h \
@@ -569,7 +572,12 @@ RES_ICONS = \
   qt/vitae/res/img/ic-nav-address-hover.svg \
   qt/vitae/res/img/ic-update-liliac.svg \
   qt/vitae/res/img/ic-arrow-drop-down-purple.svg \
-  qt/vitae/res/img/ic-arrow-drop-up-purple.svg
+  qt/vitae/res/img/ic-arrow-drop-up-purple.svg \
+  qt/vitae/res/img/ic-check-liliac-indeterminate.svg \
+  qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
+  qt/vitae/res/img/ic-check-box-indeterminate.svg \
+  qt/vitae/res/img/ic-check-liliac-indeterminate.svg \
+  qt/vitae/res/img/ani-loading.gif
 
 BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
@@ -636,6 +644,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \
   qt/walletview.cpp \
+  qt/vitae/loadingdialog.cpp \
   qt/zVitcontroldialog.cpp \
   qt/vitae/pwidget.cpp \
   qt/vitae/coincontrolzpivdialog.cpp \
