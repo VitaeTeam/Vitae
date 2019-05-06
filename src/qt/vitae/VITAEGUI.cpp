@@ -174,6 +174,7 @@ void VITAEGUI::connectActions() {
         goToSettings();
     });
 
+    connect(topBar, &TopBar::showHide, this, &VITAEGUI::showHide);
     connect(settingsWidget, &SettingsWidget::showHide, this, &VITAEGUI::showHide);
     connect(sendWidget, &SendWidget::showHide, this, &VITAEGUI::showHide);
     connect(receiveWidget, &ReceiveWidget::showHide, this, &VITAEGUI::showHide);
@@ -510,8 +511,8 @@ bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
     settingsWidget->setWalletModel(walletModel);
 
     // Connect actions..
-    connect(topBar, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
     connect(privacyWidget, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
+    connect(topBar, &TopBar::message, this, &VITAEGUI::message);
     connect(sendWidget, &SendWidget::message,this, &VITAEGUI::message);
     connect(receiveWidget, &ReceiveWidget::message,this, &VITAEGUI::message);
     connect(addressesWidget, &AddressesWidget::message,this, &VITAEGUI::message);
