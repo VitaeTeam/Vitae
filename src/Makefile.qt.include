@@ -498,6 +498,8 @@ RES_ICONS = \
   qt/vitae/res/img/ic-close-white.svg \
   qt/vitae/res/img/ic-nav-settings.svg \
   qt/vitae/res/img/img-empty-peers.svg \
+  qt/vitae/res/img/img-empty-privacy.svg \
+  qt/vitae/res/img/img-empty-privacy-dark.svg \
   qt/vitae/res/img/ic-arrow-drop-down-white.svg \
   qt/vitae/res/img/ic-close.svg \
   qt/vitae/res/img/ic-radio-liliac-on.svg \
