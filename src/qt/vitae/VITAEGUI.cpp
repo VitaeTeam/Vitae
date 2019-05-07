@@ -175,6 +175,7 @@ void VITAEGUI::connectActions() {
     });
 
     connect(topBar, &TopBar::showHide, this, &VITAEGUI::showHide);
+    connect(topBar, &TopBar::changeTheme, this, &VITAEGUI::changeTheme);
     connect(settingsWidget, &SettingsWidget::showHide, this, &VITAEGUI::showHide);
     connect(sendWidget, &SendWidget::showHide, this, &VITAEGUI::showHide);
     connect(receiveWidget, &ReceiveWidget::showHide, this, &VITAEGUI::showHide);
@@ -433,9 +434,8 @@ void VITAEGUI::showTop(QWidget* view){
 }
 
 void VITAEGUI::changeTheme(bool isLightTheme){
-    // Change theme in all of the childs here..
 
-    QString css = isLightTheme ? getLightTheme() : getDarkTheme();
+    QString css = GUIUtil::loadStyleSheet();
     this->setStyleSheet(css);
 
     // Notify

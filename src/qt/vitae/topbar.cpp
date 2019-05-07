@@ -139,10 +139,9 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
 
 void TopBar::onThemeClicked(){
     // Store theme
-    bool lightTheme = !ui->pushButtonTheme->isChecked();
+    bool lightTheme = !isLightTheme();
+
     setTheme(lightTheme);
-    // TODO: Complete me..
-    //mainWindow->changeTheme(lightTheme);
 
     if(lightTheme){
         ui->pushButtonTheme->setButtonClassStyle("cssClass", "btn-check-theme-light",  true);
@@ -153,6 +152,8 @@ void TopBar::onThemeClicked(){
         ui->pushButtonTheme->setButtonText("Dark Theme");
         updateStyle(ui->pushButtonTheme);
     }
+
+    emit changeTheme(lightTheme);
 }
 
 
