@@ -1,8 +1,13 @@
 #include "qt/vitae/pwidget.h"
 #include "qt/vitae/qtutils.h"
 
-PWidget::PWidget(VITAEGUI* _window, QWidget *parent) : QWidget(parent), window(_window)
-{
+#include "qt/pivx/pwidget.h"
+#include "qt/pivx/qtutils.h"
+
+PWidget::PWidget(VITAEGUI* _window, QWidget *parent) : QWidget(parent), window(_window){init();}
+PWidget::PWidget(PWidget* parent) : QWidget(parent), window(parent->getWindow()){init();}
+
+void PWidget::init() {
     if(window)
         connect(window, SIGNAL(themeChanged(bool, QString&)), this, SLOT(onChangeTheme(bool, QString&)));
 }

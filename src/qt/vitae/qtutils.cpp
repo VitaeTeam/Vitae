@@ -115,26 +115,6 @@ QPixmap encodeToQr(QString str, QString &errorStr, QColor qrColor){
     */
 }
 
-QString getLightTheme(){
-    QFile qFile(":/res/css/style_light.css");
-    QString styleSheet;
-    if (qFile.open(QFile::ReadOnly)) {
-        styleSheet = QLatin1String(qFile.readAll());
-    }
-    return styleSheet;
-}
-
-QString getDarkTheme(){
-    /* CSS FILE*/
-    QFile qFile(":/res/css/style_dark.css");
-    QString styleSheet;
-    if (qFile.open(QFile::ReadOnly)) {
-        styleSheet = QLatin1String(qFile.readAll());
-    }
-    return styleSheet;
-}
-
-
 void setupSettings(QSettings *settings){
     if(!settings->contains("lightTheme")){
         settings->setValue("lightTheme", true);

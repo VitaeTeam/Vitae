@@ -2,6 +2,7 @@
 #define CONTACTSDROPDOWN_H
 
 #include "addresstablemodel.h"
+#include "qt/vitae/pwidget.h"
 #include "qt/vitae/contactdropdownrow.h"
 #include "qt/vitae/furabstractlistitemdelegate.h"
 #include "qt/vitae/AddressFilterProxyModel.h"
@@ -19,11 +20,11 @@ QT_BEGIN_NAMESPACE
 class QModelIndex;
 QT_END_NAMESPACE
 
-class ContactsDropdown : public QWidget
+class ContactsDropdown : public PWidget
 {
     Q_OBJECT
 public:
-    explicit ContactsDropdown(int minWidth, int minHeight, QWidget *parent = nullptr);
+    explicit ContactsDropdown(int minWidth, int minHeight, PWidget *parent = nullptr);
 
     void resizeList(int minWidth, int mintHeight);
     void setWalletModel(WalletModel* _model);

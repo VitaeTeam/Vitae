@@ -42,8 +42,8 @@ public:
 };
 
 
-ContactsDropdown::ContactsDropdown(int minWidth, int minHeight, QWidget *parent) :
-    QWidget(parent)
+ContactsDropdown::ContactsDropdown(int minWidth, int minHeight, PWidget *parent) :
+   PWidget(parent)
 {
 
     this->setStyleSheet(parent->styleSheet());
