@@ -294,6 +294,7 @@ BITCOIN_QT_H = \
   qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
+  qt/vitae/prunnable.h \
   qt/vitae/loadingdialog.h \
   qt/walletview.h \
   qt/winshutdownmonitor.h \
