@@ -415,6 +415,10 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
+  qt/res/icons/ic-transaction-received.svg \
+  qt/res/icons/ic-transaction-mint.svg \
+  qt/res/icons/ic-transaction-sent.svg \
+  qt/res/icons/ic-transaction-staked.svg \
   qt/res/icons/unit_vitae.png \
   qt/res/icons/unit_mvitae.png \
   qt/res/icons/unit_uvitae.png \
@@ -478,6 +482,7 @@ RES_ICONS = \
   qt/vitae/res/img/ic-check.svg \
   qt/vitae/res/img/ic-nav-send-active.svg \
   qt/vitae/res/img/img-empty-dark-staking-off.svg \
+  qt/vitae/res/img/img-empty-dark-staking-on.svg \
   qt/vitae/res/img/ic-address-book-grey.svg \
   qt/vitae/res/img/ic-chevron-left.svg \
   qt/vitae/res/img/ic-nav-send-hover.svg \
@@ -545,6 +550,7 @@ RES_ICONS = \
   qt/vitae/res/img/ic-switch-on.svg \
   qt/vitae/res/img/img-qr-test.png \
   qt/vitae/res/img/ic-check-box.svg \
+  qt/vitae/res/img/ic-check-box-dark-active.svg \
   qt/vitae/res/img/ic-check-box-indeterminate.svg \
   qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
   qt/vitae/res/img/ic-label-liliac.svg \
