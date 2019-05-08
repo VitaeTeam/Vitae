@@ -175,7 +175,7 @@ void VITAEGUI::connectActions() {
     });
 
     connect(topBar, &TopBar::showHide, this, &VITAEGUI::showHide);
-    connect(topBar, &TopBar::changeTheme, this, &VITAEGUI::changeTheme);
+    connect(topBar, &TopBar::themeChanged, this, &VITAEGUI::changeTheme);
     connect(settingsWidget, &SettingsWidget::showHide, this, &VITAEGUI::showHide);
     connect(sendWidget, &SendWidget::showHide, this, &VITAEGUI::showHide);
     connect(receiveWidget, &ReceiveWidget::showHide, this, &VITAEGUI::showHide);
