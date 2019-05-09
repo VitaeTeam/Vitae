@@ -73,6 +73,8 @@ private slots:
     void onWatchClicked();
     void onWatch2Clicked();
     void textChanged();
+    void warningMessage();
+    void errorEncryptingWallet();
 
 protected:
     bool event(QEvent* event) override ;
