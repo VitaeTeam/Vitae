@@ -1004,6 +1004,21 @@ bool isBlockBetweenFakeSerialAttackRange(int nHeight)
     return nHeight <= Params().Zerocoin_Block_EndFakeSerial();
 }
 
+bool CheckPublicCoinSpendEnforced(int blockHeight, bool isPrivZerocoinSpend, bool isPublicSpend) {
+    if (blockHeight >= Params().Zerocoin_Block_Public_Spend_Enabled()) {
+        // reject old coin spend
+        if (isPrivZerocoinSpend) {
+            return error("%s: failed to add block with older zc spend version", __func__);
+        }
+
+    } else {
+        if (isPublicSpend) {
+            return error("%s: failed to add block, public spend enforcement not activated", __func__);
+        }
+    }
+    return true;
+}
+
 bool ContextualCheckZerocoinSpend(const CTransaction& tx, const CoinSpend* spend, CBlockIndex* pindex, const uint256& hashBlock)
 {
     if(!ContextualCheckZerocoinSpendNoSerialCheck(tx, spend, pindex, hashBlock)){
@@ -3375,9 +3390,14 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             set<CBigNum> setSerials;
             for (const CTxIn& txIn : tx.vin) {
                 bool isPublicSpend = txIn.scriptSig.IsZerocoinPublicSpend();
-                if (!txIn.IsZerocoinSpend() && !isPublicSpend)
+                bool isPrivZerocoinSpend = txIn.IsZerocoinSpend();
+                if (!isPrivZerocoinSpend && !isPublicSpend)
                     continue;
 
+                // Check enforcement
+                if (!CheckPublicCoinSpendEnforced(pindex->nHeight, isPrivZerocoinSpend, isPublicSpend)){
+                    return false;
+                }
 
                 if (isPublicSpend) {
                     libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
@@ -4942,7 +4962,14 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             for (const CTxIn& in: tx.vin) {
                 if(nHeight >= Params().Zerocoin_StartHeight()) {
                     bool isPublicSpend = in.scriptSig.IsZerocoinPublicSpend();
-                    if (in.IsZerocoinSpend() || isPublicSpend) {
+                    bool isPrivZerocoinSpend = in.IsZerocoinSpend();
+                    if (isPrivZerocoinSpend || isPublicSpend) {
+
+                        // Check enforcement
+                        if (!CheckPublicCoinSpendEnforced(pindex->nHeight, isPrivZerocoinSpend, isPublicSpend)){
+                            return false;
+                        }
+
                         libzerocoin::CoinSpend spend;
                         if (isPublicSpend) {
                             libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
