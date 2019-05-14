@@ -1054,7 +1054,7 @@ UniValue getfeeinfo(const UniValue& params, bool fHelp)
                 continue;
 
             for (unsigned int j = 0; j < tx.vin.size(); j++) {
-                if (tx.vin[j].scriptSig.IsZerocoinSpend()) {
+                if (tx.vin[j].IsZerocoinSpend()) {
                     nValueIn += tx.vin[j].nSequence * COIN;
                     continue;
                 }
@@ -1449,7 +1449,7 @@ UniValue getserials(const UniValue& params, bool fHelp) {
             }
             // loop through each input
             for (const CTxIn& txin : tx.vin) {
-                if (txin.scriptSig.IsZerocoinSpend()) {
+                if (txin.IsZerocoinSpend()) {
                     libzerocoin::CoinSpend spend = TxInToZerocoinSpend(txin);
                     std::string serial_str = spend.getCoinSerialNumber().ToString(16);
                     if (!fVerbose) {
