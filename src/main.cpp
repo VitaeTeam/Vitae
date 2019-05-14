@@ -2801,15 +2801,15 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
         if (tx.ContainsZerocoins()) {
             if (tx.HasZerocoinSpendInputs()) {
                 //erase all zerocoinspends in this transaction
-                for (const CTxIn& txin : tx.vin) {
+                for (const CTxIn &txin : tx.vin) {
                     bool isPublicSpend = txin.scriptSig.IsZerocoinPublicSpend();
                     if (txin.scriptSig.IsZerocoinSpend() || isPublicSpend) {
                         CBigNum serial;
                         if (isPublicSpend) {
-                            libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
+                            libzerocoin::ZerocoinParams *params = Params().Zerocoin_Params(false);
                             PublicCoinSpend publicSpend(params);
                             CValidationState state;
-                            if (!ZPIVModule::ParseZerocoinPublicSpend(txin, tx, state, publicSpend)){
+                            if (!ZPIVModule::ParseZerocoinPublicSpend(txin, tx, state, publicSpend)) {
                                 return error("Failed to parse public spend");
                             }
                             serial = publicSpend.getCoinSerialNumber();
@@ -2823,8 +2823,8 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
 
                         //if this was our spend, then mark it unspent now
                         if (pwalletMain) {
-                            if (pwalletMain->IsMyZerocoinSpend(spend.getCoinSerialNumber())) {
-                                if (!pwalletMain->SetMintUnspent(spend.getCoinSerialNumber()))
+                            if (pwalletMain->IsMyZerocoinSpend(serial)) {
+                                if (!pwalletMain->SetMintUnspent(serial))
                                     LogPrintf("%s: failed to automatically reset mint", __func__);
                             }
                         }
@@ -2833,18 +2833,19 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
                 }
             }
 
-        if (tx.HasZerocoinMintOutputs()) {
-            //erase all zerocoinmints in this transaction
-            for (const CTxOut& txout : tx.vout) {
-                if (txout.scriptPubKey.empty() || !txout.IsZerocoinMint())
-                    continue;
+            if (tx.HasZerocoinMintOutputs()) {
+                //erase all zerocoinmints in this transaction
+                for (const CTxOut &txout : tx.vout) {
+                    if (txout.scriptPubKey.empty() || !txout.IsZerocoinMint())
+                        continue;
 
-                PublicCoin pubCoin(Params().Zerocoin_Params(false));
-                if (!TxOutToPublicCoin(txout, pubCoin, state))
-                    return error("DisconnectBlock(): TxOutToPublicCoin() failed");
+                    PublicCoin pubCoin(Params().Zerocoin_Params(false));
+                    if (!TxOutToPublicCoin(txout, pubCoin, state))
+                        return error("DisconnectBlock(): TxOutToPublicCoin() failed");
 
-                if(!zerocoinDB->EraseCoinMint(pubCoin.getValue()))
-                    return error("DisconnectBlock(): Failed to erase coin mint");
+                    if (!zerocoinDB->EraseCoinMint(pubCoin.getValue()))
+                        return error("DisconnectBlock(): Failed to erase coin mint");
+                }
             }
         }
 
