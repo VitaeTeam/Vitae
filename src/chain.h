@@ -21,7 +21,6 @@
 
 #include <vector>
 
-#include <boost/foreach.hpp>
 
 int64_t getStakeModifierV2SporkValue();
 

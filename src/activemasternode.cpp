@@ -350,7 +350,7 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
         uint256 txHash(strTxHash);
         int outputIndex = (unsigned int) std::stoul(strOutputIndex);
         bool found = false;
-        BOOST_FOREACH(COutput& out, possibleCoins) {
+        for(COutput& out : possibleCoins) {
             if(out.tx->GetHash() == txHash && out.i == outputIndex)
             {
                 selectedOutput = &out;
@@ -414,7 +414,7 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
     // Temporary unlock MN coins from masternode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mn, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mn : masternodeConfig.getEntries()) {
             mnTxHash.SetHex(mn.getTxHash());
 
             int nIndex;
@@ -432,12 +432,12 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 
 	// Lock MN coins from masternode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
-        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+        for (COutPoint outpoint : confLockedCoins)
             pwalletMain->LockCoin(outpoint);
     }
 
     // Filter
-    BOOST_FOREACH(const COutput& out, vCoins)
+    for(const COutput& out : vCoins)
     {
         if(out.tx->vout[out.i].nValue == MASTERNODEAMOUNT*COIN) { //exactly        bitsenddev   04-2015
             filteredCoins.push_back(out);

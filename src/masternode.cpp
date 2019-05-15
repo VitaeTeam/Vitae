@@ -12,6 +12,8 @@
 #include "sync.h"
 #include "addrman.h"
 
+#include <boost/foreach.hpp>
+
 CCriticalSection cs_masternodepayments;
 
 /** Object for who's going to get paid on which blocks */
@@ -345,7 +347,7 @@ uint64_t CMasternodePayments::CalculateScore(uint256 blockHash, CTxIn& vin)
 
 bool CMasternodePayments::GetBlockPayee(int nBlockHeight, CScript& payee)
 {
-    BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning){
+    for(CMasternodePaymentWinner& winner : vWinning){
         if(winner.nBlockHeight == nBlockHeight) {
             payee = winner.payee;
             return true;
@@ -357,7 +359,7 @@ bool CMasternodePayments::GetBlockPayee(int nBlockHeight, CScript& payee)
 
 bool CMasternodePayments::GetWinningMasternode(int nBlockHeight, CTxIn& vinOut)
 {
-    BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning){
+    for(CMasternodePaymentWinner& winner : vWinning){
         if(winner.nBlockHeight == nBlockHeight) {
             vinOut = winner.vin;
             return true;
@@ -377,7 +379,7 @@ bool CMasternodePayments::AddWinningMasternode(CMasternodePaymentWinner& winnerI
     winnerIn.score = CalculateScore(blockHash, winnerIn.vin);
 
     bool foundBlock = false;
-    BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning){
+    for(CMasternodePaymentWinner& winner : vWinning){
         if(winner.nBlockHeight == winnerIn.nBlockHeight) {
             foundBlock = true;
             if(winner.score < winnerIn.score){
@@ -527,7 +529,7 @@ void CMasternodePayments::Relay(CMasternodePaymentWinner& winner)
     vector<CInv> vInv;
     vInv.push_back(inv);
     LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes){
+    for(CNode* pnode : vNodes){
         pnode->PushMessage("inv", vInv);
     }
 }
@@ -536,7 +538,7 @@ void CMasternodePayments::Sync(CNode* node)
 {
     LOCK(cs_masternodepayments);
 
-    BOOST_FOREACH(CMasternodePaymentWinner& winner, vWinning)
+    for(CMasternodePaymentWinner& winner : vWinning)
         if(winner.nBlockHeight >= chainActive.Tip()->nHeight-10 && winner.nBlockHeight <= chainActive.Tip()->nHeight + 20)
             node->PushMessage("mnw", winner);
 }

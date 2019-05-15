@@ -107,7 +107,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
+        for (CFundamentalnodePayee& payee : vecPayments) {
             if (payee.scriptPubKey == payeeIn) {
                 payee.nVotes += nIncrement;
                 return;
@@ -123,7 +123,7 @@ public:
         LOCK(cs_vecPayments);
 
         int nVotes = -1;
-        BOOST_FOREACH (CFundamentalnodePayee& p, vecPayments) {
+        for (CFundamentalnodePayee& p : vecPayments) {
             if (p.nVotes > nVotes) {
                 payee = p.scriptPubKey;
                 nVotes = p.nVotes;
@@ -137,7 +137,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CFundamentalnodePayee& p, vecPayments) {
+        for (CFundamentalnodePayee& p : vecPayments) {
             if (p.nVotes >= nVotesReq && p.scriptPubKey == payee) return true;
         }
 

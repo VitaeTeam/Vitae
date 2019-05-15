@@ -380,7 +380,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -429,7 +429,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultsObj;
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             total++;
 
             std::string errorMessage;
@@ -568,7 +568,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -624,7 +624,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultsObj;
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             total++;
 
             std::string errorMessage;
@@ -773,7 +773,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultObj;
         UniValue resultObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             //Object mnObj;
             UniValue mnObj(UniValue::VOBJ);
             mnObj.push_back(Pair("alias", mne.getAlias()));
@@ -795,7 +795,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object obj;
         UniValue obj(UniValue::VOBJ);
-        BOOST_FOREACH(COutput& out, possibleCoins) {
+        for(COutput& out : possibleCoins) {
             obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), std::to_string(out.i)));
         }
 
@@ -823,7 +823,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         Object resultObj;
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             std::string errorMessage;
             std::vector<unsigned char> vchMasterNodeSignature;
             std::string strMasterNodeSignMessage;
@@ -865,7 +865,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
             //send to all peers
             //LOCK(cs_vNodes);
-            //BOOST_FOREACH(CNode* pnode, vNodes)
+            //for(CNode* pnode : vNodes)
                // pnode->PushMessage("mvote", pmn->vin, vchMasterNodeSignature, nVote);
 
         }
@@ -921,14 +921,14 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
         UniValue obj(UniValue::VOBJ);
     if (strMode == "rank") {
         std::vector<pair<int, CMasternode> > vMasternodeRanks = m_nodeman.GetMasternodeRanks(chainActive.Tip()->nHeight);
-        BOOST_FOREACH(PAIRTYPE(int, CMasternode)& s, vMasternodeRanks) {
+        for(PAIRTYPE(int, CMasternode)& s : vMasternodeRanks) {
             std::string strAddr = s.second.addr.ToString();
             if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
             obj.push_back(Pair(strAddr,       s.first));
         }
     } else {
         std::vector<CMasternode> vMasternodes = m_nodeman.GetFullMasternodeVector();
-        BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+        for(CMasternode& mn : vMasternodes) {
             std::string strAddr = mn.addr.ToString();
             if (strMode == "activeseconds") {
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
@@ -1099,7 +1099,7 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
         nHeight = pindex->nHeight;
     }
     std::vector<pair<int, CFundamentalnode> > vFundamentalnodeRanks = mnodeman.GetFundamentalnodeRanks(nHeight);
-    BOOST_FOREACH (PAIRTYPE(int, CFundamentalnode) & s, vFundamentalnodeRanks) {
+    for (PAIRTYPE(int, CFundamentalnode) & s : vFundamentalnodeRanks) {
         UniValue obj(UniValue::VOBJ);
         std::string strVin = s.second.vin.prevout.ToStringShort();
         std::string strTxHash = s.second.vin.prevout.hash.ToString();
@@ -1340,7 +1340,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
             int nIndex;
             if(!mne.castOutputIndex(nIndex))
@@ -1394,7 +1394,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             if (mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1477,7 +1477,7 @@ UniValue getfundamentalnodeoutputs (const UniValue& params, bool fHelp)
     vector<COutput> possibleCoins = activeFundamentalnode.SelectCoinsFundamentalnode();
 
     UniValue ret(UniValue::VARR);
-    BOOST_FOREACH (COutput& out, possibleCoins) {
+    for (COutput& out : possibleCoins) {
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("txhash", out.tx->GetHash().ToString()));
         obj.push_back(Pair("outputidx", out.i));
@@ -1522,7 +1522,7 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
 
     UniValue ret(UniValue::VARR);
 
-    BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
@@ -1657,7 +1657,7 @@ UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
             UniValue winner(UniValue::VARR);
             boost::char_separator<char> sep(",");
             boost::tokenizer< boost::char_separator<char> > tokens(strPayment, sep);
-            BOOST_FOREACH (const string& t, tokens) {
+            for (const string& t : tokens) {
                 UniValue addr(UniValue::VOBJ);
                 std::size_t pos = t.find(":");
                 std::string strAddress = t.substr(0,pos);
@@ -1721,7 +1721,7 @@ UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
     for (int nHeight = chainActive.Tip()->nHeight - nLast; nHeight < chainActive.Tip()->nHeight + 20; nHeight++) {
         uint256 nHigh = 0;
         CFundamentalnode* pBestFundamentalnode = NULL;
-        BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+        for (CFundamentalnode& mn : vFundamentalnodes) {
             uint256 n = mn.CalculateScore(1, nHeight - 100);
             if (n > nHigh) {
                 nHigh = n;
@@ -1783,7 +1783,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for(CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1831,7 +1831,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for(CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
 
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
