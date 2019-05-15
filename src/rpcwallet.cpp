@@ -2876,6 +2876,7 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
             "3. minimizechange  (boolean, required) Try to minimize the returning change  [false]\n"
             "4. \"address\"     (string, optional, default=change) Send to specified address or to a new change address.\n"
             "                       If there is change then an address is required\n"
+            "5. ispublicspend (boolean, optional, default=true) create a public zc spend instead of use the old code (only for regression tests)"
 
             "\nResult:\n"
             "{\n"
@@ -2915,10 +2916,15 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
     bool fMintChange = params[1].get_bool();        // Mint change to zVITAE
     bool fMinimizeChange = params[2].get_bool();    // Minimize change
     std::string address_str = params.size() > 3 ? params[3].get_str() : "";
+    bool ispublicspend = params.size() > 4 ? params[3].get_bool() : true;
 
     vector<CZerocoinMint> vMintsSelected;
 
-    return DoZvitSpend(nAmount, fMintChange, fMinimizeChange, vMintsSelected, address_str);
+    if (!ispublicspend && Params().NetworkID() != CBaseChainParams::REGTEST) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT old spend only available in regtest for tests purposes");
+    }
+
+    return DoZvitSpend(nAmount, fMintChange, fMinimizeChange, vMintsSelected, address_str, ispublicspend);
 }
 
 
@@ -3016,7 +3022,7 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
 }
 
 
-extern UniValue DoZvitSpend(const CAmount nAmount, bool fMintChange, bool fMinimizeChange, vector<CZerocoinMint>& vMintsSelected, std::string address_str)
+extern UniValue DoZvitSpend(const CAmount nAmount, bool fMintChange, bool fMinimizeChange, vector<CZerocoinMint>& vMintsSelected, std::string address_str, bool ispublicspend)
 {
     int64_t nTimeStart = GetTimeMillis();
     CBitcoinAddress address = CBitcoinAddress(); // Optional sending address. Dummy initialization here.
@@ -3028,9 +3034,9 @@ extern UniValue DoZvitSpend(const CAmount nAmount, bool fMintChange, bool fMinim
         address = CBitcoinAddress(address_str);
         if(!address.IsValid())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
-        fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, &address);
+        fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, &address, ispublicspend);
     } else                   // Spend to newly generated local address
-        fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange);
+        fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, nullptr, ispublicspend);
 
     if (!fSuccess)
         throw JSONRPCError(RPC_WALLET_ERROR, receipt.GetStatusMessage());
