@@ -64,7 +64,6 @@ QT_FORMS_UI = \
   qt/vitae/forms/receivedialog.ui \
   qt/vitae/forms/walletpassworddialog.ui \
   qt/vitae/forms/topbar.ui \
-  qt/vitae/forms/txdetaildialog.ui \
   qt/vitae/forms/txrow.ui \
   qt/vitae/forms/dashboardwidget.ui \
   qt/vitae/forms/coincontrolpivwidget.ui \
@@ -172,7 +171,6 @@ QT_MOC_CPP = \
   qt/vitae/moc_receivedialog.cpp \
   qt/vitae/moc_walletpassworddialog.cpp \
   qt/vitae/moc_topbar.cpp \
-  qt/vitae/moc_txdetaildialog.cpp \
   qt/vitae/moc_txrow.cpp \
   qt/vitae/moc_dashboardwidget.cpp \
   qt/vitae/moc_coincontrolpivwidget.cpp \
@@ -312,7 +310,6 @@ BITCOIN_QT_H = \
   qt/vitae/expandablebutton.h \
   qt/vitae/walletpassworddialog.h \
   qt/vitae/topbar.h \
-  qt/vitae/txdetaildialog.h \
   qt/vitae/txrow.h \
   qt/vitae/AddressFilterProxyModel.h \
   qt/vitae/dashboardwidget.h \
@@ -676,7 +673,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/expandablebutton.cpp \
   qt/vitae/walletpassworddialog.cpp \
   qt/vitae/topbar.cpp \
-  qt/vitae/txdetaildialog.cpp \
   qt/vitae/txrow.cpp \
   qt/vitae/AddressFilterProxyModel.cpp \
   qt/vitae/dashboardwidget.cpp \
