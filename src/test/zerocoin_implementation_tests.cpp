@@ -48,6 +48,8 @@ std::string zerocoinModulus = "2519590847565789349402718324004839857142928212620
 "8441436038339044149526344321901146575444541784240209246165157233507787077498171257724679629263863563732899121548"
 "31438167899885040445364023527381951378636564391212010397122822120720357";
 
+
+
 //ZQ_ONE mints
 std::string rawTx1 = "0100000001983d5fd91685bb726c0ebc3676f89101b16e663fd896fea53e19972b95054c49000000006a473044022010fbec3e78f9c46e58193d481caff715ceb984df44671d30a2c0bde95c54055f0220446a97d9340da690eaf2658e5b2bf6a0add06f1ae3f1b40f37614c7079ce450d012103cb666bd0f32b71cbf4f32e95fa58e05cd83869ac101435fcb8acee99123ccd1dffffffff0200e1f5050000000086c10280004c80c3a01f94e71662f2ae8bfcd88dfc5b5e717136facd6538829db0c7f01e5fd793cccae7aa1958564518e0223d6d9ce15b1e38e757583546e3b9a3f85bd14408120cd5192a901bb52152e8759fdd194df230d78477706d0e412a66398f330be38a23540d12ab147e9fb19224913f3fe552ae6a587fb30a68743e52577150ff73042c0f0d8f000000001976a914d6042025bd1fff4da5da5c432d85d82b3f26a01688ac00000000";
 std::string rawTxpub1 = "473ff507157523e74680ab37f586aae52e53f3f912492b19f7e14ab120d54238ae30b338f39662a410e6d707784d730f24d19dd9f75e85221b51b902a19d50c120844d15bf8a3b9e346355857e7381e5be19c6d3d22e01845565819aae7cacc93d75f1ef0c7b09d823865cdfa3671715e5bfc8dd8fc8baef26216e7941fa0c3";
@@ -356,7 +358,7 @@ BOOST_AUTO_TEST_CASE(checkzerocoinspend_test)
     //Get the checksum of the accumulator we use for the spend and also add it to our checksum map
     uint32_t nChecksum_v2 = GetChecksum(accumulator_v2.getValue());
     //AddAccumulatorChecksum(nChecksum_v2, accumulator_v2.getValue(), true);
-    uint256 ptxHash = CBigNum::RandKBitBigum(256).getuint256();
+    uint256 ptxHash = CBigNum::randKBitBignum(256).getuint256();
     CoinSpend coinSpend_v2(Params().Zerocoin_Params(false), Params().Zerocoin_Params(false), privateCoin_v2, accumulator_v2, nChecksum_v2, witness_v2, ptxHash, SpendType::SPEND);
 
     BOOST_CHECK_MESSAGE(coinSpend_v2.HasValidSerial(Params().Zerocoin_Params(false)), "coinspend_v2 does not have a valid serial");
