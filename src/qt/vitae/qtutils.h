@@ -11,6 +11,7 @@
 #include <QSettings>
 #include <QPixmap>
 #include <QStandardPaths>
+#include <initializer_list>
 #include "qt/vitae/VITAEGUI.h"
 
 static Qt::Modifier SHORT_KEY
@@ -20,17 +21,16 @@ static Qt::Modifier SHORT_KEY
         = Qt::ALT;
 #endif
 
-bool openDialog(QDialog *widget, VITAEGUI *gui);
+bool openDialog(QDialog *widget, QWidget *gui);
 void closeDialog(QDialog *widget, VITAEGUI *gui);
 void openDialogFullScreen(QWidget *parent, QWidget * dialog);
 bool openDialogWithOpaqueBackgroundY(QDialog *widget, VITAEGUI *gui, double posX = 3, int posY = 5);
 bool openDialogWithOpaqueBackground(QDialog *widget, VITAEGUI *gui, double posX = 3);
 bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, VITAEGUI *gui);
 
-inline void openSnackbar(QWidget *parent, VITAEGUI *gui, QString text){
-    // TODO:Complete me..
-    return;
-}
+bool openDialogWithOpaqueBackgroundY(QDialog *widget, PIVXGUI *gui, double posX = 3, int posY = 5);
+bool openDialogWithOpaqueBackground(QDialog *widget, PIVXGUI *gui, double posX = 3);
+bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, PIVXGUI *gui);
 
 //
 QPixmap encodeToQr(QString str, QString &errorStr, QColor qrColor = Qt::black);
@@ -53,6 +53,8 @@ void setShadow(QWidget *edit);
 
 void setCssBtnPrimary(QPushButton *btn, bool forceUpdate = false);
 void setCssBtnSecondary(QPushButton *btn, bool forceUpdate = false);
+void setCssTextBodyDialog(std::initializer_list<QWidget*> args);
+void setCssTextBodyDialog(QWidget* widget);
 void setCssProperty(QWidget *wid, QString value, bool forceUpdate = false);
 void forceUpdateStyle(QWidget *widget, bool forceUpdate);
 

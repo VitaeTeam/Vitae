@@ -8,7 +8,6 @@
 #include "qt/vitae/VITAEGUI.h"
 #include "guiutil.h"
 #include "qt/vitae/qtutils.h"
-#include "qt/vitae/snackbar.h"
 #include "walletmodel.h"
 
 #include <QAbstractItemDelegate>
