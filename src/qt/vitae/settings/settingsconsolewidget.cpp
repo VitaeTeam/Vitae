@@ -516,4 +516,5 @@ void SettingsConsoleWidget::changeTheme(bool isLightTheme, QString &theme)
                 ".secwarning { color: red; }"
                 "b { color: #FFFFFF; } ");
     }
+    updateStyle(ui->messagesWidget);
 }
