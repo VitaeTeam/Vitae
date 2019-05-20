@@ -75,9 +75,9 @@ ContactsDropdown::ContactsDropdown(int minWidth, int minHeight, PWidget *parent)
     connect(list, SIGNAL(clicked(QModelIndex)), this, SLOT(handleClick(QModelIndex)));
 }
 
-void ContactsDropdown::setWalletModel(WalletModel* _model){
+void ContactsDropdown::setWalletModel(WalletModel* _model, QString type){
     model = _model->getAddressTableModel();
-    this->filter = new AddressFilterProxyModel(AddressTableModel::Send, this);
+    this->filter = new AddressFilterProxyModel(type, this);
     this->filter->setSourceModel(model);
     list->setModel(this->filter);
     list->setModelColumn(AddressTableModel::Address);
