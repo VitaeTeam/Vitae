@@ -40,13 +40,16 @@ SettingsSignMessageWidgets::SettingsSignMessageWidgets(VITAEGUI* _window, QWidge
     ui->labelSubtitleAddress->setProperty("cssClass", "text-title");
 
     ui->addressIn_SM->setPlaceholderText(tr("Add address"));
-    ui->addressIn_SM->setProperty("cssClass", "edit-primary-book");
+    ui->addressIn_SM->setProperty("cssClass", "edit-primary-multi-book");
     ui->addressIn_SM->setAttribute(Qt::WA_MacShowFocusRect, 0);
     setShadow(ui->addressIn_SM);
 
     // Message
     ui->labelSubtitleMessage->setText(tr("Message"));
     ui->labelSubtitleMessage->setProperty("cssClass", "text-title");
+
+    
+    ui->messageIn_SM->setProperty("cssClass", "edit-primary");
 
     ui->messageIn_SM->setPlaceholderText(tr("Write a message"));
     ui->messageIn_SM->setProperty("cssClass","edit-primary");
@@ -61,6 +64,10 @@ SettingsSignMessageWidgets::SettingsSignMessageWidgets(VITAEGUI* _window, QWidge
     setShadow(ui->signatureOut_SM);
 
     // Buttons
+
+        // Button Contact
+    btnContact = ui->addressIn_SM->addAction(QIcon("://ic-contact-arrow-down"), QLineEdit::TrailingPosition);
+    
     ui->pushButtonSave->setText(tr("SIGN"));
     ui->pushButtonSave->setProperty("cssClass", "btn-primary");
 
