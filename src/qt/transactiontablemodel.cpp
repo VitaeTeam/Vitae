@@ -67,6 +67,7 @@ public:
      * this is sorted by sha256.
      */
     QList<TransactionRecord> cachedWallet;
+    bool hasZcTxes = false;
 
     /* Query entire wallet anew from core.
      */
@@ -77,9 +78,25 @@ public:
         {
             LOCK2(cs_main, wallet->cs_wallet);
             for (std::map<uint256, CWalletTx>::iterator it = wallet->mapWallet.begin(); it != wallet->mapWallet.end(); ++it) {
-                if (TransactionRecord::showTransaction(it->second))
-                    cachedWallet.append(TransactionRecord::decomposeTransaction(wallet, it->second));
+                if (TransactionRecord::showTransaction(it->second)) {
+                    QList<TransactionRecord> records = TransactionRecord::decomposeTransaction(wallet, it->second);
+                    for (TransactionRecord record : records) {
+                        updateHasZcTxesIfNeeded(record);
+                        if (hasZcTxes) break;
+                    }
+                    cachedWallet.append(records);
+                }
             }
+        }
+    }
+
+    void updateHasZcTxesIfNeeded(const TransactionRecord& record) {
+        if (hasZcTxes) return;
+        if (record.type == TransactionRecord::ZerocoinMint ||
+            record.type == TransactionRecord::ZerocoinSpend ||
+            record.type == TransactionRecord::ZerocoinSpend_Change_zPiv ||
+            record.type == TransactionRecord::ZerocoinSpend_FromMe) {
+            hasZcTxes = true;
         }
     }
 
@@ -135,6 +152,7 @@ public:
                     int insert_idx = lowerIndex;
                     foreach (const TransactionRecord& rec, toInsert) {
                         cachedWallet.insert(insert_idx, rec);
+                        updateHasZcTxesIfNeeded(rec);
                         insert_idx += 1;
                     }
                     parent->endInsertRows();
@@ -161,6 +179,11 @@ public:
     int size()
     {
         return cachedWallet.size();
+    }
+
+    bool containsZcTxes()
+    {
+        return hasZcTxes;
     }
 
     TransactionRecord* index(int idx)
@@ -267,6 +290,10 @@ int TransactionTableModel::columnCount(const QModelIndex& parent) const
 
 int TransactionTableModel::size() const{
     return priv->size();
+}
+
+bool TransactionTableModel::hasZcTxes() {
+    return priv->containsZcTxes();
 }
 
 QString TransactionTableModel::formatTxStatus(const TransactionRecord* wtx) const
