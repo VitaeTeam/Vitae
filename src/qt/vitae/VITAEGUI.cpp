@@ -505,7 +505,7 @@ bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
     settingsWidget->setWalletModel(walletModel);
 
     // Connect actions..
-    connect(privacyWidget, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
+    connect(privacyWidget, &PrivacyWidget::message, this, &VITAEGUI::message);
     connect(topBar, &TopBar::message, this, &VITAEGUI::message);
     connect(sendWidget, &SendWidget::message,this, &VITAEGUI::message);
     connect(receiveWidget, &ReceiveWidget::message,this, &VITAEGUI::message);
