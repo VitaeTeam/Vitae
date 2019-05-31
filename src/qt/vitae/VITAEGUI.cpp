@@ -286,6 +286,7 @@ void VITAEGUI::messageInfo(const QString& text){
 void VITAEGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
 {
     try {
+        std::cout << "message" << std::endl;
         QString strTitle = tr("PIVX Core"); // default title
         // Default to information icon
         int nMBoxIcon = QMessageBox::Information;
@@ -539,6 +540,7 @@ static bool ThreadSafeMessageBox(VITAEGUI* gui, const std::string& message, cons
     // bool secure = (style & CClientUIInterface::SECURE);
     style &= ~CClientUIInterface::SECURE;
     bool ret = false;
+    std::cout << "thread safe box: " << message << std::endl;
     // In case of modal message, use blocking connection to wait for user to click a button
     QMetaObject::invokeMethod(gui, "message",
               modal ? GUIUtil::blockingGUIThreadConnection() : Qt::QueuedConnection,
