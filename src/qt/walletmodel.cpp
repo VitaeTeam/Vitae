@@ -490,7 +490,7 @@ bool WalletModel::createZpivSpend(
             receipt,
             vMintsSelected,
             vNewMints,
-            fMintChange,
+            false, // No more mints
             fMinimizeChange,
             outputs,
             changeAdd
@@ -524,7 +524,7 @@ bool WalletModel::sendZpiv(
             wtxNew,
             receipt,
             vMintsSelected,
-            fMintChange,
+            false, // No more mints
             fMinimizeChange,
             outputs,
             changeAdd
@@ -553,7 +553,7 @@ bool WalletModel::convertBackZpiv(
             wtxNew,
             receipt,
             vMintsSelected,
-            fMintChange,
+            false, // No more mints
             fMinimizeChange,
             std::list<std::pair<CBitcoinAddress*, CAmount>>(),
             &addressTo
