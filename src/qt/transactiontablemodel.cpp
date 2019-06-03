@@ -261,7 +261,7 @@ void TransactionTableModel::updateTransaction(const QString& hash, int status, b
 
     priv->updateWallet(updated, status, showTransaction);
 
-    emit txArrived();
+    emit txArrived(hash);
 }
 
 void TransactionTableModel::updateConfirmations()
