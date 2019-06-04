@@ -527,6 +527,8 @@ RES_ICONS = \
   qt/vitae/res/img/ic-submenu-lock.svg \
   qt/vitae/res/img/img-logo-vitae@3x.png \
   qt/vitae/res/img/ic-arrow-right-white.svg \
+  qt/vitae/res/img/ic-arrow-left-white.svg \
+  qt/vitae/res/img/ic-arrow-left.svg \
   qt/vitae/res/img/ic-copy-liliac.svg \
   qt/vitae/res/img/ic-submenu-staking.svg \
   qt/vitae/res/img/img-nav-logo-vitae.png \
