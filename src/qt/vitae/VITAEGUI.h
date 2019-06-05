@@ -21,6 +21,7 @@
 #include "qt/vitae/receivewidget.h"
 #include "qt/vitae/addresseswidget.h"
 #include "qt/vitae/privacywidget.h"
+#include "qt/vitae/masternodeswidget.h"
 #include "qt/vitae/snackbar.h"
 #include "qt/vitae/settings/settingswidget.h"
 #include "qt/rpcconsole.h"
@@ -120,6 +121,7 @@ private:
     ReceiveWidget *receiveWidget = nullptr;
     AddressesWidget *addressesWidget = nullptr;
     PrivacyWidget *privacyWidget = nullptr;
+    MasterNodesWidget *masterNodesWidget = nullptr;
     SettingsWidget* settingsWidget = nullptr;
 
     SnackBar *snackBar = nullptr;

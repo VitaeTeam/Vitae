@@ -17,13 +17,13 @@
 #define DECORATION_SIZE 65
 #define NUM_ITEMS 3
 
-PrivacyWidget::PrivacyWidget(VITAEGUI* _window, QWidget *parent) :
-    PWidget(_window, parent),
+PrivacyWidget::PrivacyWidget(VITAEGUI* parent) :
+    PWidget(parent),
     ui(new Ui::PrivacyWidget)
 {
     ui->setupUi(this);
 
-    this->setStyleSheet(_window->styleSheet());
+    this->setStyleSheet(parent->styleSheet());
 
     /* Containers */
     ui->left->setProperty("cssClass", "container");

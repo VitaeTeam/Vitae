@@ -14,8 +14,6 @@
 #include <QPainter>
 #include <QSettings>
 #include <QModelIndex>
-#include <QFile>
-#include <QGraphicsDropShadowEffect>
 
 #include <iostream>
 
@@ -56,8 +54,8 @@ public:
 
 #include "qt/vitae/moc_addresseswidget.cpp"
 
-AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
-    PWidget(_window, parent),
+AddressesWidget::AddressesWidget(VITAEGUI* parent) :
+    PWidget(parent),
     ui(new Ui::AddressesWidget)
 {
     ui->setupUi(this);

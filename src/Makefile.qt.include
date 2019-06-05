@@ -70,6 +70,8 @@ QT_FORMS_UI = \
   qt/vitae/forms/addresslabelrow.ui \
   qt/vitae/forms/contactdropdownrow.ui \
   qt/vitae/forms/optionbutton.ui \
+  qt/vitae/forms/mnrow.ui \
+  qt/vitae/forms/masternodeswidget.ui \
   qt/vitae/forms/myaddressrow.ui \
   qt/vitae/forms/sendchangeaddressdialog.ui \
   qt/vitae/forms/sendconfirmdialog.ui \
@@ -177,6 +179,8 @@ QT_MOC_CPP = \
   qt/vitae/moc_addresslabelrow.cpp \
   qt/vitae/moc_contactdropdownrow.cpp \
   qt/vitae/moc_optionbutton.cpp \
+  qt/vitae/moc_mnrow.cpp \
+  qt/vitae/moc_masternodeswidget.cpp \
   qt/vitae/moc_myaddressrow.cpp \
   qt/vitae/moc_contactsdropdown.cpp \
   qt/vitae/moc_sendchangeaddressdialog.cpp \
@@ -317,6 +321,8 @@ BITCOIN_QT_H = \
   qt/vitae/addresslabelrow.h \
   qt/vitae/contactdropdownrow.h \
   qt/vitae/optionbutton.h \
+  qt/vitae/mnrow.h \
+  qt/vitae/masternodeswidget.h \
   qt/vitae/myaddressrow.h \
   qt/vitae/contactsdropdown.h \
   qt/vitae/sendchangeaddressdialog.h \
@@ -686,6 +692,8 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/contactdropdownrow.cpp \
   qt/vitae/contactsdropdown.cpp \
   qt/vitae/optionbutton.cpp \
+  qt/vitae/mnrow.cpp \
+  qt/vitae/masternodeswidget.cpp \
   qt/vitae/myaddressrow.cpp \
   qt/vitae/sendchangeaddressdialog.cpp \
   qt/vitae/sendconfirmdialog.cpp \

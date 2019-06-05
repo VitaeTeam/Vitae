@@ -29,7 +29,7 @@ class SendWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SendWidget(VITAEGUI* _window, QWidget *parent = nullptr);
+    explicit SendWidget(VITAEGUI* parent);
     ~SendWidget();
 
     void addEntry();

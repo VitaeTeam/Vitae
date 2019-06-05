@@ -27,7 +27,7 @@ class PrivacyWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit PrivacyWidget(VITAEGUI* _window, QWidget *parent = nullptr);
+    explicit PrivacyWidget(VITAEGUI* parent);
     ~PrivacyWidget();
 
     void loadWalletModel() override;
