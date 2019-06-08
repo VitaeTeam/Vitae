@@ -16,8 +16,8 @@ fi
 #Run the tests
 
 if [ "x${ENABLE_BITCOIND}${ENABLE_UTILS}${ENABLE_WALLET}" = "x111" ]; then
-  ${BUILDDIR}/test/wallet.py
-  ${BUILDDIR}/test/segwit.py
+  ${BUILDDIR}/test/functional/wallet.py
+  ${BUILDDIR}/test/functional/segwit.py
 else
   echo "No rpc tests to run. Wallet, utils, and bitcoind must all be enabled"
 fi

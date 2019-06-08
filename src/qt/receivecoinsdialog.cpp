@@ -13,7 +13,7 @@
 #include "receiverequestdialog.h"
 #include "recentrequeststablemodel.h"
 #include "walletmodel.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <QAction>
 #include <QCursor>

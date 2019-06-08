@@ -26,6 +26,8 @@
 #include "walletmodel.h"
 #endif
 
+#include <startoptionsmain.h>
+
 #include "init.h"
 #include "main.h"
 #include "rpcserver.h"
@@ -34,7 +36,7 @@
 #include "util.h"
 
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif
 
 #include <stdint.h>
@@ -52,6 +54,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QTranslator>
+#include <vector>
 
 #if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
@@ -172,7 +175,7 @@ class BitcoinCore : public QObject
 {
     Q_OBJECT
 public:
-    explicit BitcoinCore();
+    explicit BitcoinCore(std::vector<std::string>& wordlist);
 
 public slots:
     void initialize();
@@ -193,6 +196,7 @@ private:
 
     /// Pass fatal exception message to UI thread
     void handleRunawayException(std::exception* e);
+    std::vector<std::string> words;
 };
 
 /** Main Phore application object */
@@ -210,9 +214,12 @@ public:
     /// Create options model
     void createOptionsModel();
     /// Create main window
-    void createWindow(const NetworkStyle* networkStyle);
+    bool createWindow(const NetworkStyle* networkStyle);
     /// Create splash screen
     void createSplashScreen(const NetworkStyle* networkStyle);
+
+    /// Get mnemonic words on first startup
+    bool setupMnemonicWords(std::vector<std::string>& wordlist);
 
     /// Request core initialization
     void requestInitialize();
@@ -248,6 +255,7 @@ private:
     PaymentServer* paymentServer;
     WalletModel* walletModel;
 #endif
+    std::vector<std::string> wordlist;
     int returnValue;
 
     void startThread();
@@ -255,7 +263,7 @@ private:
 
 #include "phore.moc"
 
-BitcoinCore::BitcoinCore() : QObject()
+BitcoinCore::BitcoinCore(std::vector<std::string>& wordlist) : QObject(), words(wordlist)
 {
 }
 
@@ -271,7 +279,7 @@ void BitcoinCore::initialize()
 
     try {
         qDebug() << __func__ << ": Running AppInit2 in thread";
-        int rv = AppInit2(threadGroup, scheduler);
+        int rv = AppInit2(threadGroup, scheduler, words);
         emit initializeResult(rv);
     } catch (std::exception& e) {
         handleRunawayException(&e);
@@ -371,8 +379,30 @@ void BitcoinApplication::createOptionsModel()
     optionsModel = new OptionsModel();
 }
 
-void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
+// this will be used to get mnemonic words
+bool BitcoinApplication::setupMnemonicWords(std::vector<std::string>& wordlist) {
+    namespace fs = boost::filesystem;
+    if (GetBoolArg("-disablewallet", DEFAULT_DISABLE_WALLET)) {
+        LogPrintf("Wallet disabled!\n");
+    }
+
+    std::string walletFile = GetArg("-wallet", "wallet.dat");
+    if (fs::exists(walletFile)) return true;
+
+    if (CheckIfWalletDatExists()) return true;
+
+    StartOptionsMain dlg(nullptr);
+    dlg.exec();
+    wordlist = dlg.getWords();
+    return false;
+}
+
+bool BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
 {
+    /// doesn't check if wallet is enabled, It will be assumbed if the user is using the gui wallet is enabled
+    if (!setupMnemonicWords(wordlist)) {
+        if (wordlist.empty()) return false;
+    }
     window = new BitcoinGUI(networkStyle, 0);
 
     pollShutdownTimer = new QTimer(window);
@@ -395,7 +425,7 @@ void BitcoinApplication::startThread()
     if (coreThread)
         return;
     coreThread = new QThread(this);
-    BitcoinCore* executor = new BitcoinCore();
+    BitcoinCore* executor = new BitcoinCore(wordlist);
     executor->moveToThread(coreThread);
 
     /*  communication to and from thread */
@@ -655,7 +685,9 @@ int main(int argc, char* argv[])
         app.createSplashScreen(networkStyle.data());
 
     try {
-        app.createWindow(networkStyle.data());
+        if (!app.createWindow(networkStyle.data())) {
+            return EXIT_FAILURE;
+        }
         app.requestInitialize();
 #if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
         WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("Phore Core didn't yet exit safely..."), (HWND)app.getMainWinId());

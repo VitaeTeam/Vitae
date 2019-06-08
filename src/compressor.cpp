@@ -83,44 +83,44 @@ unsigned int CScriptCompressor::GetSpecialSize(unsigned int nSize) const
 bool CScriptCompressor::Decompress(unsigned int nSize, const std::vector<unsigned char>& in)
 {
     switch (nSize) {
-    case 0x00:
-        script.resize(25);
-        script[0] = OP_DUP;
-        script[1] = OP_HASH160;
-        script[2] = 20;
-        memcpy(&script[3], &in[0], 20);
-        script[23] = OP_EQUALVERIFY;
-        script[24] = OP_CHECKSIG;
-        return true;
-    case 0x01:
-        script.resize(23);
-        script[0] = OP_HASH160;
-        script[1] = 20;
-        memcpy(&script[2], &in[0], 20);
-        script[22] = OP_EQUAL;
-        return true;
-    case 0x02:
-    case 0x03:
-        script.resize(35);
-        script[0] = 33;
-        script[1] = nSize;
-        memcpy(&script[2], &in[0], 32);
-        script[34] = OP_CHECKSIG;
-        return true;
-    case 0x04:
-    case 0x05:
-        unsigned char vch[33] = {};
-        vch[0] = nSize - 2;
-        memcpy(&vch[1], &in[0], 32);
-        CPubKey pubkey(&vch[0], &vch[33]);
-        if (!pubkey.Decompress())
-            return false;
-        assert(pubkey.size() == 65);
-        script.resize(67);
-        script[0] = 65;
-        memcpy(&script[1], pubkey.begin(), 65);
-        script[66] = OP_CHECKSIG;
-        return true;
+        case 0x00:
+            script.resize(25);
+            script[0] = OP_DUP;
+            script[1] = OP_HASH160;
+            script[2] = 20;
+            memcpy(&script[3], &in[0], 20);
+            script[23] = OP_EQUALVERIFY;
+            script[24] = OP_CHECKSIG;
+            return true;
+        case 0x01:
+            script.resize(23);
+            script[0] = OP_HASH160;
+            script[1] = 20;
+            memcpy(&script[2], &in[0], 20);
+            script[22] = OP_EQUAL;
+            return true;
+        case 0x02:
+        case 0x03:
+            script.resize(35);
+            script[0] = 33;
+            script[1] = nSize;
+            memcpy(&script[2], &in[0], 32);
+            script[34] = OP_CHECKSIG;
+            return true;
+        case 0x04:
+        case 0x05:
+            unsigned char vch[33] = {};
+            vch[0] = nSize - 2;
+            memcpy(&vch[1], &in[0], 32);
+            CPubKey pubkey(&vch[0], &vch[33]);
+            if (!pubkey.Decompress())
+                return false;
+            assert(pubkey.size() == 65);
+            script.resize(67);
+            script[0] = 65;
+            memcpy(&script[1], pubkey.begin(), 65);
+            script[66] = OP_CHECKSIG;
+            return true;
     }
     return false;
 }

@@ -2,7 +2,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activemasternode.h"
-#include "db.h"
+#include "wallet/db.h"
 #include "init.h"
 #include "main.h"
 #include "masternode-budget.h"
@@ -11,6 +11,10 @@
 #include "masternodeman.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
+
+#ifdef ENABLE_WALLET
+#include "wallet/wallet.h"
+#endif
 
 #include <univalue.h>
 

@@ -12,14 +12,14 @@
 #include "transactiontablemodel.h"
 
 #include "base58.h"
-#include "db.h"
+#include "wallet/db.h"
 #include "keystore.h"
 #include "main.h"
 #include "spork.h"
 #include "sync.h"
 #include "ui_interface.h"
-#include "wallet.h"
-#include "walletdb.h" // for BackupWallet
+#include "wallet/wallet.h"
+#include "wallet/walletdb.h" // for BackupWallet
 #include <stdint.h>
 
 #include <QDebug>
@@ -780,6 +780,11 @@ bool WalletModel::saveReceiveRequest(const std::string& sAddress, const int64_t 
 bool WalletModel::isMine(CTxDestination address)
 {
     return IsMine(*wallet, address);
+}
+
+bool WalletModel::hdEnabled() const
+{
+    return wallet->IsHDEnabled();
 }
 
 OutputType WalletModel::getDefaultAddressType() const

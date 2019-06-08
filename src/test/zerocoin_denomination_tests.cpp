@@ -4,12 +4,12 @@
 
 #include "amount.h"
 #include "chainparams.h"
-#include "coincontrol.h"
+#include "wallet/coincontrol.h"
 #include "denomination_functions.h"
 #include "main.h"
 #include "txdb.h"
-#include "wallet.h"
-#include "walletdb.h"
+#include "wallet/wallet.h"
+#include "wallet/walletdb.h"
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 

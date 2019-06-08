@@ -154,4 +154,8 @@ bool ConvertBits(O& out, I it, I end) {
     return true;
 }
 
+
+// Join words with separator
+std::string join(const std::vector<std::string>& words, const std::string &separator = ", ", const std::string &concluder = "");
+
 #endif // BITCOIN_UTILSTRENCODINGS_H

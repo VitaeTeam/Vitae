@@ -7,7 +7,7 @@
 #define BITCOIN_QT_CONFIGUREMASTERNODEPAGE_H
 
 #include "masternodelist.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <QAbstractButton>
 #include <QAction>
