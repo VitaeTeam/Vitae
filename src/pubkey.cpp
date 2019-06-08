@@ -108,7 +108,7 @@ bool CPubKey::Derive(CPubKey& pubkeyChild, unsigned char ccChild[32], unsigned i
     return ret;
 }
 
-void CExtPubKey::Encode(unsigned char code[74]) const
+void CExtPubKey::Encode(unsigned char code[BIP32_EXTKEY_SIZE]) const
 {
     code[0] = nDepth;
     memcpy(code + 1, vchFingerprint, 4);
@@ -121,7 +121,7 @@ void CExtPubKey::Encode(unsigned char code[74]) const
     memcpy(code + 41, pubkey.begin(), 33);
 }
 
-void CExtPubKey::Decode(const unsigned char code[74])
+void CExtPubKey::Decode(const unsigned char code[BIP32_EXTKEY_SIZE])
 {
     nDepth = code[0];
     memcpy(vchFingerprint, code + 1, 4);

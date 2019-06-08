@@ -16,19 +16,19 @@
 //! anonymous namespace
 namespace
 {
-class CSecp256k1Init
-{
-public:
-    CSecp256k1Init()
+    class CSecp256k1Init
     {
-        secp256k1_start(SECP256K1_START_SIGN);
-    }
-    ~CSecp256k1Init()
-    {
-        secp256k1_stop();
-    }
-};
-static CSecp256k1Init instance_of_csecp256k1;
+    public:
+        CSecp256k1Init()
+        {
+            secp256k1_start(SECP256K1_START_SIGN);
+        }
+        ~CSecp256k1Init()
+        {
+            secp256k1_stop();
+        }
+    };
+    static CSecp256k1Init instance_of_csecp256k1;
 
 } // anon namespace
 

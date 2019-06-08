@@ -72,6 +72,7 @@ public:
         /** Predefined combinations for certain default usage cases */
         MSG_INFORMATION = ICON_INFORMATION,
         MSG_WARNING = (ICON_WARNING | BTN_OK | MODAL),
+        MSG_SEED = (ICON_WARNING | BTN_OK | MODAL | SECURE),
         MSG_ERROR = (ICON_ERROR | BTN_OK | MODAL)
     };
 
@@ -111,6 +112,17 @@ public:
     /** Banlist did change. */
     boost::signals2::signal<void (void)> BannedListChanged;
 };
+
+/** Show warning message **/
+void InitWarning(const std::string& str);
+
+/** Show error message **/
+bool InitError(const std::string& str);
+
+//! Show 12-word seed phrase and confirm
+bool ShowSeedPhrase(const std::string& str);
+
+std::string AmountErrMsg(const char* const optname, const std::string& strValue);
 
 extern CClientUIInterface uiInterface;
 

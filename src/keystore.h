@@ -6,6 +6,8 @@
 #ifndef BITCOIN_KEYSTORE_H
 #define BITCOIN_KEYSTORE_H
 
+
+#include "wallet/hdchain.h"
 #include "key.h"
 #include "pubkey.h"
 #include "sync.h"
@@ -68,6 +70,7 @@ protected:
     WatchKeyMap mapWatchKeys;
     ScriptMap mapScripts;
     WatchOnlySet setWatchOnly;
+    CHDChain hdChain; /* the HD chain data model*/
     MultiSigScriptSet setMultiSig;
 
     void ImplicitlyLearnRelatedKeyScripts(const CPubKey& pubkey);
@@ -116,6 +119,7 @@ public:
     virtual bool RemoveWatchOnly(const CScript& dest) override;
     virtual bool HaveWatchOnly(const CScript& dest) const override;
     virtual bool HaveWatchOnly() const override;
+    bool GetHDChain(CHDChain& hdChainRet) const;
 
     virtual bool AddMultiSig(const CScript& dest) override;
     virtual bool RemoveMultiSig(const CScript& dest) override;

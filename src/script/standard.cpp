@@ -442,6 +442,7 @@ CScript GetScriptForDestination(const CTxDestination& dest)
     return script;
 }
 
+
 CScript GetScriptForMultisig(int nRequired, const std::vector<CPubKey>& keys)
 {
     CScript script;

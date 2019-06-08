@@ -15,11 +15,10 @@
 #include "chainparams.h"
 #include "ui_interface.h"
 #include "util.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <cstdlib>
 
-#include <openssl/x509.h>
 #include <openssl/x509_vfy.h>
 
 #include <QApplication>
@@ -587,7 +586,7 @@ void PaymentServer::fetchPaymentACK(CWallet* wallet, SendCoinsRecipient recipien
     QString account = tr("Refund from %1").arg(recipient.authenticatedMerchant);
     std::string strAccount = account.toStdString();
     CPubKey newKey;
-    if (wallet->GetKeyFromPool(newKey)) {
+    if (wallet->GetKeyFromPool(newKey, false)) {
         // BIP70 requests encode the scriptPubKey directly, so we are not restricted to address
         // types supported by the receiver. As a result, we choose the address format we also
         // use for change. Despite an actual payment and not change, this is a close match:

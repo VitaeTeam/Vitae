@@ -23,7 +23,7 @@
 #include "uint256.h"
 #include "utilmoneystr.h"
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif
 
 #include <stdint.h>

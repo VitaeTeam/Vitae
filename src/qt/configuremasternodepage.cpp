@@ -20,7 +20,7 @@
 #include "masternodeconfig.h"
 #include "masternodeman.h"
 #include "masternodelist.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <univalue.h>
 #include <QIcon>

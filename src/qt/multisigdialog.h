@@ -12,7 +12,7 @@
 #include "script/script.h"
 #include "primitives/transaction.h"
 #include "coins.h"
-#include "coincontrol.h"
+#include "wallet/coincontrol.h"
 #include "walletmodel.h"
 #include "coincontroldialog.h"
 

@@ -14,7 +14,7 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 #include <accumulators.h>
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "zphrwallet.h"
 
 using namespace libzerocoin;

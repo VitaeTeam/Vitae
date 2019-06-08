@@ -22,7 +22,7 @@
 #include <ui_proposaldialog.h>
 #include <univalue.h>
 #include <utilstrencodings.h>
-#include <wallet.h>
+#include <wallet/wallet.h>
 
 #include <QMessageBox>
 #include <QString>

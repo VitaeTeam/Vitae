@@ -18,13 +18,14 @@
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utiltime.h"
+// to be removed
+#include "ui_interface.h"
 
 #include <stdarg.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <openssl/bio.h>
 #include <openssl/buffer.h>
-#include <openssl/crypto.h> // for OPENSSL_cleanse()
 #include <openssl/evp.h>
 
 
@@ -573,6 +574,17 @@ boost::filesystem::path GetDefaultDataDir()
 static boost::filesystem::path pathCached;
 static boost::filesystem::path pathCachedNetSpecific;
 static CCriticalSection csPathCached;
+
+bool CheckIfWalletDatExists(bool fNetSpecific) {
+
+    namespace fs = boost::filesystem;
+
+    boost::filesystem::path path("wallet.dat");
+    if (!path.is_complete())
+        path = GetDataDir(false) / path;
+
+    return fs::exists(path);
+}
 
 const boost::filesystem::path& GetDataDir(bool fNetSpecific)
 {

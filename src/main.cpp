@@ -42,6 +42,10 @@
 #include "libzerocoin/Denominations.h"
 #include "accumulatormap.h"
 
+#ifdef ENABLE_WALLET
+#include "wallet/wallet.h"
+#endif
+
 #include <sstream>
 
 #include <boost/algorithm/string/replace.hpp>

@@ -20,6 +20,7 @@
 #include "tinyformat.h"
 #include "utiltime.h"
 
+
 #include <exception>
 #include <map>
 #include <stdint.h>
@@ -28,6 +29,16 @@
 
 #include <boost/filesystem/path.hpp>
 #include <boost/thread/exceptions.hpp>
+
+// Debugging macros
+// Uncomment the following line to enable debugging messages
+// or enable on a per file basis prior to inclusion of util.h
+//#define ENABLE_PHORE_DEBUG
+#ifdef ENABLE_PHORE_DEBUG
+#define DBG( x ) x
+#else
+#define DBG( x )
+#endif
 
 //Phore only features
 
@@ -117,6 +128,7 @@ void AllocateFileRange(FILE* file, unsigned int offset, unsigned int length);
 bool RenameOver(boost::filesystem::path src, boost::filesystem::path dest);
 bool TryCreateDirectory(const boost::filesystem::path& p);
 boost::filesystem::path GetDefaultDataDir();
+bool CheckIfWalletDatExists(bool fNetSpecific = true);
 const boost::filesystem::path& GetDataDir(bool fNetSpecific = true);
 boost::filesystem::path GetConfigFile();
 boost::filesystem::path GetMasternodeConfigFile();
