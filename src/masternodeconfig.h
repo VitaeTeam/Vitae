@@ -101,7 +101,9 @@ public:
 
     void clear();
     bool read(std::string& strErr);
-    void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex, std::string donationAddress, std::string donationPercent);
+    void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
+    void remove(std::string alias);
+
 
     std::vector<CMasternodeEntry>& getEntries() {
         return entries;
