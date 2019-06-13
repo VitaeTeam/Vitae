@@ -3,6 +3,8 @@
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/mnrow.h"
 
+#include "qt/vitae/masternodewizarddialog.h"
+
 #include "activefundamentalnode.h"
 #include "clientmodel.h"
 #include "guiutil.h"
@@ -163,10 +165,7 @@ void MasterNodesWidget::onEditMNClicked(){
         ask(tr("Start Master Node"), tr("Are you sure you want to start masternode %1?").arg(strAlias), &ret);
 
         if (ret) {
-            if (!walletModel->isWalletUnlocked()) {
-                inform(tr("Wallet locked, you need to unlock it to perform this action"));
-                return;
-            }
+            if(!verifyWalletUnlocked()) return;
             startAlias(strAlias);
         }
     }
@@ -301,11 +300,26 @@ void MasterNodesWidget::onDeleteMNClicked(){
 }
 
 void MasterNodesWidget::onCreateMNClicked(){
-    /*
-    MasterNodeWizardDialog* dialog = new MasterNodeWizardDialog(mainWindow);
-    mainWindow->showHide(true);
-    openDialogWithOpaqueBackgroundY(dialog, mainWindow, 5, 7);
-     */
+    if(verifyWalletUnlocked()) {
+        if(walletModel->getBalance() <= (COIN * 10000)){
+            inform(tr("No enough balance to create a master node, 10,000 PIV required."));
+            return;
+        }
+        showHideOp(true);
+        MasterNodeWizardDialog *dialog = new MasterNodeWizardDialog(walletModel, window);
+        if(openDialogWithOpaqueBackgroundY(dialog, window, 5, 7)) {
+            if (dialog->isOk) {
+                // Update list
+                mnModel->addMn(dialog->mnEntry);
+                updateListState();
+                // add mn
+                inform(dialog->returnStr);
+            } else {
+                warn(tr("Error creating master node"), dialog->returnStr);
+            }
+        }
+        dialog->deleteLater();
+    }
 }
 
 void MasterNodesWidget::changeTheme(bool isLightTheme, QString& theme){

@@ -13,14 +13,16 @@
 
 CMasternodeConfig masternodeConfig;
 
-void CMasternodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex, std::string donationAddress, std::string donationPercent) {
-    CMasternodeEntry cme(alias, ip, privKey, txHash, outputIndex, donationAddress, donationPercent);
+CMasternodeConfig::CMasternodeEntry* CMasternodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex)
+{
+    CMasternodeEntry cme(alias, ip, privKey, txHash, outputIndex);
     entries.push_back(cme);
+    return &(entries[entries.size()-1]);
 }
 
 void CMasternodeConfig::remove(std::string alias) {
     int pos = -1;
-    for (int i = 0; i < entries.size(); ++i) {
+    for (int i = 0; i < ((int) entries.size()); ++i) {
         CMasternodeEntry e = entries[i];
         if (e.getAlias() == alias) {
             pos = i;
