@@ -15,7 +15,6 @@
 #include "qt/vitae/qtutils.h"
 #include <QFile>
 #include <QScrollBar>
-#include "qt/vitae/qtutils.h"
 #include <QDataWidgetMapper>
 #include "optionsmodel.h"
 #include "clientmodel.h"
