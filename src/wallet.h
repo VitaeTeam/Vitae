@@ -199,14 +199,7 @@ private:
 public:
     bool MintableCoins();
     bool SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount, bool fPrecompute = false);
-    bool SelectCoinsDark(CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax) const;
-    bool SelectCoinsByDenominations(int nDenom, CAmount nValueMin, CAmount nValueMax, std::vector<CTxIn>& vCoinsRet, std::vector<COutput>& vCoinsRet2, CAmount& nValueRet, int nObfuscationRoundsMin, int nObfuscationRoundsMax);
-    bool SelectCoinsDarkDenominated(CAmount nTargetValue, std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet) const;
-    bool HasCollateralInputs(bool fOnlyConfirmed = true) const;
     bool IsCollateralAmount(CAmount nInputAmount) const;
-    int CountInputsWithAmount(CAmount nInputAmount);
-
-    bool SelectCoinsCollateral(std::vector<CTxIn>& setCoinsRet, CAmount& nValueRet) const;
 
     // Zerocoin additions
     bool CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransaction& txNew, vector<CDeterministicMint>& vDMints, CReserveKey* reservekey, int64_t& nFeeRet, std::string& strFailReason, const CCoinControl* coinControl = NULL, const bool isZCSpendChange = false);
@@ -420,7 +413,6 @@ public:
     void UnlockCoin(COutPoint& output);
     void UnlockAllCoins();
     void ListLockedCoins(std::vector<COutPoint>& vOutpts);
-    CAmount GetTotalValue(std::vector<CTxIn> vCoins);
 
     //  keystore implementation
     // Generate a new key
@@ -455,8 +447,6 @@ public:
     bool EraseDestData(const CTxDestination& dest, const std::string& key);
     //! Adds a destination data tuple to the store, without saving it to disk
     bool LoadDestData(const CTxDestination& dest, const std::string& key, const std::string& value);
-    //! Look up a destination data tuple in the store, return true if found false otherwise
-    bool GetDestData(const CTxDestination& dest, const std::string& key, std::string* value) const;
 
     //! Adds a watch-only address to the store, and saves it to disk.
     bool AddWatchOnly(const CScript& dest);
@@ -500,11 +490,6 @@ public:
     std::map<libzerocoin::CoinDenomination, CAmount> GetMyZerocoinDistribution() const;
     CAmount GetUnconfirmedBalance() const;
     CAmount GetImmatureBalance() const;
-    CAmount GetAnonymizableBalance() const;
-    CAmount GetAnonymizedBalance() const;
-    double GetAverageAnonymizedRounds() const;
-    CAmount GetNormalizedAnonymizedBalance() const;
-    CAmount GetDenominatedBalance(bool unconfirmed = false) const;
     CAmount GetWatchOnlyBalance() const;
     CAmount GetUnconfirmedWatchOnlyBalance() const;
     CAmount GetImmatureWatchOnlyBalance() const;
@@ -524,10 +509,7 @@ public:
                            bool IsFundamentalNodePayment = false);
     bool CommitTransaction(CWalletTx& wtxNew, CReserveKey& reservekey, std::string strCommand = "tx");
     bool AddAccountingEntry(const CAccountingEntry&, CWalletDB & pwalletdb);
-    std::string PrepareObfuscationDenominate(int minRounds, int maxRounds);
     int GenerateObfuscationOutputs(int nTotalValue, std::vector<CTxOut>& vout);
-    bool CreateCollateralTransaction(CMutableTransaction& txCollateral, std::string& strReason);
-    bool ConvertList(std::vector<CTxIn> vCoins, std::vector<int64_t>& vecAmounts);
     bool CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int64_t nSearchInterval, CMutableTransaction& txNew, unsigned int& nTxNewTime);
     bool MultiSend();
     void AutoCombineDust();
@@ -555,13 +537,7 @@ public:
     bool GetBudgetSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useIX);
     bool GetBudgetFinalizationCollateralTX(CWalletTx& tx, uint256 hash, bool useIX); // Only used for budget finalization 
 
-    // get the Obfuscation chain depth for a given input
-    int GetRealInputObfuscationRounds(CTxIn in, int rounds) const;
-    // respect current settings
-    int GetInputObfuscationRounds(CTxIn in) const;
-
     bool IsDenominated(const CTxIn& txin) const;
-    bool IsDenominated(const CTransaction& tx) const;
 
     bool IsDenominatedAmount(CAmount nInputAmount) const;
 
@@ -1003,13 +979,10 @@ public:
     CAmount GetCredit(const isminefilter& filter) const;
     CAmount GetImmatureCredit(bool fUseCache = true) const;
     CAmount GetAvailableCredit(bool fUseCache = true) const;
-    CAmount GetAnonymizableCredit(bool fUseCache = true) const;
-    CAmount GetAnonymizedCredit(bool fUseCache = true) const;
     // Return sum of unlocked coins
     CAmount GetUnlockedCredit() const;
     // Return sum of unlocked coins
     CAmount GetLockedCredit() const;
-    CAmount GetDenominatedCredit(bool unconfirmed, bool fUseCache = true) const;
     CAmount GetImmatureWatchOnlyCredit(const bool& fUseCache = true) const;
     CAmount GetAvailableWatchOnlyCredit(const bool& fUseCache = true) const;
     CAmount GetLockedWatchOnlyCredit() const;
