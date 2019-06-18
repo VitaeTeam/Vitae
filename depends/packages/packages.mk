@@ -1,5 +1,4 @@
-packages:=boost openssl libevent zeromq
-native_packages := native_ccache
+packages:=boost openssl libevent gmp
 
 qt_native_packages = native_protobuf
 qt_packages = qrencode protobuf zlib
@@ -13,6 +12,8 @@ qt_darwin_packages=qt
 qt_mingw32_packages=qt
 
 wallet_packages=bdb
+
+zmq_packages=zeromq
 
 upnp_packages=miniupnpc
 
