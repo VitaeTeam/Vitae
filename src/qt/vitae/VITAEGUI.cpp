@@ -15,9 +15,8 @@
 #include "notificator.h"
 #include "ui_interface.h"
 #include "qt/vitae/qtutils.h"
-
 #include "qt/vitae/defaultdialog.h"
-
+#include "qt/vitae/settings/settingsfaqwidget.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -26,10 +25,6 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QWindowStateChangeEvent>
-
-// TODO: Remove this..
-#include <QMessageBox>
-
 
 #include "util.h"
 
@@ -42,8 +37,8 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 
     /* Open CSS when configured */
     this->setStyleSheet(GUIUtil::loadStyleSheet());
-    this->setMinimumSize(1200, 720);
-    GUIUtil::restoreWindowGeometry("nWindow", QSize(1200, 720), this);
+    this->setMinimumSize(1200, 740);
+    GUIUtil::restoreWindowGeometry("nWindow", QSize(1200, 740), this);
 
     QString windowTitle = tr("PIVX Core") + " - ";
 #ifdef ENABLE_WALLET
@@ -77,7 +72,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 
         QFrame* centralWidget = new QFrame(this);
         this->setMinimumWidth(1200);
-        this->setMinimumHeight(720);
+        this->setMinimumHeight(740);
         QHBoxLayout* centralWidgetLayouot = new QHBoxLayout();
         centralWidget->setLayout(centralWidgetLayouot);
         centralWidgetLayouot->setContentsMargins(0,0,0,0);
@@ -184,6 +179,7 @@ void VITAEGUI::connectActions() {
     connect(addressesWidget, &AddressesWidget::showHide, this, &VITAEGUI::showHide);
     connect(privacyWidget, &PrivacyWidget::showHide, this, &VITAEGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::showHide, this, &VITAEGUI::showHide);
+    connect(masterNodesWidget, &MasterNodesWidget::execDialog, this, &VITAEGUI::execDialog);
     connect(settingsWidget, &SettingsWidget::execDialog, this, &VITAEGUI::execDialog);
 }
 
@@ -289,7 +285,6 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
     try {
         QString strTitle = tr("PIVX Core"); // default title
         // Default to information icon
-        int nMBoxIcon = QMessageBox::Information;
         int nNotifyIcon = Notificator::Information;
 
         QString msgType;
@@ -318,10 +313,8 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
 
         // Check for error/warning icon
         if (style & CClientUIInterface::ICON_ERROR) {
-            nMBoxIcon = QMessageBox::Critical;
             nNotifyIcon = Notificator::Critical;
         } else if (style & CClientUIInterface::ICON_WARNING) {
-            nMBoxIcon = QMessageBox::Warning;
             nNotifyIcon = Notificator::Warning;
         }
 
@@ -482,6 +475,13 @@ void VITAEGUI::showHide(bool show){
 
 int VITAEGUI::getNavWidth(){
     return this->navMenu->width();
+}
+
+void PIVXGUI::openFAQ(){
+    showHide(true);
+    SettingsFaqWidget* dialog = new SettingsFaqWidget(this);
+    openDialogWithOpaqueBackgroundFullScreen(dialog, this);
+    dialog->deleteLater();
 }
 
 
