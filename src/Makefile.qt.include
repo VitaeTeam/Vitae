@@ -54,7 +54,6 @@ QT_FORMS_UI = \
   qt/forms/sendcoinsentry.ui \
   qt/forms/signverifymessagedialog.ui \
   qt/forms/transactiondescdialog.ui \
-  qt/vitae/forms/coincontrolzpivdialog.ui \
   qt/vitae/forms/loadingdialog.ui \
   qt/forms/zVitcontroldialog.ui \
   qt/vitae/forms/snackbar.ui \
@@ -166,7 +165,6 @@ QT_MOC_CPP = \
   qt/vitae/moc_loadingdialog.cpp \
   qt/moc_zVitcontroldialog.cpp \
   qt/vitae/moc_pwidget.cpp \
-  qt/vitae/moc_coincontrolzpivdialog.cpp \
   qt/vitae/moc_snackbar.cpp \
   qt/vitae/moc_navmenuwidget.cpp \
   qt/vitae/moc_lockunlock.cpp \
@@ -307,7 +305,6 @@ BITCOIN_QT_H = \
   qt/winshutdownmonitor.h \
   qt/zVitcontroldialog.h \
   qt/vitae/pwidget.h \
-  qt/vitae/coincontrolzpivdialog.h \
   qt/vitae/snackbar.h \
   qt/vitae/navmenuwidget.h \
   qt/vitae/lockunlock.h \
@@ -682,7 +679,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/loadingdialog.cpp \
   qt/zVitcontroldialog.cpp \
   qt/vitae/pwidget.cpp \
-  qt/vitae/coincontrolzpivdialog.cpp \
   qt/vitae/snackbar.cpp \
   qt/vitae/navmenuwidget.cpp \
   qt/vitae/lockunlock.cpp \

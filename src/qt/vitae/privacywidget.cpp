@@ -3,7 +3,6 @@
 #include <QFile>
 #include "qt/vitae/qtutils.h"
 #include "guiutil.h"
-#include "qt/vitae/coincontrolzpivdialog.h"
 #include "qt/vitae/denomgenerationdialog.h"
 #include "qt/vitae/defaultdialog.h"
 #include "qt/vitae/furlistrow.h"

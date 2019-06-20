@@ -6,7 +6,6 @@
 #include "qt/vitae/sendchangeaddressdialog.h"
 #include "qt/vitae/optionbutton.h"
 #include "qt/vitae/sendcustomfeedialog.h"
-#include "qt/vitae/coincontrolzpivdialog.h"
 #include "qt/vitae/sendconfirmdialog.h"
 #include "qt/vitae/myaddressrow.h"
 #include "optionsmodel.h"
