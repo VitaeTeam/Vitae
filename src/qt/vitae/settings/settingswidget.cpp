@@ -10,10 +10,8 @@
 #include "qt/vitae/settings/settingsinformationwidget.h"
 #include "qt/vitae/settings/settingsconsolewidget.h"
 #include "qt/vitae/settings/settingswindowoptionswidget.h"
-#include "qt/vitae/settings/settingsfaqwidget.h"
 #include "qt/vitae/settings/forms/ui_settingswidget.h"
 #include "qt/vitae/qtutils.h"
-#include <QFile>
 #include <QScrollBar>
 #include <QDataWidgetMapper>
 #include "optionsmodel.h"
@@ -135,7 +133,7 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
 
     // Help
     connect(ui->pushButtonHelp, SIGNAL(clicked()), this, SLOT(onHelpClicked()));
-    connect(ui->pushButtonHelp1, SIGNAL(clicked()), this, SLOT(onFaqClicked()));
+    connect(ui->pushButtonHelp1, SIGNAL(clicked()), window, SLOT(openFAQ()));
 
     // Get restart command-line parameters and handle restart
     connect(settingsWalletRepairWidget, &SettingsWalletRepairWidget::handleRestart, [this](QStringList arg){emit handleRestart(arg);});
@@ -325,13 +323,6 @@ void SettingsWidget::onHelpClicked() {
     } else {
         ui->helpButtonsWidget->setVisible(false);
     }
-}
-
-void SettingsWidget::onFaqClicked() {
-    window->showHide(true);
-    SettingsFaqWidget* dialog = new SettingsFaqWidget(window);
-    openDialogWithOpaqueBackgroundFullScreen(dialog, window);
-    dialog->deleteLater();
 }
 
 void SettingsWidget::onAboutClicked() {
