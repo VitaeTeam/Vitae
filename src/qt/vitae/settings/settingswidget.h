@@ -14,7 +14,6 @@
 #include "qt/vitae/settings/settingsmultisendwidget.h"
 #include "qt/vitae/settings/settingsinformationwidget.h"
 #include "qt/vitae/settings/settingsconsolewidget.h"
-#include "qt/vitae/settings/settingswindowoptionswidget.h"
 
 class VITAEGUI;
 
@@ -59,7 +58,6 @@ private slots:
     void onMainOptionsClicked();
     void onWalletOptionsClicked();
     void onNetworkOptionsClicked();
-    void onWindowOptionsClicked();
     void onDisplayOptionsClicked();
 
     // Tools
@@ -86,7 +84,6 @@ private:
     SettingsMultisendWidget *settingsMultisendWidget;
     SettingsInformationWidget *settingsInformationWidget;
     SettingsConsoleWidget *settingsConsoleWidget;
-    SettingsWindowOptionsWidget *settingsWindowOptionsWidget;
 
     QDataWidgetMapper* mapper;
 

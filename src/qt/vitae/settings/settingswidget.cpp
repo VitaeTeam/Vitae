@@ -1,4 +1,5 @@
 #include "qt/vitae/settings/settingswidget.h"
+#include "qt/vitae/settings/forms/ui_settingswidget.h"
 #include "qt/vitae/settings/settingsbackupwallet.h"
 #include "qt/vitae/settings/settingsbittoolwidget.h"
 #include "qt/vitae/settings/settingswalletrepairwidget.h"
@@ -9,13 +10,11 @@
 #include "qt/vitae/settings/settingsmultisendwidget.h"
 #include "qt/vitae/settings/settingsinformationwidget.h"
 #include "qt/vitae/settings/settingsconsolewidget.h"
-#include "qt/vitae/settings/settingswindowoptionswidget.h"
-#include "qt/vitae/settings/forms/ui_settingswidget.h"
 #include "qt/vitae/qtutils.h"
-#include <QScrollBar>
-#include <QDataWidgetMapper>
 #include "optionsmodel.h"
 #include "clientmodel.h"
+#include <QScrollBar>
+#include <QDataWidgetMapper>
 
 SettingsWidget::SettingsWidget(VITAEGUI* parent) :
     PWidget(parent),
@@ -55,7 +54,6 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
     ui->pushButtonOptions1->setProperty("cssClass", "btn-settings-options");
     ui->pushButtonOptions2->setProperty("cssClass", "btn-settings-options");
     ui->pushButtonOptions3->setProperty("cssClass", "btn-settings-options");
-    ui->pushButtonOptions4->setProperty("cssClass", "btn-settings-options");
     ui->pushButtonOptions5->setProperty("cssClass", "btn-settings-options");
 
     ui->pushButtonTools->setProperty("cssClass", "btn-settings-check");
@@ -73,7 +71,6 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
         ui->pushButtonOptions1,
         ui->pushButtonOptions2,
         ui->pushButtonOptions3,
-        ui->pushButtonOptions4,
         ui->pushButtonOptions5,
         ui->pushButtonConfiguration3,
         ui->pushButtonConfiguration4,
@@ -103,8 +100,6 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
     settingsMultisendWidget = new SettingsMultisendWidget(window, this);
     settingsInformationWidget = new SettingsInformationWidget(window, this);
     settingsConsoleWidget = new SettingsConsoleWidget(window, this);
-    settingsWindowOptionsWidget = new SettingsWindowOptionsWidget(window, this);
-
 
     ui->stackedWidgetContainer->addWidget(settingsBackupWallet);
     ui->stackedWidgetContainer->addWidget(settingsBitToolWidget);
@@ -117,7 +112,6 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
     ui->stackedWidgetContainer->addWidget(settingsMultisendWidget);
     ui->stackedWidgetContainer->addWidget(settingsInformationWidget);
     ui->stackedWidgetContainer->addWidget(settingsConsoleWidget);
-    ui->stackedWidgetContainer->addWidget(settingsWindowOptionsWidget);
     ui->stackedWidgetContainer->setCurrentWidget(settingsBackupWallet);
 
     // File Section
@@ -130,7 +124,6 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
     connect(ui->pushButtonOptions1, SIGNAL(clicked()), this, SLOT(onMainOptionsClicked()));
     connect(ui->pushButtonOptions2, SIGNAL(clicked()), this, SLOT(onWalletOptionsClicked()));
     connect(ui->pushButtonOptions3, SIGNAL(clicked()), this, SLOT(onNetworkOptionsClicked()));
-    connect(ui->pushButtonOptions4, SIGNAL(clicked()), this, SLOT(onWindowOptionsClicked()));
     connect(ui->pushButtonOptions5, SIGNAL(clicked()), this, SLOT(onDisplayOptionsClicked()));
 
     // Configuration
@@ -152,11 +145,7 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
     // Get restart command-line parameters and handle restart
     connect(settingsWalletRepairWidget, &SettingsWalletRepairWidget::handleRestart, [this](QStringList arg){emit handleRestart(arg);});
 
-    connect(settingsBackupWallet,
-            &SettingsBackupWallet::message,
-            this, &SettingsWidget::message
-    );
-
+    connect(settingsBackupWallet,&SettingsBackupWallet::message,this, &SettingsWidget::message);
     connect(settingsBackupWallet, &SettingsBackupWallet::showHide, this, &SettingsWidget::showHide);
     connect(settingsBackupWallet, &SettingsBackupWallet::execDialog, this, &SettingsWidget::execDialog);
 
@@ -278,11 +267,6 @@ void SettingsWidget::onNetworkOptionsClicked() {
     selectOption(ui->pushButtonOptions3);
 }
 
-void SettingsWidget::onWindowOptionsClicked() {
-    ui->stackedWidgetContainer->setCurrentWidget(settingsWindowOptionsWidget);
-    selectOption(ui->pushButtonOptions4);
-}
-
 void SettingsWidget::onDisplayOptionsClicked() {
     ui->stackedWidgetContainer->setCurrentWidget(settingsDisplayOptionsWidget);
     selectOption(ui->pushButtonOptions5);
@@ -361,11 +345,9 @@ void SettingsWidget::setMapper(){
     settingsMainOptionsWidget->setMapper(mapper);
     settingsWalletOptionsWidget->setMapper(mapper);
     settingsNetworkWidget->setMapper(mapper);
-    settingsWindowOptionsWidget->setMapper(mapper);
     settingsDisplayOptionsWidget->setMapper(mapper);
 }
 
-SettingsWidget::~SettingsWidget()
-{
+SettingsWidget::~SettingsWidget(){
     delete ui;
 }
