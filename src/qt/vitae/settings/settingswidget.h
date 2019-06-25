@@ -7,7 +7,6 @@
 #include "qt/vitae/settings/settingsbittoolwidget.h"
 #include "qt/vitae/settings/settingssignmessagewidgets.h"
 #include "qt/vitae/settings/settingswalletrepairwidget.h"
-#include "qt/vitae/settings/settingsnetworkwidget.h"
 #include "qt/vitae/settings/settingswalletoptionswidget.h"
 #include "qt/vitae/settings/settingsmainoptionswidget.h"
 #include "qt/vitae/settings/settingsdisplayoptionswidget.h"
@@ -57,7 +56,6 @@ private slots:
     void onOptionsClicked();
     void onMainOptionsClicked();
     void onWalletOptionsClicked();
-    void onNetworkOptionsClicked();
     void onDisplayOptionsClicked();
 
     // Tools
@@ -70,6 +68,8 @@ private slots:
     void onHelpClicked();
     void onAboutClicked();
 
+    void onResetAction();
+    void onSaveOptionsClicked();
 private:
     Ui::SettingsWidget *ui;
 
@@ -77,7 +77,6 @@ private:
     SettingsBitToolWidget *settingsBitToolWidget;
     SettingsSignMessageWidgets *settingsSingMessageWidgets;
     SettingsWalletRepairWidget *settingsWalletRepairWidget;
-    SettingsNetworkWidget *settingsNetworkWidget;
     SettingsWalletOptionsWidget *settingsWalletOptionsWidget;
     SettingsMainOptionsWidget *settingsMainOptionsWidget;
     SettingsDisplayOptionsWidget *settingsDisplayOptionsWidget;
