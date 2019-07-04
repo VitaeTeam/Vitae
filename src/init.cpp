@@ -2027,6 +2027,10 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
 
         // Run a thread to flush wallet periodically
         threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
+
+        // ppcoin:mint proof-of-stake blocks in the background
+        if (GetBoolArg("-staking", true))
+            threadGroup.create_thread(boost::bind(&TraceThread<void (*)()>, "stakemint", &ThreadStakeMinter));
     }
 #endif
 
