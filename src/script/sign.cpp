@@ -52,7 +52,7 @@ bool SignN(const std::vector<valtype>& multisigdata, const CKeyStore& keystore, 
  * Returns false if scriptPubKey could not be completely satisfied.
  */
 bool Solver(const CKeyStore& keystore, const CScript& scriptPubKey, uint256 hash, int nHashType,
-                  CScript& scriptSigRet, txnouttype& whichTypeRet)
+                  CScript& scriptSigRet, txnouttype& whichTypeRet, bool fColdStake = false)
 {
     scriptSigRet.clear();
 
@@ -102,12 +102,28 @@ bool Solver(const CKeyStore& keystore, const CScript& scriptPubKey, uint256 hash
     case TX_MULTISIG:
         scriptSigRet << OP_0; // workaround CHECKMULTISIG bug
         return (SignN(vSolutions, keystore, hash, nHashType, scriptSigRet));
+
+    case TX_COLDSTAKE:
+        if (fColdStake) {
+            // sign with the cold staker key
+            keyID = CKeyID(uint160(vSolutions[0]));
+        } else {
+            // sign with the owner key
+            keyID = CKeyID(uint160(vSolutions[1]));
+        }
+        if (!Sign1(keyID, keystore, hash, nHashType, scriptSigRet))
+            return error("*** %s: failed to sign with the %s key.",
+                    __func__, fColdStake ? "cold staker" : "owner");
+        CPubKey vch;
+        keystore.GetPubKey(keyID, vch);
+        scriptSigRet << (fColdStake ? (int)OP_TRUE : OP_FALSE) << ToByteVector(vch);
+        return true;
     }
     LogPrintf("*** solver no case met \n");
     return false;
 }
 
-bool SignSignature(const CKeyStore &keystore, const CScript& fromPubKey, CMutableTransaction& txTo, unsigned int nIn, int nHashType)
+bool SignSignature(const CKeyStore &keystore, const CScript& fromPubKey, CMutableTransaction& txTo, unsigned int nIn, int nHashType, bool fColdStake)
 {
     assert(nIn < txTo.vin.size());
     CTxIn& txin = txTo.vin[nIn];
@@ -117,7 +133,7 @@ bool SignSignature(const CKeyStore &keystore, const CScript& fromPubKey, CMutabl
     uint256 hash = SignatureHash(fromPubKey, txTo, nIn, nHashType);
 
     txnouttype whichType;
-    if (!Solver(keystore, fromPubKey, hash, nHashType, txin.scriptSig, whichType))
+    if (!Solver(keystore, fromPubKey, hash, nHashType, txin.scriptSig, whichType, fColdStake))
         return false;
 
     if (whichType == TX_SCRIPTHASH)
@@ -142,14 +158,14 @@ bool SignSignature(const CKeyStore &keystore, const CScript& fromPubKey, CMutabl
     return VerifyScript(txin.scriptSig, fromPubKey, STANDARD_SCRIPT_VERIFY_FLAGS, MutableTransactionSignatureChecker(&txTo, nIn));
 }
 
-bool SignSignature(const CKeyStore &keystore, const CTransaction& txFrom, CMutableTransaction& txTo, unsigned int nIn, int nHashType)
+bool SignSignature(const CKeyStore &keystore, const CTransaction& txFrom, CMutableTransaction& txTo, unsigned int nIn, int nHashType, bool fColdStake)
 {
     assert(nIn < txTo.vin.size());
     CTxIn& txin = txTo.vin[nIn];
     assert(txin.prevout.n < txFrom.vout.size());
     const CTxOut& txout = txFrom.vout[txin.prevout.n];
 
-    return SignSignature(keystore, txout.scriptPubKey, txTo, nIn, nHashType);
+    return SignSignature(keystore, txout.scriptPubKey, txTo, nIn, nHashType, fColdStake);
 }
 
 static CScript PushAll(const std::vector<valtype>& values)
@@ -230,6 +246,7 @@ static CScript CombineSignatures(const CScript& scriptPubKey, const CTransaction
         return PushAll(sigs2);
     case TX_PUBKEY:
     case TX_PUBKEYHASH:
+    case TX_COLDSTAKE:
         // Signatures are bigger than placeholders or empty scripts:
         if (sigs1.empty() || sigs1[0].empty())
             return PushAll(sigs2);
