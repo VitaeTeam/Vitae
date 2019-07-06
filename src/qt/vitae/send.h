@@ -7,6 +7,7 @@
 #include "qt/vitae/pwidget.h"
 #include "qt/vitae/contactsdropdown.h"
 #include "qt/vitae/sendmultirow.h"
+#include "qt/vitae/sendcustomfeedialog.h"
 #include "walletmodel.h"
 #include "coincontroldialog.h"
 #include "qt/zVitcontroldialog.h"
@@ -67,6 +68,9 @@ private:
     Ui::send *ui;
     QPushButton *coinIcon;
     QPushButton *btnContacts;
+
+    SendCustomFeeDialog* customFeeDialog = nullptr;
+    bool isCustomFeeSelected = false;
 
     int nDisplayUnit;
     QList<SendMultiRow*> entries;
