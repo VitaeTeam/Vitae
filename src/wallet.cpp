@@ -514,6 +514,7 @@ bool CWallet::GetFundamentalnodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, C
     // Find possible candidates (remove delegated)
     std::vector<COutput> vPossibleCoins;
     AvailableCoins(vPossibleCoins, true, NULL, false, ONLY_10000, false, 1, false, false);
+
     if (vPossibleCoins.empty()) {
         LogPrintf("CWallet::GetFundamentalnodeVinAndKeys -- Could not locate any valid fundamentalnode vin\n");
         return false;
