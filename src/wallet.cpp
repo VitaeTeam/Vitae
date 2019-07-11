@@ -2133,7 +2133,10 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
     LOCK(cs_main);
     //Add VIT
     std::vector<COutput> vCoins;
-    AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1);
+
+    // include cold, exclude delegated
+    AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1, true, false);
+
     CAmount nAmountSelected = 0;
     if (GetBoolArg("-vitstake", true) && !fPrecompute) {
         for (const COutput &out : vCoins) {
