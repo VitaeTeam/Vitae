@@ -1169,7 +1169,7 @@ CAmount CWalletTx::GetStakeDelegationDebit(bool fUseCache) const
     return nDebit;
 }
 
-CAmount CWalletTx::GetCredit(const isminefilter& filter) const
+CAmount CWalletTx::GetCredit(const isminefilter& filter, const bool fUnspent) const
 {
     // Must wait until coinbase is safely deep enough in the chain before valuing it
     if (IsCoinBase() && GetBlocksToMaturity() > 0)
@@ -1181,7 +1181,7 @@ CAmount CWalletTx::GetCredit(const isminefilter& filter) const
         if (fCreditCached)
             credit += nCreditCached;
         else {
-            nCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE);
+            nCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE, fUnspent);
             fCreditCached = true;
             credit += nCreditCached;
         }
@@ -1190,7 +1190,7 @@ CAmount CWalletTx::GetCredit(const isminefilter& filter) const
         if (fWatchCreditCached)
             credit += nWatchCreditCached;
         else {
-            nWatchCreditCached = pwallet->GetCredit(*this, ISMINE_WATCH_ONLY);
+            nWatchCreditCached = pwallet->GetCredit(*this, ISMINE_WATCH_ONLY, fUnspent);
             fWatchCreditCached = true;
             credit += nWatchCreditCached;
         }
@@ -1199,7 +1199,7 @@ CAmount CWalletTx::GetCredit(const isminefilter& filter) const
         if (fColdCreditCached)
             credit += nColdCreditCached;
         else {
-            nColdCreditCached = pwallet->GetCredit(*this, ISMINE_COLD);
+            nColdCreditCached = pwallet->GetCredit(*this, ISMINE_COLD, fUnspent);
             fColdCreditCached = true;
             credit += nColdCreditCached;
         }
@@ -1208,7 +1208,7 @@ CAmount CWalletTx::GetCredit(const isminefilter& filter) const
         if (fDelegatedCreditCached)
             credit += nDelegatedCreditCached;
         else {
-            nDelegatedCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE_DELEGATED);
+            nDelegatedCreditCached = pwallet->GetCredit(*this, ISMINE_SPENDABLE_DELEGATED, fUnspent);
             fDelegatedCreditCached = true;
             credit += nDelegatedCreditCached;
         }
@@ -1242,7 +1242,7 @@ CAmount CWalletTx::GetAvailableCredit(bool fUseCache) const
     if (fUseCache && fAvailableCreditCached)
         return nAvailableCreditCached;
 
-    CAmount nCredit = GetCredit(ISMINE_SPENDABLE);
+    CAmount nCredit = GetCredit(ISMINE_SPENDABLE, true);
     nAvailableCreditCached = nCredit;
     fAvailableCreditCached = true;
     return nCredit;
@@ -1260,7 +1260,7 @@ CAmount CWalletTx::GetColdStakingCredit(bool fUseCache) const
     if (fUseCache && fColdCreditCached)
         return nColdCreditCached;
 
-    CAmount nCredit = GetCredit(ISMINE_COLD);
+    CAmount nCredit = GetCredit(ISMINE_COLD, true);
     nColdCreditCached = nCredit;
     fColdCreditCached = true;
     return nCredit;
@@ -1278,7 +1278,7 @@ CAmount CWalletTx::GetStakeDelegationCredit(bool fUseCache) const
     if (fUseCache && fDelegatedCreditCached)
         return nDelegatedCreditCached;
 
-    CAmount nCredit = GetCredit(ISMINE_SPENDABLE_DELEGATED);
+    CAmount nCredit = GetCredit(ISMINE_SPENDABLE_DELEGATED, true);
     nDelegatedCreditCached = nCredit;
     fDelegatedCreditCached = true;
     return nCredit;
@@ -5731,11 +5731,12 @@ CAmount CWallet::GetDebit(const CTransaction& tx, const isminefilter& filter) co
     return nDebit;
 }
 
-CAmount CWallet::GetCredit(const CTransaction& tx, const isminefilter& filter) const
+CAmount CWallet::GetCredit(const CTransaction& tx, const isminefilter& filter, const bool fUnspent) const
 {
     CAmount nCredit = 0;
-    for (const CTxOut& txout : tx.vout) {
-        nCredit += GetCredit(txout, filter);
+    for (int i = 0; i < tx.vout.size(); i++) {
+        if (fUnspent && IsSpent(tx.GetHash(), i)) continue;
+        nCredit += GetCredit(tx.vout[i], filter);
     }
     if (!MoneyRange(nCredit))
         throw std::runtime_error("CWallet::GetCredit() : value out of range");
