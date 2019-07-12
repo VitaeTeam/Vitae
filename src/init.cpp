@@ -553,6 +553,7 @@ std::string HelpMessage(HelpMessageMode mode)
 #ifdef ENABLE_WALLET
     strUsage += HelpMessageGroup(_("Staking options:"));
     strUsage += HelpMessageOpt("-staking=<n>", strprintf(_("Enable staking functionality (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-coldstaking=<n>", strprintf(_("Enable cold staking functionality (0-1, default: %u). Disabled if staking=0"), 1));
     strUsage += HelpMessageOpt("-vitstake=<n>", strprintf(_("Enable or disable staking functionality for VIT inputs (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-zvitstake=<n>", strprintf(_("Enable or disable staking functionality for zVIT inputs (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-reservebalance=<amt>", _("Keep the specified amount available for spending at all times (default: 0)"));
