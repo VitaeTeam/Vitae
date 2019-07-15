@@ -196,12 +196,16 @@ void TopBar::lockDropdownClicked(const StateClicked& state){
 
         switch (lockUnlockWidget->lock) {
             case 0: {
+                if (walletModel->getEncryptionStatus() == WalletModel::Locked)
+                    break;
                 walletModel->setWalletLocked(true);
                 ui->pushButtonLock->setButtonText("Wallet Locked");
                 ui->pushButtonLock->setButtonClassStyle("cssClass", "btn-check-status-lock", true);
                 break;
             }
             case 1: {
+                if (walletModel->getEncryptionStatus() == WalletModel::Unlocked)
+                    break;
                 showHideOp(true);
                 AskPassphraseDialog *dlg = new AskPassphraseDialog(AskPassphraseDialog::Mode::Unlock, window, walletModel,
                                         AskPassphraseDialog::Context::ToggleLock);
@@ -215,6 +219,8 @@ void TopBar::lockDropdownClicked(const StateClicked& state){
                 break;
             }
             case 2: {
+                if (walletModel->getEncryptionStatus() == WalletModel::UnlockedForAnonymizationOnly)
+                    break;
                 showHideOp(true);
                 AskPassphraseDialog *dlg = new AskPassphraseDialog(AskPassphraseDialog::Mode::UnlockAnonymize, window, walletModel,
                                         AskPassphraseDialog::Context::ToggleLock);
