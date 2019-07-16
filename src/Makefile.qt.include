@@ -463,10 +463,10 @@ RES_ICONS = \
   qt/vitae/res/img/img-empty-contacts.svg \
   qt/vitae/res/img/btn-radio-off.svg \
   qt/vitae/res/img/ic-check-sync.png \
-  qt/vitae/res/img/ic-check-faq.svg \
   qt/vitae/res/img/ic-nav-privacy-hover.svg \
   qt/vitae/res/img/img-empty-dark-contacts.svg \
   qt/vitae/res/img/ic-check-sync.svg \
+  qt/vitae/res/img/ic-check-faq.svg \
   qt/vitae/res/img/ic-nav-privacy.svg \
   qt/vitae/res/img/img-empty-dark-error.svg \
   qt/vitae/res/img/ic-add-label.svg \
