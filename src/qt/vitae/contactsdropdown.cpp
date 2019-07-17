@@ -41,7 +41,6 @@ public:
     bool isLightTheme;
 };
 
-
 ContactsDropdown::ContactsDropdown(int minWidth, int minHeight, PWidget *parent) :
    PWidget(parent)
 {
