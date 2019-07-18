@@ -430,6 +430,7 @@ RES_ICONS = \
   qt/res/icons/yesvote.png \
   qt/res/icons/novote.png \
   qt/res/icons/abstainvote.png \
+  qt/vitae/res/img/bg-dashboard-banner.png \
   qt/vitae/res/img/bg-multi-number-dark.svg \
   qt/vitae/res/img/ic-check-locked.svg \
   qt/vitae/res/img/ic-nav-address.svg \
@@ -450,10 +451,18 @@ RES_ICONS = \
   qt/vitae/res/img/ic-nav-master-active.svg \
   qt/vitae/res/img/ic-watch-password-white.svg \
   qt/vitae/res/img/bg-welcome-container.jpg \
+  qt/vitae/res/img/bg-welcome-container.png \
+  qt/vitae/res/img/bg-welcome-container.svg \
+  qt/vitae/res/img/bg-welcome-container@2x.png \
+  qt/vitae/res/img/bg-welcome-container@3x.png \
   qt/vitae/res/img/ic-check-staking-off.svg \
   qt/vitae/res/img/ic-nav-master-hover.svg \
   qt/vitae/res/img/ic-watch-password.svg \
   qt/vitae/res/img/bg-welcome.jpg \
+  qt/vitae/res/img/bg-welcome.svg \
+  qt/vitae/res/img/bg-welcome@2x.jpg \
+  qt/vitae/res/img/bg-welcome@3x.jpg \
+  qt/vitae/res/img/bg-welcome.png \
   qt/vitae/res/img/ic-check-staking.svg \
   qt/vitae/res/img/ic-nav-master.svg \
   qt/vitae/res/img/img-dashboard-banner.jpg \
@@ -465,6 +474,8 @@ RES_ICONS = \
   qt/vitae/res/img/ic-check-sync.png \
   qt/vitae/res/img/ic-nav-privacy-hover.svg \
   qt/vitae/res/img/img-empty-dark-contacts.svg \
+  qt/vitae/res/img/ic-contact-arrow-down.svg \
+  qt/vitae/res/img/ic-contact-arrow-down-white.svg \
   qt/vitae/res/img/ic-check-sync.svg \
   qt/vitae/res/img/ic-check-faq.svg \
   qt/vitae/res/img/ic-nav-privacy.svg \
@@ -532,6 +543,7 @@ RES_ICONS = \
   qt/vitae/res/img/ic-connect.svg \
   qt/vitae/res/img/ic-submenu-lock.svg \
   qt/vitae/res/img/img-logo-vitae@3x.png \
+  qt/vitae/res/img/img-logo-vitae.svg \
   qt/vitae/res/img/ic-arrow-right-white.svg \
   qt/vitae/res/img/ic-arrow-left-white.svg \
   qt/vitae/res/img/ic-arrow-left.svg \
@@ -601,7 +613,6 @@ RES_ICONS = \
   qt/vitae/res/img/ic-check-liliac-indeterminate.svg \
   qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
   qt/vitae/res/img/ic-check-box-indeterminate.svg \
-  qt/vitae/res/img/ic-check-liliac-indeterminate.svg \
   qt/vitae/res/img/ani-loading-dark.gif \
   qt/vitae/res/img/ani-loading.gif
 
@@ -753,7 +764,9 @@ RES_IMAGES = \
   qt/res/images/qtreeview_selected.png
 
 RES_CSS = \
-  qt/res/css/default.css
+  qt/res/css/default.css \
+  qt/pivx/res/css/style_dark.css \
+  qt/pivx/res/css/style_light.css
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
