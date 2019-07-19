@@ -1,3 +1,7 @@
+// Copyright (c) 2019 The PIVX developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
 #include "qt/vitae/settings/settingsinformationwidget.h"
 #include "qt/vitae/settings/forms/ui_settingsinformationwidget.h"
 #include "clientmodel.h"
