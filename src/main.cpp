@@ -3284,7 +3284,7 @@ bool UpdateZVITAESupply(const CBlock& block, CBlockIndex* pindex, bool fJustChec
                             CWalletTx wtx(pwalletMain, tx);
                             wtx.nTimeReceived = block.GetBlockTime();
                             wtx.SetMerkleBranch(block);
-                            pwalletMain->AddToWallet(wtx);
+                            pwalletMain->AddToWallet(wtx, false, nullptr);
                             setAddedToWallet.insert(txid);
                         }
                     }
@@ -3638,7 +3638,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                         CWalletTx wtx(pwalletMain, tx);
                         wtx.nTimeReceived = pindex->GetBlockTime();
                         wtx.SetMerkleBranch(block);
-                        pwalletMain->AddToWallet(wtx);
+                        pwalletMain->AddToWallet(wtx, false, nullptr);
                         setAddedTx.insert(pSpend.second);
                     }
                 }
