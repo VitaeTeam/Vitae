@@ -282,7 +282,7 @@ void VITAEGUI::messageInfo(const QString& text){
 
 void VITAEGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
 {
-    QString strTitle = tr("PIVX Core"); // default title
+    QString strTitle =  tr("PIVX Core"); // default title
     // Default to information icon
     int nNotifyIcon = Notificator::Information;
 
@@ -321,9 +321,11 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
         int r = 0;
         showNormalIfMinimized();
         if(style & CClientUIInterface::BTN_MASK){
-            r = openStandardDialog(strTitle, message, "OK", "CANCEL");
+            r = openStandardDialog(
+                    (title.isEmpty() ? strTitle : title), message, "OK", "CANCEL"
+                );
         }else{
-            r = openStandardDialog(strTitle, message, "OK");
+            r = openStandardDialog((title.isEmpty() ? strTitle : title), message, "OK");
         }
         if (ret != NULL)
             *ret = r;
