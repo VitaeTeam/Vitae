@@ -94,8 +94,8 @@ SettingsDisplayOptionsWidget::SettingsDisplayOptionsWidget(VITAEGUI* _window, QW
     setCssBtnSecondary(ui->pushButtonReset);
 
     initLanguages();
-    connect(ui->comboBoxLanguage, SIGNAL(valueChanged()), this, SLOT(showRestartWarning()));
-    connect(ui->comboBoxLanguage ,SIGNAL(currentIndexChanged(const QString&)),this,SLOT(languageChanged(const QString&)));
+    connect(ui->comboBoxLanguage, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(showRestartWarning()));
+    connect(ui->comboBoxLanguage ,SIGNAL(currentIndexChanged(const QString&)),this, SLOT(languageChanged(const QString&)));
 }
 
 void SettingsDisplayOptionsWidget::initLanguages(){
