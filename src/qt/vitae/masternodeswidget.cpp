@@ -22,6 +22,7 @@
 #include "walletmodel.h"
 #include "askpassphrasedialog.h"
 #include "util.h"
+#include "qt/pivx/optionbutton.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>
@@ -112,7 +113,7 @@ MasterNodesWidget::MasterNodesWidget(VITAEGUI *parent) :
 
     connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(onCreateMNClicked()));
     connect(ui->listMn, SIGNAL(clicked(QModelIndex)), this, SLOT(onMNClicked(QModelIndex)));
-    connect(ui->btnAbout, SIGNAL(clicked()), window, SLOT(openFAQ()));
+    connect(ui->btnAbout, &OptionButton::clicked, [this](){window->openFAQ(9);});
 }
 
 void MasterNodesWidget::showEvent(QShowEvent *event){
