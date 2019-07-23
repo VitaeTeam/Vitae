@@ -96,7 +96,7 @@ SettingsDisplayOptionsWidget::SettingsDisplayOptionsWidget(VITAEGUI* _window, QW
     setCssBtnSecondary(ui->pushButtonReset);
 
     initLanguages();
-    connect(ui->comboBoxLanguage, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(showRestartWarning()));
+    connect(ui->comboBoxLanguage, SIGNAL(currentIndexChanged()), this, SLOT(showRestartWarning(bool)));
     connect(ui->comboBoxLanguage ,SIGNAL(currentIndexChanged(const QString&)),this, SLOT(languageChanged(const QString&)));
 }
 
