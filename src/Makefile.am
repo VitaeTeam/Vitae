@@ -110,6 +110,8 @@ BITCOIN_CORE_H = \
   checkpoints.h \
   checkqueue.h \
   clientversion.h \
+  coins.h \
+  compat.h \  
   compat/sanity.h \
   consensus/merkle.h \
   consensus/validation.h \
@@ -573,3 +575,4 @@ endif
 if ENABLE_QT_TESTS
 include Makefile.qttest.include
 endif
+
