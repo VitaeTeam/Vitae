@@ -172,8 +172,8 @@ void Bip38ToolDialog::on_clearButton_ENC_clicked()
 CKey key;
 void Bip38ToolDialog::on_decryptKeyButton_DEC_clicked()
 {
-    string strPassphrase = ui->passphraseIn_DEC->text().toStdString();
-    string strKey = ui->encryptedKeyIn_DEC->text().toStdString();
+    std::string strPassphrase = ui->passphraseIn_DEC->text().toStdString();
+    std::string strKey = ui->encryptedKeyIn_DEC->text().toStdString();
 
     uint256 privKey;
     bool fCompressed;

@@ -43,7 +43,6 @@
 static const int64_t MASTERNODEAMOUNT = 20000 ;
 extern std::string strMasterNodePrivKey;
 
-using namespace std;
 
 class CMasternode;
 class CMasternodePayments;

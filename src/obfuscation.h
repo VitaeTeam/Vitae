@@ -57,7 +57,7 @@ extern CObfuscationPool obfuScationPool;
 extern CObfuScationSigner obfuScationSigner;
 extern std::vector<CObfuscationQueue> vecObfuscationQueue;
 extern std::string strFundamentalNodePrivKey;
-extern map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
+extern std::map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
 extern CActiveFundamentalnode activeFundamentalnode;
 
 
@@ -199,7 +199,7 @@ class CObfuscationBroadcastTx
 public:
     CTransaction tx;
     CTxIn vin;
-    vector<unsigned char> vchSig;
+    std::vector<unsigned char> vchSig;
     int64_t sigTime;
 };
 

@@ -588,14 +588,14 @@ int main(int argc, char* argv[])
 
 #ifdef ENABLE_WALLET
     /// 7a. parse fundamentalnode.conf
-    string strErr;
+    std::string strErr;
     if (!fundamentalnodeConfig.read(strErr)) {
         QMessageBox::critical(0, QObject::tr("VITAE Core"),
             QObject::tr("Error reading fundamentalnode configuration file: %1").arg(strErr.c_str()));
         return 0;
     }
 
-    string strErrMN;
+    std::string strErrMN;
     if (!masternodeConfig.read(strErrMN)) {
         QMessageBox::critical(0, QObject::tr("VITAE Core"),
             QObject::tr("Error reading masternode configuration file: %1").arg(strErrMN.c_str()));
