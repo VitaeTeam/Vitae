@@ -469,7 +469,7 @@ bool WalletModel::isCoinStakeMine(QString id){
     uint256 hashTx;
     hashTx.SetHex(id.toStdString());
     const CWalletTx* tx = getTx(hashTx);
-    return tx->IsCoinStake() && wallet->IsMine(tx->vout[1]) == ISMINE_ALL;
+    return tx->IsCoinStake() && wallet->IsMine(tx->vin[0]);
 }
 
 bool WalletModel::mintCoins(CAmount value, CCoinControl* coinControl ,std::string &strError){
@@ -495,9 +495,6 @@ bool WalletModel::createZpivSpend(
     for(std::pair<CBitcoinAddress*, CAmount> pair : outputs){
         value += pair.second;
     }
-
-    // Default: assume something goes wrong. Depending on the problem this gets more specific below
-    int nStatus = ZVIT_SPEND_ERROR;
 
     if (wallet->IsLocked()) {
         receipt.SetStatus("Error: Wallet locked, unable to create transaction!", ZVIT_WALLET_LOCKED);
