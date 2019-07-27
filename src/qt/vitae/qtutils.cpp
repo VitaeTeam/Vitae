@@ -11,6 +11,7 @@
 
 #include <QFile>
 #include <QStyle>
+#include <QListView>
 #include <QGraphicsDropShadowEffect>
 
 // Open dialog at the bottom
@@ -175,6 +176,18 @@ QColor getRowColor(bool isLightTheme, bool isHovered, bool isSelected){
             return QColor("#0f0b16");
         }
     }
+}
+
+void initComboBox(QComboBox* combo, QLineEdit* lineEdit){
+    setCssProperty(combo, "btn-combo");
+    combo->setEditable(true);
+    if (lineEdit) {
+        lineEdit->setReadOnly(true);
+        lineEdit->setAlignment(Qt::AlignRight);
+        combo->setLineEdit(lineEdit);
+    }
+    combo->setStyleSheet("selection-background-color:transparent; selection-color:transparent;");
+    combo->setView(new QListView());
 }
 
 void initCssEditLine(QLineEdit *edit, bool isDialog){
