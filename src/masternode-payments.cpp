@@ -318,7 +318,6 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
     if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT))
         return false;
     LogPrint("masternode","Masternode payment enforcement is disabled, accepting block\n");
-
     return true;
 }
 
