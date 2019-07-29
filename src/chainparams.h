@@ -105,6 +105,8 @@ public:
     /** Return the number of blocks in a budget cycle */
     int GetBudgetCycleBlocks() const { return nBudgetCycleBlocks; }
 
+    CAmount GetMinColdStakingAmount() const { return nMinColdStakingAmount; }
+
     /** Spork key and Masternode Handling **/
     std::string SporkPubKey() const { return strSporkPubKey; }
     std::string SporkPubKeyOld() const { return strSporkPubKeyOld; }
@@ -232,6 +234,7 @@ protected:
     int nBlockStakeModifierlV2;
     int nBlockEnforceNewMessageSignatures;
     int nColdStakingStart;
+    CAmount nMinColdStakingAmount;
 
     // fake serial attack
     int nFakeSerialBlockheightEnd = 0;
