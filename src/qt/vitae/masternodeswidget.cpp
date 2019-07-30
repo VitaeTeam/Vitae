@@ -97,10 +97,10 @@ MasterNodesWidget::MasterNodesWidget(VITAEGUI *parent) :
     setCssBtnPrimary(ui->pushButtonSave);
 
     /* Options */
-    ui->btnAbout->setTitleClassAndText("btn-title-grey", "What is a Master Node?");
-    ui->btnAbout->setSubTitleClassAndText("text-subtitle", "FAQ explaining what Master Nodes are");
+    ui->btnAbout->setTitleClassAndText("btn-title-grey", "What is a Masternode?");
+    ui->btnAbout->setSubTitleClassAndText("text-subtitle", "FAQ explaining what Masternodes are");
     ui->btnAboutController->setTitleClassAndText("btn-title-grey", "What is a Controller?");
-    ui->btnAboutController->setSubTitleClassAndText("text-subtitle", "FAQ explaining what is a Master Node Controller");
+    ui->btnAboutController->setSubTitleClassAndText("text-subtitle", "FAQ explaining what is a Masternode Controller");
 
     setCssProperty(ui->listMn, "container");
     ui->listMn->setItemDelegate(delegate);
