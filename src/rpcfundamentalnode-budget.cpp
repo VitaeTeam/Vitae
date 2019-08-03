@@ -152,11 +152,50 @@ UniValue fnbudget(const UniValue& params, bool fHelp)
     return NullUniValue;
 }
 
-UniValue preparebudget(const UniValue& params, bool fHelp)
+void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std::string &strURL,
+                       int &nPaymentCount, int &nBlockStart, CBitcoinAddress &address, CAmount &nAmount)
 {
     int nBlockMin = 0;
     CBlockIndex* pindexPrev = chainActive.Tip();
 
+    strProposalName = SanitizeString(params[0].get_str());
+    if (strProposalName.size() > 20)
+        throw std::runtime_error("Invalid proposal name, limit of 20 characters.");
+
+    strURL = SanitizeString(params[1].get_str());
+    if (strURL.size() > 64)
+        throw std::runtime_error("Invalid url, limit of 64 characters.");
+
+    nPaymentCount = params[2].get_int();
+    if (nPaymentCount < 1)
+        throw std::runtime_error("Invalid payment count, must be more than zero.");
+
+    // Start must be in the next budget cycle
+    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+
+    nBlockStart = params[3].get_int();
+    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0) {
+        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+        throw std::runtime_error(strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext));
+    }
+
+    int nBlockEnd = nBlockStart + (GetBudgetPaymentCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
+
+    if (nBlockStart < nBlockMin)
+        throw std::runtime_error("Invalid block start, must be more than current height.");
+
+    if (nBlockEnd < pindexPrev->nHeight)
+        throw std::runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
+
+    address = params[4].get_str();
+    if (!address.IsValid())
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
+
+    nAmount = AmountFromValue(params[5]);
+}
+
+UniValue preparebudget(const UniValue& params, bool fHelp)
+{
     if (fHelp || params.size() != 6)
         throw std::runtime_error(
             "preparebudget \"proposal-name\" \"url\" payment-count block-start \"vitae-address\" monthy-payment\n"
@@ -179,42 +218,18 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 
-    std::string strProposalName = SanitizeString(params[0].get_str());
-    if (strProposalName.size() > 20)
-        throw std::runtime_error("Invalid proposal name, limit of 20 characters.");
+    std::string strProposalName;
+    std::string strURL;
+    int nPaymentCount;
+    int nBlockStart;
+    CBitcoinAddress address;
+    CAmount nAmount;
 
-    std::string strURL = SanitizeString(params[1].get_str());
-    if (strURL.size() > 64)
-        throw std::runtime_error("Invalid url, limit of 64 characters.");
-
-    int nPaymentCount = params[2].get_int();
-    if (nPaymentCount < 1)
-        throw std::runtime_error("Invalid payment count, must be more than zero.");
-
-    // Start must be in the next budget cycle
-    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
-
-    int nBlockStart = params[3].get_int();
-    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0) {
-        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
-        throw std::runtime_error(strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext));
-    }
-
-    int nBlockEnd = nBlockStart + GetBudgetPaymentCycleBlocks() * nPaymentCount; // End must be AFTER current cycle
-
-    if (nBlockStart < nBlockMin)
-        throw std::runtime_error("Invalid block start, must be more than current height.");
-
-    if (nBlockEnd < pindexPrev->nHeight)
-        throw std::runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
-
-    CBitcoinAddress address(params[4].get_str());
-    if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
 
     // Parse VITAE address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
-    CAmount nAmount = AmountFromValue(params[5]);
+    nAmount = AmountFromValue(params[5]);
 
     //*************************************************************************
 
@@ -247,9 +262,6 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
 
 UniValue submitbudget(const UniValue& params, bool fHelp)
 {
-    int nBlockMin = 0;
-    CBlockIndex* pindexPrev = chainActive.Tip();
-
     if (fHelp || params.size() != 7)
         throw std::runtime_error(
             "submitbudget \"proposal-name\" \"url\" payment-count block-start \"vitae-address\" monthy-payment \"fee-tx\"\n"
@@ -273,42 +285,18 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
     // Check these inputs the same way we check the vote commands:
     // **********************************************************
 
-    std::string strProposalName = SanitizeString(params[0].get_str());
-    if (strProposalName.size() > 20)
-        throw std::runtime_error("Invalid proposal name, limit of 20 characters.");
+    std::string strProposalName;
+    std::string strURL;
+    int nPaymentCount;
+    int nBlockStart;
+    CBitcoinAddress address;
+    CAmount nAmount;
 
-    std::string strURL = SanitizeString(params[1].get_str());
-    if (strURL.size() > 64)
-        throw std::runtime_error("Invalid url, limit of 64 characters.");
-
-    int nPaymentCount = params[2].get_int();
-    if (nPaymentCount < 1)
-        throw std::runtime_error("Invalid payment count, must be more than zero.");
-
-    // Start must be in the next budget cycle
-    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
-
-    int nBlockStart = params[3].get_int();
-    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0) {
-        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
-        throw std::runtime_error(strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext));
-    }
-
-    int nBlockEnd = nBlockStart + (GetBudgetPaymentCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
-
-    if (nBlockStart < nBlockMin)
-        throw std::runtime_error("Invalid block start, must be more than current height.");
-
-    if (nBlockEnd < pindexPrev->nHeight)
-        throw std::runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
-
-    CBitcoinAddress address(params[4].get_str());
-    if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
 
     // Parse VITAE address
     CScript scriptPubKey = GetScriptForDestination(address.Get());
-    CAmount nAmount = AmountFromValue(params[5]);
+    nAmount = AmountFromValue(params[5]);
     uint256 hash = ParseHashV(params[6], "parameter 1");
 
     //create the proposal incase we're the first to make it
