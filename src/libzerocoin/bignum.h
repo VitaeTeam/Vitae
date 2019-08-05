@@ -352,6 +352,7 @@ typedef CBigNum Bignum;
 const CBigNum BN_ZERO = CBigNum(0);
 const CBigNum BN_ONE = CBigNum(1);
 const CBigNum BN_TWO = CBigNum(2);
+const CBigNum BN_THREE = CBigNum(3);
 
 #endif
 
