@@ -5269,30 +5269,6 @@ void CBlockIndex::BuildSkip()
 
 bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDiskBlockPos* dbp)
 {
-    // Preliminary checks
-    int64_t nStartTime = GetTimeMillis();
-    bool checked = CheckBlock(*pblock, state);
-
-    int nMints = 0;
-    int nSpends = 0;
-    for (const CTransaction& tx : pblock->vtx) {
-        if (tx.ContainsZerocoins()) {
-            for (const CTxIn& in : tx.vin) {
-                if (in.IsZerocoinSpend())
-                    nSpends++;
-            }
-            for (const CTxOut& out : tx.vout) {
-                if (out.IsZerocoinMint())
-                    nMints++;
-            }
-        }
-    }
-    if (nMints || nSpends)
-        LogPrintf("%s : block contains %d zVIT mints and %d zVIT spends\n", __func__, nMints, nSpends);
-
-    if (!CheckBlockSignature(*pblock))
-        return error("ProcessNewBlock() : bad proof-of-stake block signature");
-
     if (pblock->GetHash() != Params().HashGenesisBlock() && pfrom != NULL) {
         //if we get this far, check if the prev block is our prev block, if not then request sync and return false
         BlockMap::iterator mi = mapBlockIndex.find(pblock->hashPrevBlock);
@@ -5301,6 +5277,15 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
             return false;
         }
     }
+
+    // Preliminary checks
+    int64_t nStartTime = GetTimeMillis();
+
+    // check block
+    bool checked = CheckBlock(*pblock, state);
+
+    if (!CheckBlockSignature(*pblock))
+        return error("ProcessNewBlock() : bad proof-of-stake block signature");
 
     {
         LOCK(cs_main);
