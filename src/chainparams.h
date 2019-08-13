@@ -80,8 +80,6 @@ public:
     int64_t TargetSpacing() const { return nTargetSpacing; }
     int64_t TargetTimespan(const bool fV2 = true) const { return fV2 ? nTargetTimespan_V2 : nTargetTimespan; }
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
-
-    /** returns the coinbase maturity **/
     int COINBASE_MATURITY() const { return nMaturity; }
 
     /** returns the coinstake maturity (min depth required) **/
