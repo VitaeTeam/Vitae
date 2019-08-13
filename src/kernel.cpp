@@ -33,6 +33,9 @@ unsigned int getIntervalVersion(bool fTestNet)
         return MODIFIER_INTERVAL;
 }
 
+// v1 modifier interval.
+static const int64_t OLD_MODIFIER_INTERVAL = 2087;
+
 // Hard checkpoints of stake modifiers to ensure they are deterministic
 static std::map<int, unsigned int> mapStakeModifierCheckpoints =
     boost::assign::map_list_of(0, 0xfd11f4e7u);
@@ -63,16 +66,6 @@ static int64_t GetStakeModifierSelectionIntervalSection(int nSection)
     assert(nSection >= 0 && nSection < 64);
     int64_t a = getIntervalVersion(fTestNet) * 63 / (63 + ((63 - nSection) * (MODIFIER_INTERVAL_RATIO - 1)));
     return a;
-}
-
-// Get stake modifier selection interval (in seconds)
-static int64_t GetStakeModifierSelectionInterval()
-{
-    int64_t nSelectionInterval = 0;
-    for (int nSection = 0; nSection < 64; nSection++) {
-        nSelectionInterval += GetStakeModifierSelectionIntervalSection(nSection);
-    }
-    return nSelectionInterval;
 }
 
 // select a block from the candidate blocks in vSortedByTimestamp, excluding
@@ -201,14 +194,15 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
     if (GetBoolArg("-printstakemodifier", false))
         LogPrintf("ComputeNextStakeModifier: prev modifier= %s time=%s\n", boost::lexical_cast<std::string>(nStakeModifier).c_str(), DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nModifierTime).c_str());
 
-    if (nModifierTime / getIntervalVersion(fTestNet) >= pindexPrev->GetBlockTime() / getIntervalVersion(fTestNet))
+        LogPrintf("%s : prev modifier= %s time=%s\n", __func__, std::to_string(nStakeModifier).c_str(), DateTimeStrFormat("%Y-%m-%d %H:%M:%S", nModifierTime).c_str());
+
+    if (nModifierTime >= pindexPrev->GetBlockTime())
         return true;
 
     // Sort candidate blocks by timestamp
     std::vector<std::pair<int64_t, uint256> > vSortedByTimestamp;
     vSortedByTimestamp.reserve(64 * MODIFIER_INTERVAL  / Params().TargetSpacing());
-    int64_t nSelectionInterval = GetStakeModifierSelectionInterval();
-    int64_t nSelectionIntervalStart = (pindexPrev->GetBlockTime() / getIntervalVersion(fTestNet)) * getIntervalVersion(fTestNet) - nSelectionInterval;
+    int64_t nSelectionIntervalStart = (pindexPrev->GetBlockTime() / MODIFIER_INTERVAL ) * MODIFIER_INTERVAL  - OLD_MODIFIER_INTERVAL;
     const CBlockIndex* pindex = pindexPrev;
 
     while (pindex && pindex->GetBlockTime() >= nSelectionIntervalStart) {
@@ -280,12 +274,16 @@ bool GetKernelStakeModifier(const uint256& hashBlockFrom, uint64_t& nStakeModifi
     const CBlockIndex* pindexFrom = mapBlockIndex[hashBlockFrom];
     nStakeModifierHeight = pindexFrom->nHeight;
     nStakeModifierTime = pindexFrom->GetBlockTime();
-    int64_t nStakeModifierSelectionInterval = GetStakeModifierSelectionInterval();
+    // Fixed stake modifier only for regtest
+    if (Params().NetworkID() == CBaseChainParams::REGTEST) {
+        nStakeModifier = pindexFrom->nStakeModifier;
+        return true;
+    }
     const CBlockIndex* pindex = pindexFrom;
     CBlockIndex* pindexNext = chainActive[pindex->nHeight + 1];
 
     // loop to find the stake modifier later by a selection interval
-    while (nStakeModifierTime < pindexFrom->GetBlockTime() + nStakeModifierSelectionInterval) {
+    while (nStakeModifierTime < pindexFrom->GetBlockTime() + OLD_MODIFIER_INTERVAL) {
         if (!pindexNext) {
             // Should never happen
             return error("Null pindexNext\n");

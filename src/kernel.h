@@ -38,9 +38,6 @@ bool CheckStakeKernelHash(const CBlockIndex* pindexPrev, const unsigned int nBit
 // Returns the proof of stake hash
 bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet);
 
-// Check whether the coinstake timestamp meets protocol
-bool CheckCoinStakeTimestamp(int64_t nTimeBlock, int64_t nTimeTx);
-
 // Get stake modifier checksum
 unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex);
 
