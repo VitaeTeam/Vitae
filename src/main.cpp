@@ -97,7 +97,6 @@ bool fClearSpendCache = false;
 /* If the tip is older than this (in seconds), the node is considered to be in initial block download. */
 int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 
-unsigned int nStakeMinAge = 1 * 60 * 60;
 int64_t nReserveBalance = 0;
 
 /** Fees smaller than this (in uVITAE) are considered zero fee (for relaying and mining)

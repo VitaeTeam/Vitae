@@ -132,6 +132,7 @@ public:
         nTargetTimespan = 1 * 45; // VITAE: 1 day
         nTargetSpacing = 1 * 45;  // VITAE: 1 minute
         nMaturity = 8;
+        nStakeMinAge = 60 * 60;   // VITAE: 1 hour
         nFundamentalnodeCountDrift = 20;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
@@ -377,6 +378,7 @@ public:
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 100;
+        nStakeMinAge = 0;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 0; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
