@@ -58,6 +58,10 @@ public:
     int ToCheckBlockUpgradeMajority() const { return nToCheckBlockUpgradeMajority; }
     int MaxReorganizationDepth() const { return nMaxReorganizationDepth; }
 
+    int StakeMinAge(int height) const {
+        return IsStakeModifierV2(height) ? nStakeMinAgeV2Modifier : nStakeMinAge;
+    }
+
     /** Used if GenerateBitcoins is called with a negative number of threads */
     int DefaultMinerThreads() const { return nMinerThreads; }
     const CBlock& GenesisBlock() const { return genesis; }
@@ -77,7 +81,10 @@ public:
     int64_t TargetTimespan(const bool fV2 = true) const { return fV2 ? nTargetTimespan_V2 : nTargetTimespan; }
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
 
-    int COINBASE_MATURITY() const { return nMaturity; }
+    /** returns the coinbase maturity **/
+    int COINBASE_MATURITY(int height) const {
+        return IsStakeModifierV2(height) ? nMaturityV2Modifier : nMaturity;
+    }
 
     /** returns the coinstake maturity (min depth required) **/
     int COINSTAKE_MIN_AGE() const { return nStakeMinAge; }
@@ -173,6 +180,9 @@ protected:
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
     int nTimeSlotLength;
+
+    int nMaturityV2Modifier;
+    int nStakeMinAgeV2Modifier;
 
     int nModifierUpdateBlock;
     CAmount nMaxMoneyOut;

@@ -549,10 +549,12 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
     const int nBlockFromHeight = pindexfrom->nHeight;
 
     /*if (!txin.IsZerocoinSpend() && nPreviousBlockHeight >= Params().Zerocoin_Block_Public_Spend_Enabled() - 1) {
-        //check for maturity (min age/depth) requirements
-        if (!Params().HasStakeMinAgeOrDepth(nPreviousBlockHeight+1, nTxTime, nBlockFromHeight, nBlockFromTime))
-            return error("%s : min age violation - height=%d - nTimeTx=%d, nTimeBlockFrom=%d, nHeightBlockFrom=%d",
-                             __func__, nPreviousBlockHeight, nTxTime, nBlockFromTime, nBlockFromHeight);
+        //Equivalent for zPIV is checked above in ContextualCheckZerocoinStake()
+        if (nTxTime < nBlockFromTime) // Transaction timestamp nTxTime
+            return error("%s : nTime violation - nBlockFromTime=%d nTimeTx=%d", __func__, nBlockFromTime, nTxTime);
+        if (nBlockFromTime + Params().StakeMinAge(nPreviousBlockHeight + 1) > nTxTime) // Min age requirement
+            return error("%s : min age violation - nBlockFromTime=%d nStakeMinAge=%d nTimeTx=%d",
+                    __func__, nBlockFromTime, Params().StakeMinAge(nPreviousBlockHeight + 1), nTxTime);
     }
     */
 
