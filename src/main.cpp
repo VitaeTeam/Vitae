@@ -4688,7 +4688,7 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 
     if (block.nBits != nBitsRequired) {
         // Vitae Specific reference to the block with the wrong threshold was used.
-        if ((block.nTime == Params().VitaeBadBlockTime()) && (block.nBits == Params().VitaeBadBlocknBits())) {
+        if ((block.nTime == (uint32_t) Params().VitaeBadBlockTime()) && (block.nBits == (uint32_t) Params().VitaeBadBlocknBits())) {
             // accept VITAE block minted with incorrect proof of work threshold
             return true;
         }
