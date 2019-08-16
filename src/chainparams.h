@@ -58,10 +58,6 @@ public:
     int ToCheckBlockUpgradeMajority() const { return nToCheckBlockUpgradeMajority; }
     int MaxReorganizationDepth() const { return nMaxReorganizationDepth; }
 
-    int StakeMinAge(int height) const {
-        return IsStakeModifierV2(height) ? nStakeMinAgeV2Modifier : nStakeMinAge;
-    }
-
     /** Used if GenerateBitcoins is called with a negative number of threads */
     int DefaultMinerThreads() const { return nMinerThreads; }
     const CBlock& GenesisBlock() const { return genesis; }

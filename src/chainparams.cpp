@@ -204,9 +204,6 @@ public:
         nMaxMoneyOut = 21000000 * COIN;
         nTimeSlotLength = 15;           // 15 seconds
 
-        nMaturityV2Modifier = 600;      // 10hs
-        nStakeMinAgeV2Modifier = 36000; // 10hs
-
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
         nModifierUpdateBlock = 615800;
@@ -311,6 +308,7 @@ public:
     {
         return data;
     }
+
 };
 static CMainParams mainParams;
 
@@ -377,14 +375,10 @@ public:
         nLastPOWBlock = 200;
         nMaturity = 15;
         nFundamentalnodeCountDrift = 4;
+        nStakeMinDepth = 100;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
-
-        nMaturityV2Modifier = 300;      // 5hs
-        nStakeMinAgeV2Modifier = 18000; // 5hs
-
-
         nZerocoinStartHeight = 201576;
         nZerocoinStartTime = 2004318070; // disabled
         nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
