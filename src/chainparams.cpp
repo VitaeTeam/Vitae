@@ -140,8 +140,7 @@ public:
         nRejectBlockOutdatedMajority = 13680;  // 95%
         nToCheckBlockUpgradeMajority = 14400;  // Approximate expected amount of blocks in 7 days (1920*7.5)
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
+        nTargetSpacing = 1 * 45;  // 1 minute
         nMaturity = 8;
         nStakeMinDepth = 600;
         nFundamentalnodeCountDrift = 20;
@@ -288,7 +287,6 @@ public:
         nRejectBlockOutdatedMajority = 8208;
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
         nTargetSpacing = 1 * 45;  // VITAE: 1 minute
         nLastPOWBlock = 200;
         nVitaeBadBlockTime = 1489001494; // Skip nBit validation of Block 259201 per PR #915
@@ -387,7 +385,6 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
-        nTargetTimespan = 24 * 60 * 60; // VITAE: 1 day
         nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         nLastPOWBlock = 250;
