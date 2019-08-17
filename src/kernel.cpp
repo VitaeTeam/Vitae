@@ -322,13 +322,14 @@ bool CheckStakeKernelHash(const CBlockIndex* pindexPrev, const unsigned int nBit
     return res;
 }
 
-bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet)
+bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet, const bool fDebug)
 {
     // Grab the stake data
     CBlockIndex* pindexfrom = stake->GetIndexFrom();
     if (!pindexfrom) return error("%s : Failed to find the block index for stake origin", __func__);
     const CDataStream& ssUniqueID = stake->GetUniqueness();
     const unsigned int nTimeBlockFrom = pindexfrom->nTime;
+
     CDataStream modifier_ss(SER_GETHASH, 0);
 
     // Hash the modifier
@@ -344,6 +345,15 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
     }
 
     CDataStream ss(modifier_ss);
+
+    // Base target
+    uint256 bnTarget;
+    bnTarget.SetCompact(nBits);
+
+    // Weighted target
+    uint256 bnWeight = uint256(nValueIn) / 100;
+    bnTarget *= bnWeight;
+
     // Calculate hash
     ss << nTimeBlockFrom << ssUniqueID << nTimeTx;
     hashProofOfStakeRet = Hash(ss.begin(), ss.end());
@@ -422,7 +432,6 @@ bool StakeV1(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, const uint3
         --nTryTime;
         // if stake hash does not meet the target then continue to next iteration
         if (!CheckStakeKernelHash(pindexPrev, nBits, stakeInput, nTryTime, hashProofOfStake))
-             continue;
 
         // if we made it this far, then we have successfully found a valid kernel hash
         fSuccess = true;
