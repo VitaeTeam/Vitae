@@ -122,6 +122,13 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     // Make sure to create the correct block version after zerocoin is enabled
     bool fZerocoinActive = nHeight >= Params().Zerocoin_StartHeight();
     pblock->nVersion = 6;
+    /* from upstream, it's not suitable here since here already used version 6
+    if(Params().IsStakeModifierV2(nHeight)) {
+        pblock->nVersion = 6;       //!> Supports V2 Stake Modifiers.
+    } else {
+        pblock->nVersion = 5;       //!> Supports CLTV activation
+    }
+	*/
 
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
