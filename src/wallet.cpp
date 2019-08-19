@@ -3108,8 +3108,6 @@ bool CWallet::CreateCoinStake(
             fKernelFound = true;
             break;
         }
-        if (fKernelFound)
-            break; // if kernel is found stop searching
     }
     if (!fKernelFound)
         return false;
