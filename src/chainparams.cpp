@@ -144,6 +144,8 @@ public:
         nMaturity = 8;
         nStakeMinDepth = 600;
         nFundamentalnodeCountDrift = 20;
+        nFutureTimeDriftPoW = 7200;
+        nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
 
