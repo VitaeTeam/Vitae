@@ -24,6 +24,7 @@ public:
     virtual bool GetModifier(uint64_t& nStakeModifier) = 0;
     virtual bool IsZPIV() = 0;
     virtual CDataStream GetUniqueness() = 0;
+    virtual uint256 GetSerialHash() const = 0;
 
     virtual uint64_t getStakeModifierHeight() const {
         return 0;
@@ -89,6 +90,7 @@ public:
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) override;
     bool IsZPIV() override { return false; }
+    uint256 GetSerialHash() const override { return uint256(0); }
 
     uint64_t getStakeModifierHeight() const override { return nStakeModifierHeight; }
 };
