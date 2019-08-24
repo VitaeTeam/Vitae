@@ -164,12 +164,12 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Cannot get proof of stake hash");
 
         UniValue stakeData(UniValue::VOBJ);
-        stakeData.push_back(Pair("CS block from id", stake.get()->GetIndexFrom()->GetBlockHash().GetHex()));
-        stakeData.push_back(Pair("CS block from height", stake.get()->GetIndexFrom()->nHeight));
+        stakeData.push_back(Pair("BlockFromHash", stake.get()->GetIndexFrom()->GetBlockHash().GetHex()));
+        stakeData.push_back(Pair("BlockFromHeight", stake.get()->GetIndexFrom()->nHeight));
         stakeData.push_back(Pair("hashProofOfStake", hashProofOfStakeRet.GetHex()));
         stakeData.push_back(Pair("stakeModifierHeight", ((stake->IsZPIV()) ? "Not available" : std::to_string(
                 stake->getStakeModifierHeight()))));
-        result.push_back(Pair("Coin Stake", stakeData));
+        result.push_back(Pair("CoinStake", stakeData));
     }
 
     return result;
@@ -601,15 +601,21 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
             "  \"zVITsupply\" :\n"
             "  {\n"
-            "     \"1\" : n,            (numeric) supply of 1 zVITAE denomination\n"
-            "     \"5\" : n,            (numeric) supply of 5 zVITAE denomination\n"
-            "     \"10\" : n,           (numeric) supply of 10 zVITAE denomination\n"
-            "     \"50\" : n,           (numeric) supply of 50 zVITAE denomination\n"
-            "     \"100\" : n,          (numeric) supply of 100 zVITAE denomination\n"
-            "     \"500\" : n,          (numeric) supply of 500 zVITAE denomination\n"
-            "     \"1000\" : n,         (numeric) supply of 1000 zVITAE denomination\n"
-            "     \"5000\" : n,         (numeric) supply of 5000 zVITAE denomination\n"
-            "     \"total\" : n,        (numeric) The total supply of all zVITAE denominations\n"
+            "     \"1\" : n,            (numeric) supply of 1 zVIT denomination\n"
+            "     \"5\" : n,            (numeric) supply of 5 zVIT denomination\n"
+            "     \"10\" : n,           (numeric) supply of 10 zVIT denomination\n"
+            "     \"50\" : n,           (numeric) supply of 50 zVIT denomination\n"
+            "     \"100\" : n,          (numeric) supply of 100 zVIT denomination\n"
+            "     \"500\" : n,          (numeric) supply of 500 zVIT denomination\n"
+            "     \"1000\" : n,         (numeric) supply of 1000 zVIT denomination\n"
+            "     \"5000\" : n,         (numeric) supply of 5000 zVIT denomination\n"
+            "     \"total\" : n,        (numeric) The total supply of all zVIT denominations\n"
+            "  },\n"
+            "  \"CoinStake\" :\n"
+            "    \"BlockFromHash\" : \"hash\",      (string) Block hash of the coin stake input\n"
+            "    \"BlockFromHeight\" : n,           (numeric) Block Height of the coin stake input\n"
+            "    \"hashProofOfStake\" : \"hash\",   (string) Proof of Stake hash\n"
+            "    \"stakeModifierHeight\" : \"nnn\"  (string) Stake modifier block height\n"
             "  }\n"
             "}\n"
 
