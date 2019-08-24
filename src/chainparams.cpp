@@ -508,7 +508,7 @@ public:
         nBlockRecalculateAccumulators = 999999999; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 999999999; //Last valid accumulator checkpoint
-        nBlockStakeModifierlV2 = 999999999;
+        nBlockStakeModifierlV2 = -1;
         //nBlockTimeProtocolV2 = 999999999;
 
         genesis.nTime = 1454124731;
