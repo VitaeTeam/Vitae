@@ -82,9 +82,7 @@ public:
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
 
     /** returns the coinbase maturity **/
-    int COINBASE_MATURITY(int height) const {
-        return IsStakeModifierV2(height) ? nMaturityV2Modifier : nMaturity;
-    }
+    int COINBASE_MATURITY() const { return nMaturity; }
 
     /** returns the coinstake maturity (min depth required) **/
     int COINSTAKE_MIN_AGE() const { return nStakeMinAge; }
