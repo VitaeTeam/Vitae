@@ -121,11 +121,11 @@ bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t
         const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const
 {
     // before stake modifier V2, the age required was 60 * 60 (1 hour). Not required for regtest
-    //if (!IsStakeModifierV2(contextHeight))
+    if (!IsStakeModifierV2(contextHeight))
         return NetworkID() == CBaseChainParams::REGTEST || (utxoFromBlockTime + nStakeMinAge <= contextTime);
 
     // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
-    //return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
+    return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
 }
 
 int CChainParams::FutureBlockTimeDrift(const int nHeight, const int sporkValue) const
