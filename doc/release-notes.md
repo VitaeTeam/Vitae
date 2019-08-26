@@ -36,111 +36,65 @@ Apple released it's last Mountain Lion update August 13, 2015, and officially en
 VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
 
 
+Apple released it's last Mountain Lion update August 13, 2015, and officially ended support on [December 14, 2015](http://news.fnal.gov/2015/10/mac-os-x-mountain-lion-10-8-end-of-life-december-14/). PIVX Core software starting with v3.2.0 will no longer run on MacOS versions prior to Yosemite (10.10). Please do not report issues about MacOS versions prior to Yosemite to the issue tracker.
+
+PIVX Core should also work on most other Unix-like systems but is not frequently tested on them.
+
+
 Notable Changes
 ==============
 
-## zVIT Public Spends
+## Internal (Core) Changes
 
-Recent exploits of the Zerocoin protocol (Wrapped serials and broken P1 proof) required us to enable the zerocoin spork and deactivate zVIT functionality in order to secure the supply until the pertinent review process was completed.
+### Version 2 Stake Modifier
 
-Moving forward from this undesired situation, we are enabling a secure and chain storage friendly solution for the zerocoin public spend (aka zVIT to VIT conversion).
+A new 256-bits modifier for the proof of stake protocol has been defined, `CBlockIndex::nStakeModifierV2`.
+It is computed at every block, by taking the hash of the modifier of previous block along with the coinstake input.
+To meet the protocol, the PoS kernel must comprise the modifier of the previous block.
 
-The explanation of how this works can be found in #891
+Changeover enforcement of this new modifier is set to occur at block `1214000` for testnet and block `1967000` for mainnet.
 
-After block `1,880,000` has past, `SPORK_16` will be deactivated to allow zVIT spends to occur using this new public spend method for version 2 zVIT (version 1 zVIT won't be spendable, see note below). zVIT public spends, as the name suggests, are **NOT** private, they reveal the input mint that is being spent. The minting of **NEW** zVIT, as well as zVIT staking will remain disabled for the time being.
+### Block index batch writing
 
-It is advised that users spend/convert their existing zVIT to VIT, which can be done via the GUI or RPC as it was prior to the disabling of zVIT. Note that with the public spend method, the restriction on the number of denominations per transaction (previously 7) has been lifted, and now allows for several hundred denominations per transaction.
+Block index writes are now done in a batch. This allows for less frequent disk access, meaning improved performances and less data corruption risks.
 
-*Note on version 1 zVIT*: Version 1 zVIT was only available to me minted between versions v3.0.0 (Oct 6, 2017) and v3.1.0 (May 8, 2018). The announcement that version 1 zVIT was deprecated went out on May 1, 2018 with a recommendation for users to spend/convert their version 1 zVIT.
+### Eliminate needless key generation
 
-Version 1 zVIT will be made spendable at a later date due to the extra work required in order to make these version 1 mints spendable.
+The staking process has been improved to no longer request a new (unused) key from the keypool. This should reduce wallet file size bloat as well as slightly improve staking efficiency.
+
+### Fix crash scenario at wallet startup
+
+A program crash bug that happens when the wallet.dat file contains a zc public spend transaction (input) and the user had removed the chain data has been fixed.
 
 ## GUI Changes
 
-### Options Dialog Cleanup
+### Removal of zero-fee transaction option
 
-The options/settings UI dialog has been cleaned up to no longer show settings that are wallet related when running in "disable wallet" (`-disablewallet`) mode.
+The long term viability of acceptable zero-fee transaction conditions is in need of review. As such, we are temporarily disabling the ability to create zero-fee transactions.
 
-### Privacy Tab
+### Show latest block hash and datadir information tab
 
-Notice text has been added to the privacy tab indicating that zVIT minting is disabled, as well as the removal of UI elements that supported such functionality. Notice text has also been added indicating that zVIT spends are currently **NOT** private.
+A QoL addition has been made to the Information tab of the UI's console window which adds the display of both the current data directory and the latest block hash seen by the client.
 
 ## RPC Changes
 
-### Removal of Deprecated Commands
+### Require valid URL scheme when preparing/submitting a proposal
 
-The `masternode` and `mnbudget` RPC commands, which were marked as deprecated in VITAE Core v2.3.1 (September 19, 2017), have now been completely removed from VITAE Core.
+The `preparebudget` and `submitbudget` RPC commands now require the inclusion of a canonical URL scheme as part of their `url` parameter. Strings that don't include either `http://` or `https://` will be rejected.
 
-Several new commands were added in v2.3.1 to replace the two aforementioned commands, reference the [v2.3.1 Release Notes](https://github.com/VitaeTeam/Vitae/blob/master/doc/release-notes/release-notes-2.3.1.md#rpc-changes) for further details.
+The 64 character limit for the `url` field is inclusive of this change, so the use of a URL shortening service may be needed.
 
-### New `getblockindexstats` Command
+## Testing Suite Changes
 
-A new RPC command (`getblockindexstats`) has been introduced which serves the purpose of obtaining statistical information on a range of blocks. The information returned is as follows:
-  * transaction count (not including coinbase/coinstake txes)
-  * transaction count (including coinbase/coinstake txes)
-  * zVIT per-denom mint count
-  * zVIT per-denom spend count
-  * total transaction bytes
-  * total fees in block range
-  * average fee per kB
+### Functional testing readability
 
-Command Reference:
-```$xslt
-getblockindexstats height range ( fFeeOnly )
-nReturns aggregated BlockIndex data for blocks
-height, height+1, height+2, ..., height+range-1]
-
-nArguments:
-1. height             (numeric, required) block height where the search starts.
-2. range              (numeric, required) number of blocks to include.
-3. fFeeOnly           (boolean, optional, default=False) return only fee info.
-```
-Result:
-```
-{
-  first_block: x,              (integer) First counted block
-  last_block: x,               (integer) Last counted block
-  txcount: xxxxx,              (numeric) tx count (excluding coinbase/coinstake)
-  txcount_all: xxxxx,          (numeric) tx count (including coinbase/coinstake)
-  mintcount: {              [if fFeeOnly=False]
-        denom_1: xxxx,         (numeric) number of mints of denom_1 occurred over the block range
-        denom_5: xxxx,         (numeric) number of mints of denom_5 occurred over the block range
-         ...                    ... number of mints of other denominations: ..., 10, 50, 100, 500, 1000, 5000
-  },
-  spendcount: {             [if fFeeOnly=False]
-        denom_1: xxxx,         (numeric) number of spends of denom_1 occurred over the block range
-        denom_5: xxxx,         (numeric) number of spends of denom_5 occurred over the block range
-         ...                    ... number of spends of other denominations: ..., 10, 50, 100, 500, 1000, 5000
-  },
-  pubspendcount: {          [if fFeeOnly=False]
-        denom_1: xxxx,         (numeric) number of PUBLIC spends of denom_1 occurred over the block range
-        denom_5: xxxx,         (numeric) number of PUBLIC spends of denom_5 occurred over the block range
-         ...                   ... number of PUBLIC spends of other denominations: ..., 10, 50, 100, 500, 1000, 5000
-  },
-  txbytes: xxxxx,              (numeric) Sum of the size of all txes (zVIT excluded) over block range
-  ttlfee: xxxxx,               (numeric) Sum of the fee amount of all txes (zVIT mints excluded) over block range
-  ttlfee_all: xxxxx,           (numeric) Sum of the fee amount of all txes (zVIT mints included) over block range
-  feeperkb: xxxxx,             (numeric) Average fee per kb (excluding zc txes)
-}
-```
+Several changes have been introduced to the travis script in order to make the output more readable. Specifically it now lists tests left to run and prints the output of failing scripts.
 
 ## Build System Changes
 
-### New Architectures for Depends
+### OpenSSL configure information
 
-This issue has been fixed, and no user funds were at risk.
-
-
-Performance Improvements
-------
-
-### New checkpoints
-
-More recent checkpoints have been added for mainnet. These help alleviate some of the load when (re-)syncing from the network.
-
-This is intended to be used in conjunction with IDEs like CLion (which relies heavily on CMake) in order to streamline the development process. Developers can now use, for example, CLion's internal debugger and profiling tools.
-
-Note that it is still required to have relevant dependencies installed on the system for this to function properly.
+When the configure step fails because of an unsupported OpenSSL (or other library), it now displays more information on using an override flag to compile anyways. The long term plan is to ensure that the consensus code doesn't depend on OpenSSL in any way and then remove this configure step and related override flag.
 
 *3.3.0* Change log
 ==============
@@ -158,13 +112,6 @@ Detailed release notes follow. This overview includes changes that affect behavi
  - #925 `a9827a0e63` [Consensus] Time checks (warrows)
 
 ### Build System
- - #810 `a373fee908` [Depends] Fix archs (fixes s390x and ppc64el builds on snap) (cevap)
- - #906 `8a47747b59` [Build] Add CMake Support (Fuzzbawls)
- - #910 `07c8fb8f88` [Build] Clean all coverage files during make clean (Fuzzbawls)
- - #913 `473976c619` [Depends] Update from upstream (Fuzzbawls)
- - #914 `5a43ea790a` [Gitian] Bump gitian build versions (Fuzzbawls)
- - #917 `b38ef04838` [Build] TravisCI Update (Fuzzbawls)
- - #922 `0f98fd4d3f` [Build] Fix app name casing in mac deploy related files (Fuzzbawls)
 
 ### P2P Protocol and Network Code
  - #908 `95b584effd` [NET] Non-running dns servers removed from chainParams. (furszy)
@@ -172,12 +119,6 @@ Detailed release notes follow. This overview includes changes that affect behavi
  - #930 `5061b486c2` [Net] Add a couple new testnet checkpoints (Fuzzbawls)
 
 ### GUI
- - #874 `23f17ce021` [Qt] Add new budget colors (warrows)
- - #895 `0417d52ef9` [QT] Options UI cleanup (Alko89)
- - #896 `b2fcefee93` [UI] Simplify Qt margins. (warrows)
- - #898 `3d496cc746` [Qt] Fixup duplicate label names (Fuzzbawls)
- - #900 `5f7559bc7b` [UI] Fix improperly parented walletView and segmentation fault on QT 5.10 (Julian Meyer)
- - #928 `2482572f89` [Qt] Update Translations (Fuzzbawls)
 
 ### RPC/REST
  - #877 `54c8832d80` [RPC] Remove deprecated masternode/budget RPC commands (Fuzzbawls)
@@ -185,31 +126,10 @@ Detailed release notes follow. This overview includes changes that affect behavi
  - #911 `484c070b22` [RPC] add 'getblockindexstats' function (random-zebra)
 
 ### Wallet
- - #813 `80bf51e7c9` [Refactoring] [Move Only] Move wallet files into their own folder (warrows)
- - #916 `a4f02ed946` [Staking] Don't assert if we were beaten to the block (CaveSpectre11)
-
-### Unit Tests
- - #806 `fc6b5a191d` [Test] Create new per-test fixtures (Wladimir J. van der Laan)
- - #902 `8adeeb9727` [Tests] Add tests for CAddrMan (warrows)
 
 ### Miscellaneous
- - #744 `7e52f58b82` [Refactor] Refactor bignum header file into several files (warrows)
- - #808 `8b54f7150b` [Scripts] Add optimize pngs python script (cevap)
- - #824 `3323f26848` [Refactor] Remove stale obfuscation code (Fuzzbawls)
- - #830 `81038da4f8` [Refactor] Remove BOOST_FOREACH (Fuzzbawls)
- - #844 `0a0dcf0d4e` [Refactor] Replace deprecated auto_ptr with unique_ptr (cevap)
- - #856 `da26ddeeb9` [Refactor] Move per-chain budget cycle blocks to chainparams (Fuzzbawls)
- - #879 `5f0d72659c` [Refactor] Rename ui_interface.h file (Fuzzbawls)
- - #890 `fddac44eab` [Refactor] Remove unused setStakeSeen variable (warrows)
- - #903 `68c81c407a` [Log] Handle errors during log message formatting (warrows)
- - #904 `6f597629d8` [zVIT] Free memory from ToString() (warrows)
- - #912 `5f167c2c7e` [Cleanup] compiler warnings in coinSpend object. (furszy)
- - #919 `c0233e4af6` [zVIT] Debug missing jump line. (Matias Furszyfer)
- - #920 `a56cc2948d` [Docs] Overhaul documentation files (Fuzzbawls)
- - #921 `893183339e` [Scripts] Overhaul supplemental python/shell scripts (Fuzzbawls)
- - #926 `49a69b8931` [Doc] 3.3.0 Notable Changes (Fuzzbawls)
- - #927 `048d1295dc` [Trivial] Update header copyright years (Fuzzbawls)
- 
+
+
 
 ## Credits
 Thanks to everyone who directly contributed to this release:
