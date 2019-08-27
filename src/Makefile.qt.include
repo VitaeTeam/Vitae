@@ -481,6 +481,7 @@ RES_ICONS = \
   qt/vitae/res/img/ic-nav-privacy.svg \
   qt/vitae/res/img/img-empty-dark-error.svg \
   qt/vitae/res/img/ic-add-label.svg \
+  qt/vitae/res/img/ic-pending.svg \
   qt/vitae/res/img/ic-check-theme-dark.svg \
   qt/vitae/res/img/ic-nav-receive-active.svg \
   qt/vitae/res/img/img-empty-dark-masternode.svg \
