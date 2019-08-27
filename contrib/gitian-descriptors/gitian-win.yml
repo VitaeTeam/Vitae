@@ -1,5 +1,5 @@
 ---
-name: "vitae-win-3.4"
+name: "vitae-win-4.0"
 enable_cache: true
 distro: "ubuntu"
 suites:
