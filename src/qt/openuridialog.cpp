@@ -30,7 +30,6 @@ OpenURIDialog::OpenURIDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     setCssBtnPrimary(ui->selectFileButton);
     setCssProperty(ui->pushButtonCancel, "btn-dialog-cancel");
 
-    ui->uriEdit->setPlaceholderText("0.000001 zVIT");
     initCssEditLine(ui->uriEdit, true);
     connect(ui->pushButtonOK, SIGNAL(clicked()), this, SLOT(accept()));
     connect(ui->pushButtonCancel, SIGNAL(clicked()), this, SLOT(close()));
