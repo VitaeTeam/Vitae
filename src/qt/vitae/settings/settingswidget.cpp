@@ -14,7 +14,7 @@
 #include "qt/vitae/settings/settingsinformationwidget.h"
 #include "qt/vitae/settings/settingsconsolewidget.h"
 #include "qt/vitae/qtutils.h"
-#include "qt/pivx/defaultdialog.h"
+#include "qt/vitae/defaultdialog.h"
 #include "optionsmodel.h"
 #include "clientmodel.h"
 #include "utilitydialog.h"
