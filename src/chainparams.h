@@ -145,7 +145,6 @@ public:
     int Zerocoin_Block_V2_Start() const { return nBlockZerocoinV2; }
     bool IsStakeModifierV2(const int nHeight) const { return nHeight >= nBlockStakeModifierlV2; }
     int NewSigsActive(const int nHeight) const { return nHeight >= nBlockEnforceNewMessageSignatures; }
-    int Zerocoin_PublicSpendVersion(const int nHeight) const;
 
     // fake serial attack
     int Zerocoin_Block_EndFakeSerial() const { return nFakeSerialBlockheightEnd; }
@@ -228,7 +227,6 @@ protected:
     int nBlockZerocoinV2;
     int nBlockDoubleAccumulated;
     int nPublicZCSpends;
-    int nPublicZCSpendsV4;
     int nBlockStakeModifierlV2;
     int nBlockEnforceNewMessageSignatures;
 
