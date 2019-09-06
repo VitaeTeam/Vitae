@@ -114,7 +114,7 @@ QT_MOC_CPP = \
   qt/moc_bitcoinaddressvalidator.cpp \
   qt/moc_bitcoinamountfield.cpp \
   qt/moc_bitcoingui.cpp \
-  qt/vitae/moc_VITAEGUI.cpp \
+  qt/vitae/moc_vitaegui.cpp \
   qt/moc_bitcoinunits.cpp \
   qt/moc_blockexplorer.cpp \
   qt/moc_clientmodel.cpp \
@@ -244,7 +244,7 @@ BITCOIN_QT_H = \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
   qt/bitcoingui.h \
-  qt/vitae/VITAEGUI.h \
+  qt/vitae/vitaegui.h \
   qt/bitcoinunits.h \
   qt/blockexplorer.h \
   qt/clientmodel.h \
@@ -313,7 +313,7 @@ BITCOIN_QT_H = \
   qt/vitae/walletpassworddialog.h \
   qt/vitae/topbar.h \
   qt/vitae/txrow.h \
-  qt/vitae/AddressFilterProxyModel.h \
+  qt/vitae/addressfilterproxymodel.h \
   qt/vitae/dashboardwidget.h \
   qt/vitae/coincontrolpivwidget.h \
   qt/vitae/addresslabelrow.h \
@@ -622,7 +622,7 @@ BITCOIN_QT_BASE_CPP = \
   qt/bitcoinaddressvalidator.cpp \
   qt/bitcoinamountfield.cpp \
   qt/bitcoingui.cpp \
-  qt/vitae/VITAEGUI.cpp \
+  qt/vitae/vitaegui.cpp \
   qt/bitcoinunits.cpp \
   qt/blockexplorer.cpp \
   qt/clientmodel.cpp \
@@ -696,7 +696,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/walletpassworddialog.cpp \
   qt/vitae/topbar.cpp \
   qt/vitae/txrow.cpp \
-  qt/vitae/AddressFilterProxyModel.cpp \
+  qt/vitae/addressfilterproxymodel.cpp \
   qt/vitae/dashboardwidget.cpp \
   qt/vitae/coincontrolpivwidget.cpp \
   qt/vitae/addresslabelrow.cpp \

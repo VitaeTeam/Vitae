@@ -9,7 +9,7 @@
 #include "addresstablemodel.h"
 #include "qt/vitae/tooltipmenu.h"
 #include "furabstractlistitemdelegate.h"
-#include "qt/vitae/AddressFilterProxyModel.h"
+#include "qt/vitae/addressfilterproxymodel.h"
 
 #include <QWidget>
 

@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "qt/vitae/AddressFilterProxyModel.h"
+#include "qt/vitae/addressfilterproxymodel.h"
 
 bool AddressFilterProxyModel::filterAcceptsRow(int row, const QModelIndex& parent) const
 {

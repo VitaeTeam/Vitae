@@ -8,7 +8,7 @@
 #include "config/vitae-config.h"
 #endif
 
-#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/vitaegui.h"
 
 #include "clientmodel.h"
 #include "guiconstants.h"

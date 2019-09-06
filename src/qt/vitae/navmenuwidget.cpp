@@ -4,7 +4,7 @@
 
 #include "qt/vitae/navmenuwidget.h"
 #include "qt/vitae/forms/ui_navmenuwidget.h"
-#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/vitaegui.h"
 #include "qt/vitae/qtutils.h"
 #include "clientversion.h"
 

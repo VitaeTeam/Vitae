@@ -9,7 +9,7 @@
 #include "qt/vitae/pwidget.h"
 #include "qt/vitae/contactdropdownrow.h"
 #include "qt/vitae/furabstractlistitemdelegate.h"
-#include "qt/vitae/AddressFilterProxyModel.h"
+#include "qt/vitae/addressfilterproxymodel.h"
 #include <QListView>
 #include <QObject>
 #include <QWidget>

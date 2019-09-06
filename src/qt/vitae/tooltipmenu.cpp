@@ -5,7 +5,7 @@
 #include "qt/vitae/tooltipmenu.h"
 #include "qt/vitae/forms/ui_tooltipmenu.h"
 
-#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/vitaegui.h"
 #include "qt/vitae/qtutils.h"
 #include <QTimer>
 

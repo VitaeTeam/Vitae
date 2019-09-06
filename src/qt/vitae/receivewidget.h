@@ -8,7 +8,7 @@
 #include "qt/vitae/pwidget.h"
 #include "addresstablemodel.h"
 #include "qt/vitae/furabstractlistitemdelegate.h"
-#include "qt/vitae/AddressFilterProxyModel.h"
+#include "qt/vitae/addressfilterproxymodel.h"
 
 #include <QSpacerItem>
 #include <QWidget>

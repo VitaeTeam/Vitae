@@ -9,7 +9,7 @@
 #include "qt/vitae/tooltipmenu.h"
 
 #include "qt/vitae/addnewcontactdialog.h"
-#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/vitaegui.h"
 #include "guiutil.h"
 #include "qt/vitae/qtutils.h"
 #include "walletmodel.h"

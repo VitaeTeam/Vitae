@@ -17,7 +17,7 @@
 #include <QPixmap>
 #include <QStandardPaths>
 #include <initializer_list>
-#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/vitaegui.h"
 
 static Qt::Modifier SHORT_KEY
 #ifdef Q_OS_MAC

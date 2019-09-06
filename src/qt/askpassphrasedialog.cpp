@@ -14,7 +14,7 @@
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/loadingdialog.h"
 #include "qt/vitae/defaultdialog.h"
-#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/vitaegui.h"
 #include <QDebug>
 
 #include <QKeyEvent>
