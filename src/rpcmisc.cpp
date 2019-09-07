@@ -205,9 +205,9 @@ UniValue fnsync(const UniValue& params, bool fHelp)
     }
     if (strMode == "forcesync") {
         for(int i = 0;i<=5;i++){
-          masternodeSync.GetNextAsset();
+          fundamentalnodeSync.GetNextAsset();
         }
-        return masternodeSync.GetSyncStatus();
+        return fundamentalnodeSync.GetSyncStatus();
     }
 
     return "failure";
