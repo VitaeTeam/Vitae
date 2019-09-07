@@ -203,6 +203,13 @@ UniValue fnsync(const UniValue& params, bool fHelp)
         fundamentalnodeSync.Reset();
         return "success";
     }
+    if (strMode == "forcesync") {
+        for(int i = 0;i<=5;i++){
+          masternodeSync.GetNextAsset();
+        }
+        return masternodeSync.GetSyncStatus();
+    }
+
     return "failure";
 }
 
