@@ -142,7 +142,7 @@ UniValue fnsync(const UniValue& params, bool fHelp)
     if (params.size() == 1)
         strMode = params[0].get_str();
 
-    if (fHelp || params.size() != 1 || (strMode != "status" && strMode != "reset" && strMode != "forcesync")) {
+    if (fHelp || params.size() != 1 || (strMode != "status" && strMode != "reset")) {
         throw runtime_error(
             "fnsync \"status|reset\"\n"
             "\nReturns the sync status or resets sync.\n"
@@ -203,13 +203,6 @@ UniValue fnsync(const UniValue& params, bool fHelp)
         fundamentalnodeSync.Reset();
         return "success";
     }
-    if (strMode == "forcesync") {
-        for(int i = 0;i<=5;i++){
-          fundamentalnodeSync.GetNextAsset();
-        }
-        return fundamentalnodeSync.GetSyncStatus();
-    }
-
     return "failure";
 }
 
