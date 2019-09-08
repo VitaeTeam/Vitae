@@ -492,7 +492,7 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     }
 
     // PIV Balance
-    CAmount nTotalBalance = balance + unconfirmedBalance;
+    //CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount pivAvailableBalance = balance - immatureBalance - nLockedBalance;
 
     // zPIV Balance
