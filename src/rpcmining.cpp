@@ -133,7 +133,8 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
 
     if (pwalletMain == NULL)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found (disabled)");
-
+    if((int)chainActive.Height() >= Params().LAST_POW_BLOCK())
+       throw JSONRPCError(RPC_INTERNAL_ERROR, "Proof of work phase is complete");
     bool fGenerate = true;
     if (params.size() > 0)
         fGenerate = params[0].get_bool();
@@ -370,6 +371,9 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
 
     std::string strMode = "template";
     UniValue lpval = NullUniValue;
+    if((int)chainActive.Height() >= Params().LAST_POW_BLOCK())
+       throw JSONRPCError(RPC_INTERNAL_ERROR, "Proof of work phase is complete");
+    
     if (params.size() > 0) {
         const UniValue& oparam = params[0].get_obj();
         const UniValue& modeval = find_value(oparam, "mode");
