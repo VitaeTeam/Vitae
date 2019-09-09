@@ -303,7 +303,7 @@ bool CheckStake(const CDataStream& ssUniqueID, CAmount nValueIn, const uint64_t 
     return stakeTargetHit(hashProofOfStake, nValueIn, bnTarget);
 }
 
-bool Stake(CStakeInput* stakeInput, unsigned int nBits, unsigned int nTimeBlockFrom, unsigned int& nTimeTx, uint256& hashProofOfStake)
+bool Stake(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, unsigned int nBits, int64_t& nTimeTx, uint256& hashProofOfStake)
 {
     if (nTimeTx < nTimeBlockFrom)
         return error("CheckStakeKernelHash() : nTime violation");
@@ -322,12 +322,16 @@ bool Stake(CStakeInput* stakeInput, unsigned int nBits, unsigned int nTimeBlockF
         return error("failed to get kernel stake modifier");
 
     bool fSuccess = false;
-    unsigned int nTryTime = 0;
-    int nHeightStart = chainActive.Height();
-    int nHashDrift = 30;
-    CDataStream ssUniqueID = stakeInput->GetUniqueness();
-    CAmount nValueIn = stakeInput->GetValue();
-    for (int i = 0; i < nHashDrift; i++) //iterate the hashing
+    const unsigned int nHashDrift = 60;
+    int64_t nTryTime = nTimeTx - 1;
+    // iterate from nTimeTx up to nTimeTx + nHashDrift
+    // but not after the max allowed future blocktime drift
+    const int64_t maxTime = std::min(
+            nTimeTx + nHashDrift,
+            pindexPrev->MaxFutureBlockTime()
+            );
+
+    while (nTryTime < maxTime)
     {
         //new block came in, move on
         if (chainActive.Height() != nHeightStart)

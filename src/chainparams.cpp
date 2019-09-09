@@ -116,6 +116,27 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
     return &ZCParamsDec;
 }
 
+int CChainParams::FutureBlockTimeDrift(const int nHeight) const
+{
+    if (IsTimeProtocolV2(nHeight))
+        // PoS (TimeV2): 15 seconds
+        return nFutureTimeDriftPoS_V2;
+
+    // PoS (TimeV1): 3 minutes
+    // PoW: 2 hours
+    return (nHeight > LAST_POW_BLOCK()) ? nFutureTimeDriftPoS : nFutureTimeDriftPoW;
+}
+
+bool CChainParams::IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const
+{
+    // Before time protocol V2, blocks can have arbitrary timestamps
+    if (!IsTimeProtocolV2(nHeight))
+        return true;
+
+    // Time protocol v2 requires a masked blocktime
+    return (nTime & StakeTimestampMask()) == 0;
+}
+
 class CMainParams : public CChainParams
 {
 public:
@@ -145,6 +166,9 @@ public:
         nTargetSpacing = 1 * 45;  // VITAE: 1 minute
         nMaturity = 8;
         nFundamentalnodeCountDrift = 20;
+        nFutureTimeDriftPoW = 7200;
+        nFutureTimeDriftPoS = 180;
+        nFutureTimeDriftPoS_V2 = 15;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
         nStakeTimestampMask = 0xf;
