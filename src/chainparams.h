@@ -76,6 +76,10 @@ public:
     int64_t TargetSpacing() const { return nTargetSpacing; }
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
     int COINBASE_MATURITY() const { return nMaturity; }
+
+    /** Time Protocol V2 **/
+    bool IsTimeProtocolV2(const int nHeight) const { return nHeight >= nBlockTimeProtocolV2; }
+
     CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
     /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
     int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
@@ -191,6 +195,7 @@ protected:
     int nBlockLastGoodCheckpoint;
     int nBlockEnforceInvalidUTXO;
     int nBlockZerocoinV2;
+    int nBlockTimeProtocolV2;
 };
 
 /**

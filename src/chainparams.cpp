@@ -162,6 +162,7 @@ public:
         nBlockZerocoinV2 = 999999999; //The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
+        nBlockTimeProtocolV2 = 2967000; // To be changed
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -330,6 +331,7 @@ public:
         nBlockZerocoinV2 = 999999999; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
+        nBlockTimeProtocolV2 = 2214000; // To be changed
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1589445785;
@@ -427,6 +429,8 @@ public:
         nTargetTimespan = 24 * 60 * 60; // VITAE: 1 day
         nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
+        nBlockTimeProtocolV2 = 999999999;
+
         genesis.nTime = 1454124731;
         genesis.nBits = 0x207fffff;
         genesis.nNonce = 12345;
