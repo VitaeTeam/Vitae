@@ -161,13 +161,18 @@ public:
         vAlertPubKey = ParseHex("0000098d3ba6ba6e7423fa5cbd6a89e0a9a5348f88d332b44a5cb1a8b7ed2c1eaa335fc8dc4f012cb8241cc0bdafd6ca70c5f5448916e4e6f511bcd746ed57dc50");
         nDefaultPort = 8765;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // VITAE starting difficulty is 1 / 2^12
+        bnProofOfStakeLimit = ~uint256(0) >> 24;
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 48;
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 10800;  // 75% ... ((60*60*24)/45)*7.5 = 14400 or about 7 days
         nRejectBlockOutdatedMajority = 13680;  // 95%
         nToCheckBlockUpgradeMajority = 14400;  // Approximate expected amount of blocks in 7 days (1920*7.5)
         nMinerThreads = 0;
-        nTargetSpacing = 1 * 45;  // 1 minute
+        nTargetSpacing = 1 * 45;        // 1 minute
+        nTargetSpacing_V2 = 64;         // 64 seconds
+        nTargetTimespan = 40 * 60;      // 40 minutes
+        nTargetTimespan_V2 = 16 * 60;   // 16 minutes
         nMaturity = 8;
         nStakeMinDepth = 600;
         nFundamentalnodeCountDrift = 20;
@@ -327,7 +332,6 @@ public:
         nRejectBlockOutdatedMajority = 8208;
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
         nLastPOWBlock = 200;
         nVitaeBadBlockTime = 1489001494; // Skip nBit validation of Block 259201 per PR #915
         nVitaeBadBlocknBits = 0x1e0a20bd; // Skip nBit validation of Block 201 per PR #915
@@ -436,7 +440,6 @@ public:
         nRejectBlockOutdatedMajority = 950;
         nToCheckBlockUpgradeMajority = 1000;
         nMinerThreads = 1;
-        nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 100;
