@@ -3037,6 +3037,8 @@ bool CWallet::CreateCoinStake(
     CAmount nCredit = 0;
     CScript scriptPubKeyKernel;
     bool fKernelFound = false;
+    int nAttempts = 0;
+
     for (std::unique_ptr<CStakeInput>& stakeInput : listInputs) {
         // Make sure the wallet is unlocked and shutdown hasn't been requested
         if (IsLocked() || ShutdownRequested())

@@ -96,7 +96,11 @@ public:
 
 void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
 {
-    pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
+    if (Params().IsTimeProtocolV2(pindexPrev->nHeight+1)) {
+        pblock->nTime = GetMaskedTime();
+    } else {
+        pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
+    }
 
     // Updating time can change work required on testnet:
     if (Params().AllowMinDifficultyBlocks())
@@ -637,11 +641,14 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                     continue;
             }
 
-            if (mapHashedBlocks.count(chainActive.Tip()->nHeight)) //search our map of hashed blocks, see if bestblock has been hashed yet
+            //search our map of hashed blocks, see if bestblock has been hashed yet
+            if (mapHashedBlocks.count(chainActive.Tip()->nHeight) && !fLastLoopOrphan)
             {
-                if (GetTime() - mapHashedBlocks[chainActive.Tip()->nHeight] < max(pwallet->nHashInterval, (unsigned int)1)) // wait half of the nHashDrift with max wait of 3 minutes
+                int64_t tipHashTime = mapHashedBlocks[chainActive.Tip()->nHeight];
+                // 1 second check until we get to the next time slot
+                while (GetMaskedTime() <= tipHashTime)
                 {
-                    MilliSleep(5000);
+                    MilliSleep(1000);
                     continue;
                 }
             }
