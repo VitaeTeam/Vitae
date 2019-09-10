@@ -13,6 +13,7 @@
 #include "key.h"
 #include "main.h"
 #include "net.h"
+#include "sporkid.h"
 #include "sync.h"
 #include "util.h"
 
@@ -81,12 +82,12 @@ private:
 
 public:
     std::vector<unsigned char> vchSig;
-    int nSporkID;
+    SporkId nSporkID;
     int64_t nValue;
     int64_t nTimeSigned;
 
-    CSporkMessage(int nSporkID, int64_t nValue, int64_t nTimeSigned) : nSporkID(nSporkID), nValue(nValue), nTimeSigned(nTimeSigned) {}
-    CSporkMessage() : nSporkID(0), nValue(0), nTimeSigned(0) {}
+    CSporkMessage(SporkId nSporkID, int64_t nValue, int64_t nTimeSigned) : nSporkID(nSporkID), nValue(nValue), nTimeSigned(nTimeSigned) {}
+    CSporkMessage() : nSporkID((SporkId)0), nValue(0), nTimeSigned(0) {}
 
     uint256 GetHash() { return HashQuark(BEGIN(nSporkID), END(nTimeSigned)); }
     bool Sign(std::string strSignKey);
@@ -129,13 +130,13 @@ public:
     void LoadSporksFromDB();
 
     void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
-    int64_t GetSporkValue(int nSporkID);
-    void ExecuteSpork(int nSporkID, int nValue);
-    bool UpdateSpork(int nSporkID, int64_t nValue);
+    int64_t GetSporkValue(SporkId nSporkID);
+    void ExecuteSpork(SporkId nSporkID, int nValue);
+    bool UpdateSpork(SporkId nSporkID, int64_t nValue);
 
-    bool IsSporkActive(int nSporkID);
-    std::string GetSporkNameByID(int id);
-    int GetSporkIDByName(std::string strName);
+    bool IsSporkActive(SporkId nSporkID);
+    std::string GetSporkNameByID(SporkId id);
+    SporkId GetSporkIDByName(std::string strName);
 
     bool SetPrivKey(std::string strPrivKey);
     std::string ToString() const;
