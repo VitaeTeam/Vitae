@@ -382,7 +382,7 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
     if (!walletModel || !walletModel->getOptionsModel())
         return false;
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(sporkManager.IsSporkActive(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
         emit message(tr("Spend Zerocoin"), tr("zVIT is currently undergoing maintenance."), CClientUIInterface::MSG_ERROR);
         return false;
     }
