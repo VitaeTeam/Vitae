@@ -29,8 +29,6 @@ enum SporkId : int32_t {
     SPORK_20_ZEROCOIN_MAINTENANCE_MODE          = 10019,
     SPORK_21_MASTERNODE_PAY_UPDATED_NODES       = 10020,
 
-    SPORK_START                                 = SPORK_2_SWIFTTX,
-    SPORK_END                                   = SPORK_21_MASTERNODE_PAY_UPDATED_NODES,
     SPORK_INVALID                               = -1
 };
 
