@@ -181,7 +181,6 @@ public:
         nMinerThreads = 0;
         nFundamentalnodeCountDrift = 20;
         nTargetSpacing = 1 * 60;        // 1 minute
-        nTargetSpacing_V2 = 64;         // 64 seconds
         nTargetTimespan = 40 * 60;      // 40 minutes
         nTargetTimespan_V2 = 16 * 60;   // 16 minutes
         nFutureTimeDriftPoW = 7200;
