@@ -82,7 +82,7 @@ public:
 
     /** Time Protocol V2 **/
     bool IsTimeProtocolV2(const int nHeight) const { return nHeight >= nBlockTimeProtocolV2; }
-    int StakeTimestampMask() const { return nStakeTimestampMask; }
+    int TimeSlotLength() const { return nTimeSlotLength; }
     int FutureBlockTimeDrift(const int nHeight) const;
     bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const;
 
@@ -167,7 +167,7 @@ protected:
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
     int nFutureTimeDriftPoS_V2;
-    int nStakeTimestampMask;
+    int nTimeSlotLength;
 
     int nModifierUpdateBlock;
     CAmount nMaxMoneyOut;
