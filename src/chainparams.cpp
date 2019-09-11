@@ -182,7 +182,8 @@ public:
         nFundamentalnodeCountDrift = 20;
         nTargetSpacing = 1 * 60;        // 1 minute
         nTargetTimespan = 40 * 60;      // 40 minutes
-        nTargetTimespan_V2 = 16 * 60;   // 16 minutes
+        nTimeSlotLength = 15;                       // 15 seconds
+        nTargetTimespan_V2 = nTimeSlotLength * 60;  // 15 minutes
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
