@@ -70,7 +70,7 @@ private:
     std::string strMasterPrivKey;
     std::map<SporkId, CSporkDef*> sporkDefsById;
     std::map<std::string, CSporkDef*> sporkDefsByName;
-    std::map<int, CSporkMessage> mapSporksActive;
+    std::map<SporkId, CSporkMessage> mapSporksActive;
 
 public:
     CSporkManager();
