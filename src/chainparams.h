@@ -166,7 +166,6 @@ protected:
     int nMaturity;
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
-    int nFutureTimeDriftPoS_V2;
     int nTimeSlotLength;
 
     int nModifierUpdateBlock;

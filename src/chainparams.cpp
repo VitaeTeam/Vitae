@@ -134,8 +134,8 @@ bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t
 int CChainParams::FutureBlockTimeDrift(const int nHeight) const
 {
     if (IsTimeProtocolV2(nHeight))
-        // PoS (TimeV2): 15 seconds
-        return nFutureTimeDriftPoS_V2;
+        // PoS (TimeV2): 14 seconds
+        return TimeSlotLength() - 1;
 
     // PoS (TimeV1): 3 minutes
     // PoW: 2 hours
@@ -186,7 +186,6 @@ public:
         nTargetTimespan_V2 = 16 * 60;   // 16 minutes
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
-        nFutureTimeDriftPoS_V2 = 15;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
         nStakeTimestampMask = 0xf;
