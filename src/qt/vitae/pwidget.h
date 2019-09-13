@@ -8,7 +8,6 @@
 #include <QObject>
 #include <QWidget>
 #include <QString>
-#include <QThread>
 #include "qt/vitae/prunnable.h"
 
 class VITAEGUI;
@@ -60,11 +59,8 @@ protected:
     void emitMessage(const QString& title, const QString& message, unsigned int style, bool* ret = nullptr);
 
     bool verifyWalletUnlocked();
-    bool quitWorker(bool forceTermination);
 
 private:
-    QThread* thread = nullptr;
-
     void init();
 };
 
