@@ -4,7 +4,6 @@
 
 #include "qt/vitae/pwidget.h"
 #include "qt/vitae/qtutils.h"
-#include "qt/vitae/moc_pwidget.cpp"
 #include "qt/vitae/loadingdialog.h"
 #include <QRunnable>
 #include <QThreadPool>

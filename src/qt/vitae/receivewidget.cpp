@@ -50,8 +50,6 @@ public:
     MyAddressRow* cachedRow = nullptr;
 };
 
-#include "qt/vitae/moc_receivewidget.cpp"
-
 ReceiveWidget::ReceiveWidget(VITAEGUI* parent) :
     PWidget(parent),
     ui(new Ui::ReceiveWidget)

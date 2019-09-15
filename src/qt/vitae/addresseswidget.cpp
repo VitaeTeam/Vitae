@@ -55,7 +55,6 @@ public:
     AddressLabelRow* cachedRow = nullptr;
 };
 
-#include "qt/vitae/moc_addresseswidget.cpp"
 
 AddressesWidget::AddressesWidget(VITAEGUI* parent) :
     PWidget(parent),
