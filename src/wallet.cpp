@@ -2991,9 +2991,6 @@ bool CWallet::CreateCoinStake(
         int64_t& nTxNewTime
         )
 {
-    // The following split & combine thresholds are important to security
-    // Should not be adjusted if you don't understand the consequences
-    //int64_t nCombineThreshold = 0;
     txNew.vin.clear();
     txNew.vout.clear();
 
