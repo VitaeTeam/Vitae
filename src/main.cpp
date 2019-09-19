@@ -4861,7 +4861,7 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
         LogPrintf("%s : block contains %d zVITAE mints and %d zVITAE spends\n", __func__, nMints, nSpends);
 
     if (!CheckBlockSignature(*pblock))
-        return error("ProcessNewBlock() : bad proof-of-stake block signature");
+        return error("%s : bad proof-of-stake block signature", __func__);
 
     if (pblock->GetHash() != Params().HashGenesisBlock() && pfrom != NULL) {
         //if we get this far, check if the prev block is our prev block, if not then request sync and return false
