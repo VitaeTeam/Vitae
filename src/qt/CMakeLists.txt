@@ -8,10 +8,6 @@ set(CMAKE_AUTOUIC ON)
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-    execute_process(
-            COMMAND sed -i /HAVE_DECL_BSWAP/d vitae-config.h
-            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src/config
-    )
 endif ()
 
 find_package(Qrcode)
@@ -218,8 +214,9 @@ add_custom_target(translations_target ALL DEPENDS ${QM})
 QT5_ADD_RESOURCES(QRC_RESOURCE vitae.qrc)
 QT5_ADD_RESOURCES(QRC_LOCALE_RESOURCE pivx_locale.qrc)
 
-add_executable(vitae-qt vitae.cpp ${QM} ${QRC_RESOURCE} ${QRC_LOCALE_RESOURCE})
+add_executable(vitae-qt pivx.cpp ${QM} ${QRC_RESOURCE} ${QRC_LOCALE_RESOURCE})
 add_dependencies(vitae-qt translations_target libunivalue libsecp256k1 leveldb leveldb_sse42 memenv)
+target_include_directories(vitae-qt PUBLIC ${ENDIAN_INCLUDES})
 target_link_libraries(vitae-qt
         qt_stuff
         univalue
