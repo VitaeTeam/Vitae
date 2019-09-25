@@ -1780,11 +1780,11 @@ bool CBudgetVote::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
         std::string strMessage = GetStrMessage();
 
         if (!CMessageSigner::SignMessage(strMessage, vchSig, keyMasternode)) {
-            return error("%s - SignMessage() failed", __func__);
+            return error("%s : SignMessage() failed", __func__);
         }
 
         if (!CMessageSigner::VerifyMessage(pubKeyMasternode, vchSig, strMessage, strError)) {
-            return error("%s - VerifyMessage() failed, error: %s\n", __func__, strError);
+            return error("%s : VerifyMessage() failed, error: %s\n", __func__, strError);
         }
     }
 
@@ -1811,7 +1811,7 @@ bool CBudgetVote::CheckSignature(bool fSignatureCheck) const
     std::string strMessage = GetStrMessage();
 
     if (!CMessageSigner::VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, strError)) {
-        return error("%s - Got bad masternode signature for %s: %s\n", __func__,
+        return error("%s : Got bad masternode signature for %s: %s\n", __func__,
                 vin.prevout.hash.ToString(), strError);
     }
 
@@ -2336,11 +2336,11 @@ bool CFinalizedBudgetVote::Sign(CKey& keyMasternode, CPubKey& pubKeyMasternode)
         std::string strMessage = GetStrMessage();
 
         if (!CMessageSigner::SignMessage(strMessage, vchSig, keyMasternode)) {
-            return error("%s - SignMessage() failed", __func__);
+            return error("%s : SignMessage() failed", __func__);
         }
 
         if (!CMessageSigner::VerifyMessage(pubKeyMasternode, vchSig, strMessage, strError)) {
-            return error("%s - VerifyMessage() failed, error: %s\n", __func__, strError);
+            return error("%s : VerifyMessage() failed, error: %s\n", __func__, strError);
         }
     }
 
@@ -2367,7 +2367,7 @@ bool CFinalizedBudgetVote::CheckSignature(bool fSignatureCheck) const
     std::string strMessage = GetStrMessage();
 
     if (!CMessageSigner::VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, strError)) {
-        return error("%s - Got bad masternode signature for %s: %s\n", __func__,
+        return error("%s : Got bad masternode signature for %s: %s\n", __func__,
                 vin.prevout.hash.ToString(), strError);
     }
 
