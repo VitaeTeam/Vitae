@@ -475,48 +475,82 @@ uint256 CConsensusVote::GetHash() const
     return vinFundamentalnode.prevout.hash + vinFundamentalnode.prevout.n + txHash;
 }
 
-
-bool CConsensusVote::SignatureValid()
+uint256 CConsensusVote::GetSignatureHash() const
 {
-    std::string strError = "";
-    std::string strMessage = txHash.ToString().c_str() + std::to_string(nBlockHeight);
-    //LogPrintf("verify strMessage %s \n", strMessage.c_str());
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    ss << vinFundamentalnode;
+    ss << txHash;
+    ss << nBlockHeight;
+    return ss.GetHash();
+}
 
-    CFundamentalnode* pmn = mnodeman.Find(vinFundamentalnode);
+std::string CConsensusVote::GetStrMessage() const
+{
+    return txHash.ToString().c_str() + std::to_string(nBlockHeight);
+}
 
-    if (pmn == NULL) {
-        LogPrintf("SwiftX::CConsensusVote::SignatureValid() - Unknown Fundamentalnode\n");
-        return false;
+bool CConsensusVote::Sign()
+{
+    int nHeight;
+    {
+        LOCK(cs_main);
+        nHeight = chainActive.Height();
     }
 
-    if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, strError)) {
-        LogPrintf("SwiftX::CConsensusVote::SignatureValid() - Verify message failed\n");
-        return false;
+    std::string strError = "";
+    CKey key2;
+    CPubKey pubkey2;
+
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, key2, pubkey2)) {
+        return error("%s : Invalid masternodeprivkey", __func__);
+    }
+
+    if (Params().NewSigsActive(nHeight)) {
+        uint256 hash = GetSignatureHash();
+
+        if(!CHashSigner::SignHash(hash, key2, vchSig)) {
+            return error("%s : SignHash() failed", __func__);
+        }
+
+        if (!CHashSigner::VerifyHash(hash, pubkey2, vchSig, strError)) {
+            return error("%s : VerifyHash() failed, error: %s", __func__, strError);
+        }
+    } else {
+        // use old signature format
+        std::string strMessage = GetStrMessage();
+
+        if (!CMessageSigner::SignMessage(strMessage, vchSig, key2)) {
+            return error("%s - SignMessage() failed", __func__);
+        }
+
+        if (!CMessageSigner::VerifyMessage(pubkey2, vchSig, strMessage, strError)) {
+            return error("%s - VerifyMessage() failed, error: %s\n", __func__, strError);
+        }
     }
 
     return true;
 }
 
-bool CConsensusVote::Sign()
+bool CConsensusVote::SignatureValid() const
 {
+    CMasternode* pmn = mnodeman.Find(vinFundamentalnode);
+    if (pmn == nullptr) {
+        return error("%s : vinFundamentalnode not found", __func__);
+    }
+
     std::string strError = "";
 
-    CKey key2;
-    CPubKey pubkey2;
-    std::string strMessage = txHash.ToString().c_str() + std::to_string(nBlockHeight);
-    //LogPrintf("signing strMessage %s \n", strMessage.c_str());
-    //LogPrintf("signing privkey %s \n", strFundamentalNodePrivKey.c_str());
+    uint256 hash = GetSignatureHash();
 
-    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, key2, pubkey2)) {
-        return error("%s : Invalid masternodeprivkey", __func__);
-    }
+    if (CHashSigner::VerifyHash(hash, pmn->pubKeyMasternode, vchSig, strError))
+        return true;
 
-    if (!CMessageSigner::SignMessage(strMessage,  vchFundamentalNodeSignature, key2)) {
-        return error("%s : Sign message failed", __func__);
-    }
+    // if new signature fails, try old format
+    std::string strMessage = GetStrMessage();
 
-    if (!CMessageSigner::VerifyMessage(pubkey2, vchFundamentalNodeSignature, strMessage, strError)) {
-        return error("%s : Verify message failed, error: %s", __func__, strError);
+    if (!CMessageSigner::VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, strError)) {
+        return error("%s - Got bad masternode signature for %s: %s\n", __func__,
+                vinFundamentalnode.prevout.hash.ToString(), strError);
     }
 
     return true;
