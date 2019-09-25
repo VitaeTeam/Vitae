@@ -19,7 +19,6 @@
 
 class CTxIn;
 class CObfuscationPool;
-class CObfuScationSigner;
 class CFundamentalNodeVote;
 class CBitcoinAddress;
 class CObfuscationQueue;
@@ -54,7 +53,6 @@ static const CAmount OBFUSCATION_COLLATERAL = (10 * COIN);
 static const CAmount OBFUSCATION_POOL_MAX = (99999.99 * COIN);
 
 extern CObfuscationPool obfuScationPool;
-extern CObfuScationSigner obfuScationSigner;
 extern std::vector<CObfuscationQueue> vecObfuscationQueue;
 extern std::string strFundamentalNodePrivKey;
 extern std::map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
@@ -201,23 +199,6 @@ public:
     CTxIn vin;
     std::vector<unsigned char> vchSig;
     int64_t sigTime;
-};
-
-/** Helper object for signing and checking signatures
- */
-class CObfuScationSigner
-{
-public:
-    /// Is the inputs associated with this public key?
-    bool IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey);
-    /// Set the private/public key values, returns true if successful
-    bool GetKeysFromSecret(std::string strSecret, CKey& keyRet, CPubKey& pubkeyRet);
-    /// Set the private/public key values, returns true if successful
-    bool SetKey(std::string strSecret, std::string& errorMessage, CKey& key, CPubKey& pubkey);
-    /// Sign the message, returns true if successful
-    bool SignMessage(std::string strMessage, std::string& errorMessage, std::vector<unsigned char>& vchSig, CKey key);
-    /// Verify the message, returns true if succcessful
-    bool VerifyMessage(CPubKey pubkey, std::vector<unsigned char>& vchSig, std::string strMessage, std::string& errorMessage);
 };
 
 /** Used to keep track of current status of Obfuscation pool

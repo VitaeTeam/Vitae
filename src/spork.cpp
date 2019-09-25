@@ -7,6 +7,7 @@
 
 #include "main.h"
 #include "fundamentalnode-budget.h"
+#include "messagesigner.h"
 #include "net.h"
 #include "spork.h"
 #include "sporkdb.h"
@@ -236,22 +237,22 @@ std::string CSporkManager::ToString() const
 
 bool CSporkMessage::Sign(std::string strSignKey)
 {
+    std::string strError = "";
     std::string strMessage = std::to_string(nSporkID) + std::to_string(nValue) + std::to_string(nTimeSigned);
 
     CKey key;
     CPubKey pubkey;
-    std::string errorMessage = "";
 
-    if (!obfuScationSigner.SetKey(strSignKey, errorMessage, key, pubkey)) {
-        return error("%s : SetKey error: '%s'\n", __func__, errorMessage);
+    if (!CMessageSigner::GetKeysFromSecret(strSignKey, key, pubkey)) {
+        return error("%s : SetKey error.", __func__);
     }
 
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, key)) {
+    if (!CMessageSigner::SignMessage(strMessage, vchSig, key)) {
         return error("%s : Sign message failed", __func__);
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
-        return error("%s : Verify message failed", __func__);
+    if (!CMessageSigner::VerifyMessage(pubkey, vchSig, strMessage, strError)) {
+        return error("%s : Verify message failed, error: %s", __func__, strError);
     }
 
     return true;
@@ -259,12 +260,11 @@ bool CSporkMessage::Sign(std::string strSignKey)
 
 bool CSporkMessage::CheckSignature(bool fRequireNew)
 {
-    //note: need to investigate why this is failing
+    std::string strError = "";
     std::string strMessage = std::to_string(nSporkID) + std::to_string(nValue) + std::to_string(nTimeSigned);
     CPubKey pubkeynew(ParseHex(Params().SporkPubKey()));
-    std::string errorMessage = "";
 
-    bool fValidWithNewKey = obfuScationSigner.VerifyMessage(pubkeynew, vchSig, strMessage, errorMessage);
+    bool fValidWithNewKey = CMessageSigner::VerifyMessage(pubkeynew, vchSig, strMessage, strError);
 
     if (fRequireNew && !fValidWithNewKey)
         return false;
@@ -272,7 +272,7 @@ bool CSporkMessage::CheckSignature(bool fRequireNew)
     // See if window is open that allows for old spork key to sign messages
     if (!fValidWithNewKey && GetAdjustedTime() < Params().RejectOldSporkKey()) {
         CPubKey pubkeyold(ParseHex(Params().SporkPubKeyOld()));
-        return obfuScationSigner.VerifyMessage(pubkeyold, vchSig, strMessage, errorMessage);
+        return CMessageSigner::VerifyMessage(pubkeyold, vchSig, strMessage, strError);
     }
 
     return fValidWithNewKey;

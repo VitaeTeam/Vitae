@@ -23,6 +23,7 @@
 #include "fundamentalnode-payments.h"
 #include "fundamentalnodeman.h"
 #include "merkleblock.h"
+#include "messagesigner.h"
 #include "net.h"
 #include "obfuscation.h"
 #include "pow.h"
@@ -6845,10 +6846,8 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
                 std::string strMessage = tx.GetHash().ToString() + std::to_string(sigTime);
 
                 std::string errorMessage = "";
-                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
-                    LogPrintf("dstx: Got bad fundamentalnode address signature %s \n", vin.ToString());
-                    //pfrom->Misbehaving(20);
-                    return false;
+                if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+                    return error("dstx: Got bad fundamentalnode address signature %s, error: %s", vin.ToString(), errorMessage);
                 }
 
                 LogPrintf("dstx: Got Fundamentalnode transaction %s\n", tx.GetHash().ToString());

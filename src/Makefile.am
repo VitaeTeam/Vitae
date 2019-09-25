@@ -128,6 +128,7 @@ BITCOIN_CORE_H = \
   fundamentalnodeman.h \
   fundamentalnodeconfig.h \
   merkleblock.h \
+  messagesigner.h \
   miner.h \
   mruset.h \
   netbase.h \
@@ -275,6 +276,7 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
+  messagesigner.cpp \
   rpcdump.cpp \
   zvit/deterministicmint.cpp \
   zvit/zerocoin.cpp \

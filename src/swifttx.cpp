@@ -9,6 +9,7 @@
 #include "base58.h"
 #include "key.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 #include "net.h"
 #include "obfuscation.h"
 #include "protocol.h"
@@ -477,7 +478,7 @@ uint256 CConsensusVote::GetHash() const
 
 bool CConsensusVote::SignatureValid()
 {
-    std::string errorMessage;
+    std::string strError = "";
     std::string strMessage = txHash.ToString().c_str() + std::to_string(nBlockHeight);
     //LogPrintf("verify strMessage %s \n", strMessage.c_str());
 
@@ -488,7 +489,7 @@ bool CConsensusVote::SignatureValid()
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, strError)) {
         LogPrintf("SwiftX::CConsensusVote::SignatureValid() - Verify message failed\n");
         return false;
     }
@@ -498,7 +499,7 @@ bool CConsensusVote::SignatureValid()
 
 bool CConsensusVote::Sign()
 {
-    std::string errorMessage;
+    std::string strError = "";
 
     CKey key2;
     CPubKey pubkey2;
@@ -506,19 +507,16 @@ bool CConsensusVote::Sign()
     //LogPrintf("signing strMessage %s \n", strMessage.c_str());
     //LogPrintf("signing privkey %s \n", strFundamentalNodePrivKey.c_str());
 
-    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, key2, pubkey2)) {
-        LogPrintf("CConsensusVote::Sign() - ERROR: Invalid fundamentalnodeprivkey: '%s'\n", errorMessage.c_str());
-        return false;
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, key2, pubkey2)) {
+        return error("%s : Invalid masternodeprivkey", __func__);
     }
 
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchFundamentalNodeSignature, key2)) {
-        LogPrintf("CConsensusVote::Sign() - Sign message failed");
-        return false;
+    if (!CMessageSigner::SignMessage(strMessage,  vchFundamentalNodeSignature, key2)) {
+        return error("%s : Sign message failed", __func__);
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubkey2, vchFundamentalNodeSignature, strMessage, errorMessage)) {
-        LogPrintf("CConsensusVote::Sign() - Verify message failed");
-        return false;
+    if (!CMessageSigner::VerifyMessage(pubkey2, vchFundamentalNodeSignature, strMessage, strError)) {
+        return error("%s : Verify message failed, error: %s", __func__, strError);
     }
 
     return true;

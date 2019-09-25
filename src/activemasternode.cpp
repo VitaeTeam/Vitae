@@ -2,12 +2,13 @@
 // Copyright (c) 2015-2017 The PIVX developers
 
 //#include "core.h"
-#include "protocol.h"
 #include "activemasternode.h"
+#include "addrman.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
-#include "addrman.h"
 #include "main.h"
+#include "messagesigner.h"
+#include "protocol.h"
 #include "mn-spork.h"
 
 //
