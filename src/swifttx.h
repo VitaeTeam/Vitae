@@ -72,6 +72,7 @@ private:
     std::vector<unsigned char> vchSig;
 
 public:
+    int nMessVersion;
     CTxIn vinFundamentalnode;
     uint256 txHash;
     int nBlockHeight;
@@ -95,10 +96,20 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
-        READWRITE(txHash);
-        READWRITE(vinFundamentalnode);
-        READWRITE(vchSig);
-        READWRITE(nBlockHeight);
+        try
+        {
+            READWRITE(nMessVersion);
+            READWRITE(txHash);
+            READWRITE(vinFundamentalnode);
+            READWRITE(vchSig);
+            READWRITE(nBlockHeight);
+        } catch (...) {
+            nMessVersion = MessageVersion::MESS_VER_STRMESS;
+            READWRITE(txHash);
+            READWRITE(vinFundamentalnode);
+            READWRITE(vchSig);
+            READWRITE(nBlockHeight);
+        }
     }
 };
 

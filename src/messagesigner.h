@@ -10,6 +10,10 @@
 
 class CTxIn;
 class CTransaction;
+enum MessageVersion {
+        MESS_VER_STRMESS    = 0,
+        MESS_VER_HASH       = 1,
+};
 
 /** Helper class for signing messages and checking their signatures
  */
