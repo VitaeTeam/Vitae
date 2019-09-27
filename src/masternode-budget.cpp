@@ -1754,16 +1754,6 @@ std::string CBudgetVote::GetStrMessage() const
             std::to_string(nVote) + std::to_string(nTime);
 }
 
-const CPubKey* CBudgetVote::GetPublicKey(std::string& strErrorRet) const
-{
-    CMasternode* pmn = mnodeman.Find(vin);
-    if(pmn) {
-        return &(pmn->pubKeyMasternode);
-    }
-    strErrorRet = strprintf("Unable to find masternode vin %s", vin.prevout.hash.GetHex());
-    return nullptr;
-}
-
 CFinalizedBudget::CFinalizedBudget() :
         fAutoChecked(false),
         fValid(true),
@@ -2249,16 +2239,6 @@ uint256 CFinalizedBudgetVote::GetHash() const
 std::string CFinalizedBudgetVote::GetStrMessage() const
 {
     return vin.prevout.ToStringShort() + nBudgetHash.ToString() + std::to_string(nTime);
-}
-
-const CPubKey* CFinalizedBudgetVote::GetPublicKey(std::string& strErrorRet) const
-{
-    CMasternode* pmn = mnodeman.Find(vin);
-    if(pmn) {
-        return &(pmn->pubKeyMasternode);
-    }
-    strErrorRet = strprintf("Unable to find masternode vin %s", vin.prevout.hash.GetHex());
-    return nullptr;
 }
 
 std::string CBudgetManager::ToString() const
