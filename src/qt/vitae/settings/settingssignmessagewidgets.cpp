@@ -5,7 +5,6 @@
 #include "qt/vitae/settings/settingssignmessagewidgets.h"
 #include "qt/vitae/settings/forms/ui_settingssignmessagewidgets.h"
 #include "qt/vitae/qtutils.h"
-#include "addressbookpage.h"
 #include "guiutil.h"
 #include "walletmodel.h"
 
@@ -13,6 +12,7 @@
 #include "init.h"
 #include "wallet.h"
 #include "askpassphrasedialog.h"
+#include "addressbookpage.h"
 
 #include <string>
 #include <vector>
