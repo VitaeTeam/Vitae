@@ -9,7 +9,7 @@
 #include "obfuscation-relay.h"
 
 CObfuScationRelay::CObfuScationRelay() :
-        vchSig(),
+        CSignedMessage(),
         vchSig2(),
         vinFundamentalnode(),
         nBlockHeight(0),
@@ -24,14 +24,16 @@ CObfuScationRelay::CObfuScationRelay(CTxIn& vinFundamentalnodeIn,
                                      int nRelayTypeIn,
                                      CTxIn& in2,
                                      CTxOut& out2):
-        vchSig(vchSigIn),
+        CSignedMessage(),
         vchSig2(),
         vinFundamentalnode(vinFundamentalnodeIn),
         nBlockHeight(nBlockHeightIn),
         nRelayType(nRelayTypeIn),
         in(in2),
         out(out2)
-{ }
+{
+    SetVchSig(vchSigIn);
+}
 
 std::string CObfuScationRelay::ToString()
 {
@@ -94,30 +96,6 @@ bool CObfuScationRelay::Sign(std::string strSharedKey)
         if (!CMessageSigner::VerifyMessage(pubkey2, vchSig2, strMessage, strError)) {
             return error("%s : VerifyMessage() failed, error: %s\n", __func__, strError);
         }
-    }
-
-    return true;
-}
-
-bool CObfuScationRelay::CheckSignature(std::string strSharedKey) const
-{
-    std::string strError = "";
-    CKey key2;
-    CPubKey pubkey2;
-
-    if (!CMessageSigner::GetKeysFromSecret(strSharedKey, key2, pubkey2)) {
-        return error("%s : Invalid shared key %s", __func__, strSharedKey);
-    }
-
-    if (nMessVersion == MessageVersion::MESS_VER_HASH) {
-        uint256 hash = GetSignatureHash();
-        if(!CHashSigner::VerifyHash(hash, pubkey2, vchSig, strError))
-            return error("%s : VerifyHash failed, error: %s", __func__, strError);
-
-    } else {
-        std::string strMessage = GetStrMessage();
-        if(!CMessageSigner::VerifyMessage(pubkey2, vchSig, strMessage, strError))
-            return error("%s : VerifyMessage failed, error: %s", __func__, strError);
     }
 
     return true;
