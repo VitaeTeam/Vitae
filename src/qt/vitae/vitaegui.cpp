@@ -8,7 +8,7 @@
 #include "macdockiconhandler.h"
 #endif
 
-#include <qt/guiutil.h>
+#include "qt/guiutil.h"
 #include "clientmodel.h"
 #include "optionsmodel.h"
 #include "networkstyle.h"
