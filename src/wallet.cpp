@@ -2483,7 +2483,7 @@ bool CWallet::CreateCoinStake(
             CAmount nMinFee = 0;
             if (!stakeInput->IsZVIT()) {
                 // Set output amount
-                unsigned int outputs = txNew.vout.size() - 1;
+                int outputs = txNew.vout.size() - 1;
                 CAmount nRemaining = nCredit - nMinFee;
                 if (outputs > 1) {
                     // Split the stake across the outputs

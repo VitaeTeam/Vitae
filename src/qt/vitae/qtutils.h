@@ -19,12 +19,7 @@
 #include <initializer_list>
 #include "qt/vitae/vitaegui.h"
 
-static Qt::Modifier SHORT_KEY
-#ifdef Q_OS_MAC
-        = Qt::CTRL;
-#else
-        = Qt::ALT;
-#endif
+extern Qt::Modifier SHORT_KEY;
 
 bool openDialog(QDialog *widget, QWidget *gui);
 void closeDialog(QDialog *widget, VITAEGUI *gui);
