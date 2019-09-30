@@ -142,6 +142,7 @@ void CBlock::print() const
     LogPrintf("%s", ToString());
 }
 
+
 // ppcoin: sign block
 bool CBlock::SignBlock(const CKeyStore& keystore)
 {
@@ -302,7 +303,6 @@ bool CBlock::CheckBlockSignature() const
 
     return false;
 }
-
 
 int64_t GetBlockCost(const CBlock& block)
 {
