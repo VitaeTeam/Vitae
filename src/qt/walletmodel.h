@@ -12,6 +12,7 @@
 #include "allocators.h" /* for SecureString */
 #include "swifttx.h"
 #include "wallet.h"
+#include "pairresult.h"
 
 #include <map>
 #include <vector>
@@ -243,11 +244,11 @@ public:
     int64_t getCreationTime() const;
     int64_t getKeyCreationTime(const CPubKey& key);
     int64_t getKeyCreationTime(const CBitcoinAddress& address);
-    CBitcoinAddress getNewAddress(std::string label = "") const;
+    PairResult getNewAddress(CBitcoinAddress& ret, std::string label = "") const;
     /**
      * Return a new address used to receive for delegated cold stake purpose.
      */
-    CBitcoinAddress getNewStakingAddress(std::string label = "") const;
+    PairResult getNewStakingAddress(CBitcoinAddress& ret, std::string label = "") const;
     bool isMine(CBitcoinAddress address);
     bool isUsed(CBitcoinAddress address);
     void getOutputs(const std::vector<COutPoint>& vOutpoints, std::vector<COutput>& vOutputs);
