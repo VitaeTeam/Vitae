@@ -568,6 +568,8 @@ RES_ICONS = \
   qt/vitae/res/img/ic-arrow-drop-up-purple.svg \
   qt/vitae/res/img/ic-check-liliac-indeterminate.svg \
   qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
+  qt/vitae/res/img/ic-transaction-stake-delegated.svg \
+  qt/vitae/res/img/ic-transaction-stake-hot.svg \
   qt/vitae/res/img/ic-check-box-indeterminate.svg \
   qt/vitae/res/img/ani-loading-dark.gif \
   qt/vitae/res/img/ani-loading.gif
