@@ -571,6 +571,7 @@ RES_ICONS = \
   qt/vitae/res/img/ic-transaction-stake-delegated.svg \
   qt/vitae/res/img/ic-transaction-stake-hot.svg \
   qt/vitae/res/img/ic-transaction-cs-contract.svg \
+  qt/vitae/res/img/ic-transaction-cs-contract-inactive.svg \
   qt/vitae/res/img/ic-check-box-indeterminate.svg \
   qt/vitae/res/img/ani-loading-dark.gif \
   qt/vitae/res/img/ani-loading.gif
