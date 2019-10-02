@@ -128,7 +128,8 @@ bool CMasternodeConfig::read(std::string& strErr)
     streamConfig.close();
     return true;
 }
-bool CMasternodeConfig::CMasternodeEntry::castOutputIndex(int &n)
+
+bool CMasternodeConfig::CMasternodeEntry::castOutputIndex(int &n) const
 {
     try {
         n = std::stoi(outputIndex);
