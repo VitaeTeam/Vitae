@@ -119,6 +119,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         addressesWidget = new AddressesWidget(this);
         privacyWidget = new PrivacyWidget(this);
         masterNodesWidget = new MasterNodesWidget(this);
+        coldStakingWidget = new ColdStakingWidget(this);
         settingsWidget = new SettingsWidget(this);
 
         // Add to parent
@@ -128,6 +129,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         stackedContainer->addWidget(addressesWidget);
         stackedContainer->addWidget(privacyWidget);
         stackedContainer->addWidget(masterNodesWidget);
+        stackedContainer->addWidget(coldStakingWidget);
         stackedContainer->addWidget(settingsWidget);
         stackedContainer->setCurrentWidget(dashboard);
 
@@ -191,6 +193,8 @@ void VITAEGUI::connectActions() {
     connect(privacyWidget, &PrivacyWidget::showHide, this, &VITAEGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::showHide, this, &VITAEGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::execDialog, this, &VITAEGUI::execDialog);
+    connect(coldStakingWidget, &ColdStakingWidget::showHide, this, &VITAEGUI::showHide);
+    connect(coldStakingWidget, &ColdStakingWidget::execDialog, this, &VITAEGUI::execDialog);
     connect(settingsWidget, &SettingsWidget::execDialog, this, &VITAEGUI::execDialog);
 }
 
@@ -472,6 +476,10 @@ void VITAEGUI::goToMasterNodes(){
     showTop(masterNodesWidget);
 }
 
+void VITAEGUI::goToColdStaking(){
+    showTop(coldStakingWidget);
+}
+
 void VITAEGUI::goToSettings(){
     showTop(settingsWidget);
 }
@@ -571,11 +579,13 @@ bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
     addressesWidget->setWalletModel(walletModel);
     privacyWidget->setWalletModel(walletModel);
     masterNodesWidget->setWalletModel(walletModel);
+    coldStakingWidget->setWalletModel(walletModel);
     settingsWidget->setWalletModel(walletModel);
 
     // Connect actions..
     connect(privacyWidget, &PrivacyWidget::message, this, &VITAEGUI::message);
     connect(masterNodesWidget, &MasterNodesWidget::message, this, &VITAEGUI::message);
+    connect(coldStakingWidget, &MasterNodesWidget::message, this, &VITAEGUI::message);
     connect(topBar, &TopBar::message, this, &VITAEGUI::message);
     connect(sendWidget, &SendWidget::message,this, &VITAEGUI::message);
     connect(receiveWidget, &ReceiveWidget::message,this, &VITAEGUI::message);

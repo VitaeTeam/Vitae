@@ -76,6 +76,7 @@ QT_FORMS_UI = \
   qt/vitae/forms/defaultdialog.ui \
   qt/vitae/forms/denomgenerationdialog.ui \
   qt/vitae/forms/privacywidget.ui \
+  qt/vitae/forms/coldstakingwidget.ui \
   qt/vitae/settings/forms/settingsbackupwallet.ui \
   qt/vitae/settings/forms/settingsbittoolwidget.ui \
   qt/vitae/settings/forms/settingsconsolewidget.ui \
@@ -170,6 +171,7 @@ QT_MOC_CPP = \
   qt/vitae/moc_defaultdialog.cpp \
   qt/vitae/moc_denomgenerationdialog.cpp \
   qt/vitae/moc_privacywidget.cpp \
+  qt/vitae/moc_coldstakingwidget.cpp \
   qt/vitae/settings/moc_settingsbackupwallet.cpp \
   qt/vitae/settings/moc_settingsbittoolwidget.cpp \
   qt/vitae/settings/moc_settingsconsolewidget.cpp \
@@ -296,6 +298,7 @@ BITCOIN_QT_H = \
   qt/vitae/defaultdialog.h \
   qt/vitae/denomgenerationdialog.h \
   qt/vitae/privacywidget.h \
+  qt/vitae/coldstakingwidget.h \
   qt/vitae/settings/settingsbackupwallet.h \
   qt/vitae/settings/settingsbittoolwidget.h \
   qt/vitae/settings/settingsconsolewidget.h \
@@ -397,6 +400,8 @@ RES_ICONS = \
   qt/vitae/res/img/bg-splash.svg \
   qt/vitae/res/img/bg-splash.png \
   qt/vitae/res/img/ic-check-mint.svg \
+  qt/vitae/res/img/ic-nav-cold-staking.svg \
+  qt/vitae/res/img/ic-nav-cold-staking-active.svg \
   qt/vitae/res/img/ic-nav-dashboard-hover.svg \
   qt/vitae/res/img/ic-wallet-status-staking.svg \
   qt/vitae/res/img/ic-check-peers-off.svg \
@@ -666,6 +671,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/defaultdialog.cpp \
   qt/vitae/denomgenerationdialog.cpp \
   qt/vitae/privacywidget.cpp \
+  qt/vitae/coldstakingwidget.cpp \
   qt/vitae/settings/settingsbackupwallet.cpp \
   qt/vitae/settings/settingsbittoolwidget.cpp \
   qt/vitae/settings/settingsconsolewidget.cpp \
