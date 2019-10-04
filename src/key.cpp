@@ -40,8 +40,8 @@ bool CKey::Check(const unsigned char* vch)
 void CKey::MakeNewKey(bool fCompressedIn)
 {
     do {
-        GetStrongRandBytes(keydata.data(), keydata.size());
-    } while (!Check(keydata.data()));
+        GetRandBytes(vch, sizeof(vch));
+    } while (!Check(vch));
     fValid = true;
     fCompressed = fCompressedIn;
 }

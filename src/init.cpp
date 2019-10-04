@@ -654,14 +654,8 @@ bool InitSanityCheck(void)
                   "information, visit https://en.bitcoin.it/wiki/OpenSSL_and_EC_Libraries");
         return false;
     }
-
     if (!glibc_sanity_test() || !glibcxx_sanity_test())
         return false;
-
-    if (!Random_SanityCheck()) {
-        InitError("OS cryptographic RNG sanity check failure. Aborting.");
-        return false;
-    }
 
     return true;
 }
@@ -1540,6 +1534,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
         if (fFirstRun) {
             // Create new keyUser and set as default key
+            RandAddSeedPerfmon();
+
             CPubKey newDefaultKey;
             if (pwalletMain->GetKeyFromPool(newDefaultKey)) {
                 pwalletMain->SetDefaultKey(newDefaultKey);
@@ -1926,6 +1922,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
 
     if (!strErrors.str().empty())
         return InitError(strErrors.str());
+
+    RandAddSeedPerfmon();
 
     //// debug print
     LogPrintf("mapBlockIndex.size() = %u\n", mapBlockIndex.size());

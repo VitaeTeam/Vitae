@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "coins.h"
+#include "random.h"
 #include "uint256.h"
 
 #include <vector>
@@ -25,7 +26,7 @@ public:
             return false;
         }
         coins = it->second;
-        if (coins.IsPruned() && InsecureRandBool() == 0) {
+        if (coins.IsPruned() && insecure_rand() % 2 == 0) {
             // Randomly return false in case of an empty entry.
             return false;
         }
@@ -44,7 +45,7 @@ public:
     {
         for (CCoinsMap::iterator it = mapCoins.begin(); it != mapCoins.end(); ) {
             map_[it->first] = it->second.coins;
-            if (it->second.coins.IsPruned() && InsecureRandRange(3) == 0) {
+            if (it->second.coins.IsPruned() && insecure_rand() % 3 == 0) {
                 // Randomly delete empty entries on write.
                 map_.erase(it->first);
             }
@@ -95,25 +96,25 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
     std::vector<uint256> txids;
     txids.resize(NUM_SIMULATION_ITERATIONS / 8);
     for (unsigned int i = 0; i < txids.size(); i++) {
-        txids[i] = InsecureRand256();
+        txids[i] = GetRandHash();
     }
 
     for (unsigned int i = 0; i < NUM_SIMULATION_ITERATIONS; i++) {
         // Do a random modification.
         {
-            uint256 txid = txids[InsecureRandRange(txids.size())]; // txid we're going to modify in this iteration.
+            uint256 txid = txids[insecure_rand() % txids.size()]; // txid we're going to modify in this iteration.
             CCoins& coins = result[txid];
             CCoinsModifier entry = stack.back()->ModifyCoins(txid);
             BOOST_CHECK(coins == *entry);
-            if (InsecureRandRange(5) == 0 || coins.IsPruned()) {
+            if (insecure_rand() % 5 == 0 || coins.IsPruned()) {
                 if (coins.IsPruned()) {
                     added_an_entry = true;
                 } else {
                     updated_an_entry = true;
                 }
-                coins.nVersion = InsecureRand32();
+                coins.nVersion = insecure_rand();
                 coins.vout.resize(1);
-                coins.vout[0].nValue = InsecureRand32();
+                coins.vout[0].nValue = insecure_rand();
                 *entry = coins;
             } else {
                 coins.Clear();
@@ -123,7 +124,7 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
         }
 
         // Once every 1000 iterations and at the end, verify the full cache.
-        if (InsecureRandRange(1000) == 1 || i == NUM_SIMULATION_ITERATIONS - 1) {
+        if (insecure_rand() % 1000 == 1 || i == NUM_SIMULATION_ITERATIONS - 1) {
             for (std::map<uint256, CCoins>::iterator it = result.begin(); it != result.end(); it++) {
                 const CCoins* coins = stack.back()->AccessCoins(it->first);
                 if (coins) {
@@ -136,14 +137,14 @@ BOOST_AUTO_TEST_CASE(coins_cache_simulation_test)
             }
         }
 
-        if (InsecureRandRange(100) == 0) {
+        if (insecure_rand() % 100 == 0) {
             // Every 100 iterations, change the cache stack.
-            if (stack.size() > 0 && InsecureRandBool() == 0) {
+            if (stack.size() > 0 && insecure_rand() % 2 == 0) {
                 stack.back()->Flush();
                 delete stack.back();
                 stack.pop_back();
             }
-            if (stack.size() == 0 || (stack.size() < 4 && InsecureRandBool())) {
+            if (stack.size() == 0 || (stack.size() < 4 && insecure_rand() % 2)) {
                 CCoinsView* tip = &base;
                 if (stack.size() > 0) {
                     tip = stack.back();
