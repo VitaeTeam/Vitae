@@ -294,7 +294,9 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/jh.c \
   crypto/keccak.c \
   crypto/skein.c \
+  crypto/chacha20.cpp \
   crypto/common.h \
+  crypto/chacha20.h \
   crypto/sha256.h \
   crypto/sha512.h \
   crypto/hmac_sha256.h \
