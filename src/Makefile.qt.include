@@ -258,6 +258,7 @@ BITCOIN_QT_H = \
   qt/winshutdownmonitor.h \
   qt/zVitcontroldialog.h \
   qt/vitae/pwidget.h \
+  qt/vitae/guitransactionsutils.h \
   qt/vitae/snackbar.h \
   qt/vitae/navmenuwidget.h \
   qt/vitae/lockunlock.h \
@@ -632,6 +633,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/loadingdialog.cpp \
   qt/zVitcontroldialog.cpp \
   qt/vitae/pwidget.cpp \
+  qt/vitae/guitransactionsutils.cpp \
   qt/vitae/snackbar.cpp \
   qt/vitae/navmenuwidget.cpp \
   qt/vitae/lockunlock.cpp \
