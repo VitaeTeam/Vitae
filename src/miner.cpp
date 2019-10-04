@@ -616,7 +616,7 @@ void VitaeMiner(CWallet* pwallet, bool fProofOfStake)
             unsigned int nExtraNonce = 0;
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
             LogPrintf("CPUMiner : proof-of-stake block found %s \n", pblock->GetHash().ToString().c_str());
-            if (!SignBlock(*pwallet)) {
+            if (!pblock->SignBlock(*pwallet)) {
                 LogPrintf("VitaeMiner(): Signing new block with UTXO key failed \n");
                 return NULL;
             }
