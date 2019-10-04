@@ -618,6 +618,7 @@ void VitaeMiner(CWallet* pwallet, bool fProofOfStake)
             LogPrintf("CPUMiner : proof-of-stake block found %s \n", pblock->GetHash().ToString().c_str());
             if (!pblock->SignBlock(*pwallet)) {
                 LogPrintf("VitaeMiner(): Signing new block with UTXO key failed \n");
+                continue;
             }
             LogPrintf("CPUMiner : proof-of-stake block was signed %s \n", pblock->GetHash().ToString().c_str());
             SetThreadPriority(THREAD_PRIORITY_NORMAL);
