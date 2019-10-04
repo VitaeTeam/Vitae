@@ -259,7 +259,3 @@ void AskPassphraseDialog::errorEncryptingWallet() {
     QMessageBox::critical(this, tr("Wallet encryption failed"),
                           tr("Wallet encryption failed due to an internal error. Your wallet was not encrypted."));
 }
-
-void AskPassphraseDialog::onError(int type, QString error){
-    newpassCache = "";
-}
