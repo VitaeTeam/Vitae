@@ -260,20 +260,3 @@ void AskPassphraseDialog::errorEncryptingWallet() {
     QMessageBox::critical(this, tr("Wallet encryption failed"),
                           tr("Wallet encryption failed due to an internal error. Your wallet was not encrypted."));
 }
-
-void AskPassphraseDialog::run(int type){
-    if (type == 1) {
-        if (!newpassCache.empty()) {
-            if (model->setWalletEncrypted(true, newpassCache)) {
-                QMetaObject::invokeMethod(this, "warningMessage", Qt::QueuedConnection);
-            } else {
-                QMetaObject::invokeMethod(this, "errorEncryptingWallet", Qt::QueuedConnection);
-            }
-            newpassCache.clear();
-            QDialog::accept(); // Success
-        }
-    }
-}
-void AskPassphraseDialog::onError(int type, QString error){
-    newpassCache = "";
-}
