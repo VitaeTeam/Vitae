@@ -6,7 +6,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "wallet/wallet.h"
+#include "wallet.h"
 
 #include "accumulators.h"
 #include "base58.h"
@@ -2968,20 +2968,17 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                     LogPrintf("CreateCoinStake : no support for kernel type=%d\n", whichType);
                 break; // only support pay to public key and pay to address
             }
-            if (whichType == TX_PUBKEYHASH) // pay to address type
-            {
-                //convert to pay to public key type
-                CKey key;
-                if (!keystore.GetKey(uint160(vSolutions[0]), key)) {
-                    if (fDebug && GetBoolArg("-printcoinstake", false))
-                        LogPrintf("CreateCoinStake : failed to get key for kernel type=%d\n", whichType);
-                    break; // unable to find corresponding public key
-                }
-
-                scriptPubKeyOut << key.GetPubKey() << OP_CHECKSIG;
-            } else
-                scriptPubKeyOut = scriptPubKeyKernel;
-
+          if (whichType == TX_PUBKEYHASH) // pay to address type
+          {
+           //convert to pay to public key type
+           CKey key;
+           CKeyID keyID = CKeyID(uint160(vSolutions[0]));
+           if (!pwallet->GetKey(keyID, key))
+               return false;
+           scriptPubKey << key.GetPubKey() << OP_CHECKSIG;
+           } else
+            scriptPubKey = scriptPubKeyKernel;
+            
             txNew.vin.push_back(CTxIn(pcoin.first->GetHash(), pcoin.second));
             nCredit += pcoin.first->vout[pcoin.second].nValue;
             vwtxPrev.push_back(pcoin.first);
