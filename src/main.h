@@ -30,7 +30,7 @@
 #include "txmempool.h"
 #include "uint256.h"
 #include "undo.h"
-
+#include "accumulatormap.h"
 #include <algorithm>
 #include <exception>
 #include <map>
