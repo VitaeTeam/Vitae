@@ -268,7 +268,7 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnodeman.cpp \
   rpcdump.cpp \
   primitives/zerocoin.cpp \
-  rpcwallet.cpp \
+  rpc/wallet.cpp \
   kernel.cpp \
   wallet.cpp \
   wallet_ismine.cpp \

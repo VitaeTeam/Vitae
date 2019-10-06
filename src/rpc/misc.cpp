@@ -13,7 +13,7 @@
 #include "fundamentalnode-sync.h"
 #include "net.h"
 #include "netbase.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
 #include "spork.h"
 #include "mn-spork.h"
 #include "timedata.h"
