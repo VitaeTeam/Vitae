@@ -13,7 +13,7 @@
 #include "fundamentalnode-payments.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
 #include "utilmoneystr.h"
 
 #include <univalue.h>
