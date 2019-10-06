@@ -467,13 +467,13 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 CBigNum bnSerial = spend.getCoinSerialNumber();
                 CKey key;
                 if (!pwallet->GetZerocoinKey(bnSerial, key)) {
-                    LogPrintf("%s: failed to find zPIV with serial %s, unable to sign block\n", __func__, bnSerial.GetHex());
+                    LogPrintf("%s: failed to find zVITAE with serial %s, unable to sign block\n", __func__, bnSerial.GetHex());
                     return NULL;
                 }
 
-                //Sign block with the zPIV key
+                //Sign block with the zVITAE key
                 if (!SignBlockWithKey(*pblock, key)) {
-                    LogPrintf("%s: Signing new block with zPIV key failed \n", __func__);
+                    LogPrintf("%s: Signing new block with zVITAE key failed \n", __func__);
                     return NULL;
                 }
             } else if (!SignBlock(*pblock, *pwallet)) {
@@ -655,38 +655,6 @@ void VitaeMiner(CWallet* pwallet, bool fProofOfStake)
         CBlock* pblock = &pblocktemplate->block;
         IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
-        //Stake miner main
-        if (fProofOfStake) {
-            unsigned int nExtraNonce = 0;
-            IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
-            LogPrintf("CPUMiner : proof-of-stake block found %s \n", pblock->GetHash().ToString().c_str());
-            if (pblock->IsZerocoinStake()) {
-                //Find the key associated with the zerocoin that is being staked
-                libzerocoin::CoinSpend spend = TxInToZerocoinSpend(pblock->vtx[1].vin[0]);
-                CBigNum bnSerial = spend.getCoinSerialNumber();
-                CKey key;
-                if (!pwallet->GetZerocoinKey(bnSerial, key)) {
-                    LogPrintf("%s: failed to find zPIV with serial %s, unable to sign block\n", __func__, bnSerial.GetHex());
-                    continue;
-                }
-
-                //Sign block with the zPIV key
-                if (!SignBlockWithKey(*pblock, key)) {
-                    LogPrintf("%s: Signing new block with zPIV key failed \n", __func__);
-                    continue;
-                }
-            } else if (!SignBlock(*pblock, *pwallet)) {
-                LogPrintf("%s: Signing new block with UTXO key failed \n", __func__);
-                continue;
-            }
-            LogPrintf("CPUMiner : proof-of-stake block was signed %s \n", pblock->GetHash().ToString().c_str());
-            SetThreadPriority(THREAD_PRIORITY_NORMAL);
-            ProcessBlockFound(pblock, *pwallet, reservekey);
-            SetThreadPriority(THREAD_PRIORITY_LOWEST);
-
-            continue;
-        }
-
         LogPrintf("Running VITAEMiner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
             ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
@@ -776,12 +744,12 @@ void static ThreadVitaeMiner(void* parg)
         VitaeMiner(pwallet, false);
         boost::this_thread::interruption_point();
     } catch (std::exception& e) {
-        LogPrintf("PIVXMiner exception");
+        LogPrintf("VITAEMiner exception");
     } catch (...) {
-        LogPrintf("PIVXMiner exception");
+        LogPrintf("VITAEMiner exception");
     }
 
-    LogPrintf("PIVXMiner exiting\n");
+    LogPrintf("VITAEMiner exiting\n");
 }
 
 void GenerateBitcoins(bool fGenerate, CWallet* pwallet, int nThreads)
