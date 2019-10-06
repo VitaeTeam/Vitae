@@ -78,6 +78,10 @@ public:
     int64_t Interval() const { return nTargetTimespan / nTargetSpacing; }
 
     int COINBASE_MATURITY() const { return nMaturity; }
+
+    /** returns the coinstake maturity (min depth required) **/
+    int COINSTAKE_MIN_AGE() const { return nStakeMinAge; }
+    int COINSTAKE_MIN_DEPTH() const { return nStakeMinDepth; }
     bool HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime, const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const;
 
     /** Time Protocol V2 **/
@@ -164,6 +168,8 @@ protected:
     int nFundamentalnodeCountDrift;
 	int nMasternodeCountDrift;
     int nMaturity;
+    int nStakeMinDepth;
+    int nStakeMinAge;
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
     int nTimeSlotLength;

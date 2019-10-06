@@ -119,13 +119,9 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
 bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime,
         const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const
 {
-    // Age not required on regtest
-    if (NetworkID() == CBaseChainParams::REGTEST)
-        return true;
-
-    // before stake modifier V2, the age required was 60 * 60 (1 hour)
-    //if (!IsStakeModifierV2(contextHeight))
-        return (utxoFromBlockTime + 3600 <= contextTime);
+    // before stake modifier V2, the age required was 60 * 60 (1 hour). Not required for regtest
+    if (!IsStakeModifierV2(contextHeight))
+        return NetworkID() == CBaseChainParams::REGTEST || (utxoFromBlockTime + nStakeMinAge <= contextTime);
 
     // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
     //return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
@@ -184,6 +180,8 @@ public:
         nTargetTimespan = 40 * 60;      // 40 minutes
         nTimeSlotLength = 15;                       // 15 seconds
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 15 minutes
+        nStakeMinAge = 60 * 60;                         // 1 hour
+        nStakeMinDepth = 600;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
@@ -475,6 +473,8 @@ public:
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 100;
+        nStakeMinAge = 0;
+        nStakeMinDepth = 0;
         nTimeSlotLength = 1;            // time not masked on RegNet
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 0;       //approx Mon, 17 Apr 2017 04:00:00 GMT
@@ -486,7 +486,7 @@ public:
         nBlockRecalculateAccumulators = 999999999; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 999999999; //Last valid accumulator checkpoint
-        nBlockStakeModifierlV2 = 351;
+        nBlockStakeModifierlV2 = 255;
         nBlockTimeProtocolV2 = 999999999;
 
         genesis.nTime = 1454124731;
