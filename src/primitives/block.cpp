@@ -155,6 +155,13 @@ bool CBlock::GetKeyIDFromUTXO(const CTxOut& txout, CKeyID& keyID)
 
     return true;
 }
+bool CBlock::SignBlockWithKey(CBlock& block, const CKey& key)
+{
+    if (!key.Sign(block.GetHash(), block.vchBlockSig))
+        return error("%s: failed to sign block hash with key", __func__);
+
+    return true;
+}
 
 // ppcoin: sign block
 bool CBlock::SignBlock(CBlock& block, const CKeyStore& keystore)

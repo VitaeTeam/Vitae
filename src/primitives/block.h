@@ -152,6 +152,7 @@ public:
     }
     bool GetKeyIDFromUTXO(const CTxOut& txout, CKeyID& keyID);
     bool SignBlock(CBlock& block, const CKeyStore& keystore);
+    bool SignBlockWithKey(CBlock& block, const CKey& key);
     bool CheckBlockSignature() const;
 
     std::pair<COutPoint, unsigned int> GetProofOfStake() const
