@@ -2973,12 +2973,12 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
            //convert to pay to public key type
            CKey key;
            CKeyID keyID = CKeyID(uint160(vSolutions[0]));
-           if (!pwallet->GetKey(keyID, key))
+           if (!keystore.GetKey(keyID, key))
                return false;
-           scriptPubKey << key.GetPubKey() << OP_CHECKSIG;
+           scriptPubKeyOut << key.GetPubKey() << OP_CHECKSIG;
            } else
-            scriptPubKey = scriptPubKeyKernel;
-            
+            scriptPubKeyOut = scriptPubKeyKernel;
+
             txNew.vin.push_back(CTxIn(pcoin.first->GetHash(), pcoin.second));
             nCredit += pcoin.first->vout[pcoin.second].nValue;
             vwtxPrev.push_back(pcoin.first);
