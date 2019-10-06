@@ -99,7 +99,6 @@ void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
 CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, bool fProofOfStake)
 {
     CReserveKey reservekey(pwallet);
-    bool fLastLoopOrphan = false;
 
     // Create new block
     unique_ptr<CBlockTemplate> pblocktemplate(new CBlockTemplate());
@@ -467,11 +466,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 return NULL;
             }
             LogPrintf("CPUMiner : proof-of-stake block was signed %s \n", pblock->GetHash().ToString().c_str());
-            SetThreadPriority(THREAD_PRIORITY_NORMAL);
-            if (!ProcessBlockFound(pblock, *pwallet, reservekey)) {
-                fLastLoopOrphan = true;
-                continue;
-            }
         }
 
         CValidationState state;
@@ -611,7 +605,7 @@ void VitaeMiner(CWallet* pwallet, bool fProofOfStake)
             }
 
             //search our map of hashed blocks, see if bestblock has been hashed yet
-            if (mapHashedBlocks.count(chainActive.Tip()->nHeight) && !fLastLoopOrphan)
+            if (mapHashedBlocks.count(chainActive.Tip()->nHeight))
             {
                 // wait half of the nHashDrift with max wait of 3 minutes
                 if (GetTime() - mapHashedBlocks[chainActive.Tip()->nHeight] < std::max(pwallet->nHashInterval, (unsigned int)1))
