@@ -24,7 +24,7 @@
 #include "coincontrol.h"
 #include "ui_interface.h"
 #include "utilmoneystr.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include <QMessageBox>
 #include <QScrollBar>

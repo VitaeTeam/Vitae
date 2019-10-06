@@ -14,7 +14,7 @@
 #include "ui_interface.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif
 
 #include <boost/algorithm/string.hpp>

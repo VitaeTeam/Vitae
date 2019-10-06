@@ -21,7 +21,7 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #ifdef ENABLE_WALLET
-#include "wallet.h"
+#include "wallet/wallet.h"
 #endif
 #include "fundamentalnode-payments.h"
 #include "accumulators.h"

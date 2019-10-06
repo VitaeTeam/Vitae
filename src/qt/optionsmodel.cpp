@@ -24,8 +24,8 @@
 #ifdef ENABLE_WALLET
 #include "fundamentalnodeconfig.h"
 #include "masternodeconfig.h"
-#include "wallet.h"
-#include "walletdb.h"
+#include "wallet/wallet.h"
+#include "wallet/walletdb.h"
 #endif
 
 #include <QNetworkProxy>

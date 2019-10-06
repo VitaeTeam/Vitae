@@ -7,7 +7,7 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "db.h"
+#include "wallet/db.h"
 #include "kernel.h"
 #include "script/interpreter.h"
 #include "timedata.h"
