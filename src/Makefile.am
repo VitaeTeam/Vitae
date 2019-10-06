@@ -114,7 +114,7 @@ BITCOIN_CORE_H = \
   denomination_functions.h \
   obfuscation.h \
   obfuscation-relay.h \
-  db.h \
+  wallet/db.h \
   eccryptoverify.h \
   ecwrapper.h \
   hash.h \
