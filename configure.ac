@@ -963,23 +963,7 @@ fi
 
 AM_CONDITIONAL([ENABLE_ZMQ], [test "x$use_zmq" = "xyes"])
 
-# select bignum implementation
-case $set_bignum in
-gmp)
-  AC_DEFINE(USE_NUM_GMP, 1, [Define this symbol to use the gmp implementation])
-  ;;
-openssl)
-  AC_DEFINE(USE_NUM_OPENSSL, 1, [Define this symbol to use openssl implementation])
-  ;;
-*)
-  AC_MSG_ERROR([invalid bignum implementation])
-  ;;
-esac
-
-AM_CONDITIONAL([USE_NUM_GMP], [test "x$set_bignum" = "xgmp"])
-AM_CONDITIONAL([USE_NUM_OPENSSL], [test "x$set_bignum" = "xopenssl"])
-
-AC_MSG_CHECKING([whether to build test_pivx])
+AC_MSG_CHECKING([whether to build test_vitae])
 if test x$use_tests = xyes; then
   AC_MSG_RESULT([yes])
   BUILD_TEST="test"
