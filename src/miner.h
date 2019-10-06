@@ -30,7 +30,7 @@ void UpdateTime(CBlockHeader* block, const CBlockIndex* pindexPrev);
     /** Generate a new block, without valid proof-of-work */
     CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet, bool fProofOfStake);
 
-    void BitcoinMiner(CWallet* pwallet, bool fProofOfStake);
+    void VitaeMiner(CWallet* pwallet, bool fProofOfStake);
     void ThreadStakeMinter();
 #endif // ENABLE_WALLET
 

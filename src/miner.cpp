@@ -99,6 +99,7 @@ void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
 CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, bool fProofOfStake)
 {
     CReserveKey reservekey(pwallet);
+    bool fLastLoopOrphan = false;
 
     // Create new block
     unique_ptr<CBlockTemplate> pblocktemplate(new CBlockTemplate());
@@ -465,6 +466,12 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 LogPrintf("%s: Signing new block with UTXO key failed \n", __func__);
                 return NULL;
             }
+            LogPrintf("CPUMiner : proof-of-stake block was signed %s \n", pblock->GetHash().ToString().c_str());
+            SetThreadPriority(THREAD_PRIORITY_NORMAL);
+            if (!ProcessBlockFound(pblock, *pwallet, reservekey)) {
+                fLastLoopOrphan = true;
+                continue;
+            }
         }
 
         CValidationState state;
@@ -771,7 +778,7 @@ void ThreadStakeMinter()
     LogPrintf("ThreadStakeMinter started\n");
     CWallet* pwallet = pwalletMain;
     try {
-        BitcoinMiner(pwallet, true);
+        VitaeMiner(pwallet, true);
         boost::this_thread::interruption_point();
     } catch (std::exception& e) {
         LogPrintf("ThreadStakeMinter() exception \n");
