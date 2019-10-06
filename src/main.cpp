@@ -3716,17 +3716,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             REJECT_INVALID, "bad-cb-amount");
     }
 
-    // Ensure that accumulator checkpoints are valid and in the same state as this instance of the chain
-    AccumulatorMap mapAccumulators(Params().Zerocoin_Params(pindex->nHeight < Params().Zerocoin_Block_V2_Start()));
-    if (!ValidateAccumulatorCheckpoint(block, pindex, mapAccumulators)) {
-        if (!ShutdownRequested()) {
-            return state.DoS(100, error("%s: Failed to validate accumulator checkpoint for block=%s height=%d", __func__,
-                                   block.GetHash().GetHex(), pindex->nHeight), REJECT_INVALID, "bad-acc-checkpoint");
-        }
-        return error("%s: Failed to validate accumulator checkpoint for block=%s height=%d because wallet is shutting down", __func__,
-                block.GetHash().GetHex(), pindex->nHeight);
-    }
-
+   // zerocoin accumulator: if a new accumulator checkpoint was generated, check that it is the correct value
+    if (!fVerifyingBlocks && pindex->nHeight >= Params().Zerocoin_StartHeight() && pindex->nHeight % 10 == 0) {
+        uint256 nCheckpointCalculated = 0;
         // if IDB, invalid outpoints must be calculated or else acc checkpoint will be incorrect
         if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators())
             PopulateInvalidOutPointMap();
