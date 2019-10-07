@@ -538,6 +538,10 @@ RES_ICONS = \
   qt/vitae/res/img/ic-transaction-warning.svg \
   qt/vitae/res/img/ic-transaction-mint.svg \
   qt/vitae/res/img/ic-transaction-mint-inactive.svg \
+  qt/vitae/res/img/ic-check-cold-staking.svg \
+  qt/vitae/res/img/ic-check-cold-staking-off.svg \
+  qt/vitae/res/img/ic-check-cold-staking-enabled.svg \
+  qt/vitae/res/img/dark/ic-transaction-cs-contract.svg \
   qt/vitae/res/img/img-qr.svg \
   qt/vitae/res/img/ic-check-connect-off.svg \
   qt/vitae/res/img/ic-label.svg \
