@@ -2145,7 +2145,8 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
     std::vector<COutput> vCoins;
 
     // include cold, exclude delegated
-    AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1, GetBoolArg("-coldstaking", true), false);
+    const bool fIncludeCold = Params().Cold_Staking_Enabled(blockHeight) && GetBoolArg("-coldstaking", true);
+    AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1, fIncludeCold, false);
 
     CAmount nAmountSelected = 0;
     if (GetBoolArg("-vitstake", true) && !fPrecompute) {
@@ -2225,7 +2226,8 @@ bool CWallet::MintableCoins()
 
         std::vector<COutput> vCoins;
         // include cold, exclude delegated
-        AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1, GetBoolArg("-coldstaking", true), false);
+        const bool fIncludeCold = Params().Cold_Staking_Enabled(chainHeight) && GetBoolArg("-coldstaking", true);
+        AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1, fIncludeCold, false);
 
         int64_t time = GetAdjustedTime();
         for (const COutput& out : vCoins) {
