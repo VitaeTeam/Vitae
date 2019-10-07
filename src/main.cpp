@@ -3716,10 +3716,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             REJECT_INVALID, "bad-cb-amount");
     }
 
-    // zerocoin accumulator: if a new accumulator checkpoint was generated, check that it is the correct value
+   // zerocoin accumulator: if a new accumulator checkpoint was generated, check that it is the correct value
     if (!fVerifyingBlocks && pindex->nHeight >= Params().Zerocoin_StartHeight() && pindex->nHeight % 10 == 0) {
         uint256 nCheckpointCalculated = 0;
-
         // if IDB, invalid outpoints must be calculated or else acc checkpoint will be incorrect
         if (pindex->nHeight == Params().Zerocoin_Block_RecalculateAccumulators())
             PopulateInvalidOutPointMap();
@@ -4803,7 +4802,7 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
 
     unsigned int nBitsRequired = GetNextWorkRequired(pindexPrev, &block);
 
-    if (block.IsProofOfWork() && (pindexPrev->nHeight + 1 <= 68589)) {
+    if (block.IsProofOfWork() && (pindexPrev == NULL ||pindexPrev->nHeight + 1 <= 68589)) {
         double n1 = ConvertBitsToDouble(block.nBits);
         double n2 = ConvertBitsToDouble(nBitsRequired);
 
@@ -5203,6 +5202,10 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
     if (!pblock->CheckBlockSignature())
         return error("ProcessNewBlock() : bad proof-of-stake block signature");
 
+    if (pblock->hashPrevBlock.IsNull()) {
+        return error("ProcessNewBlock() : Null previous block");
+    }
+    
     if (pblock->GetHash() != Params().HashGenesisBlock() && pfrom != NULL) {
         //if we get this far, check if the prev block is our prev block, if not then request sync and return false
         BlockMap::iterator mi = mapBlockIndex.find(pblock->hashPrevBlock);
@@ -5516,6 +5519,14 @@ bool static LoadBlockIndexDB(string& strError)
             // Save the updates to disk
             if (!view.Flush() || !pcoinsTip->Flush())
                 LogPrintf("%s : failed to flush view\n", __func__);
+           //fix Assertion `hashPrevBlock == view.GetBestBlock()' failed. By adjusting height to the last recorded by coinsview
+           CBlockIndex* pindexCoinsView = mapBlockIndex[pcoinsTip->GetBestBlock()];
+           for(unsigned int i = vinfoBlockFile[nLastBlockFile].nHeightLast + 1; i < vSortedByHeight.size(); i++)
+           {
+            pindexLastMeta = vSortedByHeight[i].second;
+            if(pindexLastMeta->nHeight > pindexCoinsView->nHeight)
+                break;
+           }
 
             LogPrintf("%s: Last block properly recorded: #%d %s\n", __func__, pindexLastMeta->nHeight,
                       pindexLastMeta->GetBlockHash().ToString().c_str());

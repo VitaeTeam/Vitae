@@ -13,7 +13,7 @@
 #include "key.h"
 //#include "core.h"
 #include "init.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "obfuscation.h"
 #include "masternode.h"
 
