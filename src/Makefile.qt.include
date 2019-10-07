@@ -396,13 +396,13 @@ RES_ICONS = \
   qt/vitae/res/img/ic-update.svg \
   qt/vitae/res/img/bg-multi-number.svg \
   qt/vitae/res/img/ic-check-mint-off.svg \
+  qt/vitae/res/img/ic-nav-cold-staking.svg \
+  qt/vitae/res/img/ic-nav-cold-staking-active.svg \
   qt/vitae/res/img/ic-nav-dashboard-active.svg \
   qt/vitae/res/img/ic-wallet-status-locked.svg \
   qt/vitae/res/img/bg-splash.svg \
   qt/vitae/res/img/bg-splash.png \
   qt/vitae/res/img/ic-check-mint.svg \
-  qt/vitae/res/img/ic-nav-cold-staking.svg \
-  qt/vitae/res/img/ic-nav-cold-staking-active.svg \
   qt/vitae/res/img/ic-nav-dashboard-hover.svg \
   qt/vitae/res/img/ic-wallet-status-staking.svg \
   qt/vitae/res/img/ic-check-peers-off.svg \

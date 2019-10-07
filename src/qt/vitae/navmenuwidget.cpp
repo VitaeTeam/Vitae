@@ -7,6 +7,8 @@
 #include "qt/vitae/vitaegui.h"
 #include "qt/vitae/qtutils.h"
 #include "clientversion.h"
+#include "optionsmodel.h"
+
 
 NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :
     QWidget(parent),
@@ -59,6 +61,12 @@ NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :
     onNavSelected(ui->btnDashboard, true);
 
     connectActions();
+}
+
+void NavMenuWidget::loadWalletModel() {
+    if (walletModel && walletModel->getOptionsModel()) {
+        ui->btnColdStaking->setVisible(walletModel->getOptionsModel()->isColdStakingScreenEnabled());
+    }
 }
 
 /**
@@ -137,8 +145,13 @@ void NavMenuWidget::onNavSelected(QWidget* active, bool startup) {
     if (!startup) updateButtonStyles();
 }
 
-void NavMenuWidget::selectSettings(){
+void NavMenuWidget::selectSettings() {
     onSettingsClicked();
+}
+
+void NavMenuWidget::onShowHideColdStakingChanged(bool show) {
+    ui->btnColdStaking->setVisible(show);
+    window->setMinimumHeight(show ? 780 : 740);
 }
 
 void NavMenuWidget::updateButtonStyles(){

@@ -156,6 +156,8 @@ public:
     CAmount getDelegatedBalance() const;
     CAmount getColdStakedBalance() const;
 
+    bool isColdStaking() const;
+
     EncryptionStatus getEncryptionStatus() const;
     bool isWalletUnlocked() const;
     CKey generateNewKey() const; //for temporary paper wallet key generation
