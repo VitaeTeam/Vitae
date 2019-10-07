@@ -135,7 +135,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
 
     if (pwalletMain == NULL)
         throw JSONRPCError(RPC_METHOD_NOT_FOUND, "Method not found (disabled)");
-    if((int)chainActive.Height() >= Params().LAST_POW_BLOCK())
+    if((int)chainActive.Height() >= Params().LAST_POW_BLOCK() && (Params().NetworkID() != CBaseChainParams::TESTNET))
        throw JSONRPCError(RPC_INTERNAL_ERROR, "Proof of work phase is complete");
     bool fGenerate = true;
     if (params.size() > 0)
