@@ -96,6 +96,7 @@ BITCOIN_CORE_H = \
   core_io.h \
   crypter.h \
   pairresult.h \
+  addressbook.h \
   denomination_functions.h \
   obfuscation.h \
   obfuscation-relay.h \
