@@ -487,8 +487,8 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
                  */
                 unsigned int i = txNew.vout.size();
                 txNew.vout.resize(i + 1);
-                txNew.vout[i ].scriptPubKey = mn_payee;
-                txNew.vout[i ].nValue = masternodepayment;
+                txNew.vout[i].scriptPubKey = mn_payee;
+                txNew.vout[i].nValue = masternodepayment;
 
                 //subtract mn payment from the stake reward
                 txNew.vout[i - 1].nValue -= ( masternodepayment);
