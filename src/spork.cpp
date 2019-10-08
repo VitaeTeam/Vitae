@@ -143,6 +143,11 @@ int64_t GetSporkValue(int nSporkID)
 // grab the spork value, and see if it's off
 bool IsSporkActive(int nSporkID)
 {
+    if (Params().NetworkID() == CBaseChainParams::REGTEST) {
+        if(nSporkID == SPORK_13_ENABLE_SUPERBLOCKS) {
+            return true;
+        }
+    }
     int64_t r = GetSporkValue(nSporkID);
     if (r == -1) return false;
     return r < GetTime();
