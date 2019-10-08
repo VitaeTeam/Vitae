@@ -288,7 +288,8 @@ void TopBar::onColdStakingClicked() {
     bool isColdStakingEnabled = walletModel->isColdStaking();
     ui->pushButtonColdStaking->setChecked(isColdStakingEnabled);
 
-    bool show = (isInitializing) ? false : walletModel->getOptionsModel()->invertColdStakingScreenStatus();
+    bool show = (isInitializing) ? walletModel->getOptionsModel()->isColdStakingScreenEnabled() :
+            walletModel->getOptionsModel()->invertColdStakingScreenStatus();
     QString className;
     QString text;
 
