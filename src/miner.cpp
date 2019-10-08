@@ -27,6 +27,7 @@
 #include "validationinterface.h"
 #include "masternode-payments.h"
 #include "accumulators.h"
+#include "blocksignature.h"
 #include "spork.h"
 
 #include <boost/thread.hpp>
@@ -107,6 +108,15 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         return NULL;
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
+    // Tip
+    CBlockIndex* pindexPrev;
+    {   // Don't keep cs_main locked
+        LOCK(cs_main);
+        pindexPrev = chainActive.Tip();
+    }
+    const int nHeight = pindexPrev->nHeight + 1;
+
+
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (Params().MineBlocksOnDemand())
@@ -122,10 +132,20 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
 
     // Make sure to create the correct block version after zerocoin is enabled
     bool fZerocoinActive = chainActive.Height() >= Params().Zerocoin_StartHeight();
-    if (fZerocoinActive)
+
+    if (Params().IsStakeModifierV2(nHeight)) {
+
+        pblock->nVersion = 5;
+
+    } else if (fZerocoinActive) {
+
         pblock->nVersion = 4;
-    else
+
+    } else {
+
         pblock->nVersion = 3;
+
+    }
 
     // Create coinbase tx
     CMutableTransaction txNew;
@@ -682,7 +702,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
         if (fProofOfStake) {
             LogPrintf("CPUMiner : proof-of-stake block found %s \n", pblock->GetHash().ToString().c_str());
 
-            if (!pblock->SignBlock(*pwallet)) {
+            if (!SignBlock(*pblock, *pwallet)) {
                 LogPrintf("BitcoinMiner(): Signing new block failed \n");
                 continue;
             }
