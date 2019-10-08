@@ -61,6 +61,7 @@ QT_FORMS_UI = \
   qt/vitae/forms/mnrow.ui \
   qt/vitae/forms/masternodeswidget.ui \
   qt/vitae/forms/myaddressrow.ui \
+  qt/vitae/forms/csrow.ui \
   qt/vitae/forms/sendchangeaddressdialog.ui \
   qt/vitae/forms/sendconfirmdialog.ui \
   qt/vitae/forms/sendcustomfeedialog.ui \
@@ -150,11 +151,13 @@ QT_MOC_CPP = \
   qt/vitae/moc_contactdropdownrow.cpp \
   qt/vitae/moc_mninfodialog.cpp \
   qt/vitae/moc_optionbutton.cpp \
+  qt/vitae/moc_coldstakingmodel.cpp \
   qt/vitae/moc_mnmodel.cpp \
   qt/vitae/moc_masternodewizarddialog.cpp \
   qt/vitae/moc_mnrow.cpp \
   qt/vitae/moc_masternodeswidget.cpp \
   qt/vitae/moc_myaddressrow.cpp \
+  qt/vitae/moc_csrow.cpp \
   qt/vitae/moc_contactsdropdown.cpp \
   qt/vitae/moc_sendchangeaddressdialog.cpp \
   qt/vitae/moc_sendconfirmdialog.cpp \
@@ -278,11 +281,13 @@ BITCOIN_QT_H = \
   qt/vitae/contactdropdownrow.h \
   qt/vitae/mninfodialog.h \
   qt/vitae/optionbutton.h \
+  qt/vitae/coldstakingmodel.h \
   qt/vitae/mnmodel.h \
   qt/vitae/masternodewizarddialog.h \
   qt/vitae/mnrow.h \
   qt/vitae/masternodeswidget.h \
   qt/vitae/myaddressrow.h \
+  qt/vitae/csrow.h \
   qt/vitae/contactsdropdown.h \
   qt/vitae/sendchangeaddressdialog.h \
   qt/vitae/sendconfirmdialog.h \
@@ -657,11 +662,13 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/contactsdropdown.cpp \
   qt/vitae/optionbutton.cpp \
   qt/vitae/mninfodialog.cpp \
+  qt/vitae/coldstakingmodel.cpp \
   qt/vitae/mnmodel.cpp \
   qt/vitae/masternodewizarddialog.cpp \
   qt/vitae/mnrow.cpp \
   qt/vitae/masternodeswidget.cpp \
   qt/vitae/myaddressrow.cpp \
+  qt/vitae/csrow.cpp \
   qt/vitae/sendchangeaddressdialog.cpp \
   qt/vitae/sendconfirmdialog.cpp \
   qt/vitae/sendcustomfeedialog.cpp \
