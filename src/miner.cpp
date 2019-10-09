@@ -27,7 +27,6 @@
 #include "validationinterface.h"
 #include "masternode-payments.h"
 #include "accumulators.h"
-#include "blocksignature.h"
 #include "spork.h"
 
 #include <boost/thread.hpp>
@@ -259,7 +258,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             int64_t nTxSigOpsCost = mi->second.GetSigOpCost();
             if (nBlockSigOpsCost + nTxSigOpsCost >= MAX_BLOCK_SIGOPS_COST)
                 continue;
-            
+
             nBlockSigOpsCost += nTxSigOpsCost;
             pblocktemplate->vTxSigOpsCost.push_back(nTxSigOpsCost);
 
@@ -655,7 +654,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 continue;
             }
 
-            while (vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || (pwallet->GetBalance() > 0 && 
+            while (vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || (pwallet->GetBalance() > 0 &&
                    nReserveBalance >= pwallet->GetBalance()) || !masternodeSync.IsSynced()) {
                 nLastCoinStakeSearchInterval = 0;
                 // Do a separate 1 minute check here to ensure fMintableCoins is updated
@@ -702,7 +701,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
         if (fProofOfStake) {
             LogPrintf("CPUMiner : proof-of-stake block found %s \n", pblock->GetHash().ToString().c_str());
 
-            if (!SignBlock(*pblock, *pwallet)) {
+            if (!pblock->SignBlock(*pwallet)) {
                 LogPrintf("BitcoinMiner(): Signing new block failed \n");
                 continue;
             }

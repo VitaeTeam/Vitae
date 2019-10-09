@@ -161,6 +161,9 @@ public:
     // merkle root).
     uint256 BuildMerkleTree(bool* mutated = NULL) const;
 
+    bool SignBlock(const CKeyStore& keystore);
+    bool CheckBlockSignature() const;
+
     std::vector<uint256> GetMerkleBranch(int nIndex) const;
     static uint256 CheckMerkleBranch(uint256 hash, const std::vector<uint256>& vMerkleBranch, int nIndex);
     std::string ToString() const;
