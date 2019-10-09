@@ -94,21 +94,16 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
+        READWRITE(vin);
+        READWRITE(nProposalHash);
+        READWRITE(nVote);
+        READWRITE(nTime);
+        READWRITE(vchSig);
         try
         {
             READWRITE(nMessVersion);
-            READWRITE(vin);
-            READWRITE(nProposalHash);
-            READWRITE(nVote);
-            READWRITE(nTime);
-            READWRITE(vchSig);
-        } catch(...) {
+        } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
-            READWRITE(vin);
-            READWRITE(nProposalHash);
-            READWRITE(nVote);
-            READWRITE(nTime);
-            READWRITE(vchSig);
         }
     }
 };
@@ -142,19 +137,15 @@ public:
     template <typename Stream, typename Operation>
     inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
+        READWRITE(vin);
+        READWRITE(nBudgetHash);
+        READWRITE(nTime);
+        READWRITE(vchSig);
         try
         {
             READWRITE(nMessVersion);
-            READWRITE(vin);
-            READWRITE(nBudgetHash);
-            READWRITE(nTime);
-            READWRITE(vchSig);
         } catch (...) {
             nMessVersion = MessageVersion::MESS_VER_STRMESS;
-            READWRITE(vin);
-            READWRITE(nBudgetHash);
-            READWRITE(nTime);
-            READWRITE(vchSig);
         }
     }
 };
