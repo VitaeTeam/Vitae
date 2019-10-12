@@ -270,6 +270,7 @@ libbitcoin_wallet_a_SOURCES = \
   bitpool.cpp \
   obfuscation-relay.cpp \
   db.cpp \
+  addressbook.cpp \
   crypter.cpp \
   swifttx.cpp \
   fundamentalnode.cpp \
