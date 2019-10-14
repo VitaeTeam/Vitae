@@ -110,6 +110,7 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/vitaegui.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/loadingdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/pwidget.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/guitransactionsutils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/snackbar.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/navmenuwidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/lockunlock.cpp
@@ -129,6 +130,7 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/contactsdropdown.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/optionbutton.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/mninfodialog.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/coldstakingmodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/mnmodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/masternodewizarddialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/mnrow.cpp
@@ -144,11 +146,13 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/requestdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/receivewidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/myaddressrow.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/csrow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/tooltipmenu.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addresseswidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/defaultdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/denomgenerationdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/privacywidget.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/coldstakingwidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingsbackupwallet.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingsbittoolwidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingsconsolewidget.cpp
