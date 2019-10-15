@@ -284,7 +284,7 @@ bool CheckStakeKernelHash(const CBlockIndex* pindexPrev, const unsigned int nBit
     bnTarget.SetCompact(nBits);
 
     // Weighted target
-    uint256 bnWeight = uint256(nValueIn);
+    uint256 bnWeight = uint256(nValueIn) / 100;
     bnTarget *= bnWeight;
 
     // Check if proof-of-stake hash meets target protocol
