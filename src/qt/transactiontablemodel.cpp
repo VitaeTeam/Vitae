@@ -525,10 +525,11 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::SendToSelf:
         return tr("Payment to yourself");
     case TransactionRecord::StakeMint:
-    case TransactionRecord::StakeDelegated:
         return tr("VIT Stake");
-    case TransactionRecord::StakeZVIT:
+    case TransactionRecord::StakeZPIV:
         return tr("zVIT Stake");
+    case TransactionRecord::StakeDelegated:
+        return tr("VIT Cold Stake");
     case TransactionRecord::StakeHot:
         return tr("VIT Stake in behalf of");
     case TransactionRecord::P2CSDelegationSent:
@@ -615,6 +616,9 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
     case TransactionRecord::StakeZVIT:
         return tr("Anonymous");
     case TransactionRecord::P2CSDelegation:
+    case TransactionRecord::P2CSDelegationSent:
+    case TransactionRecord::StakeDelegated:
+    case TransactionRecord::StakeHot:
     case TransactionRecord::SendToSelf: {
         QString label = walletModel->getAddressTableModel()->labelForAddress(QString::fromStdString(wtx->address));
         return label.isEmpty() ? "" : label;
