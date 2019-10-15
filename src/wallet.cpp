@@ -1230,14 +1230,9 @@ CAmount CWalletTx::UpdateAmount(CAmount& amountToUpdate, bool& cacheFlagToUpdate
     if (fUseCache && cacheFlagToUpdate)
         return amountToUpdate;
 
-    CAmount amount;
-    if (!fCredit)
-        amount = GetDebit(mimeType);
-    else
-        amount = GetCredit(mimeType, true);
-    amountToUpdate = amount;
+    amountToUpdate = (fCredit) ? GetCredit(mimeType, true) : GetDebit(mimeType);
     cacheFlagToUpdate = true;
-    return amount;
+    return amountToUpdate;
 }
 
 // Return sum of unlocked coins
