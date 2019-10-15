@@ -164,7 +164,6 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         }
     } else if (wtx.HasP2CSOutputs()) {
         // Delegate tx.
-        // TODO: Think this well..
         TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
         loadHotOrColdStakeOrContract(wallet, wtx, sub, true);
         parts.append(sub);
@@ -354,12 +353,12 @@ void TransactionRecord::loadHotOrColdStakeOrContract(const CWallet* wallet, cons
         if (isSpendable) {
             // Wallet delegating balance
             record.type = TransactionRecord::P2CSDelegationSent;
-            record.debit = wtx.GetStakeDelegationDebit();
+            record.debit = -(wtx.GetStakeDelegationDebit());
             record.credit = wtx.GetStakeDelegationCredit();
         } else {
             // Wallet receiving a delegation
             record.type = TransactionRecord::P2CSDelegation;
-            record.debit = wtx.GetColdStakingDebit();
+            record.debit = -(wtx.GetColdStakingDebit());
             record.credit = wtx.GetColdStakingCredit();
         }
     } else {
@@ -367,13 +366,14 @@ void TransactionRecord::loadHotOrColdStakeOrContract(const CWallet* wallet, cons
         if (isSpendable) {
             // Offline wallet receiving an stake due a delegation
             record.type = TransactionRecord::StakeDelegated;
-            record.debit = wtx.GetStakeDelegationDebit();
+            record.debit = -(wtx.GetStakeDelegationDebit());
             record.credit = wtx.GetStakeDelegationCredit();
+
         } else {
             // Online wallet receiving an stake due a received utxo delegation that won a block.
             record.type = TransactionRecord::StakeHot;
             record.credit = wtx.GetColdStakingCredit();
-            record.debit = wtx.GetColdStakingDebit();
+            record.debit = -(wtx.GetColdStakingDebit());
         }
     }
 
