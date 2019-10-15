@@ -158,7 +158,8 @@ public:
                     }
 
                     // Check for delegations
-                    if (record.type == TransactionRecord::P2CSDelegation || record.type == TransactionRecord::P2CSDelegationSent) {
+                    if (record.type == TransactionRecord::P2CSDelegation || record.type == TransactionRecord::P2CSDelegationSent
+                        || record.type == TransactionRecord::StakeDelegated || record.type == TransactionRecord::StakeHot) {
                         checkForDelegations(record, wallet, cachedDelegations);
                     }
                 }
@@ -175,7 +176,7 @@ public:
 
     static void checkForDelegations(const TransactionRecord& record, const CWallet* wallet, QList<CSDelegation>& cachedDelegations) {
         CSDelegation delegation(false, record.address);
-        delegation.isSpendable = record.type == TransactionRecord::P2CSDelegationSent;
+        delegation.isSpendable = record.type == TransactionRecord::P2CSDelegationSent || record.type == TransactionRecord::StakeDelegated;
 
         // Append only stakeable utxo and not every output of the record
         const QString& hashTxId = record.getTxID();
@@ -206,7 +207,7 @@ public:
         if (index == -1) {
             cachedDelegations.append(delegation);
         } else {
-            CSDelegation del = cachedDelegations[index];
+            CSDelegation& del = cachedDelegations[index];
             del.delegatedUtxo.unite(delegation.delegatedUtxo);
             del.cachedTotalAmount += delegation.cachedTotalAmount;
         }
@@ -289,7 +290,8 @@ public:
                             if (!hasZcTxes) hasZcTxes = HasZcTxesIfNeeded(rec);
 
                         // Check for delegations
-                        if (rec.type == TransactionRecord::P2CSDelegation || rec.type == TransactionRecord::P2CSDelegationSent) {
+                        if (rec.type == TransactionRecord::P2CSDelegation || rec.type == TransactionRecord::P2CSDelegationSent
+                            || rec.type == TransactionRecord::StakeDelegated || rec.type == TransactionRecord::StakeHot) {
                             checkForDelegations(rec, wallet, cachedDelegations);
                         }
 
