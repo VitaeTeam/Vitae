@@ -798,6 +798,8 @@ public:
     void MarkDirty();
 
     void BindWallet(CWallet* pwalletIn);
+    //! checks whether a tx has P2CS inputs or not
+    bool HasP2CSInputs() const;
 
     int GetDepthAndMempool(bool& fConflicted, bool enableIX = true) const;
 
