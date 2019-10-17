@@ -3221,7 +3221,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
         return false;
     }
 
-    LogPrintf("%s: listInputs size=%d\n", __func__, listInputs.size());
+    LogPrint("staking", "%s: listInputs size=%d\n", __func__, listInputs.size());
 
     CAmount nCredit = 0;
     CScript scriptPubKeyKernel;
