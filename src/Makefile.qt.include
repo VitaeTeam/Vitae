@@ -274,6 +274,7 @@ BITCOIN_QT_H = \
   qt/vitae/walletpassworddialog.h \
   qt/vitae/topbar.h \
   qt/vitae/txrow.h \
+  qt/vitae/addressholder.h \
   qt/vitae/addressfilterproxymodel.h \
   qt/vitae/dashboardwidget.h \
   qt/vitae/coincontrolpivwidget.h \
@@ -661,6 +662,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/walletpassworddialog.cpp \
   qt/vitae/topbar.cpp \
   qt/vitae/txrow.cpp \
+  qt/vitae/addressholder.cpp \
   qt/vitae/addressfilterproxymodel.cpp \
   qt/vitae/dashboardwidget.cpp \
   qt/vitae/coincontrolpivwidget.cpp \

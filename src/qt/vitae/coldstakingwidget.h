@@ -12,12 +12,16 @@
 #include "qt/vitae/sendmultirow.h"
 #include "qt/vitae/coldstakingmodel.h"
 #include "qt/vitae/contactsdropdown.h"
+#include "qt/vitae/addressholder.h"
 #include "transactiontablemodel.h"
+#include "addresstablemodel.h"
+#include "addressfilterproxymodel.h"
 #include "coincontroldialog.h"
 
 #include <QAction>
 #include <QLabel>
 #include <QWidget>
+#include <QSpacerItem>
 
 class VITAEGUI;
 class WalletModel;
@@ -57,15 +61,21 @@ private slots:
     void onContactsClicked(bool ownerAdd);
     void clearAll();
     void onLabelClicked();
+    void onMyStakingAddressesClicked();
 
 private:
     Ui::ColdStakingWidget *ui;
     FurAbstractListItemDelegate *delegate = nullptr;
+    FurAbstractListItemDelegate *addressDelegate = nullptr;
     TransactionTableModel* txModel = nullptr;
+    AddressHolder* addressHolder = nullptr;
+    AddressTableModel* addressTableModel = nullptr;
+    AddressFilterProxyModel *addressesFilter = nullptr;
     ColdStakingModel* csModel = nullptr;
     CSDelegationHolder *txHolder = nullptr;
     CoinControlDialog *coinControlDialog = nullptr;
     QAction *btnOwnerContact;
+    QSpacerItem *spacer = nullptr;
 
     ContactsDropdown *menuContacts = nullptr;
     TooltipMenu* menu = nullptr;
