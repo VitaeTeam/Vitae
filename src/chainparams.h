@@ -123,6 +123,7 @@ public:
     int Zerocoin_StartHeight() const { return nZerocoinStartHeight; }
     int Zerocoin_LastOldParams() const { return nZerocoinLastOldParams; }
     bool IsStakeModifierV2(const int nHeight) const { return nHeight >= nBlockStakeModifierlV2; }
+    bool IsTxFeeRequired(const int nHeight) const { return nHeight >= nTxFeeRequired; }
 
 protected:
     CChainParams() {}
@@ -180,6 +181,7 @@ protected:
     int nZerocoinStartHeight;
     int nZerocoinLastOldParams;
     int nBlockStakeModifierlV2;
+    int nTxFeeRequired;
 };
 
 /**

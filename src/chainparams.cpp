@@ -232,6 +232,7 @@ public:
         strObfuscationPoolDummyAddress = "PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp";
 
         nBlockStakeModifierlV2 = 99999999; // this will be set at a later date
+        nTxFeeRequired = 9000000; // TODO: to be set before release;
 
         /** Zerocoin */
         zerocoinModulus = "25195908475657893494027183240048398571429282126204032027777137836043662020707595556264018525880784"
@@ -288,8 +289,8 @@ public:
         nMaxMoneyOut = 43199500 * COIN;
         nLastPOWBlock = 300;
         nZerocoinStartHeight = 200;
-
         nZerocoinLastOldParams = 500000;
+        nTxFeeRequired = 300;
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1505224800;
@@ -367,6 +368,7 @@ public:
         nZerocoinStartHeight = 100;
 
         nBlockStakeModifierlV2 = std::numeric_limits<int>::max(); // max integer value (never switch on regtest)
+        nTxFeeRequired = 500;
 
         hashGenesisBlock = genesis.GetHash();
         nDefaultPort = 11773;

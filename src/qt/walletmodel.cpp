@@ -353,6 +353,10 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         // reject insane fee
         if (nFeeRequired > ::minRelayTxFee.GetFee(transaction.getTransactionSize()) * 10000)
             return InsaneFee;
+            
+        // reject insufficient fee
+        if (nFeeRequired < ::minRelayTxFee.GetFee(transaction.getTransactionSize()))
+            return InsufficientFee;
     }
 
     return SendCoinsReturn(OK);

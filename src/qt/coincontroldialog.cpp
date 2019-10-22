@@ -641,11 +641,11 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
         double dPriorityNeeded = mempoolEstimatePriority;
         if (dPriorityNeeded <= 0)
             dPriorityNeeded = AllowFreeThreshold(); // not enough data, back to hard-coded
-        fAllowFree = (dPriority >= dPriorityNeeded);
+        fAllowFree = false; // Ability to allow free transactions is being removed
 
-        if (fSendFreeTransactions)
-            if (fAllowFree && nBytes <= MAX_FREE_TRANSACTION_CREATE_SIZE)
-                nPayFee = 0;
+        //if (fSendFreeTransactions)
+        //    if (fAllowFree && nBytes <= MAX_FREE_TRANSACTION_CREATE_SIZE)
+        //        nPayFee = 0;
 
         if (nPayAmount > 0) {
             nChange = nAmount - nPayFee - nPayAmount;
@@ -706,13 +706,12 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     }
 
     // turn labels "red"
-    l5->setStyleSheet((nBytes >= MAX_FREE_TRANSACTION_CREATE_SIZE) ? "color:red;" : ""); // Bytes >= 1000
-    l6->setStyleSheet((dPriority > 0 && !fAllowFree) ? "color:red;" : "");               // Priority < "medium"
+    //l5->setStyleSheet((nBytes >= MAX_FREE_TRANSACTION_CREATE_SIZE) ? "color:red;" : ""); // Bytes > 0 (free TXs not allowed)
+    l6->setStyleSheet((dPriority > 0) ? "color:red;" : "");               // Priority < "medium"
     l7->setStyleSheet((fDust) ? "color:red;" : "");                                      // Dust = "yes"
 
     // tool tips
-    QString toolTip1 = tr("This label turns red, if the transaction size is greater than 1000 bytes.") + "<br /><br />";
-    toolTip1 += tr("This means a fee of at least %1 per kB is required.").arg(BitcoinUnits::formatWithUnit(nDisplayUnit, CWallet::minTxFee.GetFeePerK())) + "<br /><br />";
+    QString toolTip1 = tr("This means a fee of at least %1 per kB is required.").arg(BitcoinUnits::formatWithUnit(nDisplayUnit, CWallet::minTxFee.GetFeePerK())) + "<br /><br />";
     toolTip1 += tr("Can vary +/- 1 byte per input.");
 
     QString toolTip2 = tr("Transactions with higher priority are more likely to get included into a block.") + "<br /><br />";
