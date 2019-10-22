@@ -51,7 +51,7 @@ CAmount maxTxFee = DEFAULT_TRANSACTION_MAXFEE;
 unsigned int nTxConfirmTarget = 1;
 bool bSpendZeroConfChange = true;
 bool bdisableSystemnotifications = false; // Those bubbles can be annoying and slow down the UI when you get lots of trx
-bool fSendFreeTransactions = false;
+bool fSendFreeTransactions = false; // Free transactions not allowed
 bool fPayAtLeastCustomFee = true;
 int64_t nStartupTime = GetTime();
 OutputType g_address_type = OUTPUT_TYPE_NONE;
@@ -3140,17 +3140,17 @@ bool CWallet::CreateTransaction(const vector<pair<CScript, CAmount> >& vecSend,
                 dPriority = wtxNew.ComputePriority(dPriority, nBytes);
 
                 // Can we complete this as a free transaction?
-                if (fSendFreeTransactions && nBytes <= MAX_FREE_TRANSACTION_CREATE_SIZE) {
-                    // Not enough fee: enough priority?
-                    double dPriorityNeeded = mempool.estimatePriority(nTxConfirmTarget);
-                    // Not enough mempool history to estimate: use hard-coded AllowFree.
-                    if (dPriorityNeeded <= 0 && AllowFree(dPriority))
-                        break;
+                //if (fSendFreeTransactions && nBytes <= MAX_FREE_TRANSACTION_CREATE_SIZE) {
+                //    // Not enough fee: enough priority?
+                //    double dPriorityNeeded = mempool.estimatePriority(nTxConfirmTarget);
+                //    // Not enough mempool history to estimate: use hard-coded AllowFree.
+                //    if (dPriorityNeeded <= 0 && AllowFree(dPriority))
+                //        break;
 
-                    // Small enough, and priority high enough, to send for free
-                    if (dPriorityNeeded > 0 && dPriority >= dPriorityNeeded)
-                        break;
-                }
+                //    // Small enough, and priority high enough, to send for free
+                //    if (dPriorityNeeded > 0 && dPriority >= dPriorityNeeded)
+                //        break;
+                //}
 
                 CAmount nFeeNeeded = max(nFeePay, GetMinimumFee(nBytes, nTxConfirmTarget, mempool));
 

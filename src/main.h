@@ -351,7 +351,7 @@ struct CExtDiskTxPos : public CDiskTxPos
     }
 };
 
-CAmount GetMinRelayFee(const CTransaction& tx, unsigned int nBytes, bool fAllowFree);
+CAmount GetMinRelayFee(const CTransaction& tx, unsigned int nBytes);
 bool MoneyRange(CAmount nValueOut);
 
 /**

@@ -26,7 +26,8 @@ inline bool AllowFree(double dPriority)
 {
     // Large (in bytes) low-priority (new, small-coin) transactions
     // need a fee.
-    return dPriority > AllowFreeThreshold();
+    //return dPriority > AllowFreeThreshold();
+    return false; // Free transactions not allowed
 }
 
 
