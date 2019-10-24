@@ -274,7 +274,6 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 bool AcceptableFundamentalTxn(CTxMemPool& pool, CValidationState& state, const CTransaction& tx);
 
 int GetInputAge(CTxIn& vin);
-int GetInputAgeIX(uint256 nTXHash, CTxIn& vin);
 int GetIXConfirmations(uint256 nTXHash);
 
 struct CNodeStateStats {
@@ -371,7 +370,7 @@ bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const lib
 bool IsTransactionInChain(const uint256& txId, int& nHeightTx, CTransaction& tx);
 bool IsTransactionInChain(const uint256& txId, int& nHeightTx);
 bool IsBlockHashInChain(const uint256& hashBlock);
-bool ValidOutPoint(const COutPoint out, int nHeight);
+bool ValidOutPoint(const COutPoint& out, int nHeight);
 void AddWrappedSerialsInflation();
 void RecalculateZVITSpent();
 void RecalculateZVITMinted();
