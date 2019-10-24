@@ -193,9 +193,6 @@ public:
         nFakeSerialBlockheightEnd = 1686229;
         nSupplyBeforeFakeSerial = 4131563 * COIN;   // zerocoin supply at block nFakeSerialBlockheightEnd
 
-        // Cold Staking enforcement
-        nColdStakingStart = 2880000;
-
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
          * be spent as it did not originally exist in the database.
@@ -346,9 +343,6 @@ public:
         nFakeSerialBlockheightEnd = -1;
         nSupplyBeforeFakeSerial = 0;
 
-        // Cold Staking enforcement
-        nColdStakingStart = 2106100;
-
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1454124731;
         genesis.nNonce = 2402015;
@@ -449,9 +443,6 @@ public:
 
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = -1;
-
-        // Cold Staking enforcement
-        nColdStakingStart = 251;
 
         //! Modify the regtest genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1454124731;
