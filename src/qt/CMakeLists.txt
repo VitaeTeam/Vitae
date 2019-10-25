@@ -147,6 +147,7 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/receivewidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/myaddressrow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/csrow.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addressholder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/tooltipmenu.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addresseswidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/defaultdialog.cpp
