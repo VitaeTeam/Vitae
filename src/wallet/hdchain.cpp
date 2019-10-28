@@ -164,13 +164,14 @@ void CHDChain::DeriveChildExtKey(uint32_t nAccountIndex, bool fInternal, uint32_
 
     // Use hardened derivation for purpose, coin_type and account
     // (keys >= 0x80000000 are hardened after bip32)
+    const uint32_t BIP32_HARDENED_KEY_LIMIT = 0x80000000;
 
     // derive m/purpose'
-    masterKey.Derive(purposeKey, 44 | 0x80000000);
+    masterKey.Derive(purposeKey, 44 | BIP32_HARDENED_KEY_LIMIT);
     // derive m/purpose'/coin_type'
-    purposeKey.Derive(cointypeKey, Params().ExtCoinType() | 0x80000000);
+    purposeKey.Derive(cointypeKey, Params().ExtCoinType() | BIP32_HARDENED_KEY_LIMIT);
     // derive m/purpose'/coin_type'/account'
-    cointypeKey.Derive(accountKey, nAccountIndex | 0x80000000);
+    cointypeKey.Derive(accountKey, nAccountIndex | BIP32_HARDENED_KEY_LIMIT);
     // derive m/purpose'/coin_type'/account/change
     accountKey.Derive(changeKey, fInternal ? 1 : 0);
     // derive m/purpose'/coin_type'/account/change/address_index
