@@ -108,7 +108,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
     // Tip
-    CBlockIndex* pindexPrev;
+    CBlockIndex* pindexPrev = nullptr;
     {   // Don't keep cs_main locked
         LOCK(cs_main);
         pindexPrev = chainActive.Tip();
