@@ -95,7 +95,7 @@ CBitcoinAddress GetNewAddressFromAccount(const std::string purpose, const UniVal
     CBitcoinAddress address;
     PairResult r = pwalletMain->getNewAddress(address, strAccount, purpose, addrType);
     if(!r.result)
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, *r.status);
+        throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, *r.status);
     return address;
 }
 
