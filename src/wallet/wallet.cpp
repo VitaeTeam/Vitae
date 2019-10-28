@@ -3212,12 +3212,14 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (GetTime() - nLastStakeSetUpdate > nStakeSetUpdateTime) {
         listInputs.clear();
         if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1))
+            LogPrint("staking", "CreateCoinStake(): selectStakeCoins failed\n");
             return false;
 
         nLastStakeSetUpdate = GetTime();
     }
 
     if (listInputs.empty())
+        LogPrint("staking", "CreateCoinStake(): listInputs empty\n");
         return false;
 
     LogPrint("staking", "%s: listInputs size=%d\n", __func__, listInputs.size());
@@ -5144,7 +5146,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
             vSelectedMints.emplace_back(mint);
         }
     } else {
-        for (const CZerocoinMint mint : vSelectedMints)
+        for (const CZerocoinMint& mint : vSelectedMints)
             nValueSelected += ZerocoinDenominationToAmount(mint.GetDenomination());
     }
 
