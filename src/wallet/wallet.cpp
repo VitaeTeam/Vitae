@@ -56,8 +56,6 @@ int64_t nStartupTime = GetTime();
 OutputType g_address_type = OUTPUT_TYPE_NONE;
 OutputType g_change_type = OUTPUT_TYPE_NONE;
 
-const uint32_t BIP32_HARDENED_KEY_LIMIT = 0x80000000;
-
 /**
  * Fees smaller than this (in uphr) are considered zero fee (for transaction creation)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minTxFee 10 times higher
