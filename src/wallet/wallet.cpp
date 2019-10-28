@@ -3218,9 +3218,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     if (listInputs.empty()) {
         LogPrint("staking", "CreateCoinStake(): listInputs empty\n");
-        return false;
-    }
-
     LogPrint("staking", "%s: listInputs size=%d\n", __func__, listInputs.size());
 
     CAmount nCredit = 0;
