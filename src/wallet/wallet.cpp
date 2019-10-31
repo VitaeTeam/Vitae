@@ -2385,7 +2385,7 @@ bool less_then_denom(const COutput& out1, const COutput& out2)
 bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount, int blockHeight) const
 {
     LOCK(cs_main);
-    //Add PHR
+    // Add PHR
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS);
     CAmount nAmountSelected = 0;
@@ -2395,7 +2395,16 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
         if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
             continue;
 
-        if (out.tx->IsZerocoinSpend() && !out.tx->IsInMainChain())
+        //if zerocoinspend, then use the block time
+        int64_t nTxTime = out.tx->GetTxTime();
+        if (out.tx->IsZerocoinSpend()) {
+            if (!out.tx->IsInMainChain())
+                continue;
+            nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
+        }
+
+        //check for min age
+        if (GetAdjustedTime() - nTxTime < nStakeMinAge)
             continue;
 
         CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
@@ -3218,6 +3227,16 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
     if (listInputs.empty()) {
         LogPrint("staking", "CreateCoinStake(): listInputs empty\n");
+        MilliSleep(50000);
+        return false;
+    }
+
+    if (GetAdjustedTime() - chainActive.Tip()->GetBlockTime() < 60) {
+        if (Params().NetworkID() == CBaseChainParams::REGTEST) {
+            MilliSleep(1000);
+        }
+    }
+
     LogPrint("staking", "%s: listInputs size=%d\n", __func__, listInputs.size());
 
     CAmount nCredit = 0;
@@ -3233,10 +3252,16 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     for (std::unique_ptr<CStakeInput>& stakeInput : listInputs) {
-            nCredit = 0;
-            // Make sure the wallet is unlocked and shutdown hasn't been requested
-            if (IsLocked() || ShutdownRequested())
-                return false;
+        // Make sure the wallet is unlocked and shutdown hasn't been requested
+        if (IsLocked() || ShutdownRequested())
+            return false;
+
+        //make sure that enough time has elapsed between
+        CBlockIndex* pindex = stakeInput->GetIndexFrom();
+        if (!pindex || pindex->nHeight < 1) {
+            LogPrintf("*** no pindexfrom\n");
+            continue;
+        }
 
         uint256 hashProofOfStake = 0;
         nAttempts++;
@@ -3246,6 +3271,13 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
             // Found a kernel
             LogPrintf("CreateCoinStake : kernel found\n");
             nCredit += stakeInput->GetValue();
+            vector<CTxOut> vout;
+            if (!stakeInput->CreateTxOuts(this, vout)) {
+                LogPrintf("%s : failed to get scriptPubKey\n", __func__);
+                continue;
+            }
+            txNew.vout.insert(txNew.vout.end(), vout.begin(), vout.end());
+            
             // Calculate reward
             CAmount nReward;
             nReward = GetBlockValue(chainActive.Height() + 1);
@@ -3266,11 +3298,23 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
             //Masternode payment
             FillBlockPayee(txNew, nMinFee, true);
+            
+            uint256 hashTxOut = txNew.GetHash();
+            CTxIn in;
+            if (!stakeInput->CreateTxIn(this, in, hashTxOut)) {
+                LogPrintf("%s : failed to create TxIn\n", __func__);
+                txNew.vin.clear();
+                txNew.vout.clear();
+                continue;
+            }
+            txNew.vin.emplace_back(in);            
 
             fKernelFound = true;
             break;
         }
-    if (!fKernelFound)
+    }
+    if (!fKernelFound) {
+        LogPrintf("*** attempted to stake %d coins\n", nAttempts);
         return false;
 
     }
