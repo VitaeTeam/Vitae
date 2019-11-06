@@ -420,6 +420,15 @@ int TransactionRecord::getOutputIndex() const
     return idx;
 }
 
+bool TransactionRecord::isCoinStake() const
+{
+    return (type == TransactionRecord::StakeMint || type == TransactionRecord::Generated || type == TransactionRecord::StakeZPIV);
+}
+
+bool TransactionRecord::isNull() const
+{
+    return hash.IsNull() || size == 0;
+}
 
 std::string TransactionRecord::statusToString(){
     switch (status.status){
