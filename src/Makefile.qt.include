@@ -143,6 +143,7 @@ QT_MOC_CPP = \
   qt/vitae/moc_furabstractlistitemdelegate.cpp \
   qt/vitae/moc_receivedialog.cpp \
   qt/vitae/moc_walletpassworddialog.cpp \
+  qt/vitae/moc_pfborderimage.cpp \
   qt/vitae/moc_topbar.cpp \
   qt/vitae/moc_txrow.cpp \
   qt/vitae/moc_dashboardwidget.cpp \
@@ -257,6 +258,7 @@ BITCOIN_QT_H = \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
   qt/vitae/prunnable.h \
+  qt/vitae/pfborderimage.h \
   qt/vitae/loadingdialog.h \
   qt/winshutdownmonitor.h \
   qt/zVitcontroldialog.h \

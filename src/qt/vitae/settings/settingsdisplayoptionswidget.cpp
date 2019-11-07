@@ -50,6 +50,7 @@ SettingsDisplayOptionsWidget::SettingsDisplayOptionsWidget(VITAEGUI* _window, QW
     // Switch
     ui->pushButtonSwitchBalance->setText(tr("Hide empty balances"));
     ui->pushButtonSwitchBalance->setProperty("cssClass", "btn-switch");
+    ui->pushButtonSwitchBalance->setVisible(false);
 
     // Combobox
     ui->comboBoxLanguage->setProperty("cssClass", "btn-combo");
