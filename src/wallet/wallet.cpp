@@ -2414,12 +2414,14 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
 
         //add to our stake set
         nAmountSelected += out.tx->vout[out.i].nValue;
-        std::unique_ptr<CPhoreStake> input(new CPhoreStake());
+
+        CPhoreStake* input = new CPhoreStake();
         input->SetInput((CTransaction) *out.tx, out.i);
-        listInputs.emplace_back(std::move(input));
+        listInputs.emplace_back((CStakeInput*)input);
     }
     return true;
 }
+
 
 bool CWallet::MintableCoins()
 {
@@ -2428,20 +2430,23 @@ bool CWallet::MintableCoins()
 
     int chainHeight = chainActive.Height();
 
-    if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
-        return error("MintableCoins() : invalid reserve balance amount");
-    if (nBalance <= nReserveBalance)
-        return false;
+    // Regular PHR
+    if (nBalance > 0) {
+        if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
+            return error("%s : invalid reserve balance amount", __func__);
+        if (nBalance <= nReserveBalance)
+            return false;
 
-    vector<COutput> vCoins;
-    AvailableCoins(vCoins, true);
+        std::vector<COutput> vCoins;
+        AvailableCoins(vCoins, true);
 
-    int64_t time = GetAdjustedTime();
-    for (const COutput& out : vCoins) {
-        CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
-        //check for maturity (min age/depth)
-        if (Params().HasStakeMinAgeOrDepth(chainHeight, time, utxoBlock->nHeight, utxoBlock->nTime))
-            return true;
+        int64_t time = GetAdjustedTime();
+        for (const COutput& out : vCoins) {
+            CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
+            //check for maturity (min age/depth)
+            if (Params().HasStakeMinAgeOrDepth(chainHeight, time, utxoBlock->nHeight, utxoBlock->nTime))
+                return true;
+        }
     }
 
     return false;
@@ -3209,7 +3214,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
         return error("CreateCoinStake : invalid reserve balance amount");
 
-    if (nBalance > 0 && nBalance <= nReserveBalance)
+    if (nBalance <= nReserveBalance)
         return false;
 
     // presstab HyperStake - Initialize as static and don't update the set on every run of CreateCoinStake() in order to lighten resource use
@@ -3218,9 +3223,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     std::list<std::unique_ptr<CStakeInput> > listInputs;
     if (GetTime() - nLastStakeSetUpdate > nStakeSetUpdateTime) {
         listInputs.clear();
-        if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1))
+        if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1)) {
             LogPrint("staking", "CreateCoinStake(): selectStakeCoins failed\n");
             return false;
+        }
 
         nLastStakeSetUpdate = GetTime();
     }
@@ -3277,7 +3283,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 continue;
             }
             txNew.vout.insert(txNew.vout.end(), vout.begin(), vout.end());
-            
+
             // Calculate reward
             CAmount nReward;
             nReward = GetBlockValue(chainActive.Height() + 1);
@@ -3298,7 +3304,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
 
             //Masternode payment
             FillBlockPayee(txNew, nMinFee, true);
-            
+
             uint256 hashTxOut = txNew.GetHash();
             CTxIn in;
             if (!stakeInput->CreateTxIn(this, in, hashTxOut)) {
@@ -3307,7 +3313,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 txNew.vout.clear();
                 continue;
             }
-            txNew.vin.emplace_back(in);            
+            txNew.vin.emplace_back(in);
 
             fKernelFound = true;
             break;
@@ -3316,7 +3322,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (!fKernelFound) {
         LogPrintf("*** attempted to stake %d coins\n", nAttempts);
         return false;
-
     }
 
     // Sign
