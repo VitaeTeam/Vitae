@@ -176,7 +176,6 @@ public:
      */
     bool isNull() const;
 
-
 };
 
 #endif // BITCOIN_QT_TRANSACTIONRECORD_H
