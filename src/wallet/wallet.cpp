@@ -2415,9 +2415,9 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
         //add to our stake set
         nAmountSelected += out.tx->vout[out.i].nValue;
 
-        CPhoreStake* input = new CPhoreStake();
+        std::unique_ptr<CPhoreStake> input(new CPhoreStake());
         input->SetInput((CTransaction) *out.tx, out.i);
-        listInputs.emplace_back((CStakeInput*)input);
+        listInputs.push_back(std::move(input));
     }
     return true;
 }
@@ -3217,18 +3217,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (nBalance <= nReserveBalance)
         return false;
 
-    // presstab HyperStake - Initialize as static and don't update the set on every run of CreateCoinStake() in order to lighten resource use
-    static int nLastStakeSetUpdate = 0;
-
     std::list<std::unique_ptr<CStakeInput> > listInputs;
-    if (GetTime() - nLastStakeSetUpdate > nStakeSetUpdateTime) {
-        listInputs.clear();
-        if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1)) {
-            LogPrint("staking", "CreateCoinStake(): selectStakeCoins failed\n");
-            return false;
-        }
-
-        nLastStakeSetUpdate = GetTime();
+    if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1)) {
+        LogPrint("staking", "CreateCoinStake(): selectStakeCoins failed\n");
+        return false;
     }
 
     if (listInputs.empty()) {
@@ -3333,7 +3325,6 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     // Successfully generated coinstake
-    nLastStakeSetUpdate = 0; //this will trigger stake set to repopulate next round
     return true;
 }
 
@@ -5035,7 +5026,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
     libzerocoin::CoinDenomination denomination = zerocoinSelected.GetDenomination();
     libzerocoin::PublicCoin pubCoinSelected(paramsCoin, zerocoinSelected.GetValue(), denomination);
     //LogPrintf("%s : selected mint %s\n pubcoinhash=%s\n", __func__, zerocoinSelected.ToString(), GetPubCoinHash(zerocoinSelected.GetValue()).GetHex());
-    
+
     if (!pubCoinSelected.validate()) {
         receipt.SetStatus(_("The selected mint coin is an invalid coin"), ZPHR_INVALID_COIN);
         return false;
