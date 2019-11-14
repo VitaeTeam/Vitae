@@ -63,7 +63,7 @@ static const bool DEFAULT_DISABLE_WALLET = false;
 //! -custombackupthreshold default
 static const int DEFAULT_CUSTOMBACKUPTHRESHOLD = 1;
 //! if set, all keys will be derived by using BIP32
-static const bool DEFAULT_USE_HD_WALLET = true;
+static const bool DEFAULT_USE_HD_WALLET = false;
 //! if set,will show warning if the wallet is a hd wallet and is unencrypted
 static const bool DEFAULT_ENABLE_WARN_ENCRYPTHD = false;
 
