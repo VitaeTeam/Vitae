@@ -179,9 +179,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
             nLastCoinStakeSearchTime = nSearchTime;
         }
 
-        if (!fStakeFound)
+        if (!fStakeFound) {
             LogPrint("staking", "CreateNewBlock(): stake not found\n");
             return NULL;
+        }
     }
 
     // Block resource limits
@@ -658,7 +659,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
                 continue;
             }
-            
+
             //control the amount of times the client will check for mintable coins
             if ((GetTime() - nMintableLastCheck > 5 * 60)) // 5 minute check time
             {
