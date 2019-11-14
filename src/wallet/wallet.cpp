@@ -3217,10 +3217,19 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (nBalance <= nReserveBalance)
         return false;
 
-    std::list<std::unique_ptr<CStakeInput> > listInputs;
-    if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1)) {
-        LogPrint("staking", "CreateCoinStake(): selectStakeCoins failed\n");
-        return false;
+    static int64_t nLastStakeSetUpdate = 0;
+
+    static std::list<std::unique_ptr<CStakeInput> > listInputs;
+
+    if (GetTime() - nLastStakeSetUpdate > nStakeSetUpdateTime) {
+        listInputs.clear();
+
+        if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1)) {
+            LogPrint("staking", "CreateCoinStake(): selectStakeCoins failed\n");
+            return false;
+        }
+
+        nLastStakeSetUpdate = GetTime();
     }
 
     if (listInputs.empty()) {
@@ -3325,6 +3334,10 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     }
 
     // Successfully generated coinstake
+
+    // regenerate staking list
+    nLastStakeSetUpdate = 0;
+
     return true;
 }
 
