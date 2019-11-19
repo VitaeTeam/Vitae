@@ -129,18 +129,16 @@ public:
 
         bool hasZcTxes = tablePriv->hasZcTxes;
         for (const auto &tx : walletTxes) {
-            if (TransactionRecord::showTransaction(tx)) {
-                QList<TransactionRecord> records = TransactionRecord::decomposeTransaction(wallet, tx);
+            QList<TransactionRecord> records = TransactionRecord::decomposeTransaction(wallet, tx);
 
+            if (!hasZcTxes) {
                 for (const TransactionRecord &record : records) {
-                    // Check for zc txes.
-                    if (!hasZcTxes) {
-                        hasZcTxes = HasZcTxesIfNeeded(record);
-                    }
+                    hasZcTxes = HasZcTxesIfNeeded(record);
+                    if (hasZcTxes) break;
                 }
-
-                cachedWallet.append(records);
             }
+
+            cachedWallet.append(records);
         }
 
         if (hasZcTxes) // Only update it if it's true, multi-thread operation.
@@ -791,7 +789,7 @@ void TransactionTableModel::updateDisplayUnit()
 struct TransactionNotification {
 public:
     TransactionNotification() {}
-    TransactionNotification(uint256 hash, ChangeType status, bool showTransaction) : hash(hash), status(status), showTransaction(showTransaction) {}
+    TransactionNotification(uint256 hash, ChangeType status) : hash(hash), status(status) {}
 
     void invoke(QObject* ttm)
     {
@@ -800,13 +798,12 @@ public:
         QMetaObject::invokeMethod(ttm, "updateTransaction", Qt::QueuedConnection,
             Q_ARG(QString, strHash),
             Q_ARG(int, status),
-            Q_ARG(bool, showTransaction));
+            Q_ARG(bool, true));
     }
 
 private:
     uint256 hash;
     ChangeType status;
-    bool showTransaction;
 };
 
 static bool fQueueNotifications = false;
@@ -814,15 +811,11 @@ static std::vector<TransactionNotification> vQueueNotifications;
 
 static void NotifyTransactionChanged(TransactionTableModel* ttm, CWallet* wallet, const uint256& hash, ChangeType status)
 {
-    // Find transaction in wallet
-    std::map<uint256, CWalletTx>::iterator mi = wallet->mapWallet.find(hash);
-    // Determine whether to show transaction or not (determine this here so that no relocking is needed in GUI thread)
-    bool inWallet = mi != wallet->mapWallet.end();
-    bool showTransaction = (inWallet && TransactionRecord::showTransaction(mi->second));
 
-    TransactionNotification notification(hash, status, showTransaction);
+    TransactionNotification notification(hash, status);
 
-    if (fQueueNotifications) {
+    if (fQueueNotifications)
+    {
         vQueueNotifications.push_back(notification);
         return;
     }
