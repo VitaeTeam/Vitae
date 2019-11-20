@@ -6008,9 +6008,7 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
                 item.second.RelayTo(pfrom);
         }
 
-        pfrom->fSuccessfullyConnected = true;
-
-        string remoteAddr;
+        std::string remoteAddr;
         if (fLogIPs)
             remoteAddr = ", peeraddr=" + pfrom->addr.ToString();
 
@@ -6021,7 +6019,13 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         int64_t nTimeOffset = nTime - GetTime();
         pfrom->nTimeOffset = nTimeOffset;
-        AddTimeData(pfrom->addr, nTimeOffset);
+        if (nTimeOffset < 2 * Params().TimeSlotLength()) {
+            pfrom->fSuccessfullyConnected = true;
+            AddTimeData(pfrom->addr, nTimeOffset);
+        } else {
+            LogPrintf("timeOffset (%d seconds) too large. Disconnecting node %s\n", nTimeOffset, pfrom->addr.ToString());
+            pfrom->fDisconnect = true;
+        }
     }
 
 
