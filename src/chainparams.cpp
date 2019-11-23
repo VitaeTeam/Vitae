@@ -208,6 +208,10 @@ public:
         // New P2P messages signatures
         nBlockEnforceNewMessageSignatures = nBlockTimeProtocolV2;
 
+        // Blocks v7
+        nBlockLastAccumulatorCheckpoint = 1686240;
+        nBlockV7StartHeight = 2967000;
+
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = 1686229;
         nSupplyBeforeFakeSerial = 4131563 * COIN;   // zerocoin supply at block nFakeSerialBlockheightEnd
@@ -358,6 +362,10 @@ public:
         // New P2P messages signatures
         nBlockEnforceNewMessageSignatures = nBlockTimeProtocolV2;
 
+        // Blocks v7
+        nBlockLastAccumulatorCheckpoint = nPublicZCSpends - 10;
+        nBlockV7StartHeight = 2214000;
+
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = -1;
         nSupplyBeforeFakeSerial = 0;
@@ -457,6 +465,10 @@ public:
 
         // Public coin spend enforcement
         nPublicZCSpends = 350;
+
+        // Blocks v7
+        nBlockV7StartHeight = nPublicZCSpends + 1;
+        nBlockLastAccumulatorCheckpoint = nPublicZCSpends - 10;
 
         // New P2P messages signatures
         nBlockEnforceNewMessageSignatures = 1;
