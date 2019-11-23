@@ -13,6 +13,7 @@
 #include "qt/vitae/qtutils.h"
 
 #include <QUrl>
+#include <QFile>
 
 OpenURIDialog::OpenURIDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                 ui(new Ui::OpenURIDialog)
@@ -66,6 +67,31 @@ void OpenURIDialog::on_selectFileButton_clicked()
     QString filename = GUIUtil::getOpenFileName(this, tr("Select payment request file to open"), "", "", NULL);
     if (filename.isEmpty())
         return;
-    QUrl fileUri = QUrl::fromLocalFile(filename);
-    ui->uriEdit->setText("vitae:?r=" + QUrl::toPercentEncoding(fileUri.toString()));
+
+    QFile file(filename);
+    if(!file.exists()) {
+        inform(tr("File not found"));
+        return;
+    }
+
+    if (file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        QByteArray r = file.readAll();
+        if (r.size() > 200) {
+            inform(tr("Parsed data too large"));
+            return;
+        }
+
+        QString str = QString::fromStdString(std::string(r.constData(), r.length()));
+        if (!str.startsWith("vitae")) {
+            inform(tr("Invalid URI, not starting with \"vitae\" prefix"));
+        }
+        ui->uriEdit->setText(str);
+    }
+}
+
+void OpenURIDialog::inform(const QString& str) {
+    if (!snackBar) snackBar = new SnackBar(nullptr, this);
+    snackBar->setText(str);
+    snackBar->resize(this->width(), snackBar->height());
+    openDialog(snackBar, this);
 }
