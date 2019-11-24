@@ -569,3 +569,14 @@ void TopBar::resizeEvent(QResizeEvent *event){
     if (lockUnlockWidget && lockUnlockWidget->isVisible()) lockDropdownMouseLeave();
     QWidget::resizeEvent(event);
 }
+
+void TopBar::refreshProgressBarSize() {
+    QMetaObject::invokeMethod(this, "expandSync", Qt::QueuedConnection);
+}
+
+void TopBar::expandSync() {
+    if (progressBar) {
+        progressBar->setMaximumWidth(ui->pushButtonSync->maximumWidth());
+        progressBar->setFixedWidth(ui->pushButtonSync->width());
+        progressBar->setMinimumWidth(ui->pushButtonSync->width() - 2);
+    }
