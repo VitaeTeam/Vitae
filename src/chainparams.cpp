@@ -199,7 +199,8 @@ public:
         nRejectOldSporkKey = 1527811200; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
         nBlockStakeModifierlV2 = 1967000;
         nBIP65ActivationHeight = 1808634;
-        nBlockTimeProtocolV2 = 2967000;
+        // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
+        nBlockTimeProtocolV2 = 2967000; // !TODO: change me
 
         // Public coin spend enforcement
         nPublicZCSpends = 1880000;
@@ -209,7 +210,7 @@ public:
 
         // Blocks v7
         nBlockLastAccumulatorCheckpoint = 1686240;
-        nBlockV7StartHeight = 2967000;
+        nBlockV7StartHeight = nBlockTimeProtocolV2;
 
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = 1686229;
@@ -353,7 +354,8 @@ public:
         nRejectOldSporkKey = 1569538800; //!> Reject old spork key after Thursday, September 26, 2019 11:00:00 PM GMT
         nBlockStakeModifierlV2 = 1214000;
         nBIP65ActivationHeight = 851019;
-        nBlockTimeProtocolV2 = 2214000;
+        // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
+        nBlockTimeProtocolV2 = 1347000;
 
         // Public coin spend enforcement
         nPublicZCSpends = 1106100;
@@ -363,7 +365,7 @@ public:
 
         // Blocks v7
         nBlockLastAccumulatorCheckpoint = nPublicZCSpends - 10;
-        nBlockV7StartHeight = 2214000;
+        nBlockV7StartHeight = nBlockTimeProtocolV2;
 
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = -1;
