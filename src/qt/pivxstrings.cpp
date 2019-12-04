@@ -61,6 +61,12 @@ QT_TRANSLATE_NOOP("vitae-core", ""
 "Enable automatic wallet backups triggered after each zVIT minting (0-1, "
 "default: %u)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
+"Enable cold staking functionality (0-1, default: %u). Disabled if staking=0"),
+QT_TRANSLATE_NOOP("vitae-core", ""
+"Enable or disable staking functionality for VIT inputs (0-1, default: %u)"),
+QT_TRANSLATE_NOOP("vitae-core", ""
+"Enable or disable staking functionality for zVIT inputs (0-1, default: %u)"),
+QT_TRANSLATE_NOOP("vitae-core", ""
 "Enable spork administration functionality with the appropriate private key."),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Enter regression test mode, which uses a special chain in which blocks can "
@@ -200,6 +206,10 @@ QT_TRANSLATE_NOOP("vitae-core", ""
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Warning: -paytxfee is set very high! This is the transaction fee you will "
 "pay if you send a transaction."),
+QT_TRANSLATE_NOOP("vitae-core", ""
+"Warning: Peers are being disconnected due time differences. Please check "
+"that your computer's date and time are correct! If your clock is wrong PIVX "
+"Core will not work properly."),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Warning: Please check that your computer's date and time are correct! If "
 "your clock is wrong PIVX Core will not work properly."),
