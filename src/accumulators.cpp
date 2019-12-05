@@ -159,8 +159,8 @@ bool CalculateAccumulatorCheckpoint(int nHeight, uint256& nCheckpoint, Accumulat
         return true;
     }
 
-    if (nHeight > Params().Zerocoin_Block_Last_Checkpoint()) {
-        nCheckpoint = chainActive[Params().Zerocoin_Block_Last_Checkpoint()]->nAccumulatorCheckpoint;
+    if (nHeight > Params().Zerocoin_Block_LastGoodCheckpoint()) {
+        nCheckpoint = chainActive[Params().Zerocoin_Block_LastGoodCheckpoint()]->nAccumulatorCheckpoint;
         return true;
     }
 
