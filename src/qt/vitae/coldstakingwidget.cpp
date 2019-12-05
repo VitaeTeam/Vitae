@@ -455,8 +455,7 @@ void ColdStakingWidget::onSendClicked(){
             this,
             prepareStatus,
             walletModel,
-            BitcoinUnits::formatWithUnit(walletModel->getOptionsModel()->getDisplayUnit(),
-                                         currentTransaction.getTransactionFee()),
+            BitcoinUnits::formatWithUnit(nDisplayUnit, currentTransaction.getTransactionFee()),
             true
     );
 
@@ -467,7 +466,7 @@ void ColdStakingWidget::onSendClicked(){
 
     showHideOp(true);
     TxDetailDialog* dialog = new TxDetailDialog(window);
-    dialog->setDisplayUnit(walletModel->getOptionsModel()->getDisplayUnit());
+    dialog->setDisplayUnit(nDisplayUnit);
     dialog->setData(walletModel, currentTransaction);
     dialog->adjustSize();
     openDialogWithOpaqueBackgroundY(dialog, window, 3, 5);
