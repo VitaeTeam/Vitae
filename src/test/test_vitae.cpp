@@ -11,8 +11,8 @@
 #include "ui_interface.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
-#include "wallet/db.h"
-#include "wallet/wallet.h"
+#include "db.h"
+#include "wallet.h"
 #endif
 
 #include <boost/filesystem.hpp>

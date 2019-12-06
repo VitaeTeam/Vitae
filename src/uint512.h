@@ -2,9 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_UINT512_H
-#define PIVX_UINT512_H
-
+#pragma once
 #include "arith_uint256.h"
 #include "uint256.h"
 
@@ -41,5 +39,3 @@ inline uint512 uint512S(const char* str)
     rv.SetHex(str);
     return rv;
 }
-
-#endif // PIVX_UINT512_H

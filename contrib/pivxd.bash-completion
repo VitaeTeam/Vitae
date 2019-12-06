@@ -96,7 +96,7 @@ _vitaed() {
     esac
 
     case "$cur" in
-        -conf=*|-pid=*|-loadblock=*|-wallet=*)
+        -conf=*|-pid=*|-loadblock=*|-wallet=*|-rpcsslcertificatechainfile=*|-rpcsslprivatekeyfile=*)
             cur="${cur#*=}"
             _filedir
             return 0

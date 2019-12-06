@@ -36,7 +36,7 @@ Building
 ---------------------
 The following are developer notes on how to build VITAE on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
-- [macOS Build Notes](build-macos.md)
+- [OSX Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
 - [Gitian Building Guide](gitian-building.md)
 

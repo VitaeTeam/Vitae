@@ -1,7 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018-2019 The VITAE developers
+// Copyright (c) 2015-2017 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +13,7 @@
 
 #include "base58.h"
 #include "init.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 
 #include <string>
 #include <vector>

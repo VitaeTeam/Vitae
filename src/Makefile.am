@@ -114,10 +114,10 @@ BITCOIN_CORE_H = \
   denomination_functions.h \
   obfuscation.h \
   obfuscation-relay.h \
-  wallet/db.h \
+  db.h \
+  eccryptoverify.h \
+  ecwrapper.h \
   hash.h \
-  httprpc.h \
-  httpserver.h \
   init.h \
   kernel.h \
   swifttx.h \
@@ -152,9 +152,9 @@ BITCOIN_CORE_H = \
   random.h \
   reverselock.h \
   reverse_iterate.h \
-  rpc/client.h \
-  rpc/protocol.h \
-  rpc/server.h \
+  rpcclient.h \
+  rpcprotocol.h \
+  rpcserver.h \
   scheduler.h \
   script/interpreter.h \
   script/script.h \
@@ -183,9 +183,9 @@ BITCOIN_CORE_H = \
   utiltime.h \
   validationinterface.h \
   version.h \
-  wallet/wallet.h \
-  wallet/wallet_ismine.h \
-  wallet/walletdb.h \
+  wallet.h \
+  wallet_ismine.h \
+  walletdb.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -207,8 +207,6 @@ libbitcoin_server_a_SOURCES = \
   bloom.cpp \
   chain.cpp \
   checkpoints.cpp \
-  httprpc.cpp \
-  httpserver.cpp \
   init.cpp \
   leveldbwrapper.cpp \
   main.cpp \
@@ -218,14 +216,14 @@ libbitcoin_server_a_SOURCES = \
   noui.cpp \
   pow.cpp \
   rest.cpp \
-  rpc/blockchain.cpp \
-  rpc/fundamentalnode.cpp \
-  rpc/fundamentalnode-budget.cpp \
-  rpc/mining.cpp \
-  rpc/misc.cpp \
-  rpc/net.cpp \
-  rpc/rawtransaction.cpp \
-  rpc/server.cpp \
+  rpcblockchain.cpp \
+  rpcfundamentalnode.cpp \
+  rpcfundamentalnode-budget.cpp \
+  rpcmining.cpp \
+  rpcmisc.cpp \
+  rpcnet.cpp \
+  rpcrawtransaction.cpp \
+  rpcserver.cpp \
   script/sigcache.cpp \
   sporkdb.cpp \
   timedata.cpp \
@@ -259,7 +257,7 @@ libbitcoin_wallet_a_SOURCES = \
   obfuscation.cpp \
   bitpool.cpp \
   obfuscation-relay.cpp \
-  wallet/db.cpp \
+  db.cpp \
   crypter.cpp \
   swifttx.cpp \
   fundamentalnode.cpp \
@@ -268,13 +266,13 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
-  rpc/dump.cpp \
+  rpcdump.cpp \
   primitives/zerocoin.cpp \
-  rpc/wallet.cpp \
+  rpcwallet.cpp \
   kernel.cpp \
-  wallet/wallet.cpp \
-  wallet/wallet_ismine.cpp \
-  wallet/walletdb.cpp \
+  wallet.cpp \
+  wallet_ismine.cpp \
+  walletdb.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
@@ -359,6 +357,8 @@ libbitcoin_common_a_SOURCES = \
   masternodeconfig.cpp \
   core_read.cpp \
   core_write.cpp \
+  eccryptoverify.cpp \
+  ecwrapper.cpp \
   hash.cpp \
   key.cpp \
   keystore.cpp \
@@ -388,7 +388,7 @@ libbitcoin_util_a_SOURCES = \
   chainparamsbase.cpp \
   clientversion.cpp \
   random.cpp \
-  rpc/protocol.cpp \
+  rpcprotocol.cpp \
   sync.cpp \
   uint256.cpp \
   util.cpp \
@@ -405,7 +405,7 @@ endif
 # cli: shared between vitae-cli and vitae-qt
 libbitcoin_cli_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_cli_a_SOURCES = \
-  rpc/client.cpp \
+  rpcclient.cpp \
   $(BITCOIN_CORE_H)
 
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
@@ -490,6 +490,8 @@ libbitcoinconsensus_la_SOURCES = \
   crypto/sha256.cpp \
   crypto/sha512.cpp \
   crypto/ripemd160.cpp \
+  eccryptoverify.cpp \
+  ecwrapper.cpp \
   hash.cpp \
   pubkey.cpp \
   script/script.cpp \
@@ -503,10 +505,12 @@ if GLIBC_BACK_COMPAT
   libbitcoinconsensus_la_SOURCES += compat/glibcxx_compat.cpp
 endif
 
-libbitcoinconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libbitcoinconsensus_la_LIBADD = $(LIBSECP256K1) $(BOOST_LIBS)
-libbitcoinconsensus_la_CPPFLAGS = -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
+libbitcoinconsensus_la_LDFLAGS = -no-undefined $(RELDFLAGS)
+libbitcoinconsensus_la_LIBADD = $(CRYPTO_LIBS) $(BOOST_LIBS)
+libbitcoinconsensus_la_CPPFLAGS = $(CRYPTO_CFLAGS) $(BOOST_CPPFLAGS) -I$(builddir)/obj -DBUILD_BITCOIN_INTERNAL
+if USE_LIBSECP256K1
 libbitcoinconsensus_la_LIBADD += secp256k1/libsecp256k1.la
+endif
 endif
 
 CLEANFILES = leveldb/libleveldb.a leveldb/libmemenv.a

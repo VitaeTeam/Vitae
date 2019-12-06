@@ -25,7 +25,7 @@
     <height>0</height>
    </size>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,0">
+  <layout class="QVBoxLayout" name="verticalLayout_8" stretch="0,0">
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_Master" stretch="0,1">
      <property name="spacing">
@@ -493,7 +493,7 @@
                          </layout>
                         </item>
                         <item>
-                         <spacer name="horizontalSpacer_30">
+                         <spacer name="horizontalSpacer_3">
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
                           </property>

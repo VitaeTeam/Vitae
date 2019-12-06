@@ -42,8 +42,6 @@ private:
 
 private slots:
     void textChanged();
-    void warningMessage();
-    void errorEncryptingWallet();
 
 protected:
     bool event(QEvent* event);

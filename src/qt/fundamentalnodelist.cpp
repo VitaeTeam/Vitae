@@ -9,7 +9,7 @@
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
 #include "sync.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 #include "walletmodel.h"
 
 #include <QMessageBox>

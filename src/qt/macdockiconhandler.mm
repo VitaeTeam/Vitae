@@ -11,9 +11,8 @@
 
 #undef slots
 #include <Cocoa/Cocoa.h>
-#include <AppKit/AppKit.h>
-#include <objc/runtime.h>
-
+#include <objc/objc.h>
+#include <objc/message.h>
 
 #if QT_VERSION < 0x050000
 extern void qt_mac_set_dock_menu(QMenu *);
@@ -24,21 +23,26 @@ static MacDockIconHandler *s_instance = NULL;
 bool dockClickHandler(id self,SEL _cmd,...) {
     Q_UNUSED(self)
     Q_UNUSED(_cmd)
-
+    
     s_instance->handleDockIconClickEvent();
-
+    
     // Return NO (false) to suppress the default OS X actions
     return false;
 }
 
 void setupDockClickHandler() {
-    Class delClass = (Class)[[[NSApplication sharedApplication] delegate] class];
-    SEL shouldHandle = sel_registerName("applicationShouldHandleReopen:hasVisibleWindows:");
-    if (class_getInstanceMethod(delClass, shouldHandle))
-        class_replaceMethod(delClass, shouldHandle, (IMP)dockClickHandler, "B@:");
-    else
-        class_addMethod(delClass, shouldHandle, (IMP)dockClickHandler,"B@:");
-
+    Class cls = objc_getClass("NSApplication");
+    id appInst = objc_msgSend((id)cls, sel_registerName("sharedApplication"));
+    
+    if (appInst != NULL) {
+        id delegate = objc_msgSend(appInst, sel_registerName("delegate"));
+        Class delClass = (Class)objc_msgSend(delegate,  sel_registerName("class"));
+        SEL shouldHandle = sel_registerName("applicationShouldHandleReopen:hasVisibleWindows:");
+        if (class_getInstanceMethod(delClass, shouldHandle))
+            class_replaceMethod(delClass, shouldHandle, (IMP)dockClickHandler, "B@:");
+        else
+            class_addMethod(delClass, shouldHandle, (IMP)dockClickHandler,"B@:");
+    }
 }
 
 
@@ -127,13 +131,4 @@ void MacDockIconHandler::handleDockIconClickEvent()
     }
 
     emit this->dockIconClicked();
-}
-/**
- * Force application activation on macOS. With Qt 5.5.1 this is required when
- * an action in the Dock menu is triggered.
- * TODO: Define a Qt version where it's no-longer necessary.
- */
-void ForceActivation()
-{
-    [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];
 }

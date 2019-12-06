@@ -14,7 +14,6 @@
 #include <QCompleter>
 
 class ClientModel;
-class RPCTimerInterface;
 
 namespace Ui
 {
@@ -156,7 +155,6 @@ private:
     QCompleter *autoCompleter;
     QMenu *peersTableContextMenu;
     QMenu *banTableContextMenu;
-    RPCTimerInterface *rpcTimerInterface;
 };
 
 #endif // BITCOIN_QT_RPCCONSOLE_H

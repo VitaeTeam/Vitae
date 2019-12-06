@@ -13,7 +13,7 @@
 #include "net.h"
 #include "obfuscation.h"
 #include "sync.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 
 #define ACTIVE_FUNDAMENTALNODE_INITIAL 0 // initial state
 #define ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS 1

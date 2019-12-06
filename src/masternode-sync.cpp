@@ -28,17 +28,14 @@ CMasternodeSync::CMasternodeSync()
 
 bool CMasternodeSync::IsSynced()
 {
-    return RequestedMasternodeAssets == MASTERNODE_SYNC_FINISHED || GetBoolArg("-forcesync", false);
+    return RequestedMasternodeAssets == MASTERNODE_SYNC_FINISHED;
 }
 
 bool CMasternodeSync::IsBlockchainSynced()
 {
     static bool fBlockchainSynced = false;
     static int64_t lastProcess = GetTime();
-    CBlockIndex* pindex = chainActive.Tip();
-    if (GetBoolArg("-forcesync", false) && pindex != NULL) {
-    return true;
-    }
+
     // if the last call to this function was more than 60 minutes ago (client was in sleep mode) reset the sync process
     if (GetTime() - lastProcess > 60 * 60) {
         Reset();
@@ -53,7 +50,7 @@ bool CMasternodeSync::IsBlockchainSynced()
     TRY_LOCK(cs_main, lockMain);
     if (!lockMain) return false;
 
-
+    CBlockIndex* pindex = chainActive.Tip();
     if (pindex == NULL) return false;
 
 
