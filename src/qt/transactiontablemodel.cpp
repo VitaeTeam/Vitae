@@ -439,7 +439,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
     case TransactionRecord::StakeDelegated:
         return tr("VIT Cold Stake");
     case TransactionRecord::StakeHot:
-        return tr("VIT Stake in behalf of");
+        return tr("VIT Stake on behalf of");
     case TransactionRecord::P2CSDelegationSent:
     case TransactionRecord::P2CSDelegation:
         return tr("Stake delegation");
