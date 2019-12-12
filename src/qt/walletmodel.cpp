@@ -439,7 +439,16 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
             return TransactionCreationFailed;
         }
 
-        bool fCreated = wallet->CreateTransaction(vecSend, *newTx, *keyChange, nFeeRequired, strFailReason, coinControl, recipients[0].inputType, recipients[0].useSwiftTX,0, IsFundamentalNodePayment);
+        bool fCreated = wallet->CreateTransaction(vecSend,
+                                                  *newTx,
+                                                  *keyChange,
+                                                  nFeeRequired,
+                                                  strFailReason,
+                                                  coinControl,
+                                                  recipients[0].inputType,
+                                                  recipients[0].useSwiftTX,
+                                                  0,
+                                                  IsFundamentalNodePayment);
         transaction.setTransactionFee(nFeeRequired);
 
         if (recipients[0].useSwiftTX && newTx->GetValueOut() > sporkManager.GetSporkValue(SPORK_5_MAX_VALUE) * COIN) {
