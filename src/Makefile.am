@@ -129,6 +129,7 @@ BITCOIN_CORE_H = \
   hash.h \
   httprpc.h \
   httpserver.h \
+  indirectmap.h \
   init.h \
   kernel.h \
   swifttx.h \
