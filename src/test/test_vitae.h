@@ -1,5 +1,10 @@
-#ifndef VITAE_TEST_TEST_VITAE_H
-#define VITAE_TEST_TEST_VITAE_H
+// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
+
+#ifndef PIVX_TEST_TEST_PIVX_H
+#define PIVX_TEST_TEST_PIVX_H
 
 #include "txdb.h"
 

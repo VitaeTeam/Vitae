@@ -1,12 +1,7 @@
-/**
- * @file       denominations_functions.cpp
- *
- * @brief      Denomination functions for the Zerocoin library.
- *
- * @copyright  Copyright 2018 PIVX Developers
- * @license    This project is released under the MIT license.
- **/
-// Copyright (c) 2015-2018 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
+// Distributed under the MIT software license, see the accompanying
+// file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "denomination_functions.h"
 
