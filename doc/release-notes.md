@@ -1,13 +1,19 @@
-VITAE Core version *3.4.0* is now available from:  <https://github.com/vitae-project/vitae/releases>
+VITAE Core version *4.0.0* is now available from:  <https://github.com/vitae-project/vitae/releases>
 
-This is a new major version release, including various bug fixes and performance improvements.
+This is a new major version release, including various bug fixes and performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github: <https://github.com/vitae-project/vitae/issues>
 
 Mandatory Update
 ==============
 
-VITAE Core v3.4.0 is a mandatory update for all users. This release contains new consensus rules and improvements that are not backwards compatible with older versions. Users will need to update their clients before enforcement of this update goes into effect.
+VITAE Core v4.0.0 is a mandatory update for all users. This release contains new consensus rules and improvements that are not backwards compatible with older versions. Users will need to update their clients before enforcement of this update goes into effect.
+
+Update enforcement is currently scheduled to go into effect at the following time:
+
+```
+Mainnet: Sunday, January 5, 2020 12:00:00 AM GMT
+```
 
 Masternodes will need to be restarted once both the masternode daemon and the controller wallet have been upgraded.
 
@@ -43,8 +49,6 @@ VITAE Core should also work on most other Unix-like systems but is not frequentl
 
 Notable Changes
 ==============
-
-(Developers: add your notes here as part of your pull requests whenever possible)
 
 New Wallet UI
 -------------------
@@ -381,53 +385,168 @@ Previously, if a user wanted to close/quit the wallet before it had finished its
 
 Now, the new behavior is to gracefully close the wallet once the current step is complete.
 
-*version* Change log
+*v4.0.0* Change log
 ==============
 
-Detailed release notes follow. This overview includes changes that affect behavior, not code moves, refactors and string updates. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
+Detailed release notes follow. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
 
-### Core Features
- - #983 `ac8cb7376d` [PoS] Stake Modifier V2 (random-zebra)
- - #958 `454c487424` [Staking] Modify miner and staking thread for efficiency (Cave Spectre)
- - #915 `9c5a300624` Modify GetNextWorkRequired to set Target Limit correctly (Cave Spectre)
- - #952 `7ab673f6fa` [Staking] Prevent potential negative out values during stake splitting (Cave Spectre)
- - #941 `0ac0116ae4` [Refactor] Move ThreadStakeMinter out of net.cpp (Fuzzbawls)
- - #932 `924ec4f6dd` [Node] Do all block index writes in a batch (Pieter Wuille)
-
-### Build System
- - #934 `92aa6c2daa` [Build] Bump master to 3.3.99 (pre-3.4) (Fuzzbawls)
- - #943 `918852cb90` [Travis] Show functional tests progress (warrows)
- - #957 `2c9f624455` [Build] Add info about '--with-unsupported-ssl' (Warrows)
-
-### P2P Protocol and Network Code
- - #987 `fa1dbab247` [Net] Protocol update enforcement for 70917 and new spork keys (Fuzzbawls)
+### Core
+- #643 `469d974519` [Crypto] Use stronger rand for key generation (warrows)
+- #936 `12a6b704b6` [zPIV] PublicCoinSpend v4 - Coin Randomness Schnorr Signature (random-zebra)
+- #955 `008b7938db` [Core][Script][Wallet][RPC][Tests] Cold Staking (random-zebra)
+- #989 `6f645ce457` [DB] Db runtime error cleaning the variable that needs to be logged (furszy)
+- #1000 `34e11dd5fa` [Core] Spork code overhaul (random-zebra)
+- #1002 `5666184cc5` [PoS] Time Protocol v2 (random-zebra)
+- #1022 `b5bede0661` remove accumulators checkpoint (random-zebra)
+- #1025 `988ee3fe37` [Startup] Stop loading the wallet if shutdown was requested. (furszy)
+- #1029 `0df20ddbab` [Startup][Refactor][Backport] Memory allocation fail handler + init step 1 refactored. (furszy)
+- #1040 `01fe200d4a` [Bug] Fix GetDepthInMainChain returning 0 when tx is not in mempool (random-zebra)
+- #1050 `adc74f737c` [Core] Prevent coinstakes from overpaying masternodes (random-zebra)
+- #1063 `04834fff67` [Node] Remove a call to IsSuperMajority (warrows)
+- #1066 `6a4bf7c42c` [Cleanup][Refactor]Main.cpp code cleanup. (furszy)
+- #1067 `c947e534ee` [Node] Replace IsSuperMajority with height checks (warrows)
+- #1070 `fbffae1b38` [Bug] Fix contextCheckBlock for the first  block that it's a v1 block. (furszy)
+- #1129 `a87bfc32a0` [Consensus] Define TestNet changeover block for PIVX v4.0 RC (random-zebra)
+- #1134 `a4ded20de4` [Trivial] Remove a duplicate variable definition (warrows)
+- #1191 `9a054eeba6` [Consensus] Define MainNet changeover block for PIVX v4.0 (random-zebra)
+- #1197 `ad241150e9` [Trivial] Update copyright headers (Fuzzbawls)
 
 ### GUI
- - #933 `e47fe3d379` [Qt] Add blockhash + datadir to information tab (Mrs-X)
+- #954 `e815815fdc` [GUI] [Model] New Wallet UI (furszy)
+- #997 `4d50ff33da` [Trivial][UI] MN screen (furszy)
+- #998 `6380da7eb4` [Qt] Guard MN tab from possible missing TXs in masternode.conf (Fuzzbawls)
+- #999 `c6567aec89` [UI] Send screen total amounts refresh after custom options cleaned (furszy)
+- #1003 `a89f4e6603` [QT][Performance] Memory leak re creating the row object instead of re initialize it. (furszy)
+- #1006 `ac523b24c2` [Trivial] Fix mnrow ifdef typo (Fuzzbawls)
+- #1007 `39e8a03505` [Qt] Reintroduce networkstyle to title texts (Fuzzbawls)
+- #1008 `91514a0326` [Qt] Don't set placeholder on QPlainTextEdit (Fuzzbawls)
+- #1009 `e0178087c8` [QT] Dashboard chart left and right day range movement control buttons (furszy)
+- #1012 `0d05b5381d` [Performance][Wallet][QT][Model] TransactionTableModel multi-thread initialization + tx filter sort speed improved. (furszy)
+- #1014 `49f42e9a59` [GUI] Refresh coin control upon reopening (CryptoDev-Project)
+- #1015 `17ef4163dc` [Qt] Update source strings (Fuzzbawls)
+- #1016 `33182066ba` [GUI] Tx detail dialog (furszy)
+- #1017 `8b6819a9d8` [GUI][Trivial] Remove hardcoded address. (Matias Furszyfer)
+- #1018 `e264c77e63` [GUI] Update amounts when entry is removed from SendMultiRow (random-zebra)
+- #1026 `968000bb33` [Cleanup] Prev 4.0 wallet UI files cleanup. (furszy)
+- #1032 `d3b2969fff` [GUI] Dashboard chart map first segfault (furszy)
+- #1033 `c04f442e4c` [GUI][Model][Wallet] Cold staking UI. (furszy)
+- #1048 `1cb55b4822` [Qt] Make CoinControlTreeWidget focusable (Fuzzbawls)
+- #1053 `6aaa531ec1` [GUI] Segfault for a bad cast of the parent in the escape key press event (furszy)
+- #1054 `7c2cd32d6e` [UI] Guard a call to GetDepthInMainChain (warrows)
+- #1055 `232cea5584` [Wallet] Create label for addresses generated via masternode wizard (CryptoDev-Project)
+- #1057 `d4e6525410` [UI] Fix AA_EnableHighDpiScaling warning (Akshay)
+- #1071 `297acac8d6` [UI] Settings options buttons hover css (furszy)
+- #1072 `1e0cea53e8` [Qt] Update welcomecontentwidget.ui (Jeffrey)
+- #1073 `64a90d717f` [Model][Backport] Remove mapWallet not needed call + stop treating coinbase differently (furszy)
+- #1074 `54ff8bd3da` [UI] TransactionFilter do not invalidate filter if range is already set (furszy)
+- #1075 `31e9f0fbde` [Model][UI] Receive dialog (furszy)
+- #1076 `decac23124` [GUI] Decreasing the tooltip padding for #1076 windows issue. (furszy)
+- #1083 `fba6d3cdac` [Qt] Hide option for 3rd party transaction URLs (Fuzzbawls)
+- #1084 `7b3455acaa` [Qt] Show display unit option as text (Fuzzbawls)
+- #1085 `a4d141fd1c` [Qt] Fixup topbar balance calculation (Fuzzbawls)
+- #1099 `5d03160837` [GUI][Model][Performance] Dashboard (furszy)
+- #1104 `97bea9cfc0` [Trivial][GUI] Fix typos in welcome widget (random-zebra)
+- #1105 `e4e5df1018` [GUI] Fix bug in change wallet passphrase (random-zebra)
+- #1109 `4771f6a7d7` [Trivial] [GUI] Customize Fee Dialog text change (NoobieDev12)
+- #1112 `645854ad57` [Qt] Refresh coin control when re-opening from CS widget (Fuzzbawls)
+- #1113 `b546151bc0` [Qt] Re-work settings restart and saving flow (Fuzzbawls)
+- #1115 `12be3e2a8c` [Trivial] [GUI] Request Dialog typo fix (JSKitty)
+- #1119 `6ceff8f97f` [GUI] Cold staking Warning for unconfirmed balance + stop multiple model updates (furszy)
+- #1120 `0d04267c89` [GUI][BUG] Bad top padding on the dashboard nav icon in dark theme fix. (furszy)
+- #1121 `0216fd3c8a` [GUI] Cold staking alert user if the owner address is not from the wallet (furszy)
+- #1122 `641b1d6bbe` [GUI][Backport] Explicitly disable "Dark Mode" appearance on macOS (fanquake)
+- #1123 `a4fb368d39` [GUI] Prevent worker constant creation and invalid removal (furszy)
+- #1124 `bbb0125077` [GUI] Use QRegexValidator instead of the QDoubleValidator. (furszy)
+- #1125 `c6e238ca4d` [GUI] Inform if open pivx.conf and/or backups folder fail. (furszy)
+- #1126 `c910490c53` [BUG] Fix send transaction detail destinations (furszy)
+- #1130 `c582cabbd3` [UI] Copy correct data from mninfo dialog (Akshay)
+- #1131 `8ca5db691b` [Bug] URI read from file coded properly.. (furszy)
+- #1132 `a34a7dfe1f` [Bug][GUI] Tx list row amount color changing invalidly. (furszy)
+- #1133 `d159cb1878` [Bug][GUI] Topbar sync progressbar not expanding fixed. (furszy)
+- #1139 `03b51c411d` [Qt] Fix segfault when running GUI client with --help or -? (Fuzzbawls)
+- #1141 `01c517085b` [GUI][Model] isTestNetwork regtest correction. (furszy)
+- #1142 `17ad5a2a61` [Bug] Fix segfault on GUI initialization for cold staker wallet (random-zebra)
+- #1151 `da3bea5971` Rewording text under Change Wallet Passphrase (NoobieDev12)
+- #1158 `7deae859f1` [BUG] Masternodes wizard (furszy)
+- #1159 `1ae53d0a2a` [GUI][Trivial] Rewording of Error message when wallet is unlocked for staking only (NoobieDev12)
+- #1160 `88ddd1a947` [GUI][Model] Do not re request passphrase when the wallet is unlocked. (furszy)
+- #1161 `e4bfe3e9af` [GUI][Trivial] Custom change address (furszy)
+- #1162 `1c23ea6a59` [Qt] Periodic make translate (Fuzzbawls)
+- #1163 `474e2bc6b2` [GUI] Validate wallet password on enter key press (warrows)
+- #1165 `c54dad3b9f` [GUI][Bug] Cold staking screen (furszy)
+- #1166 `4cc04b0ba6` [Qt] properly copy IPv6 externalip MN info (Fuzzbawls)
+- #1173 `8e42e03192` [GUI][Trivial] Remove every pushButton focus decoration property. (furszy)
+- #1174 `b352e2d096` [GUI] Min cold staking amount in ColdStaking widget (random-zebra)
+- #1178 `d7a929c6a8` [GUI][Bug] Cold staking screen (furszy)
+- #1179 `7a33fe10d2` [Qt] Fix for dead link to wrong PIVX website (NoobieDev12)
+- #1183 `60053d6786` [GUI][Trivial] Allow immediate typing in dialogs / tools widget (random-zebra)
+- #1185 `682d54cd12` [GUI][Trivial] Make amount optional in staking address gen dialog (random-zebra)
+- #1186 `0cc2976bbc` [GUI][Trivial] move caps lock warning in askpassphrase dialog (random-zebra)
+- #1187 `0a2baa686d` [GUI][Trivial] Fix tx detail dialog expanding policy (random-zebra)
+- #1188 `d5ed83896c` [GUI] Workaround to the OSX border-image pink stripes. (furszy)
+- #1190 `129c4744ea` [GUI] Feature/Bug CoinControl Update on Open (Liquid369)
+- #1192 `e52043b260` [GUI][Bug] Accept P2CS locked coins in coincontrol (random-zebra)
+- #1193 `f49b0309a0` [GUI][Wallet] Allow spending of P2CS without coincontrol selection (random-zebra)
+- #1194 `8854eace66` fix "total staking" amount (random-zebra)
+- #1195 `ce5bc08988` [Qt] Update translations from transifex (Fuzzbawls)
 
-### RPC/REST
- - #950 `3d7e16e753` [RPC] require valid URL scheme on budget commands (Cave Spectre)
- - #964 `a03fa6236d` [Refactor] Combine parameter checking of budget commands (Cave Spectre)
- - #965 `b9ce433bd5` [RPC] Correct issues with budget commands (Cave Spectre)
+### P2P and Network Code
+- #975 `9765a772b8` [Consensus] Define SPORK_17 (random-zebra)
+- #995 `8f2217d2bd` [Consensus] Define SPORK_18 (random-zebra)
+- #1001 `59f55d6a54` [Consensus] Remove Old message format in CMasternodeBroadcast (random-zebra)
+- #1024 `98aa3fa438` [Consensus] New signatures for network messages (random-zebra)
+- #1110 `f89f672847` [Masterndoes] Masternodes sync try locking cs_main when it looks for the tip (furszy)
+- #1118 `3219d9b48c` [Sporks] Guard chainActive.Tip() and chainActive.Height() methods call. (furszy)
+- #1128 `d6573e70c7` [Consensus] nTimeOffset warning for time protocol V2 (random-zebra)
+- #1137 `4241574857` [Net] Protocol update enforcement for 70918 (random-zebra)
+- #1138 `e0c49356ae` [Consensus] nTimeOffset warning addition (random-zebra)
+- #1167 `fc4ffcf4af` [Trivial] Remove time offset warning when it gets back within range (random-zebra)
+- #1177 `421cc1017b` [Network] Add SPORK 17 & 18 to the fMissingSporks flag + code reorg. (furszy)
 
 ### Wallet
- - #939 `37ad934ad8` [Wallet] Remove (explicitely) unused tx comparator (warrows)
- - #971 `bbeabc4d63` [Wallet][zVIT] zc public spend parse crash in wallet startup. (furszy)
- - #980 `8b81d8f6f9` [Wallet] Remove Bitcoin Core 0.8 block hardlinking (JSKitty)
- - #982 `a0a1af9f78` [Miner] Don't create new keys when generating PoS blocks (random-zebra)
+- #968 `47ccf45adb` [Staking][Wallet] Add Multi-Split functionality to stake output splitting (Cave Spectre)
+- #970 `0f1764a3db` [Wallet] Various transaction handling improvements (warrows)
+- #1030 `ed83481494` [Wallet][Startup][DB][Backport] Remove vchDefaultKey from wallet.h (furszy)
+- #1031 `52aed66930` [Wallet] fix CreateZerocoinSpendTransaction with empty addressesTo (random-zebra)
+- #1039 `41d19c106f` Fix OOM when deserializing UTXO entries with invalid length (random-zebra)
+- #1043 `d1d0cb691a` [Wallet][Tests] Fix bug re-adding orphan coinstake's inputs to the wallet (random-zebra)
+- #1056 `3ba3b0e244` [Wallet][Refactor] Updating ancient getbalanceXXX methods to a lambda call. (furszy)
+- #1058 `18e23a49e7` [Wallet] Transaction IsEquivalentTo method backported + code cleanup. (furszy)
+- #1064 `bfbbb6b30c` [Wallet][RPC] Diagnose unsuitable outputs in lockunspent() (random-zebra)
+- #1065 `d605e528db` [Wallet] Unlock spent outputs (random-zebra)
+- #1068 `59b45e6d33` [Wallet] Do not cache the credit amount if fUnspent is enabled. (random-zebra)
+- #1069 `d6f9eff763` [Wallet] Enable miner with mnsync incomplete (random-zebra)
+- #1116 `e4d7addbb7` [Wallet] Do not use p2cs outputs in the autocombine flow. (furszy)
+- #1117 `8d425bdf0d` [Wallet][GUI][Model] Cold staking addresses contacts flow. (furszy)
 
-### Test Suites
- - #961 `2269f10fd9` [Trivial][Tests] Do not fail test when warnings are written to stderr (random-zebra)
- - #974 `f9d4ee0b15` [Tests] Add Spork functional test and update RegTest spork key (random-zebra)
- - #976 `12de5ec1dc` [Refactor] Fix stake age checks for regtest (random-zebra)
+### Build System(s)
+- #977 `ee9f6ca9da` [Build] CMake Improvements (Fuzzbawls)
+- #979 `8ffc045f7d` [Compilation] Pass caught exceptions by reference (warrows)
+- #990 `e7e31442e8` [Build] Fix wrong argument when verifying MacOS signatures (Mrs-X)
+- #991 `4f3dd5ef66` [Build] Remove OpenSSL 1.0 check (warrows)
+- #1010 `6ff12f70de` [Build] Fixup moc includes and generation (Fuzzbawls)
+- #1013 `75b8ad2ae5` [Build] Clean up GUI dependency checking (Fuzzbawls)
+- #1021 `899b4bd6a9` [Build] Use in-tree intermediary endian header (Fuzzbawls)
+- #1023 `509d63526b` [Travis] Lower timeout for the full test suite (warrows)
+- #1027 `569ac5e5e0` [Cleanup] Get rid of compiler warnings (random-zebra)
+- #1036 `adfcb46149` [Build] Add SnapCraft Builds (Fuzzbawls)
+- #1042 `8efd696b3f` [TravisCI] Run CMake tests earlier (Fuzzbawls)
+- #1045 `a761323178` [travis] Update .travis.yml (Warrows)
+- #1052 `dd62f3f66a` [CMake] Fix macOS Boost detection (Fuzzbawls)
+- #1127 `c7bc2e1288` [Deployment] Windows taskbar icon pixelated fix. (furszy)
+- #1136 `0f92bf8e17` [Build] Include full version in release file names (fanquake)
+- #1157 `04480012aa` [Travis] Increase functional tests reserved time (Warrows)
+- #1180 `4f4da456de` [Build] Add random-zebra gitian GPG public key fingerprint (random-zebra)
 
-### Miscellaneous
- - #947 `6ce55eec2d` [Scripts] Sync github-merge.py with upstream (Fuzzbawls)
- - #948 `4a2b4831a9` [Docs] Clean and re-structure the gitian-keys directory (Fuzzbawls)
- - #949 `9e4c3576af` [Refactor] Remove all "using namespace" statements (warrows)
- - #951 `fa40040f80` [Trivial] typo fixes (Cave Spectre)
- - #986 `fdd0cdb72f` [Doc] Release notes update (Fuzzbawls)
+### RPC Interface
+- #1111 `fcb0db8321` [Trivial] Fix help text for delegatorremove (Akshay)
 
+### Testing System(s)
+- #981 `92de4b81b3` [Tests] Add RPC budget regression tests (Fuzzbawls)
+
+### Documentation
+- #1051 `9ea7519026` [Doxygen] Generate Todo list (Fuzzbawls)
+- #1176 `eb1eb4d2c6` [Docs][Utils] Overhaul gitian build docs/script (Fuzzbawls)
 
 
 ## Credits
