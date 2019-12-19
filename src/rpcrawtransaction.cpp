@@ -347,7 +347,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             "     ]\n"
             "2. \"addresses\"           (string, required) a json object with addresses as keys and amounts as values\n"
             "    {\n"
-            "      \"address\": x.xxx   (numeric, required) The key is the vitae address, the value is the btc amount\n"
+            "      \"address\": x.xxx   (numeric, required) The key is the vitae address, the value is the vitae amount\n"
             "      ,...\n"
             "    }\n"
             "3. locktime                (numeric, optional, default=0) Raw locktime. Non-0 value also locktime-activates inputs\n"
@@ -1007,7 +1007,7 @@ UniValue createrawzerocoinspend(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 3)
         throw std::runtime_error(
-            "createrawzerocoinspend mint_input \n"
+            "createrawzerocoinspend mint_input ( \"address\" isPublicSpend )\n"
             "\nCreates raw zVIT public spend.\n" +
             HelpRequiringPassphrase() + "\n"
 
