@@ -131,19 +131,6 @@ void ZVitControlDialog::updateList()
         itemMint->setText(COLUMN_CONFIRMATIONS, QString::number(nConfirmations));
         itemMint->setData(COLUMN_CONFIRMATIONS, Qt::UserRole, QVariant((qlonglong) nConfirmations));
 
-        {
-            LOCK(pwalletMain->zvitTracker->cs_spendcache);
-
-            CoinWitnessData *witnessData = pwalletMain->zvitTracker->GetSpendCache(mint.hashStake);
-            if (witnessData->nHeightAccStart > 0  && witnessData->nHeightAccEnd > 0) {
-                int nPercent = std::max(0, std::min(100, (int)((double)(witnessData->nHeightAccEnd - witnessData->nHeightAccStart) / (double)(nBestHeight - witnessData->nHeightAccStart - 220) * 100)));
-                QString percent = QString::number(nPercent) + QString("%");
-                itemMint->setText(COLUMN_PRECOMPUTE, percent);
-            } else {
-                itemMint->setText(COLUMN_PRECOMPUTE, QString("0%"));
-            }
-        }
-
         // check for maturity
         // Always mature, public spends doesn't require any new accumulation.
         bool isMature = true;
@@ -164,7 +151,7 @@ void ZVitControlDialog::updateList()
             if(nConfirmations < Params().Zerocoin_MintRequiredConfirmations())
                 strReason = strprintf("Needs %d more confirmations", Params().Zerocoin_MintRequiredConfirmations() - nConfirmations);
             else if (model->getEncryptionStatus() == WalletModel::EncryptionStatus::Locked)
-                strReason = "Your wallet is locked. Impossible to precompute or spend zVIT.";
+                strReason = "Your wallet is locked. Impossible to spend zVIT.";
             else if (!mint.isSeedCorrect)
                 strReason = "The zVIT seed used to mint this zVIT is not the same as currently hold in the wallet";
             else
