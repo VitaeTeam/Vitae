@@ -2148,8 +2148,7 @@ bool less_then_denom(const COutput& out1, const COutput& out2)
     return (!found1 && found2);
 }
 
-bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount,
-        int blockHeight, bool fPrecompute)
+bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount, int blockHeight)
 {
     LOCK(cs_main);
     //Add VIT
@@ -2160,7 +2159,7 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS, false, 1, fIncludeCold, false);
 
     CAmount nAmountSelected = 0;
-    if (GetBoolArg("-vitstake", true) && !fPrecompute) {
+    if (GetBoolArg("-vitstake", true)) {
         for (const COutput &out : vCoins) {
             //make sure not to outrun target amount
             if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
@@ -2186,37 +2185,6 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
         }
     }
 
-    /* Disable zVIT Staking
-    //zVIT
-    if ((GetBoolArg("-zvitstake", true) || fPrecompute)  && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
-        //Only update zVIT set once per update interval
-        bool fUpdate = false;
-        static int64_t nTimeLastUpdate = 0;
-        if (GetAdjustedTime() - nTimeLastUpdate > nStakeSetUpdateTime) {
-            fUpdate = true;
-            nTimeLastUpdate = GetAdjustedTime();
-        }
-
-        std::set<CMintMeta> setMints = zvitTracker->ListMints(true, true, fUpdate);
-        for (auto meta : setMints) {
-            if (meta.hashStake == 0) {
-                CZerocoinMint mint;
-                if (GetMint(meta.hashSerial, mint)) {
-                    uint256 hashStake = mint.GetSerialNumber().getuint256();
-                    hashStake = Hash(hashStake.begin(), hashStake.end());
-                    meta.hashStake = hashStake;
-                    zvitTracker->UpdateState(meta);
-                }
-            }
-            if (meta.nVersion < CZerocoinMint::STAKABLE_VERSION)
-                continue;
-            if (meta.nHeight < chainActive.Height() - Params().Zerocoin_RequiredStakeDepth()) {
-                std::unique_ptr<CZVitStake> input(new CZVitStake(meta.denom, meta.hashStake));
-                listInputs.emplace_back(std::move(input));
-            }
-        }
-    }
-    */
     return true;
 }
 
@@ -4407,7 +4375,6 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
 
     for (auto &it : mapMintsSelected) {
         CZerocoinMint mint = it.second;
-        CMintMeta meta = zvitTracker->Get(GetSerialHash(mint.GetSerialNumber()));
         CoinWitnessData coinWitness = CoinWitnessData(mint);
         coinWitness.SetHeightMintAdded(mint.GetHeight());
 
