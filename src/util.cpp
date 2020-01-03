@@ -243,7 +243,6 @@ bool LogAcceptCategory(const char* category)
                 ptrCategory->insert(std::string("fnpayments"));
                 ptrCategory->insert(std::string("zero"));
                 ptrCategory->insert(std::string("fnbudget"));
-                ptrCategory->insert(std::string("precompute"));
                 ptrCategory->insert(std::string("staking"));
             }
         }
