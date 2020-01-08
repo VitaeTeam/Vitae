@@ -80,7 +80,6 @@ map<uint256, uint256> mapProofOfStake;
 // Sourced from Phore.io pull req #133 & #134  (added by LOMA OOPALOOPA)
 map<COutPoint, int> mapStakeSpent;
 
-map<unsigned int, unsigned int> mapHashedBlocks;
 CChain chainActive;
 CBlockIndex* pindexBestHeader = NULL;
 int64_t nTimeBestReceived = 0;

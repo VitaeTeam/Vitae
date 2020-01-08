@@ -57,6 +57,14 @@ WalletModel::~WalletModel()
     unsubscribeFromCoreSignals();
 }
 
+bool WalletModel::isTestNetwork() const {
+    return Params().NetworkID() == CBaseChainParams::TESTNET || Params().NetworkID() == CBaseChainParams::REGTEST;
+}
+
+bool WalletModel::isStakingStatusActive() const {
+    return wallet->pStakerStatus->IsActive();
+}
+
 CAmount WalletModel::getBalance(const CCoinControl* coinControl) const
 {
     if (coinControl) {

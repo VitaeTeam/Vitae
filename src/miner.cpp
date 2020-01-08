@@ -69,7 +69,6 @@ public:
 
 uint64_t nLastBlockTx = 0;
 uint64_t nLastBlockSize = 0;
-int64_t nLastCoinStakeSearchInterval = 0;
 
 // We want to sort transactions by priority and fee rate, so:
 typedef boost::tuple<double, CFeeRate, const CTransaction*> TxPriority;
@@ -179,7 +178,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 pblock->vtx.push_back(CTransaction(txCoinStake));
                 fStakeFound = true;
             }
-            nLastCoinStakeSearchInterval = nSearchTime - nLastCoinStakeSearchTime;
             nLastCoinStakeSearchTime = nSearchTime;
         }
 
@@ -690,34 +688,14 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 fMintableCoins = pwallet->MintableCoins();
             }
 
-            if (chainActive.Tip()->nHeight < Params().LAST_POW_BLOCK()) {
-                MilliSleep(5000);
-                continue;
-            }
-
-            while (vNodes.empty() || pwallet->IsLocked() || !fMintableCoins || (pwallet->GetBalance() > 0 && nReserveBalance >= pwallet->GetBalance()) || !fundamentalnodeSync.IsSynced()) {
-                nLastCoinStakeSearchInterval = 0;
-                // Do a separate 1 minute check here to ensure fMintableCoins is updated
-                if (!fMintableCoins) {
-                    if (GetTime() - nMintableLastCheck > 1 * 60) // 1 minute check time
-                    {
-                        nMintableLastCheck = GetTime();
-                        fMintableCoins = pwallet->MintableCoins();
-                    }
-                }
-                MilliSleep(5000);
-                if (!fGenerateBitcoins && !fProofOfStake)
-                    continue;
-            }
-
             const bool fTimeV2 = Params().IsTimeProtocolV2(chainActive.Height()+1, getTimeProtocolV2SporkValue());
             //search our map of hashed blocks, see if bestblock has been hashed yet
-            const int chainHeight = chainActive.Height();
-            if (mapHashedBlocks.count(chainHeight) && !fLastLoopOrphan)
+            if (pwallet->pStakerStatus->GetLastHash() == chainActive.Tip()->GetBlockHash()
+                    && !fLastLoopOrphan)
             {
-                int64_t tipHashTime = mapHashedBlocks[chainHeight];
-                if (    (!fTimeV2 && GetTime() < tipHashTime + 22) ||
-                        (fTimeV2 && GetCurrentTimeSlot() <= tipHashTime) )
+                uint256 lastHashTime = pwallet->pStakerStatus->GetLastTime();
+                if (    (!fTimeV2 && GetTime() < lastHashTime + 22) ||
+                        (fTimeV2 && GetCurrentTimeSlot() <= lastHashTime) )
                 {
                     MilliSleep(2000);
                     continue;

@@ -372,10 +372,6 @@ bool Stake(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, unsigned int 
 
     // Time protocol V2: one-try
     if (Params().IsTimeProtocolV2(nHeight, getTimeProtocolV2SporkValue())) {
-        // store a time stamp of when we last hashed on this block
-        mapHashedBlocks.clear();
-        mapHashedBlocks[pindexPrev->nHeight] = GetTime();
-
         // check required min depth for stake
         const int nHeightBlockFrom = pindexFrom->nHeight;
         if (nHeight < nHeightBlockFrom + Params().COINSTAKE_MIN_DEPTH(isSporkNewStakeMinDepthActive()))
@@ -411,10 +407,6 @@ bool StakeV1(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, const uint3
         return error("%s : stake age violation, nTimeBlockFrom = %d, prevBlockTime = %d -- maxTime = %d ", __func__, nTimeBlockFrom, prevBlockTime, maxTime);
 
     while (nTryTime > minTime) {
-        // store a time stamp of when we last hashed on this block
-        mapHashedBlocks.clear();
-        mapHashedBlocks[pindexPrev->nHeight] = GetTime();
-
         //new block came in, move on
         if (chainActive.Height() != pindexPrev->nHeight) break;
 
@@ -429,10 +421,6 @@ bool StakeV1(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, const uint3
     }
 
     nTimeTx = nTryTime;
-
-    mapHashedBlocks.clear();
-    mapHashedBlocks[pindexPrev->nHeight] = GetTime(); //store a time stamp of when we last hashed on this block
-
     return fSuccess;
 }
 
