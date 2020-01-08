@@ -397,7 +397,7 @@ void CObfuscationPool::ChargeRandomFees()
 //
 void CObfuscationPool::CheckTimeout()
 {
-    if (!fEnableZeromint && !fFundamentalNode) return;
+    if (!fFundamentalNode) return;
 
     // catching hanging sessions
     if (!fFundamentalNode) {
@@ -482,7 +482,7 @@ void CObfuscationPool::CheckTimeout()
 //
 void CObfuscationPool::CheckForCompleteQueue()
 {
-    if (!fEnableZeromint && !fFundamentalNode) return;
+    if (!fFundamentalNode) return;
 
     /* Check to see if we're ready for submissions from clients */
     //
