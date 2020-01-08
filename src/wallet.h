@@ -62,8 +62,6 @@ static const CAmount nHighTransactionMaxFeeWarning = 100 * nHighTransactionFeeWa
 static const unsigned int MAX_FREE_TRANSACTION_CREATE_SIZE = 1000;
 //! -custombackupthreshold default
 static const int DEFAULT_CUSTOMBACKUPTHRESHOLD = 1;
-//! -enableautoconvertaddress default
-static const bool DEFAULT_AUTOCONVERTADDRESS = true;
 
 // Zerocoin denomination which creates exactly one of each denominations:
 // 6666 = 1*5000 + 1*1000 + 1*500 + 1*100 + 1*50 + 1*10 + 1*5 + 1
@@ -265,7 +263,6 @@ public:
     bool SetMintUnspent(const CBigNum& bnSerial);
     bool UpdateMint(const CBigNum& bnValue, const int& nHeight, const uint256& txid, const libzerocoin::CoinDenomination& denom);
     std::string GetUniqueWalletBackupName(bool fzvitAuto) const;
-    void InitAutoConvertAddresses();
 
 
     /** Zerocin entry changed.
@@ -282,8 +279,6 @@ public:
     mutable CCriticalSection cs_wallet;
 
     CzVITWallet* zwalletMain;
-
-    std::set<CBitcoinAddress> setAutoConvertAddresses;
 
     bool fFileBacked;
     bool fWalletUnlockAnonymizeOnly;
@@ -380,7 +375,6 @@ public:
                                            const CChainParams::Base58Type addrType = CChainParams::PUBKEY_ADDRESS);
     PairResult getNewAddress(CBitcoinAddress& ret, std::string label);
     PairResult getNewStakingAddress(CBitcoinAddress& ret, std::string label);
-    CBitcoinAddress GenerateNewAutoMintKey();
     int64_t GetKeyCreationTime(CPubKey pubkey);
     int64_t GetKeyCreationTime(const CBitcoinAddress& address);
 
@@ -480,7 +474,6 @@ public:
     bool MultiSend();
     void AutoCombineDust();
     void AutoZeromint();
-    void AutoZeromintForAddress();
     void CreateAutoMintTransaction(const CAmount& nMintAmount, CCoinControl* coinControl = nullptr);
 
     static CFeeRate minTxFee;
