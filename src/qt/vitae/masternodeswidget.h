@@ -61,6 +61,7 @@ private:
 
     std::atomic<bool> isLoading;
 
+    bool checkMNsNetwork();
     void startAlias(QString strAlias);
     bool startAll(QString& failedMN, bool onlyMissing);
     bool startMN(CFundamentalnodeConfig::CFundamentalnodeEntry mne, std::string& strError);
