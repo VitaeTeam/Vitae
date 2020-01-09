@@ -2758,134 +2758,85 @@ bool CWallet::CreateCoinStake(
         // Make sure the wallet is unlocked and shutdown hasn't been requested
         if (IsLocked() || ShutdownRequested()) return false;
 
-        // update staker status (time)
-        pStakerStatus->SetLastTime(GetCurrentTimeSlot());
-
         nCredit = 0;
         uint256 hashProofOfStake = 0;
         nAttempts++;
-        //iterates each utxo inside of CheckStakeKernelHash()
-        if (Stake(pindexPrev, stakeInput.get(), nBits, nTxNewTime, hashProofOfStake)) {
+        fKernelFound = Stake(pindexPrev, stakeInput.get(), nBits, nTxNewTime, hashProofOfStake);
 
-            // Found a kernel
-            LogPrintf("CreateCoinStake : kernel found\n");
-            nCredit += stakeInput->GetValue();
+        // update staker status (time)
+        pStakerStatus->SetLastTime(nTxNewTime);
 
-            // Calculate reward
-            CAmount nReward;
-            nReward = GetBlockValue(chainActive.Height() + 1);
-            nCredit += nReward;
+        if (!fKernelFound) continue;
 
-            // Create the output transaction(s)
-            std::vector<CTxOut> vout;
-            if (!stakeInput->CreateTxOuts(this, vout, nCredit)) {
-                LogPrintf("%s : failed to create output\n", __func__);
-                continue;
-            }
-            txNew.vout.insert(txNew.vout.end(), vout.begin(), vout.end());
+        // Found a kernel
+        LogPrintf("CreateCoinStake : kernel found\n");
+        nCredit += stakeInput->GetValue();
 
-            CAmount nMinFee = 0;
-            if (!stakeInput->IsZVIT()) {
-                // Set output amount
-                int outputs = txNew.vout.size() - 1;
-                CAmount nRemaining = nCredit - nMinFee;
-                if (outputs > 1) {
-                    // Split the stake across the outputs
-                    CAmount nShare = nRemaining / outputs;
-                    for (int i = 1; i < outputs; i++) {
-                        // loop through all but the last one.
-                        txNew.vout[i].nValue = nShare;
-                        nRemaining -= nShare;
-                    }
+        // Calculate reward
+        CAmount nReward;
+        nReward = GetBlockValue(chainActive.Height() + 1);
+        nCredit += nReward;
+
+        // Create the output transaction(s)
+        std::vector<CTxOut> vout;
+        if (!stakeInput->CreateTxOuts(this, vout, nCredit)) {
+            LogPrintf("%s : failed to create output\n", __func__);
+            continue;
+        }
+        txNew.vout.insert(txNew.vout.end(), vout.begin(), vout.end());
+
+        CAmount nMinFee = 0;
+        if (!stakeInput->IsZPIV()) {
+            // Set output amount
+            int outputs = txNew.vout.size() - 1;
+            CAmount nRemaining = nCredit - nMinFee;
+            if (outputs > 1) {
+                // Split the stake across the outputs
+                CAmount nShare = nRemaining / outputs;
+                for (int i = 1; i < outputs; i++) {
+                    // loop through all but the last one.
+                    txNew.vout[i].nValue = nShare;
+                    nRemaining -= nShare;
                 }
-                // put the remaining on the last output (which all into the first if only one output)
-                txNew.vout[outputs].nValue += nRemaining;
             }
-
-            // Limit size
-            unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
-            if (nBytes >= DEFAULT_BLOCK_MAX_SIZE / 5)
-                return error("CreateCoinStake : exceeded coinstake size limit");
-
-            //Masternode payment
-            FillBlockPayee(txNew, nMinFee, true, stakeInput->IsZVIT());
-
-            uint256 hashTxOut = txNew.GetHash();
-            CTxIn in;
-            if (!stakeInput->CreateTxIn(this, in, hashTxOut)) {
-                LogPrintf("%s : failed to create TxIn\n", __func__);
-                txNew.vin.clear();
-                txNew.vout.clear();
-                continue;
-            }
-            txNew.vin.emplace_back(in);
-
-
-            //Mark mints as spent
-            if (stakeInput->IsZVIT()) {
-                CZVitStake* z = (CZVitStake*)stakeInput.get();
-                if (!z->MarkSpent(this, txNew.GetHash()))
-                    return error("%s: failed to mark mint as used\n", __func__);
-            }
-
-            fKernelFound = true;
-            break;
+            // put the remaining on the last output (which all into the first if only one output)
+            txNew.vout[outputs].nValue += nRemaining;
         }
-    }
-    LogPrint("staking", "%s: attempted staking %d times\n", __func__, nAttempts);
-
-    if (!fKernelFound)
-        return false;
-
-    // Calculate reward
-    CAmount nReward;
-    const CBlockIndex* pIndex0 = chainActive.Tip();
-    nReward = GetBlockValue(pIndex0->nHeight);
-    nCredit += nReward;
-
-    bool bMasterNodePayment = false;
-
-    if ( Params().NetworkID() == CBaseChainParams::TESTNET ){
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS_TESTNET ){
-            bMasterNodePayment = true;
-        }
-    }else{
-        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS){
-            bMasterNodePayment = true;
-        }
-    }//
-
-    CAmount nMinFee = 0;
-    while (true) {
-        // Set output amount
-        if (txNew.vout.size() == 3) {
-            txNew.vout[1].nValue = ((nCredit - nMinFee) / 2 / CENT) * CENT;
-            txNew.vout[2].nValue = nCredit - nMinFee - txNew.vout[1].nValue;
-        } else
-            txNew.vout[1].nValue = nCredit - nMinFee;
 
         // Limit size
         unsigned int nBytes = ::GetSerializeSize(txNew, SER_NETWORK, PROTOCOL_VERSION);
         if (nBytes >= DEFAULT_BLOCK_MAX_SIZE / 5)
             return error("CreateCoinStake : exceeded coinstake size limit");
 
-        CAmount nFeeNeeded = GetMinimumFee(nBytes, nTxConfirmTarget, mempool);
+        //Masternode payment
+        FillBlockPayee(txNew, nMinFee, true, stakeInput->IsZPIV());
 
-        // Check enough fee is paid
-        if (nMinFee < nFeeNeeded) {
-            nMinFee = nFeeNeeded;
-            continue; // try signing again
-        } else {
-            if (fDebug)
-                LogPrintf("CreateCoinStake : fee for coinstake %s\n", FormatMoney(nMinFee).c_str());
-            break;
+        uint256 hashTxOut = txNew.GetHash();
+        CTxIn in;
+        if (!stakeInput->CreateTxIn(this, in, hashTxOut)) {
+            LogPrintf("%s : failed to create TxIn\n", __func__);
+            txNew.vin.clear();
+            txNew.vout.clear();
+            continue;
         }
+        txNew.vin.emplace_back(in);
+
+
+        //Mark mints as spent
+        if (stakeInput->IsZPIV()) {
+            CZPivStake* z = (CZPivStake*)stakeInput.get();
+            if (!z->MarkSpent(this, txNew.GetHash()))
+                return error("%s: failed to mark mint as used\n", __func__);
+        }
+
+        break;
     }
+    LogPrint("staking", "%s: attempted staking %d times\n", __func__, nAttempts);
 
-    //Fundamentalnode payment
-    FillBlockPayee(txNew, nMinFee, true, bMasterNodePayment);
+    if (!fKernelFound)
+        return false;
 
-    // Sign
+    // Sign for PIV
     int nIn = 0;
     if (!txNew.vin[0].scriptSig.IsZerocoinSpend()) {
         for (CTxIn txIn : txNew.vin) {
@@ -2905,13 +2856,13 @@ bool CWallet::CreateCoinStake(
                 return error("%s: extracting pubcoin from txout failed", __func__);
 
             uint256 hashPubcoin = GetPubCoinHash(pubcoin.getValue());
-            if (!zvitTracker->HasPubcoinHash(hashPubcoin))
+            if (!zpivTracker->HasPubcoinHash(hashPubcoin))
                 return error("%s: could not find pubcoinhash %s in tracker", __func__, hashPubcoin.GetHex());
 
-            CMintMeta meta = zvitTracker->GetMetaFromPubcoin(hashPubcoin);
+            CMintMeta meta = zpivTracker->GetMetaFromPubcoin(hashPubcoin);
             meta.txid = txNew.GetHash();
             meta.nHeight = chainActive.Height() + 1;
-            if (!zvitTracker->UpdateState(meta))
+            if (!zpivTracker->UpdateState(meta))
                 return error("%s: failed to update metadata in tracker", __func__);
         }
     }
@@ -5258,7 +5209,11 @@ void CWallet::SetNull()
     fBackupMints = false;
 
     // Stake Settings
-    pStakerStatus = new CStakerStatus();
+    if (pStakerStatus) {
+        pStakerStatus->SetNull();
+    } else {
+        pStakerStatus = new CStakerStatus();
+    }
     nStakeSplitThreshold = STAKE_SPLIT_THRESHOLD;
     nStakeSetUpdateTime = 300; // 5 minutes
 
