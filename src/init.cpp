@@ -897,6 +897,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
         InitWarning(_("Warning: Unsupported argument -benchmark ignored, use -debug=bench."));
 
     InitSignatureCache();
+    InitScriptExecutionCache();
 
     // Checkmempool and checkblockindex default to true in regtest mode
     mempool.setSanityCheck(GetBoolArg("-checkmempool", Params().DefaultConsistencyChecks()));

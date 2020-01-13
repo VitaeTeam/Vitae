@@ -18,6 +18,7 @@
 #include "checkqueue.h"
 #include "consensus/merkle.h"
 #include "consensus/validation.h"
+#include "cuckoocache.h"
 #include "init.h"
 #include "kernel.h"
 #include "masternode-budget.h"
@@ -504,6 +505,18 @@ void FindNextBlocksToDownload(NodeId nodeid, unsigned int count, std::vector<CBl
 }
 
 } // anon namespace
+
+static CuckooCache::cache<uint256, SignatureCacheHasher> scriptExecutionCache;
+static uint256 scriptExecutionCacheNonce(GetRandHash());
+
+void InitScriptExecutionCache() {
+    // nMaxCacheSize is unsigned. If -maxsigcachesize is set to zero,
+    // setup_bytes creates the minimum possible cache (2 elements).
+    size_t nMaxCacheSize = std::min(std::max((int64_t)0, GetArg("-maxsigcachesize", DEFAULT_MAX_SIG_CACHE_SIZE) / 2), MAX_MAX_SIG_CACHE_SIZE) * ((size_t) 1 << 20);
+    size_t nElems = scriptExecutionCache.setup_bytes(nMaxCacheSize);
+    LogPrintf("Using %zu MiB out of %zu/2 requested for script execution cache, able to store %zu elements\n",
+            (nElems*sizeof(uint256)) >>20, (nMaxCacheSize*2)>>20, nElems);
+}
 
 bool GetNodeStateStats(NodeId nodeid, CNodeStateStats& stats)
 {
@@ -1733,12 +1746,12 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
 
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        if (!CheckInputs(tx, state, view, true, scriptVerifyFlags, true)) {
+        if (!CheckInputs(tx, state, view, true, scriptVerifyFlags, true, false)) {
             // SCRIPT_VERIFY_CLEANSTACK requires SCRIPT_VERIFY_WITNESS, so we
             // need to turn both off, and compare against just turning off CLEANSTACK
             // to see if the failure is specifically due to witness validation.
-            if (CheckInputs(tx, state, view, true, scriptVerifyFlags & ~(SCRIPT_VERIFY_WITNESS | SCRIPT_VERIFY_CLEANSTACK), true) &&
-                !CheckInputs(tx, state, view, true, scriptVerifyFlags & ~SCRIPT_VERIFY_CLEANSTACK, true)) {
+            if (CheckInputs(tx, state, view, true, scriptVerifyFlags & ~(SCRIPT_VERIFY_WITNESS | SCRIPT_VERIFY_CLEANSTACK), true, false) &&
+                !CheckInputs(tx, state, view, true, scriptVerifyFlags & ~SCRIPT_VERIFY_CLEANSTACK, true, false)) {
                 // Only the witness is wrong, so the transaction itself may be fine.
                 state.SetCorruptionPossible();
             }
@@ -1754,7 +1767,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         // There is a similar check in CreateNewBlock() to prevent creating
         // invalid blocks, however allowing such transactions into the mempool
         // can be exploited as a DoS attack.
-        if (!CheckInputs(tx, state, view, true, MANDATORY_SCRIPT_VERIFY_FLAGS, true)) {
+        if (!CheckInputs(tx, state, view, true, MANDATORY_SCRIPT_VERIFY_FLAGS, true, false)) {
             return error("AcceptToMemoryPool: : BUG! PLEASE REPORT THIS! ConnectInputs failed against MANDATORY but not STANDARD flags %s", hash.ToString());
         }
 
@@ -1987,7 +2000,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
 
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
-        if (!CheckInputs(tx, state, view, false, STANDARD_SCRIPT_VERIFY_FLAGS, true)) {
+        if (!CheckInputs(tx, state, view, false, STANDARD_SCRIPT_VERIFY_FLAGS, true, false)) {
             return error("AcceptableInputs: : ConnectInputs failed %s", hash.ToString());
         }
 
@@ -2354,7 +2367,7 @@ bool CScriptCheck::operator()()
     return true;
 }
 
-bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, bool fScriptChecks, unsigned int flags, bool cacheStore, std::vector<CScriptCheck>* pvChecks)
+bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsViewCache& inputs, bool fScriptChecks, unsigned int flags, bool cacheSigStore, bool cacheFullScriptStore, std::vector<CScriptCheck>* pvChecks)
 {
     if (!tx.IsCoinBase() && !tx.IsZerocoinSpend()) {
         if (pvChecks)
@@ -2364,6 +2377,23 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
         // for an attacker to attempt to split the network.
         if (!inputs.HaveInputs(tx))
             return state.Invalid(error("CheckInputs() : %s inputs unavailable", tx.GetHash().ToString()));
+
+        // First check if script executions have been cached with the same
+        // flags. Note that this assumes that the inputs provided are
+        // correct (ie that the transaction hash which is in tx's prevouts
+        // properly commits to the scriptPubKey in the inputs view of that
+        // transaction).
+        uint256 hashCacheEntry;
+        // We only use the first 19 bytes of nonce to avoid a second SHA
+        // round - giving us 19 + 32 + 4 = 55 bytes (+ 8 + 1 = 64)
+        static_assert(55 - sizeof(flags) - 32 >= 128/8, "Want at least 128 bits of nonce for script execution cache");
+        CSHA256().Write(scriptExecutionCacheNonce.begin(), 55 - sizeof(flags) - 32).Write(tx.GetWitnessHash().begin(), 32).Write((unsigned char*)&flags, sizeof(flags)).Finalize(hashCacheEntry.begin());
+        {
+            AssertLockHeld(cs_main); //TODO: Remove this requirement by making CuckooCache not require external locks
+            if (scriptExecutionCache.contains(hashCacheEntry, !cacheFullScriptStore)) {
+                return true;
+            }
+        }
 
         // While checking, GetBestBlock() refers to the parent block.
         // This is also true for mempool checks.
@@ -2421,7 +2451,7 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
                 assert(coins);
 
                 // Verify signature
-                CScriptCheck check(*coins, tx, i, flags, cacheStore);
+                CScriptCheck check(*coins, tx, i, flags, cacheSigStore);
                 if (pvChecks) {
                     pvChecks->push_back(CScriptCheck());
                     check.swap(pvChecks->back());
@@ -2434,7 +2464,7 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
                         // avoid splitting the network between upgraded and
                         // non-upgraded nodes.
                         CScriptCheck check2(*coins, tx, i,
-                            flags & ~STANDARD_NOT_MANDATORY_VERIFY_FLAGS, cacheStore);
+                            flags & ~STANDARD_NOT_MANDATORY_VERIFY_FLAGS, cacheSigStore);
                         if (check2())
                             return state.Invalid(false, REJECT_NONSTANDARD, strprintf("non-mandatory-script-verify-flag (%s)", ScriptErrorString(check.GetScriptError())));
                     }
@@ -2448,6 +2478,13 @@ bool CheckInputs(const CTransaction& tx, CValidationState& state, const CCoinsVi
                     return state.DoS(100, false, REJECT_INVALID, strprintf("mandatory-script-verify-flag-failed (%s)", ScriptErrorString(check.GetScriptError())));
                 }
             }
+        }
+
+        if (cacheFullScriptStore && !pvChecks) {
+            AssertLockHeld(cs_main);
+            // We executed all of the provided scripts, and were told to
+            // cache the result. Do so now.
+            scriptExecutionCache.insert(hashCacheEntry);
         }
     }
 
@@ -3057,7 +3094,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 return state.DoS(100, error("ConnectBlock(): too many sigops"),
                                 REJECT_INVALID, "bad-blk-sigops");
 
-            if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
+            bool fCacheResults = fJustCheck; /* Don't cache results if we're actually connecting blocks (still consult the cache, though) */
+            if (!CheckInputs(tx, state, view, fScriptChecks, flags, fCacheResults, fCacheResults, nScriptCheckThreads ? &vChecks : NULL))
                 return false;
             control.Add(vChecks);
         }
