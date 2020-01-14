@@ -8,6 +8,7 @@
 #define BITCOIN_QT_COINCONTROLDIALOG_H
 
 #include "amount.h"
+#include "qt/pivx/snackbar.h"
 
 #include <QAbstractButton>
 #include <QAction>
@@ -62,6 +63,7 @@ public:
 
 private:
     Ui::CoinControlDialog* ui;
+    SnackBar *snackBar = nullptr;
     WalletModel* model;
     int sortColumn;
     Qt::SortOrder sortOrder;
@@ -74,6 +76,7 @@ private:
     QAction* unlockAction;
 
     void sortView(int, Qt::SortOrder);
+    void inform(const QString& text);
 
     enum {
         COLUMN_CHECKBOX,
