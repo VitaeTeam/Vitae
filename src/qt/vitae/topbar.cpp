@@ -420,12 +420,11 @@ void TopBar::setNumBlocks(int count) {
         emit walletSynced(true);
         if (fundamentalnodeSync.IsSynced()) {
             // Node synced
-            // TODO: Set synced icon to pushButtonSync here..
-            ui->pushButtonSync->setButtonText(tr("Synchronized"));
+            ui->pushButtonSync->setButtonText(tr("Synchronized - Block: %1").arg(QString::number(count)));
             progressBar->setRange(0,100);
             progressBar->setValue(100);
             return;
-        }else{
+        } else {
 
             // TODO: Show out of sync warning
             int nAttempt = fundamentalnodeSync.RequestedFundamentalnodeAttempt < FUNDAMENTALNODE_SYNC_THRESHOLD ?
@@ -433,7 +432,8 @@ void TopBar::setNumBlocks(int count) {
                        FUNDAMENTALNODE_SYNC_THRESHOLD;
             int progress = nAttempt + (fundamentalnodeSync.RequestedFundamentalnodeAssets - 1) * FUNDAMENTALNODE_SYNC_THRESHOLD;
             if(progress >= 0){
-                text = std::string("Synchronizing additional data..");//: %p%", progress);
+                // todo: MN progress..
+                text = strprintf("Synchronizing masternodes data... - Block: %d", count);
                 //progressBar->setMaximum(4 * FUNDAMENTALNODE_SYNC_THRESHOLD);
                 //progressBar->setValue(progress);
                 needState = false;
