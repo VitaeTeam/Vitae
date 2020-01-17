@@ -38,7 +38,6 @@ BITCOIN_TEST_SUITE = \
   test/test_vitae.cpp
 # test_vitae binary #
 BITCOIN_TESTS =\
-  test/zerocoin_implementation_tests.cpp\
   test/zerocoin_denomination_tests.cpp\
   test/zerocoin_transactions_tests.cpp \
   test/zerocoin_coinspend_tests.cpp \

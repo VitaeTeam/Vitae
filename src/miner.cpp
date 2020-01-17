@@ -29,7 +29,6 @@
 #endif
 #include "fundamentalnode-payments.h"
 #include "validationinterface.h"
-#include "zvit/accumulators.h"
 #include "blocksignature.h"
 #include "spork.h"
 #include "invalid.h"
@@ -606,8 +605,9 @@ int nMintableLastCheck = 0;
 void CheckForCoins(CWallet* pwallet, const int minutes)
 {
     //control the amount of times the client will check for mintable coins
-    if ((GetTime() - nMintableLastCheck > minutes * 60)) {
-        nMintableLastCheck = GetTime();
+    int nTimeNow = GetTime();
+    if ((nTimeNow - nMintableLastCheck > minutes * 60)) {
+        nMintableLastCheck = nTimeNow;
         fStakeableCoins = pwallet->StakeableCoins();
     }
 }

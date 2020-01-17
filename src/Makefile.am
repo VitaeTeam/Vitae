@@ -180,10 +180,6 @@ BITCOIN_CORE_H = \
   wallet_ismine.h \
   walletdb.h \
   zvitchain.h \
-  zvit/accumulators.h \
-  zvit/accumulatorcheckpoints.h \
-  zvit/accumulatorcheckpoints.json.h \
-  zvit/accumulatormap.h \
   zvit/deterministicmint.h \
   zvit/mintpool.h \
   zvit/witness.h \
@@ -285,7 +281,6 @@ libbitcoin_wallet_a_SOURCES = \
   wallet.cpp \
   wallet_ismine.cpp \
   walletdb.cpp \
-  zvit/accumulators.cpp \
   zvit/mintpool.cpp \
   zvit/witness.cpp \
   zvit/zvitwallet.cpp \
@@ -372,10 +367,6 @@ endif
 # common: shared between vitaed, and vitae-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
-  activemasternode.cpp \
-  zvit/accumulators.cpp \
-  zvit/accumulatorcheckpoints.cpp \
-  zvit/accumulatormap.cpp \
   allocators.cpp \
   amount.cpp \
   base58.cpp \
