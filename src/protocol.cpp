@@ -41,8 +41,6 @@ static const char* ppszTypeName[] =
     "mn announce",
     "mn ping",
         "pubcoins",
-        "genwit",
-        "accvalue"
 };
 
 CMessageHeader::CMessageHeader()

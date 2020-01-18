@@ -191,9 +191,6 @@ BITCOIN_CORE_H = \
   zvit/zvittracker.h \
   zvit/zvitwallet.h \
   zvit/zvitmodule.h \
-  genwit.h \
-  concurrentqueue.h \
-  lightzvitthread.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -294,9 +291,7 @@ libbitcoin_wallet_a_SOURCES = \
   zvit/zvitwallet.cpp \
   zvit/zvittracker.cpp \
   stakeinput.cpp \
-  genwit.cpp \
   zvit/zvitmodule.cpp \
-  lightzvitthread.cpp \
   libzerocoin/CoinRandomnessSchnorrSignature.h \
   libzerocoin/CoinRandomnessSchnorrSignature.cpp \
   $(BITCOIN_CORE_H)
