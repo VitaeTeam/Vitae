@@ -11,7 +11,6 @@
 #include "txdb.h"
 #include "walletdb.h"
 #include "zvit/zvitwallet.h"
-#include "witness.h"
 
 
 CzVITTracker::CzVITTracker(std::string strWalletFile)

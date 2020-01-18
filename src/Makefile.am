@@ -185,7 +185,6 @@ BITCOIN_CORE_H = \
   zvitchain.h \
   zvit/deterministicmint.h \
   zvit/mintpool.h \
-  zvit/witness.h \
   zvit/zerocoin.h \
   zvit/zvittracker.h \
   zvit/zvitwallet.h \
@@ -287,7 +286,6 @@ libbitcoin_wallet_a_SOURCES = \
   wallet_ismine.cpp \
   walletdb.cpp \
   zvit/mintpool.cpp \
-  zvit/witness.cpp \
   zvit/zvitwallet.cpp \
   zvit/zvittracker.cpp \
   stakeinput.cpp \
