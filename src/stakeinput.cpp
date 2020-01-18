@@ -2,10 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "chain.h"
-#include "zvit/deterministicmint.h"
-#include "main.h"
 #include "stakeinput.h"
+
+#include "chain.h"
+#include "main.h"
+#include "txdb.h"
+#include "zvit/deterministicmint.h"
 #include "wallet.h"
 
 CZVitStake::CZVitStake(const libzerocoin::CoinSpend& spend)
@@ -22,17 +24,27 @@ uint32_t CZVitStake::GetChecksum()
     return nChecksum;
 }
 
-// LEGACY: Kept for IBD in order to verify zerocoin stakes occurred when zPoS was active
+/*
+ * LEGACY: Kept for IBD in order to verify zerocoin stakes occurred when zPoS was active
+ * Find the first occurrence of a certain accumulator checksum.
+ * Return block index pointer or nullptr if not found
+ */
 CBlockIndex* CZVitStake::GetIndexFrom()
 {
-    // Find the first occurrence of a certain accumulator checksum.
-    // Return block index pointer or nullptr if not found
+    // First look in the legacy database
+    int nHeightChecksum = 0;
+    if (zerocoinDB->ReadAccChecksum(nChecksum, denom, nHeightChecksum)) {
+        return chainActive[nHeightChecksum];
+    }
+
+    // Not found. Scan the chain.
     CBlockIndex* pindex = chainActive[Params().Zerocoin_StartHeight()];
     if (!pindex) return nullptr;
-    //Search through blocks to find the checksum
     const int last_block = Params().Zerocoin_Block_Last_Checkpoint();
     while (pindex && pindex->nHeight <= last_block) {
         if (ParseAccChecksum(pindex->nAccumulatorCheckpoint, denom) == nChecksum) {
+            // Found. Save to database and return
+            zerocoinDB->WriteAccChecksum(nChecksum, denom, pindex->nHeight);
             return pindex;
         }
         //Skip forward in groups of 10 blocks since checkpoints only change every 10 blocks
@@ -42,7 +54,7 @@ CBlockIndex* CZVitStake::GetIndexFrom()
         }
         pindex = chainActive.Next(pindex);
     }
-    return mapBlockIndex.at(pindex->GetBlockHash());
+    return nullptr;
 }
 
 CAmount CZVitStake::GetValue()
