@@ -10,119 +10,7 @@
 #include "zvit/deterministicmint.h"
 #include "wallet.h"
 
-/*
- * LEGACY: Kept for IBD in order to verify zerocoin stakes occurred when zPoS was active
- * Find the first occurrence of a certain accumulator checksum.
- * Return block index pointer or nullptr if not found
- */
 
-CZVitStake::CZVitStake(const libzerocoin::CoinSpend& spend)
-{
-    this->nChecksum = spend.getAccumulatorChecksum();
-    this->denom = spend.getDenomination();
-    uint256 nSerial = spend.getCoinSerialNumber().getuint256();
-    this->hashSerial = Hash(nSerial.begin(), nSerial.end());
-    fMint = false;
-}
-
-uint32_t CZVitStake::GetChecksum()
-{
-    return nChecksum;
-}
-
-CBlockIndex* CZVitStake::GetIndexFrom()
-{
-    // First look in the legacy database
-    int nHeightChecksum = 0;
-    if (zerocoinDB->ReadAccChecksum(nChecksum, denom, nHeightChecksum)) {
-        return chainActive[nHeightChecksum];
-    }
-
-    // Not found. Scan the chain.
-    CBlockIndex* pindex = chainActive[Params().Zerocoin_StartHeight()];
-    if (!pindex) return nullptr;
-    const int last_block = Params().Zerocoin_Block_Last_Checkpoint();
-    while (pindex && pindex->nHeight <= last_block) {
-        if (ParseAccChecksum(pindex->nAccumulatorCheckpoint, denom) == nChecksum) {
-            // Found. Save to database and return
-            zerocoinDB->WriteAccChecksum(nChecksum, denom, pindex->nHeight);
-            return pindex;
-        }
-        //Skip forward in groups of 10 blocks since checkpoints only change every 10 blocks
-        if (pindex->nHeight % 10 == 0) {
-            pindex = chainActive[pindex->nHeight + 10];
-            continue;
-        }
-        pindex = chainActive.Next(pindex);
-    }
-    return nullptr;
-}
-
-CAmount CZVitStake::GetValue()
-{
-    return denom * COIN;
-}
-
-//Use the first accumulator checkpoint that occurs 60 minutes after the block being staked from
-bool CZVitStake::GetModifier(uint64_t& nStakeModifier)
-{
-    CBlockIndex* pindex = GetIndexFrom();
-    if (!pindex)
-        return error("%s: failed to get index from", __func__);
-
-    if(Params().IsRegTestNet()) {
-        nStakeModifier = 0;
-        return true;
-    }
-
-    int64_t nTimeBlockFrom = pindex->GetBlockTime();
-    const int nHeightStop = std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1);
-    while (pindex && pindex->nHeight + 1 <= nHeightStop) {
-        if (pindex->GetBlockTime() - nTimeBlockFrom > 60 * 60) {
-            nStakeModifier = pindex->nAccumulatorCheckpoint.Get64();
-            return true;
-        }
-        pindex = chainActive.Next(pindex);
-    }
-
-    return false;
-}
-
-CDataStream CZVitStake::GetUniqueness()
-{
-    //The unique identifier for a zVIT is a hash of the serial
-    CDataStream ss(SER_GETHASH, 0);
-    ss << hashSerial;
-    return ss;
-}
-
-bool CZVitStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
-{
-    return error("%s: zPOS Disabled", __func__);
-}
-
-bool CZVitStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
-{
-    return error("%s: zPOS Disabled", __func__);
-}
-
-bool CZVitStake::GetTxFrom(CTransaction& tx)
-{
-    return false;
-}
-
-bool CZVitStake::MarkSpent(CWallet *pwallet, const uint256& txid)
-{
-    CzVITTracker* zvitTracker = pwallet->zvitTracker.get();
-    CMintMeta meta;
-    if (!zvitTracker->GetMetaFromStakeHash(hashSerial, meta))
-        return error("%s: tracker does not have serialhash", __func__);
-
-    zvitTracker->SetPubcoinUsed(meta.hashPubcoin, txid);
-    return true;
-}
-
-//!VIT Stake
 bool CVitStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
@@ -130,7 +18,7 @@ bool CVitStake::SetInput(CTransaction txPrev, unsigned int n)
     return true;
 }
 
-bool CVitStake::GetTxFrom(CTransaction& tx)
+bool CVitStake::GetTxFrom(CTransaction& tx) const
 {
     tx = txFrom;
     return true;
@@ -142,7 +30,7 @@ bool CVitStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
     return true;
 }
 
-CAmount CVitStake::GetValue()
+CAmount CVitStake::GetValue() const
 {
     return txFrom.vout[nPosition].nValue;
 }
@@ -210,9 +98,9 @@ bool CVitStake::GetModifier(uint64_t& nStakeModifier)
     return true;
 }
 
-CDataStream CVitStake::GetUniqueness()
+CDataStream CVitStake::GetUniqueness() const
 {
-    //The unique identifier for a VIT stake is the outpoint
+    //The unique identifier for a PIV stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;
