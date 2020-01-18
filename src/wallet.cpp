@@ -4031,31 +4031,6 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
     return true;
 }
 
-bool CWallet::CheckCoinSpend(libzerocoin::CoinSpend& spend, libzerocoin::Accumulator& accumulator, CZerocoinSpendReceipt& receipt)
-{
-    if (!spend.Verify(accumulator)) {
-        receipt.SetStatus(_("The transaction did not verify"), ZVIT_BAD_SERIALIZATION);
-        return error("%s : The transaction did not verify", __func__);
-    }
-
-    if (IsSerialKnown(spend.getCoinSerialNumber())) {
-        //Tried to spend an already spent zVIT
-        receipt.SetStatus(_("The coin spend has been used"), ZVIT_SPENT_USED_ZVIT);
-        uint256 hashSerial = GetSerialHash(spend.getCoinSerialNumber());
-        if(!zvitTracker->HasSerialHash(hashSerial))
-            return error("%s: serialhash %s not found in tracker", __func__, hashSerial.GetHex());
-
-        CMintMeta meta = zvitTracker->Get(hashSerial);
-        meta.isUsed = true;
-        if (!zvitTracker->UpdateState(meta))
-            LogPrintf("%s: failed to write zerocoinmint\n", __func__);
-
-        return false;
-    }
-
-    return true;
-}
-
 bool CWallet::MintsToInputVectorPublicSpend(std::map<CBigNum, CZerocoinMint>& mapMintsSelected, const uint256& hashTxOut, std::vector<CTxIn>& vin,
                                     CZerocoinSpendReceipt& receipt, libzerocoin::SpendType spendType, CBlockIndex* pindexCheckpoint)
 {
