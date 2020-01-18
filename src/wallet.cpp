@@ -2664,7 +2664,7 @@ bool CWallet::CreateCoinStake(
 
         // This should never happen
         if (stakeInput->IsZVIT()) {
-            LogPrintf("%s: ERROR - zPOS is disabled\n");
+            LogPrintf("%s: ERROR - zPOS is disabled\n", __func__);
             continue;
         }
 

@@ -26,7 +26,6 @@ public:
     virtual bool GetTxFrom(CTransaction& tx) const = 0;
     virtual CAmount GetValue() const = 0;
     virtual bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal) = 0;
-    virtual bool GetModifier(uint64_t& nStakeModifier) = 0;
     virtual bool IsZVIT() const = 0;
     virtual CDataStream GetUniqueness() const = 0;
 };
@@ -38,10 +37,6 @@ private:
     CTransaction txFrom;
     unsigned int nPosition;
 
-    // cached data
-    uint64_t nStakeModifier = 0;
-    int nStakeModifierHeight = 0;
-    int64_t nStakeModifierTime = 0;
 public:
     CVitStake(){}
 
@@ -50,7 +45,6 @@ public:
     CBlockIndex* GetIndexFrom() override;
     bool GetTxFrom(CTransaction& tx) const override;
     CAmount GetValue() const override;
-    bool GetModifier(uint64_t& nStakeModifier) override;
     CDataStream GetUniqueness() const override;
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal) override;
