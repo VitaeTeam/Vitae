@@ -203,6 +203,7 @@ libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT
 libbitcoin_server_a_SOURCES = \
   activemasternode.cpp \
   addrman.cpp \
+  accumulators.cpp \
   alert.cpp \
   bloom.cpp \
   chain.cpp \
@@ -341,7 +342,6 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
   activemasternode.cpp \
-  accumulators.cpp \
   accumulatormap.cpp \
   allocators.cpp \
   amount.cpp \
