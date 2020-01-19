@@ -153,3 +153,5 @@ cmake-build-debug
 vitae-qt.pro
 src/config/vitae-config.h
 src/config/vitae-config.h.in
+src/config/vitae-config.h.in
+src/libbitcoin_wallet_a-fundamentalnode-budget-ad7f6c6c.o.tmp
