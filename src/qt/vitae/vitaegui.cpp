@@ -63,8 +63,11 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
     enableWallet = false;
 #endif // ENABLE_WALLET
 
-    QString windowTitle = tr("VITAE Core") + " - ";
-    windowTitle += ((enableWallet) ? tr("Wallet") : tr("Node"));
+    QString windowTitle = QString::fromStdString(GetArg("-windowtitle", ""));
+    if (windowTitle.isEmpty()) {
+        windowTitle = tr("VITAE Core") + " - ";
+        windowTitle += ((enableWallet) ? tr("Wallet") : tr("Node"));
+    }
     windowTitle += " " + networkStyle->getTitleAddText();
     setWindowTitle(windowTitle);
 
@@ -74,9 +77,6 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 #else
     MacDockIconHandler::instance()->setIcon(networkStyle->getAppIcon());
 #endif
-
-
-
 
 #ifdef ENABLE_WALLET
     // Create wallet frame
