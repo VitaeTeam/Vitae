@@ -92,7 +92,6 @@ public:
     int FutureBlockTimeDrift(const int nHeight) const;
     bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const;
 
-    CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
     /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
     int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
 	/** The masternode count that we will allow the see-saw reward payments to be off by */
@@ -197,7 +196,6 @@ protected:
     int nTimeSlotLength;
 
     int nModifierUpdateBlock;
-    CAmount nMaxMoneyOut;
     int nMinerThreads;
     std::vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
