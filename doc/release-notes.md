@@ -34,39 +34,44 @@ Apple released it's last Mountain Lion update August 13, 2015, and officially en
 VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
 
 
-Apple released it's last Mountain Lion update August 13, 2015, and officially ended support on [December 14, 2015](http://news.fnal.gov/2015/10/mac-os-x-mountain-lion-10-8-end-of-life-december-14/). VITAE Core software starting with v3.2.0 will no longer run on MacOS versions prior to Yosemite (10.10). Please do not report issues about MacOS versions prior to Yosemite to the issue tracker.
-
-VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
-
-
 Notable Changes
 ==============
 
-Bug Fixes
---------------
-
-#### Double counting of delegated values
-
-Fixed a bug where the values/amounts for cold staking delegations was being double counted in the UI's available/total balance calculation.
-
-#### Incorrect sorting for transaction loading
-
-Fixed a bug where The 20,000 limit for loading wallet transactions was incorrectly sorting these transactions, resulting in the **first** 20,000 transactions to be loaded instead of the **most recent** 20,000 transactions.
-
-#### No information shown for spent cold stake delegations
 
 Fixed a bug where the transaction record for spent cold stake delegations was showing as "No information".
 
-GUI Changes
+(Developers: add your notes here as part of your pull requests whenever possible)
+
+
+
+RPC Changes
 --------------
 
-#### Add latest block height to top bar
+### Modified input/output for existing commands
 
-The top bar's sync status button now shows the latest block height (number) when hovering over the button.
+- "CoinStake" JSON object in `getblock` output is removed, and replaced with the string "hashProofOfStake"
 
-#### Coin Control copy functions
+- "isPublicSpend" boolean (optional) input parameter is removed from the following commands:
+ - `createrawzerocoinspend`
+ - `spendzerocoin`
+ - `spendzerocoinmints`
+ - `spendrawzerocoin`
 
-The coin control screen now allows for copying the various values to the OS clipboard
+ These commands are now able to create only *public* spends (private spends were already enabled only on regtest).
+
+### Removed commands
+
+The following commands have been removed from the RPC interface:
+- `createrawzerocoinstake`
+
+
+### Newly introduced commands
+
+The following new commands have been added to the RPC interface:
+- `...`
+
+Details about each new command can be found below.
+
 
 *v4.0.2* Change log
 ==============
@@ -92,8 +97,11 @@ Detailed release notes follow. For convenience in locating the code changes and 
 ### Documentation
 - #1272 `d4a9475e40` [Trivial] Update copyright headers for 4.0.2 (Fuzzbawls)
 
-### RPC Interface
-- #1274 `f5c3552c96` [RPC] Remove extra PoW rounds in 'generate' (random-zebra)
+### RPC/REST
+
+### Wallet
+
+### Miscellaneous
 
 ## Credits
 Thanks to everyone who directly contributed to this release:
