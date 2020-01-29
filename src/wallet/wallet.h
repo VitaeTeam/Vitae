@@ -227,7 +227,7 @@ private:
 
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
     /* HD derive new child key (on internal or external chain) */
-    void DeriveNewChildKey(const CKeyMetadata& metadata, CKey& secretRet, uint32_t nAccountIndex, bool fInternal /*= false*/);
+    void DeriveNewChildKey(const CKeyMetadata& metadata, CKey& secretRet, uint32_t nAccountIndex, bool fInternal /*= false*/, CWalletDB * walletDB);
 
 public:
     bool MintableCoins();
@@ -463,7 +463,7 @@ public:
      * keystore implementation
      * Generate a new key
      */
-    CPubKey GenerateNewKey(uint32_t nAccountIndex, bool fInternal /*= false*/);
+    CPubKey GenerateNewKey(uint32_t nAccountIndex, bool fInternal /*= false*/, CWalletDB * walletDB);
     //! HaveKey implementation that also checks the mapHdPubKeys
     bool HaveKey(const CKeyID &address) const;
     //! GetPubKey implementation that also checks the mapHdPubKeys
@@ -478,6 +478,7 @@ public:
 
     //! Adds a key to the store, and saves it to disk.
     bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
+    bool AddKeyPubKeyWithDB(const CKey& key, const CPubKey &pubkey, CWalletDB * walletDB);
     //! Adds a key to the store, without saving it to disk (used by LoadWallet)
     bool LoadKey(const CKey& key, const CPubKey& pubkey) { return CCryptoKeyStore::AddKeyPubKey(key, pubkey); }
     //! Load metadata (used by LoadWallet)
@@ -744,7 +745,7 @@ public:
     /* Generates a new HD chain */
     void GenerateNewHDChain(const std::vector<std::string>& words);
     /* Set the HD chain model (chain child index counters) */
-    bool SetHDChain(const CHDChain& chain, bool memonly);
+    bool SetHDChain(const CHDChain& chain, bool memonly, CWalletDB * walletDB = nullptr);
     bool SetCryptedHDChain(const CHDChain& chain, bool memonly);
     bool GetDecryptedHDChain(CHDChain& hdChainRet);
 
