@@ -157,7 +157,7 @@ void SettingsWalletRepairWidget::buildParameterlist(QString arg)
     args.append(arg);
 
     // Send command-line arguments to VITAEGUI::handleRestart()
-    emit handleRestart(args);
+    Q_EMIT handleRestart(args);
 }
 
 SettingsWalletRepairWidget::~SettingsWalletRepairWidget()

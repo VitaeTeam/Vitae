@@ -158,12 +158,12 @@ class BitcoinCore : public QObject
 public:
     explicit BitcoinCore();
 
-public slots:
+public Q_SLOTS:
     void initialize();
     void shutdown();
     void restart(QStringList args);
 
-signals:
+Q_SIGNALS:
     void initializeResult(int retval);
     void shutdownResult(int retval);
     void runawayException(const QString& message);
@@ -209,14 +209,14 @@ public:
     /// Get window identifier of QMainWindow (VITAEGUI)
     WId getMainWinId() const;
 
-public slots:
+public Q_SLOTS:
     void initializeResult(int retval);
     void shutdownResult(int retval);
     /// Handle runaway exceptions. Shows a message box with the problem and quits the program.
     void handleRunawayException(const QString& message);
     void updateTranslation();
 
-signals:
+Q_SIGNALS:
     void requestedInitialize();
     void requestedRestart(QStringList args);
     void requestedShutdown();
@@ -248,7 +248,7 @@ BitcoinCore::BitcoinCore() : QObject()
 void BitcoinCore::handleRunawayException(const std::exception* e)
 {
     PrintExceptionContinue(e, "Runaway exception");
-    emit runawayException(QString::fromStdString(strMiscWarning));
+    Q_EMIT runawayException(QString::fromStdString(strMiscWarning));
 }
 
 void BitcoinCore::initialize()
@@ -258,7 +258,7 @@ void BitcoinCore::initialize()
     try {
         qDebug() << __func__ << ": Running AppInit2 in thread";
         int rv = AppInit2();
-        emit initializeResult(rv);
+        Q_EMIT initializeResult(rv);
     } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
@@ -275,7 +275,7 @@ void BitcoinCore::restart(QStringList args)
             Interrupt();
             PrepareShutdown();
             qDebug() << __func__ << ": Shutdown finished";
-            emit shutdownResult(1);
+            Q_EMIT shutdownResult(1);
             CExplicitNetCleanup::callCleanup();
             QProcess::startDetached(QApplication::applicationFilePath(), args);
             qDebug() << __func__ << ": Restart initiated...";
@@ -295,7 +295,7 @@ void BitcoinCore::shutdown()
         Interrupt();
         Shutdown();
         qDebug() << __func__ << ": Shutdown finished";
-        emit shutdownResult(1);
+        Q_EMIT shutdownResult(1);
     } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
@@ -322,7 +322,7 @@ BitcoinApplication::~BitcoinApplication()
 {
     if (coreThread) {
         qDebug() << __func__ << ": Stopping thread";
-        emit stopThread();
+        Q_EMIT stopThread();
         coreThread->wait();
         qDebug() << __func__ << ": Stopped thread";
     }
@@ -419,7 +419,7 @@ void BitcoinApplication::requestInitialize()
 {
     qDebug() << __func__ << ": Requesting initialize";
     startThread();
-    emit requestedInitialize();
+    Q_EMIT requestedInitialize();
 }
 
 void BitcoinApplication::requestShutdown()
@@ -442,7 +442,7 @@ void BitcoinApplication::requestShutdown()
     ShutdownWindow::showShutdownWindow(window);
 
     // Request shutdown from core thread
-    emit requestedShutdown();
+    Q_EMIT requestedShutdown();
 }
 
 void BitcoinApplication::initializeResult(int retval)
@@ -477,7 +477,7 @@ void BitcoinApplication::initializeResult(int retval)
         } else {
             window->show();
         }
-        emit splashFinished(window);
+        Q_EMIT splashFinished(window);
 
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line

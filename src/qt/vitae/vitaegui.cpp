@@ -244,7 +244,7 @@ VITAEGUI::~VITAEGUI() {
 /** Get restart command-line parameters and request restart */
 void VITAEGUI::handleRestart(QStringList args){
     if (!ShutdownRequested())
-        emit requestedRestart(args);
+        Q_EMIT requestedRestart(args);
 }
 
 
@@ -522,7 +522,7 @@ void VITAEGUI::changeTheme(bool isLightTheme){
     this->setStyleSheet(css);
 
     // Notify
-    emit themeChanged(isLightTheme, css);
+    Q_EMIT themeChanged(isLightTheme, css);
 
     // Update style
     updateStyle(this);
@@ -534,7 +534,7 @@ void VITAEGUI::resizeEvent(QResizeEvent* event){
     // background
     showHide(opEnabled);
     // Notify
-    emit windowResizeEvent(event);
+    Q_EMIT windowResizeEvent(event);
 }
 
 bool VITAEGUI::execDialog(QDialog *dialog, int xDiv, int yDiv){

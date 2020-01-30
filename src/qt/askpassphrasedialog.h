@@ -73,7 +73,7 @@ private:
 
     void initWatch(QWidget *parent);
 
-private slots:
+private Q_SLOTS:
     void onWatchClicked();
     void textChanged();
     void warningMessage();

@@ -50,12 +50,12 @@ public:
     explicit SortEdit(QWidget* parent = nullptr) : QLineEdit(parent){}
 
     inline void mousePressEvent(QMouseEvent *) override{
-        emit Mouse_Pressed();
+        Q_EMIT Mouse_Pressed();
     }
 
     ~SortEdit() override{}
 
-signals:
+Q_SIGNALS:
     void Mouse_Pressed();
 
 };
@@ -179,7 +179,7 @@ private:
     void setChartShow(ChartShowType type);
     std::pair<int, int> getChartRange(QMap<int, std::pair<qint64, qint64>> amountsBy);
 
-private slots:
+private Q_SLOTS:
     void onChartRefreshed();
 
 #endif

@@ -194,7 +194,7 @@ private:
     void setViewHeaderResizeMode(int logicalIndex, QHeaderView::ResizeMode resizeMode);
     void resizeColumn(int nColumnIndex, int width);
 
-private slots:
+private Q_SLOTS:
     void on_sectionResized(int logicalIndex, int oldSize, int newSize);
     void on_geometriesChanged();
 };
