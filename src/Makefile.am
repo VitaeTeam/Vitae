@@ -190,13 +190,13 @@ BITCOIN_CORE_H = \
   validationinterface.h \
   utilsplitstring.h \
   version.h \
-  wallet_ismine.h \
   zphrtracker.h \
   zphrwallet.h \
   wallet/coincontrol.h \
   wallet/crypter.h \
   wallet/db.h \
   wallet/wallet.h \
+  wallet/wallet_ismine.h \
   wallet/walletdb.h \
   wallet/bip39_english.h \
   wallet/bip39.h \
@@ -282,7 +282,6 @@ libbitcoin_wallet_a_SOURCES = \
   primitives/deterministicmint.cpp \
   primitives/zerocoin.cpp \
   kernel.cpp \
-  wallet_ismine.cpp \
   stakeinput.cpp \
   zphrwallet.cpp \
   zphrtracker.cpp \
@@ -290,6 +289,7 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/db.cpp \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
+  wallet/wallet_ismine.cpp \
   wallet/walletdb.cpp \
   $(BITCOIN_CORE_H)
 
