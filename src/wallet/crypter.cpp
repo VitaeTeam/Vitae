@@ -12,7 +12,7 @@
 
 #include <openssl/aes.h>
 #include <openssl/evp.h>
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 bool CCrypter::SetKeyFromPassphrase(const SecureString& strKeyData, const std::vector<unsigned char>& chSalt, const unsigned int nRounds, const unsigned int nDerivationMethod)
 {
@@ -57,32 +57,13 @@ bool CCrypter::Encrypt(const CKeyingMaterial& vchPlaintext, std::vector<unsigned
     int nCLen = nLen + AES_BLOCK_SIZE, nFLen = 0;
     vchCiphertext = std::vector<unsigned char>(nCLen);
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    EVP_CIPHER_CTX* ctx;
-#else
-    EVP_CIPHER_CTX ctx;
-#endif
-
     bool fOk = true;
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    ctx = EVP_CIPHER_CTX_new();
-    EVP_CIPHER_CTX_init(ctx);
-#else
-    EVP_CIPHER_CTX_init (&ctx);
-#endif
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (fOk) fOk = EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, chKey, chIV) != 0;
     if (fOk) fOk = EVP_EncryptUpdate(ctx, &vchCiphertext[0], &nCLen, &vchPlaintext[0], nLen) != 0;
     if (fOk) fOk = EVP_EncryptFinal_ex(ctx, (&vchCiphertext[0]) + nCLen, &nFLen) != 0;
-    EVP_CIPHER_CTX_cleanup(ctx);
-#else
-    if (fOk) fOk = EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, chKey, chIV) != 0;
-    if (fOk) fOk = EVP_EncryptUpdate(&ctx, &vchCiphertext[0], &nCLen, &vchPlaintext[0], nLen) != 0;
-    if (fOk) fOk = EVP_EncryptFinal_ex(&ctx, (&vchCiphertext[0]) + nCLen, &nFLen) != 0;
-    EVP_CIPHER_CTX_cleanup(&ctx);
-#endif
+    EVP_CIPHER_CTX_free(ctx);
 
     if (!fOk) return false;
 
@@ -101,32 +82,13 @@ bool CCrypter::Decrypt(const std::vector<unsigned char>& vchCiphertext, CKeyingM
 
     vchPlaintext = CKeyingMaterial(nPLen);
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    EVP_CIPHER_CTX* ctx;
-#else
-    EVP_CIPHER_CTX ctx;
-#endif
-
     bool fOk = true;
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    ctx = EVP_CIPHER_CTX_new();
-    EVP_CIPHER_CTX_init(ctx);
-#else
-    EVP_CIPHER_CTX_init (&ctx);
-#endif
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    EVP_CIPHER_CTX* ctx = EVP_CIPHER_CTX_new();
     if (fOk) fOk = EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, chKey, chIV) != 0;
     if (fOk) fOk = EVP_DecryptUpdate(ctx, &vchPlaintext[0], &nPLen, &vchCiphertext[0], nLen) != 0;
     if (fOk) fOk = EVP_DecryptFinal_ex(ctx, (&vchPlaintext[0]) + nPLen, &nFLen) != 0;
-    EVP_CIPHER_CTX_cleanup(ctx);
-#else
-    if (fOk) fOk = EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, chKey, chIV) != 0;
-    if (fOk) fOk = EVP_DecryptUpdate(&ctx, &vchPlaintext[0], &nPLen, &vchCiphertext[0], nLen) != 0;
-    if (fOk) fOk = EVP_DecryptFinal_ex(&ctx, (&vchPlaintext[0]) + nPLen, &nFLen) != 0;
-    EVP_CIPHER_CTX_cleanup(&ctx);
-#endif
+    EVP_CIPHER_CTX_free(ctx);
 
     if (!fOk) return false;
 
@@ -165,27 +127,15 @@ bool EncryptAES256(const SecureString& sKey, const SecureString& sPlaintext, con
     sCiphertext.resize(nCLen);
 
     // Perform the encryption
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
     EVP_CIPHER_CTX* ctx;
-#else
-    EVP_CIPHER_CTX ctx;
-#endif
 
     bool fOk = true;
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
-    EVP_CIPHER_CTX_init(ctx);
+    ctx = EVP_CIPHER_CTX_new();
     if (fOk) fOk = EVP_EncryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char*)&sKey[0], (const unsigned char*)&sIV[0]);
     if (fOk) fOk = EVP_EncryptUpdate(ctx, (unsigned char*)&sCiphertext[0], &nCLen, (const unsigned char*)&sPlaintext[0], nLen);
     if (fOk) fOk = EVP_EncryptFinal_ex(ctx, (unsigned char*)(&sCiphertext[0]) + nCLen, &nFLen);
-    EVP_CIPHER_CTX_cleanup(ctx);
-#else    
-    EVP_CIPHER_CTX_init(&ctx);
-    if (fOk) fOk = EVP_EncryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, (const unsigned char*)&sKey[0], (const unsigned char*)&sIV[0]);
-    if (fOk) fOk = EVP_EncryptUpdate(&ctx, (unsigned char*)&sCiphertext[0], &nCLen, (const unsigned char*)&sPlaintext[0], nLen);
-    if (fOk) fOk = EVP_EncryptFinal_ex(&ctx, (unsigned char*)(&sCiphertext[0]) + nCLen, &nFLen);
-    EVP_CIPHER_CTX_cleanup(&ctx);
-#endif
+    EVP_CIPHER_CTX_free(ctx);
 
     if (!fOk) return false;
 
@@ -218,32 +168,15 @@ bool DecryptAES256(const SecureString& sKey, const std::string& sCiphertext, con
 
     sPlaintext.resize(nPLen);
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
     EVP_CIPHER_CTX* ctx;
-#else
-    EVP_CIPHER_CTX ctx;
-#endif
 
     bool fOk = true;
 
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
     ctx = EVP_CIPHER_CTX_new();
-    EVP_CIPHER_CTX_init(ctx);
-#else
-    EVP_CIPHER_CTX_init (&ctx);
-#endif
-
-#if OPENSSL_VERSION_NUMBER >= 0x10100000L
     if (fOk) fOk = EVP_DecryptInit_ex(ctx, EVP_aes_256_cbc(), NULL, (const unsigned char*)&sKey[0], (const unsigned char*)&sIV[0]);
     if (fOk) fOk = EVP_DecryptUpdate(ctx, (unsigned char*)&sPlaintext[0], &nPLen, (const unsigned char*)&sCiphertext[0], nLen);
     if (fOk) fOk = EVP_DecryptFinal_ex(ctx, (unsigned char*)(&sPlaintext[0]) + nPLen, &nFLen);
-    EVP_CIPHER_CTX_cleanup(ctx);
-#else
-    if (fOk) fOk = EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, (const unsigned char*)&sKey[0], (const unsigned char*)&sIV[0]);	    if (fOk) fOk = EVP_DecryptInit_ex(&ctx, EVP_aes_256_cbc(), NULL, (const unsigned char*)&sKey[0], (const unsigned char*)&sIV[0]);
-    if (fOk) fOk = EVP_DecryptUpdate(&ctx, (unsigned char*)&sPlaintext[0], &nPLen, (const unsigned char*)&sCiphertext[0], nLen);	    if (fOk) fOk = EVP_DecryptUpdate(&ctx, (unsigned char*)&sPlaintext[0], &nPLen, (const unsigned char*)&sCiphertext[0], nLen);
-    if (fOk) fOk = EVP_DecryptFinal_ex(&ctx, (unsigned char*)(&sPlaintext[0]) + nPLen, &nFLen);	    if (fOk) fOk = EVP_DecryptFinal_ex(&ctx, (unsigned char*)(&sPlaintext[0]) + nPLen, &nFLen);
-    EVP_CIPHER_CTX_cleanup(&ctx);	    EVP_CIPHER_CTX_cleanup(&ctx);
-#endif
+    EVP_CIPHER_CTX_free(ctx);
 
     if (!fOk) return false;
 
@@ -312,7 +245,7 @@ bool CCryptoKeyStore::Unlock(const CKeyingMaterial& vMasterKeyIn)
         }
         if (keyPass && keyFail) {
             LogPrintf("The wallet is probably corrupted: Some keys decrypt but not all.");
-            assert(false);
+            throw std::runtime_error("Error unlocking wallet: some keys decrypt but not all. Your wallet file may be corrupt.");
         }
         if (keyFail || (!keyPass && cryptedHDChain.IsNull()))
             return false;
@@ -351,8 +284,6 @@ bool CCryptoKeyStore::Unlock(const CKeyingMaterial& vMasterKeyIn)
             pwalletMain->zwalletMain->GenerateMintPool();
         }
     }
-    NotifyStatusChanged(this);
-    return true;
 }
 
 bool CCryptoKeyStore::EncryptHDChain(const CKeyingMaterial& vMasterKeyIn)
@@ -552,7 +483,7 @@ bool CCryptoKeyStore::GetKey(const CKeyID& address, CKey& keyOut) const
     return false;
 }
 
-bool CCryptoKeyStore::GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const
+bool CCryptoKeyStore::GetPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const
 {
     LOCK(cs_KeyStore);
     if (!IsCrypted())
@@ -594,14 +525,14 @@ bool CCryptoKeyStore::EncryptKeys(CKeyingMaterial& vMasterKeyIn)
 bool CCryptoKeyStore::AddDeterministicSeed(const uint256& seed)
 {
     CWalletDB db(pwalletMain->strWalletFile);
-    string strErr;
+    std::string strErr;
     uint256 hashSeed = Hash(seed.begin(), seed.end());
 
     if(IsCrypted()) {
         if (!IsLocked()) { //if we have password
 
             CKeyingMaterial kmSeed(seed.begin(), seed.end());
-            vector<unsigned char> vchSeedSecret;
+            std::vector<unsigned char> vchSeedSecret;
 
             //attempt encrypt
             if (EncryptSecret(vMasterKey, kmSeed, hashSeed, vchSeedSecret)) {
@@ -628,11 +559,11 @@ bool CCryptoKeyStore::GetDeterministicSeed(const uint256& hashSeed, uint256& see
 {
 
     CWalletDB db(pwalletMain->strWalletFile);
-    string strErr;
+    std::string strErr;
     if (IsCrypted()) {
         if(!IsLocked()) { //if we have password
 
-            vector<unsigned char> vchCryptedSeed;
+            std::vector<unsigned char> vchCryptedSeed;
             //read encrypted seed
             if (db.ReadZPHRSeed(hashSeed, vchCryptedSeed)) {
                 uint256 seedRetrieved = uint256(ReverseEndianString(HexStr(vchCryptedSeed)));
@@ -653,7 +584,7 @@ bool CCryptoKeyStore::GetDeterministicSeed(const uint256& hashSeed, uint256& see
             } else { strErr = "read seed from wallet"; }
         } else { strErr = "read seed; wallet is locked"; }
     } else {
-        vector<unsigned char> vchSeed;
+        std::vector<unsigned char> vchSeed;
         // wallet not crypted
         if (db.ReadZPHRSeed(hashSeed, vchSeed)) {
             seedOut = uint256(ReverseEndianString(HexStr(vchSeed)));
