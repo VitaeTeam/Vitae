@@ -49,39 +49,6 @@ enum DBErrors {
     DB_NEED_REWRITE
 };
 
-
-// todo: remove this later
-/* simple hd chain data model
-class CHDChain
-{
-public:
-    uint32_t nExternalChainCounter;
-    CKeyID masterKeyID; //!< master key hash160
-
-    static const int CURRENT_VERSION = 1;
-    int nVersion;
-
-    CHDChain() { SetNull(); }
-    ADD_SERIALIZE_METHODS;
-    template <typename Stream, typename Operation>
-    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
-    {
-        READWRITE(this->nVersion);
-        nVersion = this->nVersion;
-        READWRITE(nExternalChainCounter);
-        READWRITE(masterKeyID);
-    }
-
-    void SetNull()
-    {
-        nVersion = CHDChain::CURRENT_VERSION;
-        nExternalChainCounter = 0;
-        masterKeyID.SetNull();
-    }
-};
-*/
-
-
 class CKeyMetadata
 {
 public:

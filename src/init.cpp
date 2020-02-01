@@ -1653,7 +1653,8 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
                 strErrors << _("Error loading wallet.dat") << "\n";
         }
 
-        if (GetBoolArg("-upgradewallet", fFirstRun)) {
+        int prev_version = pwalletMain->GetVersion();
+        if (GetBoolArg("-upgradewallet", fFirstRun) || (words.size() !=0 && !pwalletMain->IsHDEnabled() && CheckIfWalletDatExists())) {
             int nMaxVersion = GetArg("-upgradewallet", 0);
             if (nMaxVersion == 0) // the -upgradewallet without argument case
             {
@@ -1673,7 +1674,6 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
             if (GetArg("-mnemonicpassphrase", "").size() > 256)
                 return InitError(_("Mnemonic passphrase is too long, must be at most 256 characters"));
             // generate a new master key
-            InitError(_("test 2"));;
             pwalletMain->GenerateNewHDChain(words);
             // ensure this wallet.dat can only be opened by clients supporting HD
             pwalletMain->SetMinVersion(FEATURE_HD);

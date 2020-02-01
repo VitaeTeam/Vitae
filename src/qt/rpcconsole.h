@@ -14,6 +14,7 @@
 #include <QCompleter>
 
 class ClientModel;
+class WalletModel;
 class RPCTimerInterface;
 
 namespace Ui
@@ -36,6 +37,7 @@ public:
     ~RPCConsole();
 
     void setClientModel(ClientModel* model);
+    void setWalletModel(WalletModel* walletModel);
 
     enum MessageClass {
         MC_ERROR,
@@ -80,6 +82,7 @@ public slots:
     void walletUpgrade();
     void walletReindex();
     void walletResync();
+    void walletUpgradeToHd();
 
     void reject();
     void message(int category, const QString& message, bool html = false);
@@ -146,6 +149,7 @@ private:
 
     Ui::RPCConsole* ui;
     ClientModel* clientModel;
+    WalletModel* walletModel;
     QStringList history;
     int historyPtr;
     NodeId cachedNodeid;

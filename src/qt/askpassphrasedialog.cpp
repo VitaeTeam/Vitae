@@ -96,7 +96,6 @@ AskPassphraseDialog::~AskPassphraseDialog()
 
 void AskPassphraseDialog::accept()
 {
-    SecureString oldpass, newpass1, newpass2;
     if (!model)
         return;
     oldpass.reserve(MAX_PASSPHRASE_SIZE);

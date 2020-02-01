@@ -6,6 +6,7 @@
 #define BITCOIN_QT_ASKPASSPHRASEDIALOG_H
 
 #include <QDialog>
+#include "allocators.h"
 
 class WalletModel;
 
@@ -33,12 +34,14 @@ public:
     ~AskPassphraseDialog();
 
     void accept();
+    SecureString getPassword() { return oldpass; }
 
 private:
     Ui::AskPassphraseDialog* ui;
     Mode mode;
     WalletModel* model;
     bool fCapsLock;
+    SecureString oldpass, newpass1, newpass2;
 
 private slots:
     void textChanged();
