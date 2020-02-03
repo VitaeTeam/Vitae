@@ -115,7 +115,7 @@ HEADERS += src/activemasternode.h \
            src/pubkey.h \
            src/random.h \
            src/rpcclient.h \
-           src/rpcprotocol.h \
+           src/rpc/protocol.h \
            src/rpcserver.h \
            src/serialize.h \
            src/spork.h \
