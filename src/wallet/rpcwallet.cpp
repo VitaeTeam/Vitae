@@ -2721,7 +2721,8 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
             "  \"keypoolsize_hd_internal\": xxxx,   (numeric) how many new keys are pre-generated for internal use (used for change outputs, only appears if the wallet is using this feature, otherwise external keys are used)\n"
             "  \"unlocked_until\": ttt,             (numeric) the UNIX epoch time until which the wallet is unlocked for transfers, or 0 if the wallet is locked\n"
             "  \"unlocked_until\": ttt,                   (numeric) the timestamp in seconds since epoch (midnight Jan 1 1970 GMT) that the wallet is unlocked for transfers, or 0 if the wallet is locked\n"
-            "  \"paytxfee\": x.xxxx,                      (numeric) the transaction fee configuration, set in VIT/kB\n"
+            "  \"paytxfee\": x.xxxx                       (numeric) the transaction fee configuration, set in VIT/kB\n"
+            "  \"hdseedid\": \"<hash160>\"            (string, optional) the Hash160 of the HD seed (only present when HD is enabled)\n"
             "}\n"
 
             "\nExamples:\n" +
@@ -2744,6 +2745,13 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
     size_t kpExternalSize = pwalletMain->KeypoolCountExternalKeys();
     obj.pushKV("keypoolsize", (int64_t)kpExternalSize);
 
+    ScriptPubKeyMan* spk_man = pwalletMain->GetScriptPubKeyMan();
+    if (spk_man) {
+        const CKeyID& seed_id = spk_man->GetHDChain().GetID();
+        if (!seed_id.IsNull()) {
+            obj.pushKV("hdseedid", seed_id.GetHex());
+        }
+    }
     if (pwalletMain->CanSupportFeature(FEATURE_HD_SPLIT)) {
         obj.pushKV("keypoolsize_hd_internal",   (int64_t)(pwalletMain->GetKeyPoolSize() - kpExternalSize));
     }
