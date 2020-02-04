@@ -116,6 +116,7 @@ BITCOIN_CORE_H = \
   kernel.h \
   swifttx.h \
   key.h \
+  key_io.h \
   keystore.h \
   leveldbwrapper.h \
   limitedmap.h \
@@ -399,6 +400,7 @@ libbitcoin_common_a_SOURCES = \
   hash.cpp \
   invalid.cpp \
   key.cpp \
+  key_io.cpp \
   keystore.cpp \
   netbase.cpp \
   protocol.cpp \
