@@ -1242,7 +1242,7 @@ CAmount CWalletTx::GetCredit(const isminefilter& filter) const
 CAmount CWalletTx::GetImmatureCredit(bool fUseCache, const isminefilter& filter) const
 {
     LOCK(cs_main);
-    if (GetBlocksToMaturity() > 0 && IsInMainChain()) {
+    if (IsInMainChainImmature()) {
         if (fUseCache && fImmatureCreditCached && filter == ISMINE_SPENDABLE_ALL)
             return nImmatureCreditCached;
         nImmatureCreditCached = pwallet->GetCredit(*this, filter);
@@ -1350,7 +1350,7 @@ CAmount CWalletTx::GetLockedCredit() const
 CAmount CWalletTx::GetImmatureWatchOnlyCredit(const bool& fUseCache) const
 {
     LOCK(cs_main);
-    if (IsCoinBase() && GetBlocksToMaturity() > 0 && IsInMainChain()) {
+    if (IsInMainChainImmature()) {
         if (fUseCache && fImmatureWatchCreditCached)
             return nImmatureWatchCreditCached;
         nImmatureWatchCreditCached = pwallet->GetCredit(*this, ISMINE_WATCH_ONLY);
@@ -3789,6 +3789,12 @@ int CMerkleTx::SetMerkleBranch(const CBlock& block)
     return chainActive.Height() - pindex->nHeight + 1;
 }
 
+int CMerkleTx::GetDepthInMainChain(bool enableIX) const
+{
+    const CBlockIndex* pindexRet;
+    return GetDepthInMainChain(pindexRet, enableIX);
+}
+
 int CMerkleTx::GetDepthInMainChain(const CBlockIndex*& pindexRet, bool enableIX) const
 {
     if (hashUnset())
@@ -3830,6 +3836,18 @@ int CMerkleTx::GetBlocksToMaturity() const
     if (!(IsCoinBase() || IsCoinStake()))
         return 0;
     return std::max(0, (Params().COINBASE_MATURITY() + 1) - GetDepthInMainChain());
+}
+
+bool CMerkleTx::IsInMainChain() const
+{
+    return GetDepthInMainChain(false) > 0;
+}
+
+bool CMerkleTx::IsInMainChainImmature() const
+{
+    if (!IsCoinBase() && !IsCoinStake()) return false;
+    const int depth = GetDepthInMainChain(false);
+    return (depth > 0 && depth <= Params().COINBASE_MATURITY());
 }
 
 
