@@ -104,7 +104,6 @@ void CBlockIndex::SetNull()
     // Start supply of each denomination with 0s
     for (auto& denom : libzerocoin::zerocoinDenomList)
         mapZerocoinSupply.insert(std::make_pair(denom, 0));
-    vMintDenominationsInBlock.clear();
 }
 
 std::string CBlockIndex::ToString() const
@@ -288,7 +287,3 @@ int64_t CBlockIndex::GetZcMintsAmount(libzerocoin::CoinDenomination denom) const
     return libzerocoin::ZerocoinDenominationToAmount(denom) * GetZcMints(denom);
 }
 
-bool CBlockIndex::MintedDenomination(libzerocoin::CoinDenomination denom) const
-{
-    return std::find(vMintDenominationsInBlock.begin(), vMintDenominationsInBlock.end(), denom) != vMintDenominationsInBlock.end();
-}

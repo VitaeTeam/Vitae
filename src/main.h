@@ -295,8 +295,6 @@ bool IsTransactionInChain(const uint256& txId, int& nHeightTx);
 bool IsBlockHashInChain(const uint256& hashBlock);
 bool ValidOutPoint(const COutPoint& out, int nHeight);
 void AddWrappedSerialsInflation();
-void RecalculateZVITSpent();
-void RecalculateZVITMinted();
 bool RecalculateVITSupply(int nHeightStart);
 
 // Fake Serial attack Range

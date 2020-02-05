@@ -1565,11 +1565,7 @@ bool AppInit2()
                     AddWrappedSerialsInflation();
 
                 // Recalculate money supply for blocks that are impacted by accounting issue after zerocoin activation
-                if (GetBoolArg("-reindexmoneysupply", false)) {
-                    if (chainActive.Height() > Params().Zerocoin_StartHeight()) {
-                        RecalculateZVITMinted();
-                        RecalculateZVITSpent();
-                    }
+                if (GetBoolArg("-reindexmoneysupply", false) || reindexZerocoin) {
                     // Recalculate from the zerocoin activation or from scratch.
                     RecalculateVITSupply(reindexZerocoin ? Params().Zerocoin_StartHeight() : 1);
                 }
