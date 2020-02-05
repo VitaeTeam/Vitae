@@ -254,7 +254,6 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
                 pindexNew->vMintDenominationsInBlock = diskindex.vMintDenominationsInBlock;
 
                 //Proof Of Stake
-                pindexNew->nMint = diskindex.nMint;
                 pindexNew->nMoneySupply = diskindex.nMoneySupply;
                 pindexNew->nFlags = diskindex.nFlags;
                 pindexNew->vStakeModifier = diskindex.vStakeModifier;
