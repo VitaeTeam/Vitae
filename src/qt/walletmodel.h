@@ -203,8 +203,6 @@ public:
     bool createZvitSpend(
             CWalletTx &wtxNew,
             std::vector<CZerocoinMint> &vMintsSelected,
-            bool fMintChange,
-            bool fMinimizeChange,
             CZerocoinSpendReceipt &receipt,
             std::list<std::pair<CBitcoinAddress*, CAmount>> outputs,
             std::string changeAddress = ""
@@ -212,8 +210,6 @@ public:
 
     bool sendZvit(
             std::vector<CZerocoinMint> &vMintsSelected,
-            bool fMintChange,
-            bool fMinimizeChange,
             CZerocoinSpendReceipt &receipt,
             std::list<std::pair<CBitcoinAddress*, CAmount>> outputs,
             std::string changeAddress = ""
@@ -222,8 +218,6 @@ public:
     bool convertBackZvit(
             CAmount value,
             std::vector<CZerocoinMint> &vMintsSelected,
-            bool fMintChange,
-            bool fMinimizeChange,
             CZerocoinSpendReceipt &receipt
     );
 

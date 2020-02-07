@@ -920,7 +920,7 @@ bool BackupWallet(const CWallet& wallet, const boost::filesystem::path& strDest,
         if(!pathWithFile.empty()) {
             if(!pathWithFile.has_extension()) {
                 pathCustom = pathWithFile;
-                pathWithFile /= wallet.GetUniqueWalletBackupName(false);
+                pathWithFile /= wallet.GetUniqueWalletBackupName();
             } else {
                 pathCustom = pathWithFile.parent_path();
             }

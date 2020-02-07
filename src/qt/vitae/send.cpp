@@ -452,8 +452,6 @@ bool SendWidget::sendZvit(QList<SendCoinsRecipient> recipients){
 
     if (walletModel->sendZvit(
             vMintsSelected,
-            true,
-            true,
             receipt,
             outputs,
             changeAddress

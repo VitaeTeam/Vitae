@@ -574,10 +574,6 @@ std::string HelpMessage(HelpMessageMode mode)
 
 
     strUsage += HelpMessageGroup(_("Zerocoin options:"));
-#ifdef ENABLE_WALLET
-    strUsage += HelpMessageOpt("-backupzvit=<n>", strprintf(_("Enable automatic wallet backups triggered after each zVIT minting (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-zvitbackuppath=<dir|file>", _("Specify custom backup path to add a copy of any automatic zVIT backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup. If backuppath is set as well, 4 backups will happen"));
-#endif // ENABLE_WALLET
     strUsage += HelpMessageOpt("-reindexzerocoin=<n>", strprintf(_("Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)"), 0));
 
     strUsage += HelpMessageGroup(_("SwiftX options:"));
@@ -1760,8 +1756,8 @@ bool AppInit2()
         //Inititalize zVITWallet
         uiInterface.InitMessage(_("Syncing zVIT wallet..."));
 
-        bool fEnableZVitBackups = GetBoolArg("-backupzVit", true);
-        pwalletMain->setZVitAutoBackups(fEnableZVitBackups);
+        //Inititalize zPIVWallet
+        uiInterface.InitMessage(_("Syncing zPIV wallet..."));
 
         //Load zerocoin mint hashes to memory
         pwalletMain->zvitTracker->Init();

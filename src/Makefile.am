@@ -284,6 +284,7 @@ libbitcoin_wallet_a_SOURCES = \
   kernel.cpp \
   wallet.cpp \
   wallet_ismine.cpp \
+  wallet_zerocoin.cpp \
   walletdb.cpp \
   zvit/mintpool.cpp \
   zvit/zvitwallet.cpp \
