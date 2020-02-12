@@ -152,6 +152,7 @@ BITCOIN_CORE_H = \
   rpcserver.h \
   scheduler.h \
   script/interpreter.h \
+  script/keyorigin.h \
   script/script.h \
   script/sigcache.h \
   script/sign.h \
@@ -175,6 +176,7 @@ BITCOIN_CORE_H = \
   ui_interface.h \
   uint256.h \
   undo.h \
+  util/memory.h \
   util.h \
   util/macros.h \
   util/threadnames.h \
@@ -183,6 +185,8 @@ BITCOIN_CORE_H = \
   utiltime.h \
   validationinterface.h \
   version.h \
+  wallet/hdchain.h \
+  wallet/scriptpubkeyman.h \
   wallet.h \
   wallet_ismine.h \
   walletdb.h \
@@ -287,6 +291,8 @@ libbitcoin_wallet_a_SOURCES = \
   zvit/zerocoin.cpp \
   wallet/rpcwallet.cpp \
   kernel.cpp \
+  wallet/hdchain.cpp \
+  wallet/scriptpubkeyman.cpp \
   wallet.cpp \
   wallet_ismine.cpp \
   wallet_zerocoin.cpp \
