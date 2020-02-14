@@ -226,10 +226,10 @@ QT_TRANSLATE_NOOP("phore-core", ""
 QT_TRANSLATE_NOOP("phore-core", ""
 "You must specify a masternodeprivkey in the configuration. Please see "
 "documentation for help."),
-QT_TRANSLATE_NOOP("phore-core", "(11771 could be used only on mainnet)"),
+QT_TRANSLATE_NOOP("phore-core", "(11881 could be used only on mainnet)"),
 QT_TRANSLATE_NOOP("phore-core", "(default: %s)"),
 QT_TRANSLATE_NOOP("phore-core", "(default: 1)"),
-QT_TRANSLATE_NOOP("phore-core", "(must be 11771 for mainnet)"),
+QT_TRANSLATE_NOOP("phore-core", "(must be 11881 for mainnet)"),
 QT_TRANSLATE_NOOP("phore-core", "<category> can be:"),
 QT_TRANSLATE_NOOP("phore-core", "Accept command line and JSON-RPC commands"),
 QT_TRANSLATE_NOOP("phore-core", "Accept connections from outside (default: 1 if no -proxy or -connect)"),
