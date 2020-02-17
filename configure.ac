@@ -344,7 +344,7 @@ case $host in
      fi
 
      AX_CHECK_LINK_FLAG([[-Wl,-headerpad_max_install_names]], [LDFLAGS="$LDFLAGS -Wl,-headerpad_max_install_names"])
-     CPPFLAGS="$CPPFLAGS -DMAC_OSX"
+     CPPFLAGS="$CPPFLAGS -DMAC_OSX -DOBJC_OLD_DISPATCH_PROTOTYPES=0"
      ;;
    *linux*)
      TARGET_OS=linux
@@ -793,12 +793,13 @@ else
 fi
 
 AC_CHECK_LIB([crypto],[RAND_egd],[],[
-  AC_ARG_WITH([libressl],
-    [AS_HELP_STRING([--with-libressl],[Build with system LibreSSL (default is no; DANGEROUS; NOT SUPPORTED)])],
-    [AC_MSG_WARN([Detected LibreSSL: This is NOT supported, and may break consensus compatibility!])],
-    [AC_MSG_ERROR([Detected LibreSSL: This is NOT supported, and may break consensus compatibility!])]
+  AC_ARG_WITH([unsupported-ssl],
+    [AS_HELP_STRING([--with-unsupported-ssl],[Build with system SSL (default is no; DANGEROUS; NOT SUPPORTED; You should use OpenSSL 1.0)])],
+    [AC_MSG_WARN([Detected unsupported SSL version: This is NOT supported, and may break consensus compatibility! Use '--with-unsupported-ssl' if you don't care])],
+    [AC_MSG_ERROR([Detected unsupported SSL version: This is NOT supported, and may break consensus compatibility! Use '--with-unsupported-ssl' if you don't care])]
   )
 ])
+
 
 dnl univalue check
 
@@ -1065,7 +1066,7 @@ if test x$system_univalue = xno; then
   AC_CONFIG_SUBDIRS([src/univalue])
 fi
 
-ac_configure_args="${ac_configure_args} --disable-shared --with-pic"
+ac_configure_args="${ac_configure_args} --disable-shared --with-pic --enable-module-recovery"
 AC_CONFIG_SUBDIRS([src/secp256k1])
 
 AC_OUTPUT

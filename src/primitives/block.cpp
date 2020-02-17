@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018-2019 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -140,82 +141,52 @@ void CBlock::print() const
 {
     LogPrintf("%s", ToString());
 }
-
-// ppcoin: sign block
-bool CBlock::SignBlock(const CKeyStore& keystore)
+bool CBlock::GetKeyIDFromUTXO(const CTxOut& txout, CKeyID& keyID)
 {
     std::vector<valtype> vSolutions;
     txnouttype whichType;
+    if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+        return false;
+    if (whichType == TX_PUBKEY) {
+        keyID = CPubKey(vSolutions[0]).GetID();
+    } else if (whichType == TX_PUBKEYHASH) {
+        keyID = CKeyID(uint160(vSolutions[0]));
+    }
 
-    if(!IsProofOfStake())
-    {
-        for(unsigned int i = 0; i < vtx[0].vout.size(); i++)
-        {
-            const CTxOut& txout = vtx[0].vout[i];
+    return true;
+}
+bool CBlock::SignBlockWithKey(CBlock& block, const CKey& key)
+{
+    if (!key.Sign(block.GetHash(), block.vchBlockSig))
+        return error("%s: failed to sign block hash with key", __func__);
 
-            if (!Solver(txout.scriptPubKey, whichType, vSolutions))
+    return true;
+}
+
+// ppcoin: sign block
+bool CBlock::SignBlock(CBlock& block, const CKeyStore& keystore)
+{
+    CKeyID keyID;
+    if (block.IsProofOfWork()) {
+        bool fFoundID = false;
+        for (const CTxOut& txout :block.vtx[0].vout) {
+            if (!GetKeyIDFromUTXO(txout, keyID))
                 continue;
-
-            if (whichType == TX_PUBKEY)
-            {
-                // Sign
-                CKeyID keyID;
-                keyID = CKeyID(uint160(vSolutions[0]));
-
-                CKey key;
-                if (!keystore.GetKey(keyID, key))
-                    return false;
-
-                //vector<unsigned char> vchSig;
-                if (!key.Sign(GetHash(), vchBlockSig))
-                     return false;
-
-                return true;
-            }
+            fFoundID = true;
+            break;
         }
-    }
-    else
-    {
-        const CTxOut& txout = vtx[1].vout[1];
-
-        if (!Solver(txout.scriptPubKey, whichType, vSolutions))
-            return false;
-
-        if (whichType == TX_PUBKEYHASH)
-        {
-
-            CKeyID keyID;
-            keyID = CKeyID(uint160(vSolutions[0]));
-
-            CKey key;
-            if (!keystore.GetKey(keyID, key))
-                return false;
-
-            //vector<unsigned char> vchSig;
-            if (!key.Sign(GetHash(), vchBlockSig))
-                 return false;
-
-            return true;
-
-        }
-        else if(whichType == TX_PUBKEY)
-        {
-            CKeyID keyID;
-            keyID = CPubKey(vSolutions[0]).GetID();
-            CKey key;
-            if (!keystore.GetKey(keyID, key))
-                return false;
-
-            //vector<unsigned char> vchSig;
-            if (!key.Sign(GetHash(), vchBlockSig))
-                 return false;
-
-            return true;
-        }
+        if (!fFoundID)
+            return error("%s: failed to find key for PoW", __func__);
+    } else {
+        if (!GetKeyIDFromUTXO(block.vtx[1].vout[1], keyID))
+            return error("%s: failed to find key for PoS", __func__);
     }
 
-    LogPrintf("Sign failed\n");
-    return false;
+    CKey key;
+    if (!keystore.GetKey(keyID, key))
+        return error("%s: failed to get key from keystore", __func__);
+
+    return SignBlockWithKey(block, key);
 }
 
 bool CBlock::CheckBlockSignature() const

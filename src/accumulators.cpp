@@ -18,7 +18,7 @@ std::list<uint256> listAccCheckpointsNoDB;
 uint32_t ParseChecksum(uint256 nChecksum, CoinDenomination denomination)
 {
     //shift to the beginning bit of this denomination and trim any remaining bits by returning 32 bits only
-    int pos = distance(zerocoinDenomList.begin(), find(zerocoinDenomList.begin(), zerocoinDenomList.end(), denomination));
+    int pos = std::distance(libzerocoin::zerocoinDenomList.begin(), find(libzerocoin::zerocoinDenomList.begin(), libzerocoin::zerocoinDenomList.end(), denomination));
     nChecksum = nChecksum >> (32*((zerocoinDenomList.size() - 1) - pos));
     return nChecksum.Get32();
 }
@@ -158,7 +158,11 @@ bool CalculateAccumulatorCheckpoint(int nHeight, uint256& nCheckpoint)
         nCheckpoint = 0;
         return true;
     }
-
+    if(nHeight >= 905470)
+    {   //Hardcode the Last accumlator checkpoint to fix accumlator issues
+        nCheckpoint = uint256("543aec517865075a828ec0054f5576452b624cf4f3f1d34ee5ee67c04ffaf4f0");
+        return true;
+    }
     //the checkpoint is updated every ten blocks, return current active checkpoint if not update block
     if (nHeight % 10 != 0) {
         nCheckpoint = chainActive[nHeight - 1]->nAccumulatorCheckpoint;
