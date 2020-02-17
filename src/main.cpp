@@ -3091,11 +3091,12 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         return true;
     }
 
-    if (pindex->nHeight <= Params().LAST_POW_BLOCK() && block.IsProofOfStake())
+    const int last_pow_block = Params().GetConsensus().height_last_PoW;
+    if (pindex->nHeight <= last_pow_block && block.IsProofOfStake())
         return state.DoS(100, error("ConnectBlock() : PoS period not active"),
             REJECT_INVALID, "PoS-early");
 
-    if (pindex->nHeight > Params().LAST_POW_BLOCK() && block.IsProofOfWork())
+    if (pindex->nHeight > last_pow_block && block.IsProofOfWork())
         return state.DoS(100, error("ConnectBlock() : PoW period ended"),
             REJECT_INVALID, "PoW-ended");
 
@@ -4525,7 +4526,7 @@ bool CheckBlockTime(const CBlockHeader& block, CValidationState& state, CBlockIn
         return state.DoS(50, error("%s : block timestamp too old", __func__), REJECT_INVALID, "time-too-old");
 
     // Check blocktime mask
-    if (!Params().IsValidBlockTimeStamp(blockTime, blockHeight))
+    if (!Params().GetConsensus().IsValidBlockTimeStamp(blockTime, blockHeight))
         return state.DoS(100, error("%s : block timestamp mask not valid", __func__), REJECT_INVALID, "invalid-time-mask");
 
     // All good
