@@ -37,6 +37,7 @@
 #include "undo.h"
 
 #include <algorithm>
+#include <atomic>
 #include <exception>
 #include <map>
 #include <set>
@@ -135,8 +136,8 @@ extern CWaitableCriticalSection g_best_block_mutex;
 extern std::condition_variable g_best_block_cv;
 extern uint256 g_best_block;
 
-extern bool fImporting;
-extern bool fReindex;
+extern std::atomic<bool> fImporting;
+extern std::atomic<bool> fReindex;
 extern int nScriptCheckThreads;
 extern bool fTxIndex;
 extern bool fIsBareMultisigStd;
