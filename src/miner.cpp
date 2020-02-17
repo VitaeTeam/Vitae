@@ -524,7 +524,7 @@ CBlockTemplate* CreateNewBlockWithKey(CReserveKey& reservekey, CWallet* pwallet)
     if ((nHeightNext > nLastPOWBlock)) {
         LogPrintf("%s: Aborting PoW block creation during PoS phase\n", __func__);
         // sleep 1/2 a block time so we don't go into a tight loop.
-        MilliSleep((Params().TargetSpacing() * 1000) >> 1);
+        MilliSleep((Params().GetConsensus().nTargetSpacing * 1000) >> 1);
         return nullptr;
     }
 
@@ -588,6 +588,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
     LogPrintf("VITAEMiner started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
     RenameThread("vitae-miner");
+    const int64_t nSpacingMillis = Params().GetConsensus().nTargetSpacing * 1000;
 
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
@@ -596,13 +597,13 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
     while (fGenerateBitcoins || fProofOfStake) {
         CBlockIndex* pindexPrev = GetChainTip();
         if (!pindexPrev) {
-            MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
+            MilliSleep(nSpacingMillis);       // sleep a block
             continue;
         }
         if (fProofOfStake) {
             if (pindexPrev->nHeight < Params().LAST_POW_BLOCK()) {
                 // The last PoW block hasn't even been mined yet.
-                MilliSleep(Params().TargetSpacing() * 1000);       // sleep a block
+                MilliSleep(nSpacingMillis);       // sleep a block
                 continue;
             }
 
