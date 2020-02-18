@@ -537,6 +537,8 @@ RES_ICONS = \
   qt/vitae/res/img/dark/ic-transaction-cs-contract-inactive.svg \
   qt/vitae/res/img/img-qr.svg \
   qt/vitae/res/img/ic-check-connect-off.svg \
+  qt/vitae/res/img/ic-check-tor-off.svg \
+  qt/vitae/res/img/ic-check-tor.svg \
   qt/vitae/res/img/ic-label.svg \
   qt/vitae/res/img/ic-transaction-received.svg \
   qt/vitae/res/img/dark/ic-transaction-received.svg \
