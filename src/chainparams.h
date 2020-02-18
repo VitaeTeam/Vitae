@@ -57,29 +57,18 @@ public:
 
     const CBlock& GenesisBlock() const { return genesis; }
     const std::vector<unsigned char>& AlertKey() const { return vAlertPubKey; }
-    /** Used to check majorities for block version upgrade */
-    int EnforceBlockUpgradeMajority() const { return nEnforceBlockUpgradeMajority; }
-    int RejectBlockOutdatedMajority() const { return nRejectBlockOutdatedMajority; }
-    int ToCheckBlockUpgradeMajority() const { return nToCheckBlockUpgradeMajority; }
-    int MaxReorganizationDepth() const { return nMaxReorganizationDepth; }
 
     /** Used if GenerateBitcoins is called with a negative number of threads */
     int DefaultMinerThreads() const { return nMinerThreads; }
     /** Make miner wait to have peers to avoid wasting work */
-    bool MiningRequiresPeers() const { return fMiningRequiresPeers; }
+    bool MiningRequiresPeers() const { return !IsRegTestNet(); }
     /** Headers first syncing is disabled */
-    bool HeadersFirstSyncingActive() const { return fHeadersFirstSyncingActive; };
+    bool HeadersFirstSyncingActive() const { return false; };
     /** Default value for -checkmempool and -checkblockindex argument */
     bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
-    /** Skip proof-of-work check: allow mining of any difficulty block */
-    bool SkipProofOfWorkCheck() const { return fSkipProofOfWorkCheck; }
-    /** Make standard checks */
-    bool RequireStandard() const { return fRequireStandard; }
 
     /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
     int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
-    /** In the future use NetworkIDString() for RPC fields */
-    bool TestnetToBeDeprecatedFieldRPC() const { return fTestnetToBeDeprecatedFieldRPC; }
     /** Return the BIP70 network string (main, test or regtest) */
     std::string NetworkIDString() const { return strNetworkID; }
     const std::vector<CDNSSeedData>& DNSSeeds() const { return vSeeds; }
@@ -88,17 +77,9 @@ public:
     virtual const Checkpoints::CCheckpointData& Checkpoints() const = 0;
 
     int64_t StartFundamentalnodePayments() const { return nStartFundamentalnodePayments; }
-    CAmount GetMinColdStakingAmount() const { return nMinColdStakingAmount; }
 
     CBaseChainParams::Network NetworkID() const { return networkID; }
     bool IsRegTestNet() const { return NetworkID() == CBaseChainParams::REGTEST; }
-
-    /** Height or Time Based Activations **/
-    int VitaeBadBlockTime() const { return nVitaeBadBlockTime; }
-    int VitaeBadBlocknBits() const { return nVitaeBadBlocknBits; }
-
-    CAmount InvalidAmountFiltered() const { return nInvalidAmountFiltered; };
-
 
 protected:
     CChainParams() {}
@@ -108,32 +89,14 @@ protected:
     CBlock genesis;
     Consensus::Params consensus;
     MessageStartChars pchMessageStart;
-    //! Raw pub key bytes for the broadcast alert signing key.
     std::vector<unsigned char> vAlertPubKey;
     int nDefaultPort;
-    int nMaxReorganizationDepth;
-    int nEnforceBlockUpgradeMajority;
-    int nRejectBlockOutdatedMajority;
-    int nToCheckBlockUpgradeMajority;
-    int nFundamentalnodeCountDrift;
-    int64_t nVitaeBadBlockTime;
-    unsigned int nVitaeBadBlocknBits;
-    int nMaturity;
-
     int nMinerThreads;
+    int nFundamentalnodeCountDrift;
     std::vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
     std::vector<CAddress> vFixedSeeds;
-    bool fMiningRequiresPeers;
-    bool fDefaultConsistencyChecks;
-    bool fRequireStandard;
-    bool fSkipProofOfWorkCheck;
-    bool fTestnetToBeDeprecatedFieldRPC;
-    bool fHeadersFirstSyncingActive;
     int64_t nStartFundamentalnodePayments;
-    CAmount nInvalidAmountFiltered;
-
-    CAmount nMinColdStakingAmount;
 };
 
 /**

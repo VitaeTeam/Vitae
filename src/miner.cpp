@@ -616,7 +616,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                 fStakeableCoins = pwallet->StakeableCoins();
             }
 
-            while (vNodes.empty() || pwallet->IsLocked() || !fStakeableCoins ||
+            while ((vNodes.empty() && Params().MiningRequiresPeers()) || pwallet->IsLocked() || !fStakeableCoins ||
                     fundamentalnodeSync.NotCompleted()) {
                 MilliSleep(5000);
                 // Do a separate 1 minute check here to ensure fStakeableCoins is updated
