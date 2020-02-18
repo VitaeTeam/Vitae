@@ -381,8 +381,6 @@ public:
 
         nDefaultPort = 51474;
 
-        nMinerThreads = 0;
-
         vFixedSeeds.clear();
         vSeeds.clear();
         vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
@@ -513,8 +511,6 @@ public:
         pchMessageStart[2] = 0x7e;
         pchMessageStart[3] = 0xac;
         nDefaultPort = 51476;
-
-        nMinerThreads = 1;
 
         vFixedSeeds.clear(); //! Testnet mode doesn't have any fixed seeds.
         vSeeds.clear();      //! Testnet mode doesn't have any DNS seeds.
