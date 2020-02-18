@@ -179,6 +179,9 @@ public:
         consensus.height_start_ZC_SerialsV2 = 99999999;
         consensus.height_ZC_RecalcAccumulators = 908000;
 
+        // Zerocoin-related params
+        consensus.ZC_WrappedSerialsSupply = 4131563 * COIN;   // zerocoin supply at height_last_ZC_WrappedSerials
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -352,6 +355,9 @@ public:
         consensus.height_start_ZC_SerialsV2 = 444020;
         consensus.height_ZC_RecalcAccumulators = 999999999;
 
+        // Zerocoin-related params
+        consensus.ZC_WrappedSerialsSupply = 0;   // WrappedSerials only on main net
+
         /**
          * The message start string is designed to be unlikely to occur in normal data.
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
@@ -378,9 +384,6 @@ public:
         nInvalidAmountFiltered = 0; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nEnforceNewSporkKey = 1566860400; //!> Sporks signed after Monday, August 26, 2019 11:00:00 PM GMT must use the new spork key
         nRejectOldSporkKey = 1569538800; //!> Reject old spork key after Thursday, September 26, 2019 11:00:00 PM GMT
-
-        // Fake Serial Attack
-        nSupplyBeforeFakeSerial = 0;
 
         vFixedSeeds.clear();
         vSeeds.clear();
@@ -469,6 +472,9 @@ public:
         consensus.height_start_ZC_SerialRangeCheck = 300;
         consensus.height_start_ZC_SerialsV2 = 300;
         consensus.height_ZC_RecalcAccumulators = 999999999;
+
+        // Zerocoin-related params
+        consensus.ZC_WrappedSerialsSupply = 0;   // WrappedSerials only on main net
 
 
         /**

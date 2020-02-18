@@ -108,7 +108,6 @@ public:
     bool IsRegTestNet() const { return NetworkID() == CBaseChainParams::REGTEST; }
 
     /** Zerocoin **/
-    std::string Zerocoin_Modulus() const { return zerocoinModulus; }
     libzerocoin::ZerocoinParams* Zerocoin_Params(bool useModulusV1) const;
     int Zerocoin_MaxSpendsPerTransaction() const { return nMaxZerocoinSpendsPerTransaction; }
     int Zerocoin_MaxPublicSpendsPerTransaction() const { return nMaxZerocoinPublicSpendsPerTransaction; }
@@ -123,9 +122,6 @@ public:
     int VitaeBadBlockTime() const { return nVitaeBadBlockTime; }
     int VitaeBadBlocknBits() const { return nVitaeBadBlocknBits; }
     int Zerocoin_StartTime() const { return nZerocoinStartTime; }
-
-    // fake serial attack
-    CAmount GetSupplyBeforeFakeSerial() const { return nSupplyBeforeFakeSerial; }
 
     CAmount InvalidAmountFiltered() const { return nInvalidAmountFiltered; };
 
@@ -185,9 +181,6 @@ protected:
     int64_t nProposalEstablishmentTime;
 
     CAmount nMinColdStakingAmount;
-
-    // fake serial attack
-    CAmount nSupplyBeforeFakeSerial = 0;
 };
 
 /**
