@@ -281,7 +281,7 @@ public:
 
     void InitCollateralAddress()
     {
-        SetCollateralAddress(Params().ObfuscationPoolDummyAddress());
+        SetCollateralAddress(Params().GetConsensus().strObfuscationPoolDummyAddress);
     }
 
     bool SetCollateralAddress(std::string strAddress);
@@ -332,7 +332,7 @@ public:
     /// Get the maximum number of transactions for the pool
     int GetMaxPoolTransactions()
     {
-        return Params().PoolMaxTransactions();
+        return Params().GetConsensus().nPoolMaxTransactions;
     }
 
     /// Check for process in Obfuscation

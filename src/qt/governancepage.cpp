@@ -83,6 +83,18 @@ void GovernancePage::updateProposalList()
     std::vector<CBudgetProposal*> proposalsList = budget.GetAllProposals();
     std::sort (proposalsList.begin(), proposalsList.end(), sortProposalsByVotes());
     int nRow = 0;
+    CBlockIndex* pindexPrev;
+    {
+        LOCK(cs_main);
+        pindexPrev = chainActive.Tip();
+    }
+    if (!pindexPrev) return;
+    const int nBlocksPerCycle = Params().GetConsensus().nBudgetCycleBlocks;
+    int nBlockStart = pindexPrev->nHeight - pindexPrev->nHeight % nBlocksPerCycle + nBlocksPerCycle;
+    int nBlocksLeft = nBlockStart - pindexPrev->nHeight;
+    int nBlockEnd = nBlockStart + nBlocksPerCycle - 1;
+    int mnCount = mnodeman.CountEnabled(ActiveProtocol());
+
     for (CBudgetProposal* pbudgetProposal : proposalsList) {
         if (!pbudgetProposal->fValid) continue;
         if (pbudgetProposal->GetRemainingPaymentCount() < 1) continue;
