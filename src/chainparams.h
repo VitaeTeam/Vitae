@@ -129,6 +129,9 @@ public:
 protected:
     CChainParams() {}
 
+    CBaseChainParams::Network networkID;
+    std::string strNetworkID;
+    CBlock genesis;
     Consensus::Params consensus;
     MessageStartChars pchMessageStart;
     //! Raw pub key bytes for the broadcast alert signing key.
@@ -148,9 +151,6 @@ protected:
     int nMinerThreads;
     std::vector<CDNSSeedData> vSeeds;
     std::vector<unsigned char> base58Prefixes[MAX_BASE58_TYPES];
-    CBaseChainParams::Network networkID;
-    std::string strNetworkID;
-    CBlock genesis;
     std::vector<CAddress> vFixedSeeds;
     bool fMiningRequiresPeers;
     bool fDefaultConsistencyChecks;
