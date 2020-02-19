@@ -73,6 +73,7 @@ RPC Changes
 
 The following commands have been removed from the RPC interface:
 - `createrawzerocoinstake`
+- `getmintsinblocks`
 
 
 ### Newly introduced commands
