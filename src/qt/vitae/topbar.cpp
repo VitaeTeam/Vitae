@@ -41,7 +41,7 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
     ui->containerTop->setProperty("cssClass", "container-top");
 #endif
 
-    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitle2, ui->labelTitle3, ui->labelTitle4, ui->labelTitle5, ui->labelTitle6};
+    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitleAvailablezPiv, ui->labelTitle3, ui->labelTitle4, ui->labelTitlePendingzPiv, ui->labelTitleImmaturezPiv};
     setCssProperty(lblTitles, "text-title-topbar");
     QFont font;
     font.setWeight(QFont::Light);
@@ -50,7 +50,7 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
     // Amount information top
     ui->widgetTopAmount->setVisible(false);
     setCssProperty({ui->labelAmountTopVit, ui->labelAmountTopzVit}, "amount-small-topbar");
-    setCssProperty({ui->labelAmountVit, ui->labelAmountzVit}, "amount-topbar");
+    setCssProperty({ui->labelAmountVit, ui->labelAvailablezPiv}, "amount-topbar");
     setCssProperty({ui->labelPendingVit, ui->labelPendingzVit, ui->labelImmatureVit, ui->labelImmaturezVit}, "amount-small-topbar");
 
     // Progress Sync
@@ -479,7 +479,7 @@ void TopBar::setNumBlocks(int count) {
     ui->pushButtonSync->setButtonText(tr(text.data()));
 }
 
-void TopBar::loadWalletModel(){
+void TopBar::loadWalletModel() {
     connect(walletModel, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
             SLOT(updateBalances(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
     connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
@@ -540,8 +540,7 @@ void TopBar::refreshStatus(){
     updateStyle(ui->pushButtonLock);
 }
 
-void TopBar::updateDisplayUnit()
-{
+void TopBar::updateDisplayUnit() {
     if (walletModel && walletModel->getOptionsModel()) {
         int displayUnitPrev = nDisplayUnit;
         nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
@@ -556,7 +555,7 @@ void TopBar::updateDisplayUnit()
 void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                             const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                             const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance,
-                            const CAmount& delegatedBalance, const CAmount& coldStakedBalance){
+                            const CAmount& delegatedBalance, const CAmount& coldStakedBalance) {
 
     // Locked balance. //TODO move this to the signal properly in the future..
     CAmount nLockedBalance = 0;
@@ -571,20 +570,31 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
 
     // Set
-    QString totalVit = GUIUtil::formatBalance(vitAvailableBalance, nDisplayUnit);
+    QString totalVit = GUIUtil::formatBalance(pivAvailableBalance, nDisplayUnit);
     QString totalzVit = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
+
+    // PIV
     // Top
     ui->labelAmountTopVit->setText(totalVit);
-    ui->labelAmountTopzVit->setText(totalzVit);
-
     // Expanded
     ui->labelAmountVit->setText(totalVit);
-    ui->labelAmountzVit->setText(totalzVit);
-
     ui->labelPendingVit->setText(GUIUtil::formatBalance(unconfirmedBalance, nDisplayUnit));
-    ui->labelPendingzVit->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
-
     ui->labelImmatureVit->setText(GUIUtil::formatBalance(immatureBalance, nDisplayUnit));
+
+    // Update display state and/or values for zPIV balances as necessary
+    bool fHaveZerocoins = zerocoinBalance > 0;
+
+    // Set visibility of zPIV label titles/values
+    ui->typeSpacerTop->setVisible(fHaveZerocoins);
+    ui->typeSpacerExpanded->setVisible(fHaveZerocoins);
+    ui->labelAmountTopzVit->setVisible(fHaveZerocoins);
+    ui->zerocoinBalances->setVisible(fHaveZerocoins);
+
+    // Top
+    ui->labelAmountTopzVit->setText(totalzVit);
+    // Expanded
+    ui->labelAvailablezVit->setText(totalzVit);
+    ui->labelPendingzVit->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
     ui->labelImmaturezVit->setText(GUIUtil::formatBalance(immatureZerocoinBalance, nDisplayUnit, true));
 }
 
