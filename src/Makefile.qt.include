@@ -56,6 +56,7 @@ QT_FORMS_UI = \
   qt/vitae/forms/privacywidget.ui \
   qt/vitae/forms/coldstakingwidget.ui \
   qt/vitae/settings/forms/settingsbackupwallet.ui \
+  qt/vitae/settings/forms/settingsexportcsv.ui \
   qt/vitae/settings/forms/settingsbittoolwidget.ui \
   qt/vitae/settings/forms/settingsconsolewidget.ui \
   qt/vitae/settings/forms/settingsdisplayoptionswidget.ui \
@@ -157,6 +158,7 @@ QT_MOC_CPP = \
   qt/vitae/moc_privacywidget.cpp \
   qt/vitae/moc_coldstakingwidget.cpp \
   qt/vitae/settings/moc_settingsbackupwallet.cpp \
+  qt/vitae/settings/moc_settingsexportcsv.cpp \
   qt/vitae/settings/moc_settingsbittoolwidget.cpp \
   qt/vitae/settings/moc_settingsconsolewidget.cpp \
   qt/vitae/settings/moc_settingsdisplayoptionswidget.cpp \
@@ -292,6 +294,7 @@ BITCOIN_QT_H = \
   qt/vitae/privacywidget.h \
   qt/vitae/coldstakingwidget.h \
   qt/vitae/settings/settingsbackupwallet.h \
+  qt/vitae/settings/settingsexportcsv.h \
   qt/vitae/settings/settingsbittoolwidget.h \
   qt/vitae/settings/settingsconsolewidget.h \
   qt/vitae/settings/settingsdisplayoptionswidget.h \
@@ -682,6 +685,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/privacywidget.cpp \
   qt/vitae/coldstakingwidget.cpp \
   qt/vitae/settings/settingsbackupwallet.cpp \
+  qt/vitae/settings/settingsexportcsv.cpp \
   qt/vitae/settings/settingsbittoolwidget.cpp \
   qt/vitae/settings/settingsconsolewidget.cpp \
   qt/vitae/settings/settingsdisplayoptionswidget.cpp \

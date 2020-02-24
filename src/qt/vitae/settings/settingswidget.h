@@ -8,6 +8,7 @@
 #include <QWidget>
 #include "qt/vitae/pwidget.h"
 #include "qt/vitae/settings/settingsbackupwallet.h"
+#include "qt/vitae/settings/settingsexportcsv.h"
 #include "qt/vitae/settings/settingsbittoolwidget.h"
 #include "qt/vitae/settings/settingssignmessagewidgets.h"
 #include "qt/vitae/settings/settingswalletrepairwidget.h"
@@ -55,6 +56,7 @@ private Q_SLOTS:
     void onConfigurationClicked();
     void onBipToolClicked();
     void onMultisendClicked();
+    void onExportCSVClicked();
 
     // Options
     void onOptionsClicked();
@@ -80,6 +82,7 @@ private:
     Ui::SettingsWidget *ui;
 
     SettingsBackupWallet *settingsBackupWallet;
+    SettingsExportCSV *settingsExportCsvWidget;
     SettingsBitToolWidget *settingsBitToolWidget;
     SettingsSignMessageWidgets *settingsSingMessageWidgets;
     SettingsWalletRepairWidget *settingsWalletRepairWidget;
