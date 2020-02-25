@@ -86,7 +86,7 @@ CBlockIndex* pindexBestHeader = NULL;
 int64_t nTimeBestReceived = 0;
 
 // Best block section
-CWaitableCriticalSection g_best_block_mutex;
+Mutex g_best_block_mutex;
 std::condition_variable g_best_block_cv;
 uint256 g_best_block;
 
@@ -2802,7 +2802,7 @@ static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck()
 {
-    RenameThread("vitae-scriptch");
+    util::ThreadRename("vitae-scriptch");
     scriptcheckqueue.Thread();
 }
 
