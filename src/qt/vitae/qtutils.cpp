@@ -127,6 +127,12 @@ QPixmap encodeToQr(QString str, QString &errorStr, QColor qrColor){
     */
 }
 
+void setFilterAddressBook(QComboBox* filter, SortEdit* lineEdit) {
+    initComboBox(filter, lineEdit);
+    filter->addItem("Receiving", 0);
+    filter->addItem("Contacts", 1);
+}
+
 void setSortTx(QComboBox* filter, SortEdit* lineEdit) {
     // Sort Transactions
     initComboBox(filter, lineEdit);
