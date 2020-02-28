@@ -615,6 +615,7 @@ class CReserveKey
 protected:
     CWallet* pwallet;
     int64_t nIndex;
+    bool internal;
     CPubKey vchPubKey;
 
 public:
