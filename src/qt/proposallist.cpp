@@ -234,14 +234,14 @@ ProposalList::ProposalList(QWidget *parent) :
     QAction *voteYesAction = new QAction(tr("Vote Yes"), this);
     QAction *voteAbstainAction = new QAction(tr("Vote Abstain"), this);
     QAction *voteNoAction = new QAction(tr("Vote No"), this);
-    QAction *copyUrlAction = new QAction(tr("Copy proposal URL"), this);
+    QAction *openUrlAction = new QAction(tr("Visit proposal website"), this);
 
     contextMenu = new QMenu(this);
     contextMenu->addAction(voteYesAction);
     contextMenu->addAction(voteAbstainAction);
     contextMenu->addAction(voteNoAction);
     contextMenu->addSeparator();
-    contextMenu->addAction(copyUrlAction);
+    contextMenu->addAction(openUrlAction);
 
     connect(view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextualMenu(QPoint)));
 
@@ -255,8 +255,6 @@ ProposalList::ProposalList(QWidget *parent) :
     connect(voteYesAction, SIGNAL(triggered()), this, SLOT(voteYes()));
     connect(voteNoAction, SIGNAL(triggered()), this, SLOT(voteNo()));
     connect(voteAbstainAction, SIGNAL(triggered()), this, SLOT(voteAbstain()));
-    connect(copyUrlAction, SIGNAL(triggered()), this, SLOT(copyProposalUrl()));
-
     connect(proposalWidget, SIGNAL(textChanged(QString)), this, SLOT(changedProposal(QString)));
     connect(startDateWidget, SIGNAL(textChanged(QString)), this, SLOT(chooseStartDate(QString)));
     connect(endDateWidget, SIGNAL(textChanged(QString)), this, SLOT(chooseEndDate(QString)));
@@ -267,6 +265,11 @@ ProposalList::ProposalList(QWidget *parent) :
     connect(abstainVotesWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAbstainVotes(QString)));
     connect(amountWidget, SIGNAL(textChanged(QString)), this, SLOT(changedAmount(QString)));
     connect(votesNeededWidget, SIGNAL(textChanged(QString)), this, SLOT(changedVotesNeeded(QString)));
+
+
+    connect(view, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(openProposalUrl()));
+    connect(view, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextualMenu(QPoint)));
+    connect(openUrlAction, SIGNAL(triggered()), this, SLOT(openProposalUrl()));
 
     proposalProxyModel = new ProposalFilterProxy(this);
     proposalProxyModel->setDynamicSortFilter(true);
