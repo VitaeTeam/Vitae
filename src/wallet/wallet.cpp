@@ -2585,7 +2585,7 @@ bool CWallet::CreateCoinStake(
     std::list<std::unique_ptr<CStakeInput> > listInputs;
     for (const COutput &out : vCoins) {
         std::unique_ptr<CVitStake> input(new CVitStake());
-        input->SetInput((CTransaction) *out.tx, out.i);
+        input->SetPrevout((CTransaction) *out.tx, out.i);
         listInputs.emplace_back(std::move(input));
     }
 

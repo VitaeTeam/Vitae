@@ -40,7 +40,7 @@ private:
 public:
     CVitStake(){}
 
-    bool SetInput(CTransaction txPrev, unsigned int n);
+    bool SetPrevout(CTransaction txPrev, unsigned int n);
 
     CBlockIndex* GetIndexFrom() override;
     bool GetTxFrom(CTransaction& tx) const override;
