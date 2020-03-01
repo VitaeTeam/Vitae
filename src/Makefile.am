@@ -112,6 +112,7 @@ BITCOIN_CORE_H = \
   invalid.h \
   invalid_outpoints.json.h \
   invalid_serials.json.h \
+  legacy/stakemodifier.h \
   kernel.h \
   swifttx.h \
   key.h \
@@ -274,7 +275,6 @@ libbitcoin_wallet_a_SOURCES = \
   obfuscation.cpp \
   bitpool.cpp \
   obfuscation-relay.cpp \
-  wallet/db.cpp \
   addressbook.cpp \
   crypter.cpp \
   key_io.cpp \
@@ -286,11 +286,13 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
   messagesigner.cpp \
+  legacy/stakemodifier.cpp \
+  kernel.cpp \
+  wallet/db.cpp \
   wallet/rpcdump.cpp \
   zvit/deterministicmint.cpp \
   zvit/zerocoin.cpp \
   wallet/rpcwallet.cpp \
-  kernel.cpp \
   wallet/hdchain.cpp \
   wallet/scriptpubkeyman.cpp \
   wallet/wallet.cpp \
