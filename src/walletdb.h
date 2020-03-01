@@ -116,8 +116,7 @@ public:
 
     bool WriteOrderPosNext(int64_t nOrderPosNext);
 
-    // presstab
-    bool WriteStakeSplitThreshold(uint64_t nStakeSplitThreshold);
+    bool WriteStakeSplitThreshold(CAmount nStakeSplitThreshold);
     bool WriteMultiSend(std::vector<std::pair<std::string, int> > vMultiSend);
     bool EraseMultiSend(std::vector<std::pair<std::string, int> > vMultiSend);
     bool WriteMSettings(bool fMultiSendStake, bool fMultiSendFundamentalnode, bool fMultiSendMasternode, int nLastMultiSendHeight);

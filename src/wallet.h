@@ -203,7 +203,7 @@ private:
 
 public:
 
-    static const int STAKE_SPLIT_THRESHOLD = 2000;
+    static const CAmount DEFAULT_STAKE_SPLIT_THRESHOLD = 2000 * COIN;
 
     bool StakeableCoins(std::vector<COutput>* pCoins = nullptr);
     bool IsCollateralAmount(CAmount nInputAmount) const;
@@ -229,7 +229,7 @@ public:
     unsigned int nMasterKeyMaxID;
 
     // Stake split threshold
-    uint64_t nStakeSplitThreshold;
+    CAmount nStakeSplitThreshold;
     // Staker status (last hashed block and time)
     CStakerStatus* pStakerStatus = nullptr;
 
