@@ -1571,9 +1571,8 @@ bool AppInit2()
                 // Recalculate money supply for blocks that are impacted by accounting issue after zerocoin activation
                 if (GetBoolArg("-reindexmoneysupply", false) || reindexZerocoin) {
                     // Recalculate from the zerocoin activation or from scratch.
-                    RecalculateVITSupply(reindexZerocoin ? consensus.height_start_ZC : 1);
+                    RecalculateVITSupply((reindexZerocoin ? consensus.height_start_ZC : 1), false);
                 }
-
 
                 if (!fReindex) {
                     uiInterface.InitMessage(_("Verifying blocks..."));
