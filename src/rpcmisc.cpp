@@ -641,6 +641,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"stakeablecoins\": true|false,      (boolean) if the wallet has mintable balance (greater than reserve balance)\n"
             "  \"fnsync\": true|false,             (boolean) if fundamentalnode data is synced\n"
             "  \"stakingbalance\": d               (numeric) PIV value of the stakeable coins (minus reserve balance, if any)\n"
+            "  \"stakesplitthreshold\": d           (numeric) value of the current threshold for stake split\n"
             "  \"lastattempt_age\": xxx            (numeric) seconds since last stake attempt\n"
             "  \"lastattempt_depth\": xxx          (numeric) depth of the block on top of which the last stake attempt was made\n"
             "  \"lastattempt_hash\": xxx           (hex string) hash of the block on top of which the last stake attempt was made\n"
@@ -659,14 +660,16 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("staking_status", pwalletMain->pStakerStatus->IsActive()));
         obj.push_back(Pair("staking_enabled", GetBoolArg("-staking", true)));
+        bool fColdStaking = GetBoolArg("-coldstaking", true);
+        obj.push_back(Pair("coldstaking_enabled", fColdStaking));
         obj.push_back(Pair("haveconnections", !vNodes.empty()));
 	    obj.push_back(Pair("fnsync", fundamentalnodeSync.IsSynced()));
         obj.push_back(Pair("walletunlocked", !pwalletMain->IsLocked()));
         std::vector<COutput> vCoins;
         pwalletMain->StakeableCoins(&vCoins);
         obj.push_back(Pair("stakeablecoins", (int)vCoins.size()));
-        obj.push_back(Pair("stakingbalance", ValueFromAmount(
-                pwalletMain->GetStakingBalance(GetBoolArg("-coldstaking", true)))));
+        obj.push_back(Pair("stakingbalance", ValueFromAmount(pwalletMain->GetStakingBalance(fColdStaking))));
+        obj.push_back(Pair("stakesplitthreshold", ValueFromAmount(pwalletMain->nStakeSplitThreshold)));
         CStakerStatus* ss = pwalletMain->pStakerStatus;
         if (ss) {
             obj.push_back(Pair("lastattempt_age", (int)(GetTime() - ss->GetLastTime())));
