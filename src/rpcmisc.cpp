@@ -640,9 +640,11 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"walletunlocked\": true|false,     (boolean) if the wallet is unlocked\n"
             "  \"stakeablecoins\": true|false,      (boolean) if the wallet has mintable balance (greater than reserve balance)\n"
             "  \"fnsync\": true|false,             (boolean) if fundamentalnode data is synced\n"
-            "  \"hashLastStakeAttempt\": xxx       (hex string) hash of last block on top of which the miner attempted to stake\n"
-            "  \"heightLastStakeAttempt\": n       (integer) height of last block on top of which the miner attempted to stake\n"
-            "  \"timeLastStakeAttempt\": n         (integer) time of last attempted stake\n"
+            "  \"lastattempt_age\": xxx            (numeric) seconds since last stake attempt\n"
+            "  \"lastattempt_depth\": xxx          (numeric) depth of the block on top of which the last stake attempt was made\n"
+            "  \"lastattempt_hash\": xxx           (hex string) hash of the block on top of which the last stake attempt was made\n"
+            "  \"lastattempt_coins\": n             (numeric) number of stakeable coins available during last stake attempt\n"
+            "  \"lastattempt_tries\": n             (numeric) number of stakeable coins checked during last stake attempt\n"
             "}\n"
 
             "\nExamples:\n" +
@@ -665,6 +667,8 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             obj.push_back(Pair("lastattempt_age", (int)(GetTime() - ss->GetLastTime())));
             obj.push_back(Pair("lastattempt_depth", (chainActive.Height() - ss->GetLastHeight())));
             obj.push_back(Pair("lastattempt_hash", ss->GetLastHash().GetHex()));
+            obj.push_back(Pair("lastattempt_coins", ss->GetLastCoins()));
+            obj.push_back(Pair("lastattempt_tries", ss->GetLastTries()));
         }
         return obj;
     }
