@@ -635,7 +635,6 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "{\n"
             "  \"staking_status\": true|false,     (boolean) if the wallet is staking or not\n"
             "  \"staking_enabled\": true|false,    (boolean) if staking is enabled/disabled in vitae.conf\n"
-            "  \"tiptime\": n,                     (integer) chain tip blocktime\n"
             "  \"haveconnections\": true|false,    (boolean) if network connections are present\n"
             "  \"mnsync\": true|false,             (boolean) if masternode data is synced\n"
             "  \"walletunlocked\": true|false,     (boolean) if the wallet is unlocked\n"
@@ -657,16 +656,16 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("staking_status", pwalletMain->pStakerStatus->IsActive()));
         obj.push_back(Pair("staking_enabled", GetBoolArg("-staking", true)));
-        obj.push_back(Pair("tiptime", (int)chainActive.Tip()->nTime));
         obj.push_back(Pair("haveconnections", !vNodes.empty()));
 	    obj.push_back(Pair("fnsync", fundamentalnodeSync.IsSynced()));
         obj.push_back(Pair("walletunlocked", !pwalletMain->IsLocked()));
         obj.push_back(Pair("stakeablecoins", pwalletMain->StakeableCoins()));
-        uint256 lastHash = pwalletMain->pStakerStatus->GetLastHash();
-        obj.push_back(Pair("hashLastStakeAttempt", lastHash.GetHex()));
-        obj.push_back(Pair("heightLastStakeAttempt", (mapBlockIndex.count(lastHash) > 0 ?
-                                                        mapBlockIndex.at(lastHash)->nHeight : -1)) );
-        obj.push_back(Pair("timeLastStakeAttempt", pwalletMain->pStakerStatus->GetLastTime()));
+        CStakerStatus* ss = pwalletMain->pStakerStatus;
+        if (ss) {
+            obj.push_back(Pair("lastattempt_age", (int)(GetTime() - ss->GetLastTime())));
+            obj.push_back(Pair("lastattempt_depth", (chainActive.Height() - ss->GetLastHeight())));
+            obj.push_back(Pair("lastattempt_hash", ss->GetLastHash().GetHex()));
+        }
         return obj;
     }
 
