@@ -176,6 +176,7 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingssignmessagewidgets.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingswalletoptionswidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingswalletrepairwidget.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingsexportcsv.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingswidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/welcomecontentwidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/splash.cpp
