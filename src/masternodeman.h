@@ -54,7 +54,10 @@ class CMasternodeMan
 {
 private:
     // critical section to protect the inner data structures
-    mutable CCriticalSection cs;
+    mutable RecursiveMutex cs;
+
+    // critical section to protect the inner data structures specifically on messaging
+    mutable RecursiveMutex cs_process_message;
 
     // map to hold all MNs
     std::vector<CMasternode> vMasternodes;
