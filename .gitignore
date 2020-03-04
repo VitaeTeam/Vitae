@@ -118,9 +118,15 @@ qa/pull-tester/tests-config.sh
 qa/pull-tester/cache/*
 qa/pull-tester/test.*/*
 
+# Generated images
+background.tiff
+background.tiff.png
+background.tiff@2x.png
+
 .cproject
 .project
 /doc/doxygen/
+/doc/Doxyfile
 /nbproject/
 
 .idea
