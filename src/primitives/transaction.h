@@ -176,6 +176,8 @@ public:
         return (nValue < 3*minRelayTxFee.GetFee(nSize));
     }
 
+    bool IsStakeModifierSig() const;
+
     bool IsZerocoinMint() const;
     CAmount GetZerocoinMinted() const;
 
