@@ -284,7 +284,7 @@ public:
     mutable RecursiveMutex cs_wallet;
 
     bool fFileBacked;
-    bool fWalletUnlockAnonymizeOnly;
+    bool fWalletUnlockStaking;
     std::string strWalletFile;
 
     std::map<CKeyID, CKeyMetadata> mapKeyMetadata;

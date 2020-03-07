@@ -403,8 +403,8 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
         LogPrintf(" ISFUNDAMENTALNODE passed to prepare Transaction \n ");
     }
 
-    if (isAnonymizeOnlyUnlocked()) {
-        return AnonymizeOnlyUnlocked;
+    if (isStakingOnlyUnlocked()) {
+        return StakingOnlyUnlocked;
     }
 
     QSet<QString> setAddress; // Used to detect duplicates
@@ -532,8 +532,8 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction& tran
 {
     QByteArray transaction_array; /* store serialized transaction */
 
-    if (isAnonymizeOnlyUnlocked()) {
-        return AnonymizeOnlyUnlocked;
+    if (isStakingOnlyUnlocked()) {
+        return StakingOnlyUnlocked;
     }
 
     bool fColdStakingActive = sporkManager.IsSporkActive(SPORK_17_COLDSTAKING_ENFORCEMENT);
@@ -705,8 +705,8 @@ WalletModel::EncryptionStatus WalletModel::getEncryptionStatus() const
 {
     if (!wallet->IsCrypted()) {
         return Unencrypted;
-    } else if (wallet->fWalletUnlockAnonymizeOnly) {
-        return UnlockedForAnonymizationOnly;
+    } else if (wallet->fWalletUnlockStaking) {
+        return UnlockedForStaking;
     } else if (wallet->IsLocked()) {
         return Locked;
     } else {
@@ -726,22 +726,22 @@ bool WalletModel::setWalletEncrypted(bool encrypted, const SecureString& passphr
     }
 }
 
-bool WalletModel::setWalletLocked(bool locked, const SecureString& passPhrase, bool anonymizeOnly)
+bool WalletModel::setWalletLocked(bool locked, const SecureString& passPhrase, bool stakingOnly)
 {
     if (locked) {
         // Lock
-        wallet->fWalletUnlockAnonymizeOnly = false;
+        wallet->fWalletUnlockStaking = false;
         return wallet->Lock();
     } else {
         // Unlock
-        return wallet->Unlock(passPhrase, anonymizeOnly);
+        return wallet->Unlock(passPhrase, stakingOnly);
     }
 }
 
 bool WalletModel::lockForStakingOnly(const SecureString& passPhrase)
 {
     if (!wallet->IsLocked()) {
-        wallet->fWalletUnlockAnonymizeOnly = true;
+        wallet->fWalletUnlockStaking = true;
         return true;
     } else {
         setWalletLocked(false, passPhrase, true);
@@ -749,9 +749,9 @@ bool WalletModel::lockForStakingOnly(const SecureString& passPhrase)
     return false;
 }
 
-bool WalletModel::isAnonymizeOnlyUnlocked()
+bool WalletModel::isStakingOnlyUnlocked()
 {
-    return wallet->fWalletUnlockAnonymizeOnly;
+    return wallet->fWalletUnlockStaking;
 }
 
 bool WalletModel::changePassphrase(const SecureString& oldPass, const SecureString& newPass)
@@ -910,14 +910,14 @@ void WalletModel::unsubscribeFromCoreSignals()
 WalletModel::UnlockContext WalletModel::requestUnlock()
 {
     const WalletModel::EncryptionStatus status_before = getEncryptionStatus();
-    if (status_before == Locked || status_before == UnlockedForAnonymizationOnly)
+    if (status_before == Locked || status_before == UnlockedForStaking)
     {
         // Request UI to unlock wallet
         Q_EMIT requireUnlock();
     }
     // If wallet is still locked, unlock was failed or cancelled, mark context as invalid
     const WalletModel::EncryptionStatus status_after = getEncryptionStatus();
-    bool valid = (status_after != Locked && status_after != UnlockedForAnonymizationOnly);
+    bool valid = (status_after != Locked && status_after != UnlockedForStaking);
 
     return UnlockContext(this, valid, status_before);
 }
@@ -926,7 +926,7 @@ WalletModel::UnlockContext::UnlockContext(WalletModel *_wallet, bool _valid, con
         wallet(_wallet),
         valid(_valid),
         was_status(status_before),
-        relock(status_before == Locked || status_before == UnlockedForAnonymizationOnly)
+        relock(status_before == Locked || status_before == UnlockedForStaking)
 {
 }
 
@@ -934,7 +934,7 @@ WalletModel::UnlockContext::~UnlockContext()
 {
     if (valid && relock) {
         if (was_status == Locked) wallet->setWalletLocked(true);
-        else if (was_status == UnlockedForAnonymizationOnly) wallet->lockForStakingOnly();
+        else if (was_status == UnlockedForStaking) wallet->lockForStakingOnly();
     }
 }
 
