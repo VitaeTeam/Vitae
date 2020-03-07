@@ -126,16 +126,6 @@ QString formatBalance(CAmount amount, int nDisplayUnit, bool isZvit)
     return (amount == 0) ? ("0.00 " + BitcoinUnits::name(nDisplayUnit, isZvit)) : BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, amount, false, BitcoinUnits::separatorAlways, true, isZvit);
 }
 
-bool requestUnlock(WalletModel* walletModel, AskPassphraseDialog::Context context, bool relock)
-{
-    // Request unlock if wallet was locked or unlocked for mixing:
-    WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
-    if (encStatus == walletModel->Locked) {
-        return WalletModel::UnlockContext(walletModel->requestUnlock(context, relock)).isValid();
-    }
-    return true;
-}
-
 void setupAddressWidget(QValidatedLineEdit* widget, QWidget* parent)
 {
     parent->setFocusProxy(widget);
