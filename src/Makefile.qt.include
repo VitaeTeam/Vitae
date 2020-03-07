@@ -22,7 +22,6 @@ QT_FORMS_UI = \
   qt/vitae/forms/lockunlock.ui \
   qt/vitae/forms/expandablebutton.ui \
   qt/vitae/forms/receivedialog.ui \
-  qt/vitae/forms/walletpassworddialog.ui \
   qt/vitae/forms/topbar.ui \
   qt/vitae/forms/txrow.ui \
   qt/vitae/forms/dashboardwidget.ui \
@@ -118,7 +117,6 @@ QT_MOC_CPP = \
   qt/vitae/moc_expandablebutton.cpp \
   qt/vitae/moc_furabstractlistitemdelegate.cpp \
   qt/vitae/moc_receivedialog.cpp \
-  qt/vitae/moc_walletpassworddialog.cpp \
   qt/vitae/moc_pfborderimage.cpp \
   qt/vitae/moc_topbar.cpp \
   qt/vitae/moc_txrow.cpp \
@@ -252,7 +250,6 @@ BITCOIN_QT_H = \
   qt/vitae/txviewholder.h \
   qt/vitae/qtutils.h \
   qt/vitae/expandablebutton.h \
-  qt/vitae/walletpassworddialog.h \
   qt/vitae/topbar.h \
   qt/vitae/txrow.h \
   qt/vitae/addressholder.h \
@@ -642,7 +639,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/txviewholder.cpp \
   qt/vitae/qtutils.cpp \
   qt/vitae/expandablebutton.cpp \
-  qt/vitae/walletpassworddialog.cpp \
   qt/vitae/topbar.cpp \
   qt/vitae/txrow.cpp \
   qt/vitae/addressholder.cpp \

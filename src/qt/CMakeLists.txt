@@ -129,7 +129,6 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/txviewholder.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/qtutils.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/expandablebutton.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/walletpassworddialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/topbar.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/txrow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addressfilterproxymodel.cpp
