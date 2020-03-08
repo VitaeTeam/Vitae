@@ -655,7 +655,11 @@ bool CWallet::GetFundamentalnodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, C
 
     // Find possible candidates (remove delegated)
     std::vector<COutput> vPossibleCoins;
-    AvailableCoins(&vPossibleCoins, true, NULL, false, ONLY_10000, false, 1, false, false);
+    AvailableCoins(&vPossibleCoins,
+            nullptr,        // coin control
+            false,          // fIncludeDelegated
+            false,          // fIncludeColdStaking
+            ONLY_10000);    // coin type
 
     if (vPossibleCoins.empty()) {
         LogPrintf("CWallet::GetFundamentalnodeVinAndKeys -- Could not locate any valid fundamentalnode vin\n");
@@ -2041,16 +2045,16 @@ void CWallet::GetAvailableP2CSCoins(std::vector<COutput>& vCoins) const {
 /**
  * populate vCoins with vector of available COutputs.
  */
-bool CWallet::AvailableCoins(
-        std::vector<COutput>* pCoins,
-        bool fOnlyConfirmed,
-        const CCoinControl* coinControl,
-        bool fIncludeZeroValue,
-        AvailableCoinsType nCoinType,
-        bool fUseIX,
-        int nWatchonlyConfig,
-        bool fIncludeColdStaking,
-        bool fIncludeDelegated) const
+bool CWallet::AvailableCoins(std::vector<COutput>* pCoins,      // --> populates when != nullptr
+                             const CCoinControl* coinControl,   // Default: nullptr
+                             bool fIncludeDelegated,            // Default: true
+                             bool fIncludeColdStaking,          // Default: false
+                             AvailableCoinsType nCoinType,      // Default: ALL_COINS
+                             bool fOnlyConfirmed,               // Default: true
+                             bool fIncludeZeroValue,            // Default: false
+                             bool fUseIX,                       // Default: false
+                             int nWatchonlyConfig               // Default: 1
+                             ) const
 {
     if (pCoins) pCoins->clear();
     const bool fCoinsSelected = (coinControl != nullptr) && coinControl->HasSelected();
@@ -2133,8 +2137,13 @@ bool CWallet::AvailableCoins(
 std::map<CBitcoinAddress, std::vector<COutput> > CWallet::AvailableCoinsByAddress(bool fConfirmed, CAmount maxCoinValue)
 {
     std::vector<COutput> vCoins;
-    // include cold and delegated coins
-    AvailableCoins(&vCoins, fConfirmed, nullptr, false, ALL_COINS, false, 1, true, true);
+    // include cold
+    AvailableCoins(&vCoins,
+            nullptr,            // coin control
+            true,               // fIncludeDelegated
+            true,               // fIncludeColdStaking
+            ALL_COINS,          // coin type
+            fConfirmed);        // only confirmed
 
     std::map<CBitcoinAddress, std::vector<COutput> > mapCoins;
     for (COutput out : vCoins) {
@@ -2219,7 +2228,11 @@ bool CWallet::StakeableCoins(std::vector<COutput>* pCoins)
     const bool fIncludeCold = (sporkManager.IsSporkActive(SPORK_17_COLDSTAKING_ENFORCEMENT) &&
                                GetBoolArg("-coldstaking", true));
 
-    return AvailableCoins(pCoins, true, nullptr, false, STAKEABLE_COINS,  false, 1, fIncludeCold, false);
+    return AvailableCoins(pCoins,
+            nullptr,            // coin control
+            false,              // fIncludeDelegated
+            fIncludeCold,       // fIncludeColdStaking
+            STAKEABLE_COINS);  // coin type
 }
 
 bool CWallet::SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet) const
@@ -2332,7 +2345,14 @@ bool CWallet::SelectCoinsToSpend(const CAmount& nTargetValue, std::set<std::pair
 {
     // Note: this function should never be used for "always free" tx types like dstx
     std::vector<COutput> vCoins;
-    AvailableCoins(&vCoins, true, coinControl, false, coin_type, useIX, 1, fIncludeColdStaking, fIncludeDelegated);
+    AvailableCoins(&vCoins,
+            coinControl,
+            fIncludeDelegated,
+            fIncludeColdStaking,
+            coin_type,
+            true,                   // fOnlyConfirmed
+            false,                  // fIncludeZeroValue
+            useIX);
 
     // coin control -> return all selected outputs (we want all selected to go into the transaction for sure)
     if (coinControl && coinControl->HasSelected()) {
