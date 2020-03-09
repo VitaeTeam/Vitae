@@ -102,6 +102,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"signrawtransaction", 2},
         {"sendrawtransaction", 1},
         {"sendrawtransaction", 2},
+        {"sethdseed", 0},
         {"gettxout", 1},
         {"gettxout", 2},
         {"lockunspent", 0},
