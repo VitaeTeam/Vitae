@@ -1773,16 +1773,15 @@ bool AppInit2()
         }
         fVerifyingBlocks = false;
 
-        //Inititalize zVITWallet
-        uiInterface.InitMessage(_("Syncing zVIT wallet..."));
+        if (zwalletMain->GetMasterSeed() != 0) {
+            //Inititalize zPIVWallet
+            uiInterface.InitMessage(_("Syncing zVIT wallet..."));
 
-        //Inititalize zPIVWallet
-        uiInterface.InitMessage(_("Syncing zPIV wallet..."));
-
-        //Load zerocoin mint hashes to memory
-        pwalletMain->zvitTracker->Init();
-        zwalletMain->LoadMintPoolFromDB();
-        zwalletMain->SyncWithChain();
+            //Load zerocoin mint hashes to memory
+            pwalletMain->zvitTracker->Init();
+            zwalletMain->LoadMintPoolFromDB();
+            zwalletMain->SyncWithChain();
+        }
     }  // (!fDisableWallet)
 #else  // ENABLE_WALLET
     LogPrintf("No wallet compiled in!\n");
