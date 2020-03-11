@@ -478,7 +478,7 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     int64_t nMasternode_Age = 0;
 
     //make sure we know about this block
-    uint256 hash = 0;
+    uint256 hash;
     if(!GetBlockHashMN(hash, nBlockHeight)) return -1;
 
     // scan for winner
@@ -527,7 +527,7 @@ std::vector<std::pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int
     std::vector<std::pair<int, CMasternode> > vecMasternodeRanks;
 
     //make sure we know about this block
-    uint256 hash = 0;
+    uint256 hash;
     if(!GetBlockHashMN(hash, nBlockHeight)) return vecMasternodeRanks;
 
     // scan for winner

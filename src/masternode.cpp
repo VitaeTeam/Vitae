@@ -224,7 +224,7 @@ uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
 {
     if(chainActive.Tip() == NULL) return 0;
 
-    uint256 hash = 0;
+    uint256 hash;
     uint256 aux = vin.prevout.hash + vin.prevout.n;
 
     if(!GetBlockHashMN(hash, nBlockHeight)) return 0;
