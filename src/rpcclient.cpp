@@ -136,8 +136,6 @@ static const CRPCConvertParam vRPCConvertParams[] =
         //{"startfundamentalnode", 1},
         {"fnvoteraw", 1},
         {"fnvoteraw", 4},
-        {"reservebalance", 0},
-        {"reservebalance", 1},
         {"setstakesplitthreshold", 0},
         {"autocombinerewards", 0},
         {"autocombinerewards", 1},
