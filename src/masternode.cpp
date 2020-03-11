@@ -222,12 +222,21 @@ CMasternode::CMasternode(CService newAddr, CTxIn newVin, CPubKey newPubkey, std:
 //
 uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
 {
-    if(chainActive.Tip() == NULL) return 0;
+    if (chainActive.Tip() == NULL) return UINT256_ZERO;
 
     uint256 hash;
     uint256 aux = vin.prevout.hash + vin.prevout.n;
 
-    if(!GetBlockHashMN(hash, nBlockHeight)) return 0;
+    if (!GetBlockHashMN(hash, nBlockHeight)) {
+        LogPrint("masternode","CalculateScore ERROR - nHeight %d - Returned 0\n", nBlockHeight);
+        return UINT256_ZERO;
+    }
+
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    ss << hash;
+    uint256 hash2 = ss.GetHash();
+
+    CHashWriter ss2(SER_GETHASH, PROTOCOL_VERSION);
 
     uint256 hash2 = Hash(BEGIN(hash), END(hash));
     uint256 hash3 = Hash(BEGIN(hash), END(hash), BEGIN(aux), END(aux));
