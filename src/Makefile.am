@@ -71,7 +71,6 @@ BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
   addrman.h \
-  alert.h \
   allocators.h \
   amount.h \
   base58.h \
@@ -216,7 +215,6 @@ libbitcoin_server_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT
 libbitcoin_server_a_SOURCES = \
   activemasternode.cpp \
   addrman.cpp \
-  alert.cpp \
   bloom.cpp \
   blocksignature.cpp \
   chain.cpp \

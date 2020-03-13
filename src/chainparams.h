@@ -56,7 +56,6 @@ public:
     int GetDefaultPort() const { return nDefaultPort; }
 
     const CBlock& GenesisBlock() const { return genesis; }
-    const std::vector<unsigned char>& AlertKey() const { return vAlertPubKey; }
 
     /** Make miner wait to have peers to avoid wasting work */
     bool MiningRequiresPeers() const { return !IsRegTestNet(); }
@@ -87,7 +86,6 @@ protected:
     CBlock genesis;
     Consensus::Params consensus;
     MessageStartChars pchMessageStart;
-    std::vector<unsigned char> vAlertPubKey;
     int nDefaultPort;
     int nFundamentalnodeCountDrift;
     std::vector<CDNSSeedData> vSeeds;

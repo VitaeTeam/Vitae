@@ -124,7 +124,7 @@ public Q_SLOTS:
     void updateTimer();
     void updateMnTimer();
     void updateNumConnections(int numConnections);
-    void updateAlert(const QString& hash, int status);
+    void updateAlert();
     void updateBanlist();
 };
 

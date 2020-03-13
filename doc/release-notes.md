@@ -151,8 +151,14 @@ Detailed release notes follow. For convenience in locating the code changes and 
 ### Wallet Code
 - #1264 `1a12735df5` [Wallet] Don't add P2CS automatically to GetLockedCredit (random-zebra)
 
-### Documentation
-- #1272 `d4a9475e40` [Trivial] Update copyright headers for 4.0.2 (Fuzzbawls)
+
+### Build System
+
+### P2P Protocol and Network Code
+
+The p2p alert system has been removed in [#1372](https://github.com/PIVX-Project/PIVX/pull/1372) and the 'alert' message is no longer supported.
+
+### GUI
 
 ### RPC/REST
 
