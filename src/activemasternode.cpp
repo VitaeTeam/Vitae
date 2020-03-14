@@ -347,7 +347,7 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     // Find the vin
     if(!strTxHash.empty()) {
         // Let's find it
-        uint256 txHash(strTxHash);
+        uint256 txHash(uint256S(strTxHash));
         int outputIndex = (unsigned int) std::stoul(strOutputIndex);
         bool found = false;
         for(COutput& out : possibleCoins) {
