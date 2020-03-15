@@ -44,6 +44,8 @@ bool CVitStake::SetPrevout(CTransaction txPrev, unsigned int n)
 
 bool CVitStake::GetTxFrom(CTransaction& tx) const
 {
+    if (txFrom.IsNull())
+        return false;
     tx = txFrom;
     return true;
 }
