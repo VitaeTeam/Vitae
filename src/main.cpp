@@ -3468,10 +3468,10 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     bool fScriptChecks = pindex->nHeight >= Checkpoints::GetTotalBlocksEstimate();
 
     // If scripts won't be checked anyways, don't bother seeing if CLTV is activated
-    bool fCLTVHasMajority = false;
-    if (fScriptChecks && pindex->pprev) {
-        fCLTVHasMajority = CBlockIndex::IsSuperMajority(6, pindex->pprev, Params().EnforceBlockUpgradeMajority());
-    }
+    //bool fCLTVHasMajority = false;
+    //if (fScriptChecks && pindex->pprev) {
+    //    fCLTVHasMajority = CBlockIndex::IsSuperMajority(6, pindex->pprev, Params().EnforceBlockUpgradeMajority());
+    //}
 
     // Do not allow blocks that contain transactions which 'overwrite' older transactions,
     // unless those are already completely spent.
@@ -3588,7 +3588,6 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
             unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG;
             if (!CheckInputs(tx, state, view, fScriptChecks, flags, false, nScriptCheckThreads ? &vChecks : NULL))
                 return false;
-            }
             control.Add(vChecks);
         }
         nValueOut += tx.GetValueOut();
