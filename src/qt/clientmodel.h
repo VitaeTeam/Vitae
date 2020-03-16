@@ -9,6 +9,7 @@
 #define BITCOIN_QT_CLIENTMODEL_H
 
 #include "uint256.h"
+#include "chain.h"
 #include <QObject>
 #include <QDateTime>
 
@@ -54,18 +55,18 @@ public:
 
     //! Return number of connections, default is in- and outbound (total)
     int getNumConnections(unsigned int flags = CONNECTIONS_ALL) const;
+    int getNumBlocksAtStartup();
     QString getFundamentalnodeCountString() const;
 	QString getMasternodeCountString() const;
+
+    // from cached block index
     int getNumBlocks() const;
-    int getNumBlocksAtStartup();
+    QDateTime getLastBlockDate() const;
+    QString getLastBlockHash() const;
+    double getVerificationProgress() const;
 
     quint64 getTotalBytesRecv() const;
     quint64 getTotalBytesSent() const;
-
-    double getVerificationProgress() const;
-    QDateTime getLastBlockDate() const;
-
-    QString getLastBlockHash() const;
 
     //! Return true if core is doing initial block download
     bool inInitialBlockDownload() const;
@@ -81,7 +82,7 @@ public:
     QString formatClientStartupTime() const;
     QString dataDir() const;
 
-    void setCacheNumBlocks(int blockNum) { cachedNumBlocks = blockNum; };
+    void setCacheTip(const CBlockIndex* const tip) { cacheTip = tip; };
     void setCacheReindexing(bool reindex) { cachedReindexing = reindex; };
     void setCacheImporting(bool import) { cachedImporting = import; };
 
@@ -92,7 +93,7 @@ private:
     PeerTableModel* peerTableModel;
     BanTableModel *banTableModel;
 
-    int cachedNumBlocks;
+    const CBlockIndex* cacheTip;
     QString cachedFundamentalnodeCountString;
 	QString cachedMasternodeCountString;
     bool cachedReindexing;
