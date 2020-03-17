@@ -2581,7 +2581,7 @@ int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamen
     return ret;
 }
 
-CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount)
+CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool isZVITAEStake)
 {
     int64_t ret = 0;
 

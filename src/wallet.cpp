@@ -3042,6 +3042,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (nCredit == 0 || nCredit > nBalance - nReserveBalance) {
         LogPrintf("*** attempted to stake %d coins\n", nAttempts);
         return false;
+    }
 
     // Calculate reward
     CAmount nReward;
