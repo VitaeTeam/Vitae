@@ -305,6 +305,7 @@ public:
     bool Sign(CKey& keyCollateralAddress);
     bool VerifySignature();
     void Relay();
+    std::string GetStrMessage();
 
     ADD_SERIALIZE_METHODS;
 
