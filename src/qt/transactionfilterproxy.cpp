@@ -47,7 +47,7 @@ bool TransactionFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex& 
         return false;
     if (fHideOrphans && isOrphan(status, type))
         return false;
-    if (!(TYPE(type) & typeFilter))
+    if (!(bool)(TYPE(type) & typeFilter))
         return false;
     if (involvesWatchAddress && watchOnlyFilter == WatchOnlyFilter_No)
         return false;
