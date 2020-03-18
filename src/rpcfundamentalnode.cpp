@@ -1751,28 +1751,24 @@ bool DecodeHexMnb(CFundamentalnodeBroadcast& mnb, std::string strHexMnb) {
     return true;
 }
 
-UniValue fundamentalnodebroadcast(const UniValue& params, bool fHelp)
+UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
-    string strCommand;
-    if (params.size() >= 1)
-        strCommand = params[0].get_str();
+	string strCommand;
+	if (params.size() >= 1)
+		strCommand = params[0].get_str();
+	if (fHelp  ||
+		(strCommand != "alias" && strCommand != "all"))
+		throw runtime_error(
+				"createfundamentalnodebroadcast \"command\""
+				"Set of commands to create fundamentalnode broadcast messages for fundamentalnodes configured in fundamentalnode.conf\n"
+				"\nArguments:\n"
+				"1. \"command\"        (string or set of strings, required) The command to execute\n"
+				"\nAvailable commands:\n"
+				"  alias  - Create single remote fundamentalnode broadcast message by assigned alias configured in fundamentalnode.conf\n"
+				"  all    - Create remote fundamentalnode broadcast messages for all fundamentalnodes configured in fundamentalnode.conf\n"
+				+ HelpRequiringPassphrase());
 
-    if (fHelp  ||
-        (strCommand != "create-alias" && strCommand != "create-all" && strCommand != "decode" && strCommand != "relay"))
-        throw runtime_error(
-                "fundamentalnodebroadcast \"command\"... ( \"passphrase\" )\n"
-                "Set of commands to create and relay fundamentalnode broadcast messages\n"
-                "\nArguments:\n"
-                "1. \"command\"        (string or set of strings, required) The command to execute\n"
-                "2. \"passphrase\"     (string, optional) The wallet passphrase\n"
-                "\nAvailable commands:\n"
-                "  create-alias  - Create single remote fundamentalnode broadcast message by assigned alias configured in fundamentalnode.conf\n"
-                "  create-all    - Create remote fundamentalnode broadcast messages for all fundamentalnodes configured in fundamentalnode.conf\n"
-                "  decode        - Decode fundamentalnode broadcast message\n"
-                "  relay         - Relay fundamentalnode broadcast message to the network\n"
-                + HelpRequiringPassphrase());
-
-    if (strCommand == "create-alias")
+    if (strCommand == "alias")
     {
         // wait for reindex and/or import to finish
         if (fImporting || fReindex)
@@ -1784,18 +1780,7 @@ UniValue fundamentalnodebroadcast(const UniValue& params, bool fHelp)
         std::string alias = params[1].get_str();
 
         if(pwalletMain->IsLocked()) {
-            SecureString strWalletPass;
-            strWalletPass.reserve(100);
-
-            if (params.size() == 3){
-                strWalletPass = params[2].get_str().c_str();
-            } else {
-                throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Your wallet is locked, passphrase is required");
-            }
-
-            if(!pwalletMain->Unlock(strWalletPass)){
-                throw JSONRPCError(RPC_WALLET_PASSPHRASE_INCORRECT, "The wallet passphrase entered was incorrect");
-            }
+            throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Your wallet is locked, it needs to be unlocked first.");
         }
 
         bool found = false;
@@ -1833,25 +1818,14 @@ UniValue fundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
     }
 
-    if (strCommand == "create-all")
+    if (strCommand == "all")
     {
         // wait for reindex and/or import to finish
         if (fImporting || fReindex)
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Wait for reindex and/or import to finish");
 
         if(pwalletMain->IsLocked()) {
-            SecureString strWalletPass;
-            strWalletPass.reserve(100);
-
-            if (params.size() == 2){
-                strWalletPass = params[1].get_str().c_str();
-            } else {
-                throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Your wallet is locked, passphrase is required");
-            }
-
-            if(!pwalletMain->Unlock(strWalletPass)){
-                throw JSONRPCError(RPC_WALLET_PASSPHRASE_INCORRECT, "The wallet passphrase entered was incorrect");
-            }
+            throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Your wallet is locked, it needs to be unlocked first.");
         }
 
         std::vector<CFundamentalnodeConfig::CFundamentalnodeEntry> mnEntries;
@@ -1894,60 +1868,75 @@ UniValue fundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
         return returnObj;
     }
+    
+    return NullUniValue;
+}
 
-    if (strCommand == "decode")
-    {
-        if (params.size() != 2)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'fundamentalnodebroadcast decode \"hexstring\"'");
+UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
+{
+	if (fHelp)
+		throw runtime_error(
+				"decodefundamentalnodebroadcast \"hexstring\"\n"
+				"Command to decode fundamentalnode broadcast messages\n"
+				"\nArgument:\n"
+				"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n");
 
-        CFundamentalnodeBroadcast mnb;
+	if (params.size() != 1)
+		throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'decodefundamentalnodebroadcast \"hexstring\"'");
 
-        if (!DecodeHexMnb(mnb, params[1].get_str()))
-            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Fundamentalnode broadcast message decode failed");
+    CFundamentalnodeBroadcast mnb;
 
-        if(!mnb.VerifySignature())
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Fundamentalnode broadcast signature verification failed");
+    if (!DecodeHexMnb(mnb, params[0].get_str()))
+        throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Fundamentalnode broadcast message decode failed");
 
-        UniValue resultObj(UniValue::VOBJ);
+    if(!mnb.VerifySignature())
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Fundamentalnode broadcast signature verification failed");
 
-        resultObj.push_back(Pair("vin", mnb.vin.ToString()));
-        resultObj.push_back(Pair("addr", mnb.addr.ToString()));
-        resultObj.push_back(Pair("pubkey", CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
-        resultObj.push_back(Pair("pubkey2", CBitcoinAddress(mnb.pubKeyFundamentalnode.GetID()).ToString()));
-        resultObj.push_back(Pair("vchSig", EncodeBase64(&mnb.sig[0], mnb.sig.size())));
-        resultObj.push_back(Pair("sigTime", mnb.sigTime));
-        resultObj.push_back(Pair("protocolVersion", mnb.protocolVersion));
-        resultObj.push_back(Pair("nLastDsq", mnb.nLastDsq));
+    UniValue resultObj(UniValue::VOBJ);
 
-        UniValue lastPingObj(UniValue::VOBJ);
-        lastPingObj.push_back(Pair("vin", mnb.lastPing.vin.ToString()));
-        lastPingObj.push_back(Pair("blockHash", mnb.lastPing.blockHash.ToString()));
-        lastPingObj.push_back(Pair("sigTime", mnb.lastPing.sigTime));
-        lastPingObj.push_back(Pair("vchSig", EncodeBase64(&mnb.lastPing.vchSig[0], mnb.lastPing.vchSig.size())));
+    resultObj.push_back(Pair("vin", mnb.vin.ToString()));
+    resultObj.push_back(Pair("addr", mnb.addr.ToString()));
+    resultObj.push_back(Pair("pubkey", CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
+    resultObj.push_back(Pair("pubkey2", CBitcoinAddress(mnb.pubKeyFundamentalnode.GetID()).ToString()));
+    resultObj.push_back(Pair("vchSig", EncodeBase64(&mnb.sig[0], mnb.sig.size())));
+    resultObj.push_back(Pair("sigTime", mnb.sigTime));
+    resultObj.push_back(Pair("protocolVersion", mnb.protocolVersion));
+    resultObj.push_back(Pair("nLastDsq", mnb.nLastDsq));
 
-        resultObj.push_back(Pair("lastPing", lastPingObj));
+    UniValue lastPingObj(UniValue::VOBJ);
+    lastPingObj.push_back(Pair("vin", mnb.lastPing.vin.ToString()));
+    lastPingObj.push_back(Pair("blockHash", mnb.lastPing.blockHash.ToString()));
+    lastPingObj.push_back(Pair("sigTime", mnb.lastPing.sigTime));
+    lastPingObj.push_back(Pair("vchSig", EncodeBase64(&mnb.lastPing.vchSig[0], mnb.lastPing.vchSig.size())));
 
-        return resultObj;
-    }
+    resultObj.push_back(Pair("lastPing", lastPingObj));
 
-    if (strCommand == "relay")
-    {
-        if (params.size() != 2)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'fundamentalnodebroadcast relay \"hexstring\"'");
+    return resultObj;
+}
 
-        CFundamentalnodeBroadcast mnb;
 
-        if (!DecodeHexMnb(mnb, params[1].get_str()))
-            throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Fundamentalnode broadcast message decode failed");
+UniValue relayfundamentalnodebroadcast(const UniValue& params, bool fHelp)
+{
+    if (fHelp)
+        throw runtime_error(
+                "relayfundamentalnodebroadcast \"hexstring\"\n"
+                "Command to relay fundamentalnode broadcast messages\n"
+                "\nArguments:\n"
+				"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n");
 
-        if(!mnb.VerifySignature())
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Fundamentalnode broadcast signature verification failed");
+    if (params.size() != 1)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'relayfundamentalnodebroadcast \"hexstring\"'");
 
-        mnodeman.UpdateFundamentalnodeList(mnb);
-        mnb.Relay();
+    CFundamentalnodeBroadcast mnb;
 
-        return strprintf("Fundamentalnode broadcast sent (service %s, vin %s)", mnb.addr.ToString(), mnb.vin.ToString());
-    }
+    if (!DecodeHexMnb(mnb, params[0].get_str()))
+        throw JSONRPCError(RPC_DESERIALIZATION_ERROR, "Fundamentalnode broadcast message decode failed");
 
-    return UniValue(UniValue::VOBJ);
+    if(!mnb.VerifySignature())
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Fundamentalnode broadcast signature verification failed");
+
+    mnodeman.UpdateFundamentalnodeList(mnb);
+    mnb.Relay();
+
+    return strprintf("Fundamentalnode broadcast sent (service %s, vin %s)", mnb.addr.ToString(), mnb.vin.ToString());
 }
