@@ -295,6 +295,7 @@ extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnode(const UniValue& params, bool fHelp);
 extern UniValue listfundamentalnodes(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodecount(const UniValue& params, bool fHelp);
+extern UniValue fundamentalnodebroadcast(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnodecurrent(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnodedebug(const UniValue& params, bool fHelp);

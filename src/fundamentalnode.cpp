@@ -208,6 +208,11 @@ void CFundamentalnode::Check(bool forceCheck)
         return;
     }
 
+    if(lastPing.sigTime - sigTime < FUNDAMENTALNODE_MIN_MNP_SECONDS){
+    	activeState = FUNDAMENTALNODE_PRE_ENABLED;
+    	return;
+    }
+
     if (!unitTest) {
         /*CValidationState state;
         CMutableTransaction tx = CMutableTransaction();
@@ -481,6 +486,10 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
         return false;
     }
 
+    // incorrect ping or its sigTime
+    if(lastPing == CFundamentalnodePing() || !lastPing.CheckAndUpdate(nDos, false, true))
+        return false;
+
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
     std::string strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
@@ -529,18 +538,19 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     CFundamentalnode* pmn = mnodeman.Find(vin);
 
     // no such fundamentalnode, nothing to update
-    if (pmn == NULL)
-        return true;
-    else {
-        // this broadcast older than we have, it's bad.
-        if (pmn->sigTime > sigTime) {
-            LogPrint("fundamentalnode","mnb - Bad sigTime %d for Fundamentalnode %s (existing broadcast is at %d)\n",
-                sigTime, vin.prevout.hash.ToString(), pmn->sigTime);
-            return false;
-        }
-        // fundamentalnode is not enabled yet/already, nothing to update
-        if (!pmn->IsEnabled()) return true;
+    if (pmn == NULL) return true;
+
+    // this broadcast is older or equal than the one that we already have - it's bad and should never happen
+	// unless someone is doing something fishy
+	// (mapSeenMasternodeBroadcast in CMasternodeMan::ProcessMessage should filter legit duplicates)
+	if(pmn->sigTime >= sigTime) {
+		LogPrintf("CFundamentalnodeBroadcast::CheckAndUpdate - Bad sigTime %d for Fundamentalnode %20s %105s (existing broadcast is at %d)\n",
+					  sigTime, addr.ToString(), vin.ToString(), pmn->sigTime);
+		return false;
     }
+
+    // fundamentalnode is not enabled yet/already, nothing to update
+    if (!pmn->IsEnabled()) return true;
 
     // mn.pubkey = pubkey, IsVinAssociatedWithPubkey is validated once below,
     //   after that they just need to match
@@ -563,6 +573,9 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
     // so nothing to do here for us
     if (fFundamentalNode && vin.prevout == activeFundamentalnode.vin.prevout && pubKeyFundamentalnode == activeFundamentalnode.pubKeyFundamentalnode)
         return true;
+
+    // incorrect ping or its sigTime
+    if(lastPing == CFundamentalnodePing() || !lastPing.CheckAndUpdate(nDoS, false, true)) return false;
 
     // search existing Fundamentalnode list
     CFundamentalnode* pmn = mnodeman.Find(vin);
@@ -679,12 +692,31 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
     std::string strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
-        LogPrint("fundamentalnode","CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
+        LogPrintf("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
         return false;
     }
 
     if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
-        LogPrint("fundamentalnode","CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
+        LogPrintf("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
+        return false;
+    }
+
+    return true;
+}
+
+bool CFundamentalnodeBroadcast::VerifySignature()
+{
+    std::string errorMessage;
+    std::string strMessage;
+    if(protocolVersion < 70913) {
+        std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
+        std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
+        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
+    } else {
+        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
+    }
+    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
+        LogPrintf("CFundamentalnodeBroadcast::VerifySignature() - Error: %s\n", errorMessage);
         return false;
     }
 
@@ -729,7 +761,19 @@ bool CFundamentalnodePing::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundame
     return true;
 }
 
-bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled)
+bool CFundamentalnodePing::VerifySignature(CPubKey& pubKeyFundamentalnode, int &nDos) {
+	std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
+	std::string errorMessage = "";
+
+	if(!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)){
+		LogPrintf("CFundamentalnodePing::VerifySignature - Got bad Fundamentalnode ping signature %s Error: %s\n", vin.ToString(), errorMessage);
+		nDos = 33;
+		return false;
+	}
+	return true;
+}
+
+bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool fCheckSigTimeOnly)
 {
     if (sigTime > GetAdjustedTime() + 60 * 60) {
         LogPrint("fundamentalnode","CFundamentalnodePing::CheckAndUpdate - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
@@ -743,7 +787,13 @@ bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled)
         return false;
     }
 
-    LogPrint("fundamentalnode","CFundamentalnodePing::CheckAndUpdate - New Ping - %s - %lli\n", blockHash.ToString(), sigTime);
+    if(fCheckSigTimeOnly) {
+    	CFundamentalnode* pmn = mnodeman.Find(vin);
+    	if(pmn) return VerifySignature(pmn->pubKeyFundamentalnode, nDos);
+    	return true;
+    }
+
+    LogPrint("fundamentalnode", "CFundamentalnodePing::CheckAndUpdate - New Ping - %s - %s - %lli\n", GetHash().ToString(), blockHash.ToString(), sigTime);
 
     // see if we have this Fundamentalnode
     CFundamentalnode* pmn = mnodeman.Find(vin);
@@ -754,14 +804,8 @@ bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled)
         // update only if there is no known ping for this fundamentalnode or
         // last ping was more then FUNDAMENTALNODE_MIN_MNP_SECONDS-60 ago comparing to this one
         if (!pmn->IsPingedWithin(FUNDAMENTALNODE_MIN_MNP_SECONDS - 60, sigTime)) {
-            std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
-
-            std::string errorMessage = "";
-            if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
-                LogPrint("fundamentalnode","CFundamentalnodePing::CheckAndUpdate - Got bad Fundamentalnode address signature %s\n", vin.prevout.hash.ToString());
-                nDos = 33;
+        	if (!VerifySignature(pmn->pubKeyFundamentalnode, nDos))
                 return false;
-            }
 
             BlockMap::iterator mi = mapBlockIndex.find(blockHash);
             if (mi != mapBlockIndex.end() && (*mi).second) {

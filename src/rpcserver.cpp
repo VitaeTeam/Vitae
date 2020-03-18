@@ -357,6 +357,7 @@ static const CRPCCommand vRPCCommands[] =
         {"vitae", "listfundamentalnodes", &listfundamentalnodes, true, true, false},
         {"vitae", "getfundamentalnodecount", &getfundamentalnodecount, true, true, false},
         {"vitae", "fundamentalnodeconnect", &fundamentalnodeconnect, true, true, false},
+		{"vitae", "fundamentalnodebroadcast", &fundamentalnodebroadcast, true, true, false},
         {"vitae", "fundamentalnodecurrent", &fundamentalnodecurrent, true, true, false},
         {"vitae", "fundamentalnodedebug", &fundamentalnodedebug, true, true, false},
         {"vitae", "startfundamentalnode", &startfundamentalnode, true, true, false},
