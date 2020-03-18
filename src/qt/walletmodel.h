@@ -150,6 +150,9 @@ public:
     /* current staking status from the miner thread **/
     bool isStakingStatusActive() const;
 
+    bool isHDEnabled() const;
+    bool upgradeWallet(std::string& upgradeError);
+
     CAmount getBalance(const CCoinControl* coinControl = NULL) const;
     CAmount getUnconfirmedBalance() const;
     CAmount getImmatureBalance() const;
