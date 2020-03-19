@@ -1159,7 +1159,7 @@ void CFundamentalnodeMan::UpdateFundamentalnodeList(CFundamentalnodeBroadcast fn
     mapSeenFundamentalnodeBroadcast.insert(std::make_pair(fnb.GetHash(), fnb));
 	fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
 
-    LogPrint("fundamentalnode","CFundamentalnodeMan::UpdateFundamentalnodeList() - addr: %s\n    vin: %s\n", fnb.addr.ToString(), fnb.vin.ToString());
+    LogPrint("fundamentalnode","CFundamentalnodeMan::UpdateFundamentalnodeList() -- fundamentalnode=%s\n", fnb.vin.prevout.ToString());
 
     CFundamentalnode* pmn = Find(fnb.vin);
     if (pmn == NULL) {

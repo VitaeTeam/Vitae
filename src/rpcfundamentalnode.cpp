@@ -1756,16 +1756,13 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 	string strCommand;
 	if (params.size() >= 1)
 		strCommand = params[0].get_str();
-	if (fHelp  ||
-		(strCommand != "alias" && strCommand != "all"))
+	if (fHelp || (strCommand != "alias" && strCommand != "all") || (strCommand == "alias" && params.size() < 2))
 		throw runtime_error(
-				"createfundamentalnodebroadcast \"command\""
-				"Set of commands to create fundamentalnode broadcast messages for fundamentalnodes configured in fundamentalnode.conf\n"
+				"createfundamentalnodebroadcast \"command\" ( \"alias\")\n"
+				"Creates a fundamentalnode broadcast message for one or all fundamentalnodes configured in fundamentalnode.conf\n"
 				"\nArguments:\n"
-				"1. \"command\"        (string or set of strings, required) The command to execute\n"
-				"\nAvailable commands:\n"
-				"  alias  - Create single remote fundamentalnode broadcast message by assigned alias configured in fundamentalnode.conf\n"
-				"  all    - Create remote fundamentalnode broadcast messages for all fundamentalnodes configured in fundamentalnode.conf\n"
+				"1. \"command\"      (string, required) \"alias\" for single fundamentalnode, \"all\" for all fundamentalnodes\n"
+				"2. \"alias\"        (string, required if command is \"alias\") Alias of the fundamentalnode\n"
 				+ HelpRequiringPassphrase());
 
     if (strCommand == "alias")
@@ -1773,9 +1770,6 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
         // wait for reindex and/or import to finish
         if (fImporting || fReindex)
             throw JSONRPCError(RPC_INTERNAL_ERROR, "Wait for reindex and/or import to finish");
-
-        if (params.size() < 2)
-            throw JSONRPCError(RPC_INVALID_PARAMETER, "Command needs at least 2 parameters");
 
         std::string alias = params[1].get_str();
 
@@ -1794,23 +1788,23 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
                 std::string errorMessage;
                 CFundamentalnodeBroadcast mnb;
 
-                bool result = activeFundamentalnode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb, true);
+                bool success = activeFundamentalnode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb, true);
 
-                statusObj.push_back(Pair("result", result ? "successful" : "failed"));
-                if(result) {
+                statusObj.push_back(Pair("success", success));
+                if(success) {
                     CDataStream ssMnb(SER_NETWORK, PROTOCOL_VERSION);
                     ssMnb << mnb;
                     statusObj.push_back(Pair("hex", HexStr(ssMnb.begin(), ssMnb.end())));
                 } else {
-                    statusObj.push_back(Pair("errorMessage", errorMessage));
+                    statusObj.push_back(Pair("error_message", errorMessage));
                 }
                 break;
             }
         }
 
         if(!found) {
-            statusObj.push_back(Pair("result", "failed"));
-            statusObj.push_back(Pair("errorMessage", "Could not find alias in config. Verify with list-conf."));
+            statusObj.push_back(Pair("success", false));
+            statusObj.push_back(Pair("error_message", "Could not find alias in config. Verify with list-conf."));
         }
 
         pwalletMain->Lock();
@@ -1834,7 +1828,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
         int successful = 0;
         int failed = 0;
 
-        UniValue resultsObj(UniValue::VOBJ);
+        UniValue resultsObj(UniValue::VARR);
 
         BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
@@ -1842,23 +1836,23 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
             CFundamentalnodeBroadcast mnb;
 
-            bool result = activeFundamentalnode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb, true);
+            bool success = activeFundamentalnode.CreateBroadcast(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), errorMessage, mnb, true);
 
             UniValue statusObj(UniValue::VOBJ);
             statusObj.push_back(Pair("alias", mne.getAlias()));
-            statusObj.push_back(Pair("result", result ? "successful" : "failed"));
+            statusObj.push_back(Pair("success", success));
 
-            if(result) {
+            if(success) {
                 successful++;
                 CDataStream ssMnb(SER_NETWORK, PROTOCOL_VERSION);
                 ssMnb << mnb;
                 statusObj.push_back(Pair("hex", HexStr(ssMnb.begin(), ssMnb.end())));
             } else {
                 failed++;
-                statusObj.push_back(Pair("errorMessage", errorMessage));
+                statusObj.push_back(Pair("error_message", errorMessage));
             }
 
-            resultsObj.push_back(Pair("status", statusObj));
+            resultsObj.push_back(statusObj);
         }
         pwalletMain->Lock();
 
@@ -1874,15 +1868,31 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
 UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
-	if (fHelp)
+	if (fHelp || params.size() != 1)
 		throw runtime_error(
 				"decodefundamentalnodebroadcast \"hexstring\"\n"
 				"Command to decode fundamentalnode broadcast messages\n"
 				"\nArgument:\n"
-				"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n");
-
-	if (params.size() != 1)
-		throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'decodefundamentalnodebroadcast \"hexstring\"'");
+				"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"
+		        "\nResult:\n"
+		        "{\n"
+		        "  \"vin\": \"xxxx\"                (COutPoint) The unspent output which is holding the fundamentalnode collateral\n"
+		        "  \"addr\": \"xxxx\"               (string) IP address of the fundamentalnode\n"
+		        "  \"pubkeycollateral\": \"xxxx\"   (string) Collateral address's public key\n"
+		        "  \"pubkeymasternode\": \"xxxx\"   (string) Fundamentalnode's public key\n"
+		        "  \"vchsig\": \"xxxx\"             (string) Base64-encoded signature of this message (verifiable via pubkeycollateral)\n"
+		        "  \"sigtime\": \"nnn\"             (numeric) Signature timestamp\n"
+		        "  \"protocolversion\": \"nnn\"     (numeric) Fundamentalnode's protocol version\n"
+		        "  \"nlastdsq\": \"nnn\"            (numeric) The last time the fundamentalnode sent a DSQ message (for mixing) (DEPRECATED)\n"
+		        "  \"lastping\" : {                 (json object) information about the fundamentalnode's last ping\n"
+		        "      \"vin\": \"xxxx\"            (COutPoint) The unspent output of the fundamentalnode which is signing the message\n"
+		        "      \"blockhash\": \"xxxx\"      (string) Current chaintip blockhash minus 12\n"
+		        "      \"sigtime\": \"nnn\"         (numeric) Signature time for this ping\n"
+		        "      \"vchsig\": \"xxxx\"         (string) Base64-encoded signature of this ping (verifiable via pubkeyfundamentalnode)\n"
+		        "}\n"
+				"\nExamples:\n" +
+				        HelpExampleCli("decodefundamentalnodebroadcast", "hexstring") +
+						HelpExampleRpc("decodefundamentalnodebroadcast", "hexstring"));
 
     CFundamentalnodeBroadcast mnb;
 
@@ -1894,22 +1904,22 @@ UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
     UniValue resultObj(UniValue::VOBJ);
 
-    resultObj.push_back(Pair("vin", mnb.vin.ToString()));
+    resultObj.push_back(Pair("vin", mnb.vin.prevout.ToString()));
     resultObj.push_back(Pair("addr", mnb.addr.ToString()));
-    resultObj.push_back(Pair("pubkey", CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
-    resultObj.push_back(Pair("pubkey2", CBitcoinAddress(mnb.pubKeyFundamentalnode.GetID()).ToString()));
-    resultObj.push_back(Pair("vchSig", EncodeBase64(&mnb.sig[0], mnb.sig.size())));
-    resultObj.push_back(Pair("sigTime", mnb.sigTime));
-    resultObj.push_back(Pair("protocolVersion", mnb.protocolVersion));
-    resultObj.push_back(Pair("nLastDsq", mnb.nLastDsq));
+    resultObj.push_back(Pair("pubkeycollateral", CBitcoinAddress(mnb.pubKeyCollateralAddress.GetID()).ToString()));
+    resultObj.push_back(Pair("pubkeyfundamentalnode", CBitcoinAddress(mnb.pubKeyFundamentalnode.GetID()).ToString()));
+    resultObj.push_back(Pair("vchsig", EncodeBase64(&mnb.sig[0], mnb.sig.size())));
+    resultObj.push_back(Pair("sigtime", mnb.sigTime));
+    resultObj.push_back(Pair("protocolversion", mnb.protocolVersion));
+    resultObj.push_back(Pair("nlastdsq", mnb.nLastDsq));
 
     UniValue lastPingObj(UniValue::VOBJ);
-    lastPingObj.push_back(Pair("vin", mnb.lastPing.vin.ToString()));
-    lastPingObj.push_back(Pair("blockHash", mnb.lastPing.blockHash.ToString()));
-    lastPingObj.push_back(Pair("sigTime", mnb.lastPing.sigTime));
-    lastPingObj.push_back(Pair("vchSig", EncodeBase64(&mnb.lastPing.vchSig[0], mnb.lastPing.vchSig.size())));
+    lastPingObj.push_back(Pair("vin", mnb.lastPing.vin.prevout.ToString()));
+    lastPingObj.push_back(Pair("blockhash", mnb.lastPing.blockHash.ToString()));
+    lastPingObj.push_back(Pair("sigtime", mnb.lastPing.sigTime));
+    lastPingObj.push_back(Pair("vchsig", EncodeBase64(&mnb.lastPing.vchSig[0], mnb.lastPing.vchSig.size())));
 
-    resultObj.push_back(Pair("lastPing", lastPingObj));
+    resultObj.push_back(Pair("lastping", lastPingObj));
 
     return resultObj;
 }
@@ -1917,15 +1927,14 @@ UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
 UniValue relayfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
-    if (fHelp)
+    if (fHelp || params.size() != 1)
         throw runtime_error(
-                "relayfundamentalnodebroadcast \"hexstring\"\n"
-                "Command to relay fundamentalnode broadcast messages\n"
-                "\nArguments:\n"
-				"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n");
-
-    if (params.size() != 1)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, "Correct usage is 'relayfundamentalnodebroadcast \"hexstring\"'");
+        		"relayfundamentalnodebroadcast \"hexstring\"\n"
+        		"Command to relay fundamentalnode broadcast messages\n"
+        		"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"
+        		"\nExamples:\n" +
+				HelpExampleCli("relayfundamentalnodebroadcast", "hexstring") +
+				HelpExampleRpc("relayfundamentalnodebroadcast", "hexstring"));
 
     CFundamentalnodeBroadcast mnb;
 
