@@ -15,7 +15,7 @@
 #include "primitives/zerocoin.h"
 #include "libzerocoin/Accumulator.h"
 #include "libzerocoin/Denominations.h"
-#include "zpivtracker.h"
+#include "zvittracker.h"
 
 #include <list>
 #include <stdint.h>
