@@ -24,7 +24,7 @@
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "walletdb.h"
-#include "zpivwallet.h"
+#include "zvitwallet.h"
 
 #include <algorithm>
 #include <map>

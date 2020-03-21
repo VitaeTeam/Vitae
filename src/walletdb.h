@@ -166,10 +166,10 @@ public:
     bool WriteZerocoinSpendSerialEntry(const CZerocoinSpend& zerocoinSpend);
     bool EraseZerocoinSpendSerialEntry(const CBigNum& serialEntry);
     bool ReadZerocoinSpendSerialEntry(const CBigNum& bnSerial);
-    bool WriteZPIVSeed(const uint256& seed);
-    bool ReadZPIVSeed(uint256& seed);
-    bool WriteZPIVCount(const uint32_t& nCount);
-    bool ReadZPIVCount(uint32_t& nCount);
+    bool WriteZVITSeed(const uint256& seed);
+    bool ReadZVITSeed(uint256& seed);
+    bool WriteZVITCount(const uint32_t& nCount);
+    bool ReadZVITCount(uint32_t& nCount);
     bool ReadZerocoinMintFromSerial(const CBigNum& bnSerial, CZerocoinMint& mint);
 
 private:

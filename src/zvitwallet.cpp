@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "zpivwallet.h"
+#include "zvitwallet.h"
 #include "main.h"
 #include "txdb.h"
 #include "walletdb.h"
@@ -16,7 +16,7 @@ CzPIVWallet::CzPIVWallet(std::string strWalletFile, bool fFirstRun)
     CWalletDB walletdb(strWalletFile);
 
     uint256 seed;
-    if (!walletdb.ReadZPIVSeed(seed))
+    if (!walletdb.ReadZVITSeed(seed))
         fFirstRun = true;
 
     //First time running, generate master seed
@@ -32,13 +32,13 @@ bool CzPIVWallet::SetMasterSeed(const uint256& seedMaster, bool fResetCount)
     this->seedMaster = seedMaster;
 
     CWalletDB walletdb(strWalletFile);
-    if (!walletdb.WriteZPIVSeed(seedMaster))
+    if (!walletdb.WriteZVITSeed(seedMaster))
         return false;
 
     nCount = 0;
     if (fResetCount)
-        walletdb.WriteZPIVCount(nCount);
-    else if (!walletdb.ReadZPIVCount(nCount))
+        walletdb.WriteZVITCount(nCount);
+    else if (!walletdb.ReadZVITCount(nCount))
         nCount = 0;
 
     //TODO remove this leak of seed from logs before merge to master
@@ -181,7 +181,7 @@ bool CzPIVWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, const 
     if (nCount <= pMint.second) {
         CWalletDB walletdb(strWalletFile);
         nCount = pMint.second + 1;
-        walletdb.WriteZPIVCount(nCount);
+        walletdb.WriteZVITCount(nCount);
     }
 
     //remove from the pool
@@ -265,7 +265,7 @@ void CzPIVWallet::UpdateCount()
 {
     nCount++;
     CWalletDB walletdb(strWalletFile);
-    walletdb.WriteZPIVCount(nCount);
+    walletdb.WriteZVITCount(nCount);
 }
 
 void CzPIVWallet::GenerateDeterministicZPIV(CoinDenomination denom, PrivateCoin& coin, bool fGenerateOnly)

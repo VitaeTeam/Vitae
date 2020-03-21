@@ -278,12 +278,6 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
   mintpool.cpp \
-  masternode.cpp \
-  masternode-budget.cpp \
-  masternode-payments.cpp \
-  masternode-sync.cpp \
-  masternodeconfig.cpp \
-  masternodeman.cpp \
   rpcdump.cpp \
   primitives/zerocoin.cpp \
   rpcwallet.cpp \
