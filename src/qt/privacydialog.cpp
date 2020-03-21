@@ -774,21 +774,21 @@ void PrivacyDialog::updateSPORK16Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
     if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
-        // Mint zPIV
-        ui->pushButtonMintzPIV->setEnabled(false);
-        ui->pushButtonMintzPIV->setToolTip(tr("zPIV is currently disabled due to maintenance."));
+        // Mint zVIT
+        ui->pushButtonMintzVIT->setEnabled(false);
+        ui->pushButtonMintzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
 
-        // Spend zPIV
-        ui->pushButtonSpendzPIV->setEnabled(false);
-        ui->pushButtonSpendzPIV->setToolTip(tr("zPIV is currently disabled due to maintenance."));
+        // Spend zVIT
+        ui->pushButtonSpendzVIT->setEnabled(false);
+        ui->pushButtonSpendzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
     }
     else {
-        // Mint zPIV
-        ui->pushButtonMintzPIV->setEnabled(true);
-        ui->pushButtonMintzPIV->setToolTip(tr("PrivacyDialog", "Enter an amount of Piv to convert to zPiv", 0));
+        // Mint zVIT
+        ui->pushButtonMintzVIT->setEnabled(true);
+        ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of Vit to convert to zVit", 0));
 
-        // Spend zPIV
-        ui->pushButtonSpendzPIV->setEnabled(true);
-        ui->pushButtonSpendzPIV->setToolTip(tr("Spend Zerocoin. Without 'Pay To:' address creates payments to yourself."));
+        // Spend zVIT
+        ui->pushButtonSpendzVIT->setEnabled(true);
+        ui->pushButtonSpendzVIT->setToolTip(tr("Spend Zerocoin. Without 'Pay To:' address creates payments to yourself."));
     }
 }
