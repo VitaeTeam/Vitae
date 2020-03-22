@@ -60,7 +60,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             if (IsMine(*wallet, destMN)) {
                 isminetype mine = wallet->IsMine(wtx.vout[nIndexMN]);
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
-				if (i == 2) {
+				if (nIndexMN == 2) {
 					sub.type = TransactionRecord::FNReward;
 				} else {
 					sub.type = TransactionRecord::MNReward;
