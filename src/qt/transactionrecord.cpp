@@ -75,7 +75,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             //stake reward
             if (wtx.IsZerocoinSpend()) {
                 sub.involvesWatchAddress = false;
-                sub.type = TransactionRecord::StakeZPIV;
+                sub.type = TransactionRecord::StakeZVIT;
                 sub.address = mapValue["zerocoinmint"];
                 sub.credit = nNet;
                 for (const CTxOut& out : wtx.vout) {
@@ -314,11 +314,11 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
 bool IsZPIVType(TransactionRecord::Type type)
 {
     switch (type) {
-        case TransactionRecord::StakeZPIV:
+        case TransactionRecord::StakeZVIT:
         case TransactionRecord::ZerocoinMint:
         case TransactionRecord::ZerocoinSpend:
         case TransactionRecord::RecvFromZerocoinSpend:
-        case TransactionRecord::ZerocoinSpend_Change_zPiv:
+        case TransactionRecord::ZerocoinSpend_Change_zVit:
         case TransactionRecord::ZerocoinSpend_FromMe:
             return true;
         default:
@@ -351,7 +351,7 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx)
 
     //Determine the depth of the block
     int nBlocksToMaturity = wtx.GetBlocksToMaturity();
-    if (type == TransactionRecord::StakeZPIV) {
+    if (type == TransactionRecord::StakeZVIT) {
         if (pindex) {
             nBlocksToMaturity = std::max(0, (int) (Params().COINBASE_MATURITY() - status.depth));
         } else {
@@ -375,7 +375,7 @@ void TransactionRecord::updateStatus(const CWalletTx& wtx)
         }
     }
     // For generated transactions, determine maturity
-    else if (type == TransactionRecord::Generated || type == TransactionRecord::StakeMint || type == TransactionRecord::StakeZPIV || type == TransactionRecord::MNReward || type == TransactionRecord::FNReward) {
+    else if (type == TransactionRecord::Generated || type == TransactionRecord::StakeMint || type == TransactionRecord::StakeZVIT || type == TransactionRecord::MNReward || type == TransactionRecord::FNReward) {
         if (nBlocksToMaturity > 0) {
             status.status = TransactionStatus::Immature;
             status.matures_in = nBlocksToMaturity;
