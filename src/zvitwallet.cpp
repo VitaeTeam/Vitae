@@ -23,12 +23,12 @@ CzPIVWallet::CzPIVWallet(std::string strWalletFile)
     //Check for old db version of storing zpiv seed
     if (fFirstRun) {
         uint256 seed;
-        if (walletdb.ReadZPIVSeed_deprecated(seed)) {
+        if (walletdb.ReadZVITSeed_deprecated(seed)) {
             //Update to new format, erase old
             seedMaster = seed;
             hashSeed = Hash(seed.begin(), seed.end());
             if (pwalletMain->AddDeterministicSeed(seed)) {
-                if (walletdb.EraseZPIVSeed_deprecated()) {
+                if (walletdb.EraseZVITSeed_deprecated()) {
                     LogPrintf("%s: Updated zPIV seed databasing\n", __func__);
                     fFirstRun = false;
                 } else {

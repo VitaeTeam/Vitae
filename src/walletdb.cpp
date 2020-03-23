@@ -1202,7 +1202,7 @@ bool CWalletDB::EraseZVITSeed_deprecated()
     return Erase(string("dzs"));
 }
 
-bool CWalletDB::ReadZVOTSeed(const uint256& hashSeed, vector<unsigned char>& seed)
+bool CWalletDB::ReadZVITSeed(const uint256& hashSeed, vector<unsigned char>& seed)
 {
     return Read(make_pair(string("dzs"), hashSeed), seed);
 }
