@@ -71,9 +71,9 @@ SettingsWalletOptionsWidget::SettingsWalletOptionsWidget(VITAEGUI* _window, QWid
     setCssBtnSecondary(ui->pushButtonReset);
     setCssBtnSecondary(ui->pushButtonClean);
 
-    connect(ui->pushButtonSave, SIGNAL(clicked()), parent, SLOT(onSaveOptionsClicked()));
-    connect(ui->pushButtonReset, SIGNAL(clicked()), this, SLOT(onResetClicked()));
-    connect(ui->pushButtonClean, SIGNAL(clicked()), parent, SLOT(onDiscardChanges()));
+    connect(ui->pushButtonSave, &QPushButton::clicked, [this] { Q_EMIT saveSettings(); });
+    connect(ui->pushButtonReset, &QPushButton::clicked, this, &SettingsWalletOptionsWidget::onResetClicked);
+    connect(ui->pushButtonClean, &QPushButton::clicked, [this] { Q_EMIT discardSettings(); });
 }
 
 void SettingsWalletOptionsWidget::onResetClicked(){

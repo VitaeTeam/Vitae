@@ -29,7 +29,7 @@ GovernancePage::GovernancePage(QWidget* parent) : QWidget(parent),
     ui->setupUi(this);
 
     timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(updateProposalList()));
+    connect(timer, &QTimer::timeout, this, &GovernancePage::updateProposalList);
     timer->start(100000);
     fLockUpdating = false;
 }
