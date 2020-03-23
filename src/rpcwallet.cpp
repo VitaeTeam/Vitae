@@ -2783,29 +2783,22 @@ UniValue resetmintzerocoin(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "resetmintzerocoin ( fullscan )\n"
+            "resetspentzerocoin\n"
             "\nScan the blockchain for all of the zerocoins that are held in the wallet.dat.\n"
-            "Update any meta-data that is incorrect. Archive any mints that are not able to be found.\n" +
-            + HelpRequiringPassphrase()); + "\n"
-
-            "\nArguments:\n"
-            "1. fullscan          (boolean, optional) Rescan each block of the blockchain.\n"
-            "                               WARNING - may take 30+ minutes!\n"
+            "Reset mints that are considered spent that did not make it into the blockchain.\n"
 
             "\nResult:\n"
             "{\n"
-            "  \"updated\": [       (array) JSON array of updated mints.\n"
-            "    \"xxx\"            (string) Hex encoded mint.\n"
-            "    ,...\n"
-            "  ],\n"
-            "  \"archived\": [      (array) JSON array of archived mints.\n"
-            "    \"xxx\"            (string) Hex encoded mint.\n"
+            "  \"restored\": [        (array) JSON array of restored objects.\n"
+            "    {\n"
+            "      \"serial\": \"xxx\"  (string) Serial in hex format.\n"
+            "    }\n"
             "    ,...\n"
             "  ]\n"
             "}\n"
 
             "\nExamples:\n" +
-            HelpExampleCli("resetmintzerocoin", "true") + HelpExampleRpc("resetmintzerocoin", "true"));
+            HelpExampleCli("resetspentzerocoin", "") + HelpExampleRpc("resetspentzerocoin", ""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
