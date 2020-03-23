@@ -159,11 +159,11 @@ void ZVitControlDialog::updateLabels()
     }
 
     //update this dialog's labels
-    ui->labelZVitt->setText(QString::number(nAmount));
+    ui->labelZVit->setText(QString::number(nAmount));
     ui->labelQuantity_int->setText(QString::number(setSelectedMints.size()));
 
     //update PrivacyDialog labels
-    privacyDialog->setZVittrolLabels(nAmount, setSelectedMints.size());
+    privacyDialog->setZVitControlLabels(nAmount, setSelectedMints.size());
 }
 
 std::vector<CMintMeta> ZVitControlDialog::GetSelectedMints()
