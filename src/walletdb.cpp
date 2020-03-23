@@ -1173,7 +1173,7 @@ bool CWalletDB::ReadCurrentSeedHash(uint256& hashSeed)
     return Read(string("seedhash"), hashSeed);
 }
 
-bool CWalletDB::WriteZPIVSeed(const uint256& hashSeed, const vector<unsigned char>& seed)
+bool CWalletDB::WriteZVITSeed(const uint256& hashSeed, const vector<unsigned char>& seed)
 {
     LogPrintf("%s: seedHash %s \nseed %s\n", __func__, hashSeed.GetHex(), ReverseEndianString(HexStr(seed)));
     if (!WriteCurrentSeedHash(hashSeed))
@@ -1182,13 +1182,13 @@ bool CWalletDB::WriteZPIVSeed(const uint256& hashSeed, const vector<unsigned cha
     return Write(make_pair(string("dzs"), hashSeed), seed);
 }
 
-bool CWalletDB::EraseZPIVSeed()
+bool CWalletDB::EraseZVITSeed()
 {
     uint256 hash;
     if(!ReadCurrentSeedHash(hash)){
         return error("Failed to read a current seed hash");
     }
-    if(!WriteZPIVSeed(hash, ToByteVector(base_uint<256>(0) << 256))) {
+    if(!WriteZVITSeed(hash, ToByteVector(base_uint<256>(0) << 256))) {
         return error("Failed to write empty seed to wallet");
     }
     if(!WriteCurrentSeedHash(0)) {
@@ -1198,7 +1198,7 @@ bool CWalletDB::EraseZPIVSeed()
     return true;
 }
 
-bool CWalletDB::ReadZPIVSeed(const uint256& hashSeed, vector<unsigned char>& seed)
+bool CWalletDB::ReadZVITSeed(const uint256& hashSeed, vector<unsigned char>& seed)
 {
     return Read(make_pair(string("dzs"), hashSeed), seed);
 }
