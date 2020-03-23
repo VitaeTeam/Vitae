@@ -160,7 +160,6 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/tooltipmenu.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addresseswidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/defaultdialog.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/denomgenerationdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/privacywidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/coldstakingwidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/settings/settingsbackupwallet.cpp
