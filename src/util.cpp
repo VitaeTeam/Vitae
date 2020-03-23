@@ -133,7 +133,7 @@ bool fLogTimestamps = false;
 bool fLogIPs = false;
 volatile bool fReopenDebugLog = false;
 
-/** Log categories bitfield. Leveldb/libevent need special handling if their flags are changed at runtime. */
+/** Log categories bitfield. libevent needs special handling if their flags are changed at runtime. */
 std::atomic<uint32_t> logCategories(0);
 
 
@@ -340,6 +340,21 @@ static std::string LogTimestampStr(const std::string &str, bool *fStartedNewLine
         *fStartedNewLine = false;
 
     return strStamped;
+}
+
+std::vector<CLogCategoryActive> ListActiveLogCategories()
+{
+    std::vector<CLogCategoryActive> ret;
+    for (unsigned int i = 0; i < ARRAYLEN(LogCategories); i++) {
+        // Omit the special cases.
+        if (LogCategories[i].flag != BCLog::NONE && LogCategories[i].flag != BCLog::ALL) {
+            CLogCategoryActive catActive;
+            catActive.category = LogCategories[i].category;
+            catActive.active = LogAcceptCategory(LogCategories[i].flag);
+            ret.push_back(catActive);
+        }
+    }
+    return ret;
 }
 
 int LogPrintStr(const std::string& str)
