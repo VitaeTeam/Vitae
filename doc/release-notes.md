@@ -158,7 +158,13 @@ E.g. `logging "[\"all\"]" "[\"http\"]""`
 Details about each new command can be found below.
 
 
-*v4.0.2* Change log
+Changed command-line options
+-----------------------------
+
+- `-debuglogfile=<file>` can be used to specify an alternative debug logging file. This can be an absolute path or a path relative to the data directory
+
+
+*version* Change log
 ==============
 
 Detailed release notes follow. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
