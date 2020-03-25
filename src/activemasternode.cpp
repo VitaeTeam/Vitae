@@ -28,7 +28,7 @@ void CActiveMasternode::ManageStatus()
 
     if(!fMasterNode) return;
 
-    if (logCategories != BCLog::NONE) LogPrintf("CActiveMasternode::ManageStatus() - Begin\n");
+    LogPrint(BCLog::MASTERNODE, "CActiveMasternode::ManageStatus() - Begin\n");
 
     //need correct adjusted time to send ping
     bool fIsInitialDownload = IsInitialBlockDownload();
