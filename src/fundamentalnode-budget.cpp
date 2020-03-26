@@ -701,6 +701,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
 
     std::string strProposals = "";
     int nCountThreshold = nHighestCount - mnodeman.CountEnabled(ActiveProtocol()) / 10;
+    bool fThreshold = false;
     it = mapFinalizedBudgets.begin();
     while (it != mapFinalizedBudgets.end()) {
         CFinalizedBudget* pfinalizedBudget = &((*it).second);
@@ -711,6 +712,7 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
                  nBlockHeight, pfinalizedBudget->GetVoteCount(), nCountThreshold);
 
         if (pfinalizedBudget->GetVoteCount() > nCountThreshold) {
+            fThreshold = true;
             LogPrint("fnbudget","CBudgetManager::IsTransactionValid - GetVoteCount() > nCountThreshold passed\n");
             if (nBlockHeight >= pfinalizedBudget->GetBlockStart() && nBlockHeight <= pfinalizedBudget->GetBlockEnd()) {
                 LogPrint("fnbudget","CBudgetManager::IsTransactionValid - GetBlockStart() passed\n");
@@ -731,7 +733,12 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
         ++it;
     }
 
-    //we looked through all of the known budgets
+    // If not enough masternodes autovoted for any of the finalized budgets pay a masternode instead
+    if(!fThreshold) {
+        transactionStatus = TrxValidationStatus::VoteThreshold;
+    }
+    
+    // we looked through all of the known budgets
     return transactionStatus;
 }
 
