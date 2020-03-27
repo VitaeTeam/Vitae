@@ -11,7 +11,7 @@
 #include "swifttx.h"
 #include "timedata.h"
 #include "wallet.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 #include <stdint.h>
 
