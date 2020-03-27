@@ -9,6 +9,8 @@
 #include "wallet/wallet.h"
 
 #include "coincontrol.h"
+#include "init.h"
+#include "guiinterfaceutil.h"
 #include "fundamentalnode-budget.h"
 #include "script/sign.h"
 #include "spork.h"
@@ -468,22 +470,6 @@ void CWallet::SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator> ran
 }
 
 ///////// Init ////////////////
-
-bool static UIError(const std::string &str)
-{
-    uiInterface.ThreadSafeMessageBox(str, "Error", CClientUIInterface::MSG_ERROR);
-    return false;
-}
-
-void static UIWarning(const std::string &str)
-{
-    uiInterface.ThreadSafeMessageBox(str, "Warning", CClientUIInterface::MSG_WARNING);
-}
-
-std::string AmountErrMsg(const char * const optname, const std::string& strValue)
-{
-    return strprintf(_("Invalid amount for -%s=<amount>: '%s'"), optname, strValue);
-}
 
 bool CWallet::ParameterInteraction()
 {
