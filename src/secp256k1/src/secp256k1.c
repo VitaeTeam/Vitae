@@ -588,10 +588,10 @@ int secp256k1_ec_pubkey_combine(const secp256k1_context* ctx, secp256k1_pubkey *
     return 1;
 }
 
-#ifdef ENABLE_MODULE_ECDH
+/*#ifdef ENABLE_MODULE_ECDH*/
 # include "modules/ecdh/main_impl.h"
-#endif
+/*#endif*/
 
-#ifdef ENABLE_MODULE_RECOVERY
+/*#ifdef ENABLE_MODULE_RECOVERY*/
 # include "modules/recovery/main_impl.h"
-#endif
+/*#endif*/
