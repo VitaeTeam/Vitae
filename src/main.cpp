@@ -6577,6 +6577,10 @@ int ActiveProtocol()
     if (sporkManager.IsSporkActive(SPORK_18_ZEROCOIN_PUBLICSPEND_V4))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
 
+    // SPORK_15 was used for 70918 (v4.0), commented out now.
+    //if (sporkManager.IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
+    //        return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
+
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }
 
