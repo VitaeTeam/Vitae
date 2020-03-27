@@ -8,6 +8,7 @@
 #include "netbase.h"
 #include "masternodeconfig.h"
 #include "util.h"
+#include "ui_interface.h"
 #include <base58.h>
 
 CMasternodeConfig masternodeConfig;
@@ -17,8 +18,9 @@ void CMasternodeConfig::add(std::string alias, std::string ip, std::string privK
     entries.push_back(cme);
 }
 
-bool CMasternodeConfig::read(std::string& strErr) {
-
+bool CMasternodeConfig::read(std::string& strErr)
+{
+    int linenumber = 1;
     boost::filesystem::path pathMasternodeConfigFile = GetMasternodeConfigFile();
     boost::filesystem::ifstream streamConfig(pathMasternodeConfigFile);
 
@@ -30,8 +32,7 @@ bool CMasternodeConfig::read(std::string& strErr) {
         return true; // Nothing to read, so just return
 	}
 
-    for(std::string line; std::getline(streamConfig, line); )
-    {
+    for (std::string line; std::getline(streamConfig, line); linenumber++) {
         if(line.empty()) {
             continue;
         }
