@@ -21,7 +21,7 @@
 #include "swifttx.h"
 #include "uint256.h"
 #include "utilmoneystr.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
 #endif

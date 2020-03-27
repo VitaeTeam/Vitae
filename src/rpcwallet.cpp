@@ -19,7 +19,7 @@
 #include "utilmoneystr.h"
 #include "wallet.h"
 #include "walletdb.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 #include <stdint.h>
 

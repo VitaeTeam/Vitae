@@ -9,7 +9,7 @@
 #include "init.h"
 #include "wallet.h"
 #include "primitives/deterministicmint.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 using namespace libzerocoin;
 

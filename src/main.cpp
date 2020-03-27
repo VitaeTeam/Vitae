@@ -34,7 +34,7 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 #include "masternode-pos.h"
 #include "masternode.h"

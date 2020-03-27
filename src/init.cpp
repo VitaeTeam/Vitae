@@ -46,7 +46,7 @@
 #include "util.h"
 #include "utilmoneystr.h"
 #include "validationinterface.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 #ifdef ENABLE_WALLET
 #include "db.h"

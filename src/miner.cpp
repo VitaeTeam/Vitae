@@ -29,7 +29,7 @@
 #include "blocksignature.h"
 #include "spork.h"
 #include "invalid.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 #include "masternodeman.h"
 

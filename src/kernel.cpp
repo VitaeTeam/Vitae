@@ -13,7 +13,7 @@
 #include "timedata.h"
 #include "util.h"
 #include "stakeinput.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 using namespace std;
 
