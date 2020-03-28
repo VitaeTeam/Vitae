@@ -4561,7 +4561,7 @@ bool ContextualCheckZerocoinStake(int nHeight, CStakeInput* stake)
     if (nHeight < Params().Zerocoin_Block_V2_Start())
         return error("%s: zVIT stake block is less than allowed start height", __func__);
 
-    if (CZPivStake* zVIT = dynamic_cast<CZPivStake*>(stake)) {
+    if (CZVitStake* zVIT = dynamic_cast<CZVitStake*>(stake)) {
         CBlockIndex* pindexFrom = zVIT->GetIndexFrom();
         if (!pindexFrom)
             return error("%s: failed to get index associated with zVIT stake checksum", __func__);

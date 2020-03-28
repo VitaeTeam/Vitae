@@ -570,7 +570,7 @@ bool ProcessBlockFound(CBlock* pblock, CWallet& wallet, CReserveKey& reservekey)
     CValidationState state;
     if (!ProcessNewBlock(state, NULL, pblock)) {
         if (pblock->IsZerocoinStake())
-            pwalletMain->zpivTracker->RemovePending(pblock->vtx[1].GetHash());
+            pwalletMain->zvitTracker->RemovePending(pblock->vtx[1].GetHash());
         return error("VITAEMiner : ProcessNewBlock, block not accepted");
     }
 
