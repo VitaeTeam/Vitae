@@ -2128,7 +2128,7 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
     }
 
     //zVIT
-    if (GetBoolArg("zvitstake", true) && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if (GetBoolArg("-zvitstake", true) && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
         //Only update zVIT set once per update interval
         bool fUpdate = false;
         static int64_t nTimeLastUpdate = 0;
@@ -5161,13 +5161,13 @@ void CWallet::ReconsiderZerocoins(std::list<CZerocoinMint>& listMintsRestored, s
     }
 }
 
-string CWallet::GetUniqueWalletBackupName(bool zvitAuto) const
+string CWallet::GetUniqueWalletBackupName(bool fzvitAuto) const
 {
     stringstream ssDateTime;
     std::string strWalletBackupName = strprintf("%s", DateTimeStrFormat(".%Y-%m-%d-%H-%M", GetTime()));
     ssDateTime << strWalletBackupName;
 
-    return strprintf("wallet%s.dat%s", zvitAuto ? "-autzvitbackup" : "", DateTimeStrFormat(".%Y-%m-%d-%H-%M", GetTime()));
+    return strprintf("wallet%s.dat%s", fzvitAuto ? "-autozvitbackup" : "", DateTimeStrFormat(".%Y-%m-%d-%H-%M", GetTime()));
 }
 
 void CWallet::ZVitBackupWallet()
@@ -5209,8 +5209,8 @@ void CWallet::ZVitBackupWallet()
 
     BackupWallet(*this, backupPath.string());
 
-    if(!GetArg("zvitbackuppath", "").empty()) {
-        filesystem::path customPath(GetArg("zvitbackuppath", ""));
+    if(!GetArg("-zvitbackuppath", "").empty()) {
+        filesystem::path customPath(GetArg("-zvitbackuppath", ""));
         filesystem::create_directories(customPath);
 
         if(!customPath.has_extension()) {

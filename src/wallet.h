@@ -222,7 +222,7 @@ public:
     bool DatabaseMint(CDeterministicMint& dMint);
     bool SetMintUnspent(const CBigNum& bnSerial);
     bool UpdateMint(const CBigNum& bnValue, const int& nHeight, const uint256& txid, const libzerocoin::CoinDenomination& denom);
-    string GetUniqueWalletBackupName(bool zvitAuto) const;
+    string GetUniqueWalletBackupName(bool fzvitAuto) const;
 
 
     /** Zerocin entry changed.
