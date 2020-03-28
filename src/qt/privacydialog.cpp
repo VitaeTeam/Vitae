@@ -410,7 +410,7 @@ void PrivacyDialog::sendzVIT()
     ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware.\nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zPIV selector if applicable
+    // use mints from zVIT selector if applicable
     vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::setSelectedMints.empty()) {
@@ -420,8 +420,8 @@ void PrivacyDialog::sendzVIT()
             if (meta.nVersion < libzerocoin::PrivateCoin::PUBKEY_VERSION) {
                 //version 1 coins have to use full security level to successfully spend.
                 if (nSecurityLevel < 100) {
-                    QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Version 1 zPIV require a security level of 100 to successfully spend."), QMessageBox::Ok, QMessageBox::Ok);
-                    ui->TEMintStatus->setPlainText(tr("Failed to spend zPIV"));
+                    QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Version 1 zVIT require a security level of 100 to successfully spend."), QMessageBox::Ok, QMessageBox::Ok);
+                    ui->TEMintStatus->setPlainText(tr("Failed to spend zVIT"));
                     ui->TEMintStatus->repaint();
                     return;
                 }
@@ -452,8 +452,8 @@ void PrivacyDialog::sendzVIT()
     // Display errors during spend
     if (!fSuccess) {
         if (receipt.GetStatus() == ZVIT_SPEND_V1_SEC_LEVEL) {
-            QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Version 1 zPIV require a security level of 100 to successfully spend."), QMessageBox::Ok, QMessageBox::Ok);
-            ui->TEMintStatus->setPlainText(tr("Failed to spend zPIV"));
+            QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Version 1 zVIT require a security level of 100 to successfully spend."), QMessageBox::Ok, QMessageBox::Ok);
+            ui->TEMintStatus->setPlainText(tr("Failed to spend zVIT"));
             ui->TEMintStatus->repaint();
             return;
         }

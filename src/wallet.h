@@ -674,7 +674,7 @@ public:
     /** MultiSig address added */
     boost::signals2::signal<void(bool fHaveMultiSig)> NotifyMultiSigChanged;
 
-    /** zPIV reset */
+    /** zVIT reset */
     boost::signals2::signal<void()> NotifyzPIVReset;
 
     /** notify wallet file backed up */

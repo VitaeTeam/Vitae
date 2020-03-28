@@ -36,10 +36,10 @@ frequently tested on them.
 Notable Changes
 ==============
 
-zPIV Updates
+zVIT Updates
 --------------
 
-### Fix spending for v1 zPIV created before block 1050020
+### Fix spending for v1 zVIT created before block 1050020
 
 The transition to v2 zVIT and reset of the accumulators caused blocks 1050000 - 1050010 to be accumulated twice. This was causing a number v1 zVIT to not create valid witnesses, and thus were not spendable. This problem is fixed by double accumulating blocks 1050000-1050010 when creating the witness. Any user that had issues spending zVIT v1 will now be able to convert that into VIT and then zVIT v2 (if desired).
 
@@ -102,7 +102,7 @@ Detailed release notes follow. This overview includes changes that affect behavi
 
 ### Core Features
  - #549 `8bf13a5ad` [Crypto] Switch to libsecp256k1 signature verification and update the lib (warrows)
- - #609 `6b73598b9` [MoveOnly] Remove zPIV code from main.cpp (presstab)
+ - #609 `6b73598b9` [MoveOnly] Remove zVIT code from main.cpp (presstab)
  - #610 `6c3bc8c76` [Main] Check whether tx is in chain in ContextualCheckZerocoinMint(). (presstab)
  - #624 `1a82aec96` [Core] Missing seesaw value for block 325000 (warrows)
  - #636 `d359c6136` [Main] Write to the zerocoinDB in batches (Fuzzbawls)
@@ -120,7 +120,7 @@ Detailed release notes follow. This overview includes changes that affect behavi
 ### GUI
  - #580 `c296b7572` Fixed Multisend dialog to show settings properly (SHTDJ)
  - #598 `f0d894253` [GUI] Fix wrongly displayed balance on Overview tab (Mrs-X)
- - #600 `217433561` [GUI] Only enable/disable PrivacyDialog zPIV elements if needed. (presstab)
+ - #600 `217433561` [GUI] Only enable/disable PrivacyDialog zVIT elements if needed. (presstab)
  - #612 `6dd752cb5` [Qt] Show progress percent for zpiv reindex operations (Fuzzbawls)
  - #626 `9b6a42ba0` [Qt] Add Tor service icon to status bar (Fuzzbawls)
  - #629 `14e125795` [Qt] Remove useless help button from QT dialogs (windows) (warrows)
@@ -128,7 +128,7 @@ Detailed release notes follow. This overview includes changes that affect behavi
  
 ### Wallet
  - #597 `766d5196c` [Wallet] Write new transactions to wtxOrdered properly (Fuzzbawls)
- - #603 `779d8d597` Fix spending for v1 zPIV created before block 1050020. (presstab)
+ - #603 `779d8d597` Fix spending for v1 zVIT created before block 1050020. (presstab)
  - #617 `6b525f0df` [Wallet] Adjust staking properties to lower orphan rates. (presstab)
  - #625 `5f2e61d60` [Wallet] Add some LOCK to avoid crash (warrows)
  
