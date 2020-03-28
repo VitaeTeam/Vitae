@@ -57,7 +57,7 @@ User Experience
 
 Fixes a display issue introduced with a previous change. This was a "display only" issue, all your coins were there all the time.
 
-### Show progress percent for zpiv reindex operations
+### Show progress percent for zvit reindex operations
 
 When starting the wallet with `-reindexaccumulators` and/or `-reindexzerocoin`, these operations can take a considerable time to complete depending on system hardware. A progress percent on the splash screen is now shown for these processes to avoid confusion in thinking that the wallet has frozen.
 
@@ -121,7 +121,7 @@ Detailed release notes follow. This overview includes changes that affect behavi
  - #580 `c296b7572` Fixed Multisend dialog to show settings properly (SHTDJ)
  - #598 `f0d894253` [GUI] Fix wrongly displayed balance on Overview tab (Mrs-X)
  - #600 `217433561` [GUI] Only enable/disable PrivacyDialog zVIT elements if needed. (presstab)
- - #612 `6dd752cb5` [Qt] Show progress percent for zpiv reindex operations (Fuzzbawls)
+ - #612 `6dd752cb5` [Qt] Show progress percent for zvit reindex operations (Fuzzbawls)
  - #626 `9b6a42ba0` [Qt] Add Tor service icon to status bar (Fuzzbawls)
  - #629 `14e125795` [Qt] Remove useless help button from QT dialogs (windows) (warrows)
  - #646 `c66b7b632` [Qt] Periodic translation update (Fuzzbawls)

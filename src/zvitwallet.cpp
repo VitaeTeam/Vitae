@@ -21,7 +21,7 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
     uint256 hashSeed;
     bool fFirstRun = !walletdb.ReadCurrentSeedHash(hashSeed);
 
-    //Check for old db version of storing zpiv seed
+    //Check for old db version of storing zvit seed
     if (fFirstRun) {
         uint256 seed;
         if (walletdb.ReadZVITSeed_deprecated(seed)) {
@@ -33,7 +33,7 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
                     LogPrintf("%s: Updated zVIT seed databasing\n", __func__);
                     fFirstRun = false;
                 } else {
-                    LogPrintf("%s: failed to remove old zpiv seed\n", __func__);
+                    LogPrintf("%s: failed to remove old zvit seed\n", __func__);
                 }
             }
         }
@@ -55,7 +55,7 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
         key.MakeNewKey(true);
         seed = key.GetPrivKey_256();
         seedMaster = seed;
-        LogPrintf("%s: first run of zpiv wallet detected, new seed generated. Seedhash=%s\n", __func__, Hash(seed.begin(), seed.end()).GetHex());
+        LogPrintf("%s: first run of zvit wallet detected, new seed generated. Seedhash=%s\n", __func__, Hash(seed.begin(), seed.end()).GetHex());
     } else if (!pwalletMain->GetDeterministicSeed(hashSeed, seed)) {
         LogPrintf("%s: failed to get deterministic seed for hashseed %s\n", __func__, hashSeed.GetHex());
         return;
