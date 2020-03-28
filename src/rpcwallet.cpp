@@ -3307,11 +3307,11 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
     return arrRet;
 }
 
-UniValue setzpivseed(const UniValue& params, bool fHelp)
+UniValue sezvitseed(const UniValue& params, bool fHelp)
 {
     if(fHelp || params.size() != 1)
         throw runtime_error(
-            "setzpivseed \"seed\"\n"
+            "sezvitseed \"seed\"\n"
             "\nSet the wallet's deterministic zvit seed to a specific value.\n" +
             HelpRequiringPassphrase() + "\n"
 
@@ -3322,8 +3322,8 @@ UniValue setzpivseed(const UniValue& params, bool fHelp)
             "\"success\" : b,  (boolean) Whether the seed was successfully set.\n"
 
             "\nExamples\n" +
-            HelpExampleCli("setzpivseed", "63f793e7895dd30d99187b35fbfb314a5f91af0add9e0a4e5877036d1e392dd5") +
-            HelpExampleRpc("setzpivseed", "63f793e7895dd30d99187b35fbfb314a5f91af0add9e0a4e5877036d1e392dd5"));
+            HelpExampleCli("sezvitseed", "63f793e7895dd30d99187b35fbfb314a5f91af0add9e0a4e5877036d1e392dd5") +
+            HelpExampleRpc("sezvitseed", "63f793e7895dd30d99187b35fbfb314a5f91af0add9e0a4e5877036d1e392dd5"));
 
     EnsureWalletIsUnlocked();
 
@@ -3341,11 +3341,11 @@ UniValue setzpivseed(const UniValue& params, bool fHelp)
     return ret;
 }
 
-UniValue getzpivseed(const UniValue& params, bool fHelp)
+UniValue gezvitseed(const UniValue& params, bool fHelp)
 {
     if(fHelp || !params.empty())
         throw runtime_error(
-            "getzpivseed\n"
+            "gezvitseed\n"
             "\nCheck archived zVIT list to see if any mints were added to the blockchain.\n" +
             HelpRequiringPassphrase() + "\n"
 
@@ -3353,7 +3353,7 @@ UniValue getzpivseed(const UniValue& params, bool fHelp)
             "\"seed\" : s,  (string) The deterministic zVIT seed.\n"
 
             "\nExamples\n" +
-            HelpExampleCli("getzpivseed", "") + HelpExampleRpc("getzpivseed", ""));
+            HelpExampleCli("gezvitseed", "") + HelpExampleRpc("gezvitseed", ""));
 
     EnsureWalletIsUnlocked();
 
@@ -3415,10 +3415,10 @@ UniValue generatemintlist(const UniValue& params, bool fHelp)
     return arrRet;
 }
 
-UniValue dzpivstate(const UniValue& params, bool fHelp) {
+UniValue dzvitstate(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() != 0)
         throw runtime_error(
-                "dzpivstate\n"
+                "dzvitstate\n"
                         "\nThe current state of the mintpool of the deterministic zVIT wallet.\n" +
                 HelpRequiringPassphrase() + "\n"
 
@@ -3429,7 +3429,7 @@ UniValue dzpivstate(const UniValue& params, bool fHelp) {
     UniValue obj(UniValue::VOBJ);
     int nCount, nCountLastUsed;
     zwallet->GetState(nCount, nCountLastUsed);
-    obj.push_back(Pair("dzpiv_count", nCount));
+    obj.push_back(Pair("dzvit_count", nCount));
     obj.push_back(Pair("mintpool_count", nCountLastUsed));
 
     return obj;
@@ -3466,11 +3466,11 @@ void static SearchThread(CzVITWallet* zwallet, int nCountStart, int nCountEnd)
     }
 }
 
-UniValue searchdzpiv(const UniValue& params, bool fHelp)
+UniValue searchdzvit(const UniValue& params, bool fHelp)
 {
     if(fHelp || params.size() != 3)
         throw runtime_error(
-            "searchdzpiv\n"
+            "searchdzvit\n"
             "\nMake an extended search for deterministically generated zVIT that have not yet been recognized by the wallet.\n" +
             HelpRequiringPassphrase() + "\n"
 
@@ -3480,7 +3480,7 @@ UniValue searchdzpiv(const UniValue& params, bool fHelp)
             "3. \"threads\"     (numeric) How many threads should this operation consume.\n"
 
             "\nExamples\n" +
-            HelpExampleCli("searchdzpiv", "1, 100, 2") + HelpExampleRpc("searchdzpiv", "1, 100, 2"));
+            HelpExampleCli("searchdzvit", "1, 100, 2") + HelpExampleRpc("searchdzvit", "1, 100, 2"));
 
     EnsureWalletIsUnlocked();
 
@@ -3496,7 +3496,7 @@ UniValue searchdzpiv(const UniValue& params, bool fHelp)
 
     CzVITWallet* zwallet = pwalletMain->zwalletMain;
 
-    boost::thread_group* dzpivThreads = new boost::thread_group();
+    boost::thread_group* dzvitThreads = new boost::thread_group();
     int nRangePerThread = nRange / nThreads;
 
     int nPrevThreadEnd = nCount - 1;
@@ -3504,10 +3504,10 @@ UniValue searchdzpiv(const UniValue& params, bool fHelp)
         int nStart = nPrevThreadEnd + 1;;
         int nEnd = nStart + nRangePerThread;
         nPrevThreadEnd = nEnd;
-        dzpivThreads->create_thread(boost::bind(&SearchThread, zwallet, nStart, nEnd));
+        dzvitThreads->create_thread(boost::bind(&SearchThread, zwallet, nStart, nEnd));
     }
 
-    dzpivThreads->join_all();
+    dzvitThreads->join_all();
 
     zwallet->RemoveMintsFromPool(pwalletMain->zvitTracker->GetSerialHashes());
     zwallet->SyncWithChain(false);

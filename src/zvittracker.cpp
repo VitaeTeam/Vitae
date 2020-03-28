@@ -436,7 +436,7 @@ std::set<CMintMeta> CzVITTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
         std::list<CDeterministicMint> listDeterministicDB = walletdb.ListDeterministicMints();
         for (auto& dMint : listDeterministicDB)
             Add(dMint);
-        LogPrint("zero", "%s: added %d dzpiv from DB\n", __func__, listDeterministicDB.size());
+        LogPrint("zero", "%s: added %d dzvit from DB\n", __func__, listDeterministicDB.size());
     }
 
     std::vector<CMintMeta> vOverWrite;
