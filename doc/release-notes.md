@@ -1,8 +1,8 @@
-PIVX Core version *3.1.1* is now available from:  <https://github.com/pivx-project/pivx/releases>
+VITAE Core version *3.1.1* is now available from:  <https://github.com/vitae-project/vitae/releases>
 
 This is a new minor version release, including various bug fixes and performance improvements, as well as updated translations.
 
-Please report bugs using the issue tracker at github: <https://github.com/pivx-project/pivx/issues>
+Please report bugs using the issue tracker at github: <https://github.com/vitae-project/vitae/issues>
 
 Non-Mandatory Update
 ==============
@@ -67,7 +67,7 @@ When starting the wallet with `-reindexaccumulators` and/or `-reindexzerocoin`, 
 An icon is now shown for clients that are connected and operating over the TOR network. Included is a mouse-over tooltip showing the onion address associated with the client. This icon is only shown when a connection to the TOR network can be established, and will be hidden otherwise.
 
 
-PIVX Daemon & Client (RPC Changes)
+VITAE Daemon & Client (RPC Changes)
 --------------
 
 ### Fix listtransactions RPC function
@@ -81,7 +81,7 @@ Technical Changes
 
 ### Switch to libsecp256k1 signature verification
 
-Here is the long overdue update for PIVX to let go of OpenSSL in its consensus code. The rationale behind it is to avoid depending on an external and changing library where our consensus code is affected. This is security and consensus critical. PIVX users will experience quicker block validations and sync times as block transactions are verified under libsecp256k1.
+Here is the long overdue update for VITAE to let go of OpenSSL in its consensus code. The rationale behind it is to avoid depending on an external and changing library where our consensus code is affected. This is security and consensus critical. VITAE users will experience quicker block validations and sync times as block transactions are verified under libsecp256k1.
 
 The recent [CVE-2018-0495](https://www.nccgroup.trust/us/our-research/technical-advisory-return-of-the-hidden-number-problem/) brings into question a potential vulnerability with OpenSSL (and other crypto libraries) that libsecp256k1 is not susceptible to.
 
