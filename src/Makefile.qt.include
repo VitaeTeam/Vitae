@@ -24,7 +24,6 @@ QT_FORMS_UI = \
   qt/vitae/forms/topbar.ui \
   qt/vitae/forms/txrow.ui \
   qt/vitae/forms/dashboardwidget.ui \
-  qt/vitae/forms/coincontrolvitwidget.ui \
   qt/vitae/forms/addresslabelrow.ui \
   qt/vitae/forms/contactdropdownrow.ui \
   qt/vitae/forms/mninfodialog.ui \
@@ -118,7 +117,6 @@ QT_MOC_CPP = \
   qt/vitae/moc_topbar.cpp \
   qt/vitae/moc_txrow.cpp \
   qt/vitae/moc_dashboardwidget.cpp \
-  qt/vitae/moc_coincontrolvitwidget.cpp \
   qt/vitae/moc_addresslabelrow.cpp \
   qt/vitae/moc_contactdropdownrow.cpp \
   qt/vitae/moc_mninfodialog.cpp \
@@ -250,7 +248,6 @@ BITCOIN_QT_H = \
   qt/vitae/addressholder.h \
   qt/vitae/addressfilterproxymodel.h \
   qt/vitae/dashboardwidget.h \
-  qt/vitae/coincontrolvitwidget.h \
   qt/vitae/addresslabelrow.h \
   qt/vitae/contactdropdownrow.h \
   qt/vitae/mninfodialog.h \
@@ -637,7 +634,6 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/addressholder.cpp \
   qt/vitae/addressfilterproxymodel.cpp \
   qt/vitae/dashboardwidget.cpp \
-  qt/vitae/coincontrolvitwidget.cpp \
   qt/vitae/addresslabelrow.cpp \
   qt/vitae/contactdropdownrow.cpp \
   qt/vitae/contactsdropdown.cpp \
