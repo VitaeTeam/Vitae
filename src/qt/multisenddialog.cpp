@@ -198,9 +198,9 @@ void MultiSendDialog::on_activateButton_clicked()
 {
     QString strRet;
     if (pwalletMain->vMultiSend.size() < 1)
-        strRet = tr("Unable to activate MultiSend, check MultiSend vector" + "\n";
+        strRet = tr("Unable to activate MultiSend, check MultiSend vector") + "\n";
     else if (!(ui->multiSendStakeCheckBox->isChecked() || ui->multiSendFundamentalnodeCheckBox->isChecked() || ui->multiSendMasternodeCheckBox->isChecked() )) {
-        strRet = tr("Need to select to send on stake and/or fundamentalnode/masternode rewards" + "\n";
+        strRet = tr("Need to select to send on stake and/or fundamentalnode/masternode rewards") + "\n";
     } else if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
         pwalletMain->fMultiSendStake = ui->multiSendStakeCheckBox->isChecked();
         pwalletMain->fMultiSendFundamentalnodeReward = ui->multiSendFundamentalnodeCheckBox->isChecked();
@@ -220,7 +220,7 @@ void MultiSendDialog::on_activateButton_clicked()
 
 void MultiSendDialog::on_disableButton_clicked()
 {
-    std::string strRet;
+    QString strRet;
     pwalletMain->setMultiSendDisabled();
     CWalletDB walletdb(pwalletMain->strWalletFile);
     if (!walletdb.WriteMSettings(false, false, false, pwalletMain->nLastMultiSendHeight))
