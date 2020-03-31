@@ -12,10 +12,13 @@
 #include "zvitchain.h"
 
 
-CzVITWallet::CzVITWallet(std::string strWalletFile)
+#include "zpivchain.h"
+
+
+CzVITWallet::CzVITWallet(CWallet* parent)
 {
-    this->strWalletFile = strWalletFile;
-    CWalletDB walletdb(strWalletFile);
+    this->wallet = parent;
+    CWalletDB walletdb(wallet->strWalletFile);
     bool fRegtest = Params().IsRegTestNet();
 
     uint256 hashSeed;
@@ -28,7 +31,7 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
             //Update to new format, erase old
             seedMaster = seed;
             hashSeed = Hash(seed.begin(), seed.end());
-            if (pwalletMain->AddDeterministicSeed(seed)) {
+            if (wallet->AddDeterministicSeed(seed)) {
                 if (walletdb.EraseZVITSeed_deprecated()) {
                     LogPrintf("%s: Updated zVIT seed databasing\n", __func__);
                     fFirstRun = false;
@@ -40,7 +43,7 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
     }
 
     //Don't try to do anything if the wallet is locked.
-    if (pwalletMain->IsLocked() || (!fRegtest && fFirstRun)) {
+    if (wallet->IsLocked() || (!fRegtest && fFirstRun)) {
         seedMaster.SetNull();
         nCountLastUsed = 0;
         this->mintPool = CMintPool();
@@ -71,11 +74,11 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
 bool CzVITWallet::SetMasterSeed(const uint256& seedMaster, bool fResetCount)
 {
 
-    CWalletDB walletdb(strWalletFile);
-    if (pwalletMain->IsLocked())
+    CWalletDB walletdb(wallet->strWalletFile);
+    if (wallet->IsLocked())
         return false;
 
-    if (!seedMaster.IsNull() && !pwalletMain->AddDeterministicSeed(seedMaster)) {
+    if (!seedMaster.IsNull() && !wallet->AddDeterministicSeed(seedMaster)) {
         return error("%s: failed to set master seed.", __func__);
     }
 
@@ -149,7 +152,7 @@ void CzVITWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
         SeedToZVIT(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
 
         mintPool.Add(bnValue, i);
-        CWalletDB(strWalletFile).WriteMintPoolPair(hashSeed, GetPubCoinHash(bnValue), i);
+        CWalletDB(wallet->strWalletFile).WriteMintPoolPair(hashSeed, GetPubCoinHash(bnValue), i);
         LogPrintf("%s : %s count=%d\n", __func__, bnValue.GetHex().substr(0, 6), i);
     }
 }
@@ -157,7 +160,7 @@ void CzVITWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
 // pubcoin hashes are stored to db so that a full accounting of mints belonging to the seed can be tracked without regenerating
 bool CzVITWallet::LoadMintPoolFromDB()
 {
-    std::map<uint256, std::vector<std::pair<uint256, uint32_t> > > mapMintPool = CWalletDB(strWalletFile).MapMintPool();
+    std::map<uint256, std::vector<std::pair<uint256, uint32_t> > > mapMintPool = CWalletDB(wallet->strWalletFile).MapMintPool();
 
     uint256 hashSeed = Hash(seedMaster.begin(), seedMaster.end());
     for (auto& pair : mapMintPool[hashSeed])
@@ -183,7 +186,7 @@ void CzVITWallet::SyncWithChain(bool fGenerateMintPool)
 {
     uint32_t nLastCountUsed = 0;
     bool found = true;
-    CWalletDB walletdb(strWalletFile);
+    CWalletDB walletdb(wallet->strWalletFile);
 
     std::set<uint256> setAddedTx;
     while (found) {
@@ -203,7 +206,7 @@ void CzVITWallet::SyncWithChain(bool fGenerateMintPool)
             if (ShutdownRequested())
                 return;
 
-            if (pwalletMain->zvitTracker->HasPubcoinHash(pMint.first)) {
+            if (wallet->zvitTracker->HasPubcoinHash(pMint.first)) {
                 mintPool.Remove(pMint.first);
                 continue;
             }
@@ -261,13 +264,13 @@ void CzVITWallet::SyncWithChain(bool fGenerateMintPool)
 
                 if (!setAddedTx.count(txHash)) {
                     CBlock block;
-                    CWalletTx wtx(pwalletMain, tx);
+                    CWalletTx wtx(wallet, tx);
                     if (pindex && ReadBlockFromDisk(block, pindex))
                         wtx.SetMerkleBranch(block);
 
                     //Fill out wtx so that a transaction record can be created
                     wtx.nTimeReceived = pindex->GetBlockTime();
-                    pwalletMain->AddToWallet(wtx, false, &walletdb);
+                    wallet->AddToWallet(wtx, false, &walletdb);
                     setAddedTx.insert(txHash);
                 }
 
@@ -316,22 +319,22 @@ bool CzVITWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, const 
     if (IsSerialInBlockchain(hashSerial, nHeightTx, txidSpend, txSpend)) {
         //Find transaction details and make a wallettx and add to wallet
         dMint.SetUsed(true);
-        CWalletTx wtx(pwalletMain, txSpend);
+        CWalletTx wtx(wallet, txSpend);
         CBlockIndex* pindex = chainActive[nHeightTx];
         CBlock block;
         if (ReadBlockFromDisk(block, pindex))
             wtx.SetMerkleBranch(block);
 
         wtx.nTimeReceived = pindex->nTime;
-        CWalletDB walletdb(strWalletFile);
-        pwalletMain->AddToWallet(wtx, false, &walletdb);
+        CWalletDB walletdb(wallet->strWalletFile);
+        wallet->AddToWallet(wtx, false, &walletdb);
     }
 
     // Add to zvitTracker which also adds to database
-    pwalletMain->zvitTracker->Add(dMint, true);
+    wallet->zvitTracker->Add(dMint, true);
     //Update the count if it is less than the mint's count
     if (nCountLastUsed < pMint.second) {
-        CWalletDB walletdb(strWalletFile);
+        CWalletDB walletdb(wallet->strWalletFile);
         nCountLastUsed = pMint.second;
         walletdb.WriteZVITCount(nCountLastUsed);
     }
@@ -409,7 +412,7 @@ uint512 CzVITWallet::GetZerocoinSeed(uint32_t n)
 void CzVITWallet::UpdateCount()
 {
     nCountLastUsed++;
-    CWalletDB walletdb(strWalletFile);
+    CWalletDB walletdb(wallet->strWalletFile);
     walletdb.WriteZVITCount(nCountLastUsed);
 }
 

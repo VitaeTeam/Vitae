@@ -658,7 +658,7 @@ std::map<libzerocoin::CoinDenomination, CAmount> CWallet::GetMyZerocoinDistribut
 void CWallet::setZWallet(CzVITWallet* zwallet)
 {
     zwalletMain = zwallet;
-    zvitTracker = std::unique_ptr<CzVITTracker>(new CzVITTracker(strWalletFile));
+    zvitTracker = std::unique_ptr<CzVITTracker>(new CzVITTracker(this));
 }
 
 CzVITWallet* CWallet::getZWallet()
