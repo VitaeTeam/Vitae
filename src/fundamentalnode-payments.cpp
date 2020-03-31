@@ -19,7 +19,6 @@
 #include "masternodeman.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CFundamentalnodePayments fundamentalnodePayments;
@@ -640,7 +639,7 @@ bool CFundamentalnodePaymentWinner::Sign(CKey& keyFundamentalnode, CPubKey& pubK
     std::string strFundamentalNodeSignMessage;
 
     std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
-                             boost::lexical_cast<std::string>(nBlockHeight) +
+                             std::to_string(nBlockHeight) +
                              payee.ToString();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
@@ -797,9 +796,9 @@ std::string CFundamentalnodeBlockPayees::GetRequiredPaymentsString()
         CBitcoinAddress address2(address1);
 
         if (ret != "Unknown") {
-            ret += ", " + address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret += ", " + address2.ToString() + ":" + std::to_string(payee.nVotes);
         } else {
-            ret = address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret = address2.ToString() + ":" + std::to_string(payee.nVotes);
         }
     }
 
@@ -974,7 +973,7 @@ bool CFundamentalnodePaymentWinner::SignatureValid()
 
     if (pmn != NULL) {
         std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
-                                 boost::lexical_cast<std::string>(nBlockHeight) +
+                                 std::to_string(nBlockHeight) +
                                  payee.ToString();
 
         std::string errorMessage = "";
