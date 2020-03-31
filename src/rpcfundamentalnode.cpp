@@ -453,8 +453,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
-        returnObj.push_back(Pair("overall", "Successfully stopped " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to stop " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+        returnObj.push_back(Pair("overall", "Successfully stopped " + std::to_string(successful) + " masternodes, failed to stop " +
+                                 std::to_string(fail) + ", total " + std::to_string(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -475,7 +475,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                                 //return rtnStr;
                         }*/
             /* if(params[1] == "both"){
-                                rtnStr = boost::lexical_cast<std::string>(mnodeman.CountEnabled()) + " / " + boost::lexical_cast<std::string>(mnodeman.size());
+                                rtnStr = std::to_string(mnodeman.CountEnabled()) + " / " + std::to_string(mnodeman.size());
                                 return rtnStr;
                         } */
         }
@@ -652,8 +652,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
-        returnObj.push_back(Pair("overall", "Successfully started " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to start " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+        returnObj.push_back(Pair("overall", "Successfully started " + std::to_string(successful) + " masternodes, failed to start " +
+                                 std::to_string(fail) + ", total " + std::to_string(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -730,9 +730,9 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 CTxDestination address1;
                 ExtractDestination(payee, address1);
                 CBitcoinAddress address2(address1);
-                obj.push_back(Pair(boost::lexical_cast<std::string>(nHeight),       address2.ToString().c_str()));
+                obj.push_back(Pair(std::to_string(nHeight),       address2.ToString().c_str()));
             } else {
-                obj.push_back(Pair(boost::lexical_cast<std::string>(nHeight),       ""));
+                obj.push_back(Pair(std::to_string(nHeight),       ""));
             }
         }
 
@@ -796,7 +796,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object obj;
         UniValue obj(UniValue::VOBJ);
         BOOST_FOREACH(COutput& out, possibleCoins) {
-            obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), boost::lexical_cast<std::string>(out.i)));
+            obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), std::to_string(out.i)));
         }
 
         return obj;
@@ -847,7 +847,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                                 continue;
             }
 
-            std::string strMessage = pmn->vin.ToString() + boost::lexical_cast<std::string>(nVote);
+            std::string strMessage = pmn->vin.ToString() + std::to_string(nVote);
 
                         if(!darkSendSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyMasternode)){
                                 printf(" Error upon calling SignMessage for %s\n", mne.getAlias().c_str());
@@ -869,7 +869,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                // pnode->PushMessage("mvote", pmn->vin, vchMasterNodeSignature, nVote);
 
         }
-                return("Voted successfully " + boost::lexical_cast<std::string>(success) + " time(s) and failed " + boost::lexical_cast<std::string>(failed) + " time(s).");
+                return("Voted successfully " + std::to_string(success) + " time(s) and failed " + std::to_string(failed) + " time(s).");
     }*/
 
     /*if (strCommand == "list")
@@ -945,7 +945,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 if(mn.donationPercentage != 0){
                     strOut = address2.ToString().c_str();
                     strOut += ":";
-                    strOut += boost::lexical_cast<std::string>(mn.donationPercentage);
+                    strOut += std::to_string(mn.donationPercentage);
                 }
                 obj.push_back(Pair(strAddr,       strOut.c_str()));
             } else if (strMode == "full") {
@@ -975,7 +975,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.lastTimeSeen));
             } else if (strMode == "protocol") {
-                if(strFilter !="" && strFilter != boost::lexical_cast<std::string>(mn.protocolVersion) &&
+                if(strFilter !="" && strFilter != std::to_string(mn.protocolVersion) &&
                     strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.protocolVersion));
             } else if (strMode == "pubkey") {
@@ -990,7 +990,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 obj.push_back(Pair(strAddr,       address2.ToString().c_str()));
             } else if (strMode == "pose") {
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
-                std::string strOut = boost::lexical_cast<std::string>(mn.nScanningErrorCount);
+                std::string strOut = std::to_string(mn.nScanningErrorCount);
                 obj.push_back(Pair(strAddr,       strOut.c_str()));
             } else if(strMode == "status") {
                 std::string strStatus = mn.Status();

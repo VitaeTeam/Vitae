@@ -208,7 +208,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
         std::vector<unsigned char> vchFundamentalNodeSignature;
         int64_t fundamentalNodeSignatureTime = GetAdjustedTime();
 
-        std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(fundamentalNodeSignatureTime) + boost::lexical_cast<std::string>(false);
+        std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + std::to_string(false);
 
         if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchFundamentalNodeSignature, keyFundamentalnode)) {
             errorMessage = "dseep sign message failed: " + retErrorMessage;
@@ -313,7 +313,7 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
 
-    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(PROTOCOL_VERSION) + donationAddress + boost::lexical_cast<std::string>(donationPercantage);
+    std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress + std::to_string(donationPercantage);
 
     if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchFundamentalNodeSignature, keyCollateralAddress)) {
         errorMessage = "dsee sign message failed: " + retErrorMessage;
