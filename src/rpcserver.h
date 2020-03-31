@@ -11,7 +11,7 @@
 
 #include "amount.h"
 #include "primitives/zerocoin.h"
-#include "rpc/protocol.h"
+#include "rpcprotocol.h"
 #include "uint256.h"
 
 #include <list>
