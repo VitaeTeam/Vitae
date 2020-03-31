@@ -17,12 +17,12 @@ namespace Ui {
 class ZVitControlDialog;
 }
 
-class CZPivControlWidgetItem : public QTreeWidgetItem
+class CZVitControlWidgetItem : public QTreeWidgetItem
 {
 public:
-    explicit CZPivControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
-    explicit CZPivControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
-    explicit CZPivControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CZVitControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CZVitControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
+    explicit CZVitControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
 
     bool operator<(const QTreeWidgetItem &other) const;
 };
@@ -57,7 +57,7 @@ private:
         COLUMN_CONFIRMATIONS,
         COLUMN_ISSPENDABLE
     };
-    friend class CZPivControlWidgetItem;
+    friend class CZVitControlWidgetItem;
 
 private slots:
     void updateSelection(QTreeWidgetItem* item, int column);

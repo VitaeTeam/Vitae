@@ -15,12 +15,9 @@ using namespace libzerocoin;
 std::set<std::string> ZVitControlDialog::setSelectedMints;
 std::set<CMintMeta> ZVitControlDialog::setMints;
 
-std::set<std::string> ZPivControlDialog::setSelectedMints;
-std::set<CMintMeta> ZPivControlDialog::setMints;
-
-bool CZPivControlWidgetItem::operator<(const QTreeWidgetItem &other) const {
+bool CZVitControlWidgetItem::operator<(const QTreeWidgetItem &other) const {
     int column = treeWidget()->sortColumn();
-    if (column == ZPivControlDialog::COLUMN_DENOMINATION || column == ZPivControlDialog::COLUMN_VERSION || column == ZPivControlDialog::COLUMN_CONFIRMATIONS)
+    if (column == ZVitControlDialog::COLUMN_DENOMINATION || column == ZVitControlDialog::COLUMN_VERSION || column == ZVitControlDialog::COLUMN_CONFIRMATIONS)
         return data(column, Qt::UserRole).toLongLong() < other.data(column, Qt::UserRole).toLongLong();
     return QTreeWidgetItem::operator<(other);
 }
@@ -65,7 +62,7 @@ void ZVitControlDialog::updateList()
     QFlags<Qt::ItemFlag> flgTristate = Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
     map<libzerocoin::CoinDenomination, int> mapDenomPosition;
     for (auto denom : libzerocoin::zerocoinDenomList) {
-        CZPivControlWidgetItem* itemDenom(new CZPivControlWidgetItem);
+        CZVitControlWidgetItem* itemDenom(new CZVitControlWidgetItem);
         ui->treeWidget->addTopLevelItem(itemDenom);
 
         //keep track of where this is positioned in tree widget
@@ -87,7 +84,7 @@ void ZVitControlDialog::updateList()
     for (const CMintMeta& mint : setMints) {
         // assign this mint to the correct denomination in the tree view
         libzerocoin::CoinDenomination denom = mint.denom;
-        CZPivControlWidgetItem *itemMint = new CZPivControlWidgetItem(ui->treeWidget->topLevelItem(mapDenomPosition.at(denom)));
+        CZVitControlWidgetItem *itemMint = new CZVitControlWidgetItem(ui->treeWidget->topLevelItem(mapDenomPosition.at(denom)));
 
         // if the mint is already selected, then it needs to have the checkbox checked
         std::string strPubCoinHash = mint.hashPubcoin.GetHex();
