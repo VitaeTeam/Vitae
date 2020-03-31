@@ -108,8 +108,8 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     ui->WarningLabel->hide();    // Explanatory text visible in QT-Creator
     ui->dummyHideWidget->hide(); // Dummy widget with elements to hide
 
-    // Set labels/buttons depending on SPORK_16 status
-    updateSPORK16Status();
+    // Set labels/buttons depending on SPORK_20 status
+    updateSPORK20Status();
 }
 
 PrivacyDialog::~PrivacyDialog()
@@ -788,7 +788,7 @@ void PrivacyDialog::updateAutomintStatus()
     ui->label_AutoMintStatus->setText(strAutomintStatus);
 }
 
-void PrivacyDialog::updateSPORK16Status()
+void PrivacyDialog::updateSPORK20Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_20 status
     bool fButtonsEnabled =  ui->pushButtonMintzVIT->isEnabled();
