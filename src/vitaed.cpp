@@ -11,7 +11,7 @@
 #include "main.h"
 #include "fundamentalnodeconfig.h"
 #include "noui.h"
-#include "rpc/server.h"
+#include "rpcserver.h"
 #include "ui_interface.h"
 #include "util.h"
 #include "httpserver.h"
