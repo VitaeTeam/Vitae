@@ -19,7 +19,6 @@ namespace boost
 class thread_group;
 } // namespace boost
 
-extern CWallet* pwalletMain;
 extern CzVITWallet* zwalletMain;
 
 void StartShutdown();
