@@ -315,7 +315,7 @@ public:
     void UpdateState(unsigned int newState)
     {
         if (fFundamentalNode && (newState == POOL_STATUS_ERROR || newState == POOL_STATUS_SUCCESS)) {
-            // LogPrint("obfuscation", "CObfuscationPool::UpdateState() - Can't set state to ERROR or SUCCESS as a Fundamentalnode. \n");
+            // LogPrint(BCLog::FUNDAMENTALNODE, "CObfuscationPool::UpdateState() - Can't set state to ERROR or SUCCESS as a Fundamentalnode. \n");
             return;
         }
 
