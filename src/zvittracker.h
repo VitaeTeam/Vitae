@@ -5,7 +5,7 @@
 #include <list>
 
 class CDeterministicMint;
-class CzPIVWallet;
+class CzVITWallet;
 
 class CzVITTracker
 {

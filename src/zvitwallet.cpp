@@ -452,7 +452,7 @@ bool CzVITWallet::CheckSeed(const CDeterministicMint& dMint)
     return hashSeed == dMint.GetSeedHash();
 }
 
-bool CzPIVWallet::RegenerateMint(const CDeterministicMint& dMint, CZerocoinMint& mint)
+bool CzVITWallet::RegenerateMint(const CDeterministicMint& dMint, CZerocoinMint& mint)
 {
     if (!CheckSeed(dMint)) {
         uint256 hashSeed = Hash(seedMaster.begin(), seedMaster.end());

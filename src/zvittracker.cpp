@@ -5,7 +5,7 @@
 #include "main.h"
 #include "txdb.h"
 #include "walletdb.h"
-#include "zpivwallet.h"
+#include "zvitwallet.h"
 #include "accumulators.h"
 
 using namespace std;
@@ -273,9 +273,9 @@ bool CzVITTracker::UpdateState(const CMintMeta& meta)
     return true;
 }
 
-void CzVITTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchived, CzPIVWallet* zPIVWallet)
+void CzVITTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchived, CzVITWallet* zVITWallet)
 {
-    bool iszPIVWalletInitialized = (NULL != zPIVWallet);
+    bool iszPIVWalletInitialized = (NULL != zVITWallet);
     CMintMeta meta;
     meta.hashPubcoin = dMint.GetPubcoinHash();
     meta.nHeight = dMint.GetHeight();
@@ -288,10 +288,10 @@ void CzVITTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchi
     meta.isArchived = isArchived;
     meta.isDeterministic = true;
     if (! iszPIVWalletInitialized)
-        zPIVWallet = new CzPIVWallet(strWalletFile);
-    meta.isSeedCorrect = zPIVWallet->CheckSeed(dMint);
+        zVITWallet = new CzVITWallet(strWalletFile);
+    meta.isSeedCorrect = zVITWallet->CheckSeed(dMint);
     if (! iszPIVWalletInitialized)
-        delete zPIVWallet;
+        delete zVITWallet;
     mapSerialHashes[meta.hashSerial] = meta;
 
     if (isNew)
@@ -443,9 +443,9 @@ std::set<CMintMeta> CzVITTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
 
         std::list<CDeterministicMint> listDeterministicDB = walletdb.ListDeterministicMints();
 
-        CzVITWallet* zPIVWallet = new CzVTWallet(strWalletFile);
+        CzVITWallet* zVITWallet = new CzVITWallet(strWalletFile);
         for (auto& dMint : listDeterministicDB) {
-            Add(dMint, false, false, zPIVWallet);
+            Add(dMint, false, false, zVITWallet);
         }
         delete zVITWallet;
         LogPrint("zero", "%s: added %d dzvit from DB\n", __func__, listDeterministicDB.size());
