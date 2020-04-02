@@ -393,7 +393,6 @@ void RPCConsole::setClientModel(ClientModel* model)
         setFundamentalnodeCount(model->getFundamentalnodeCountString());
         connect(model, &ClientModel::strFundamentalnodesChanged, this, &RPCConsole::setFundamentalnodeCount);
 
-		setMasternodeCount(model->getMasternodeCountString());
         connect(model, &ClientModel::strMasternodesChanged, this, &RPCConsole::setMasternodeCount);
 
         updateTrafficStats(model->getTotalBytesRecv(), model->getTotalBytesSent());
