@@ -299,7 +299,7 @@ void Shutdown()
     StopTorControl();
     // Shutdown witness thread if it's enabled
     if (nLocalServices == NODE_BLOOM_LIGHT_ZC) {
-        lightWorker.StopLightZpivThread();
+        lightWorker.StopLightZvitThread();
     }
 #ifdef ENABLE_WALLET
     delete pwalletMain;
@@ -2086,7 +2086,7 @@ bool AppInit2()
 
     if (nLocalServices & NODE_BLOOM_LIGHT_ZC) {
         // Run a thread to compute witnesses
-        lightWorker.StartLightZpivThread(threadGroup);
+        lightWorker.StartLightZvitThread(threadGroup);
     }
 
 #ifdef ENABLE_WALLET
