@@ -27,8 +27,6 @@
 
 // Keep track of the used Fundamentalnodes
 std::vector<CTxIn> vecFundamentalnodesUsed;
-// Keep track of the scanning errors I've seen
-std::map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
 // Keep track of the active Fundamentalnode
 CActiveFundamentalnode activeFundamentalnode;
 
@@ -212,16 +210,6 @@ void CObfuscationPool::CheckFinalTransaction()
         if (!CMessageSigner::VerifyMessage(pubkey2, vchSig, strMessage, strError)) {
             LogPrintf("%s : Verify message failed, error: %s", __func__, strError);
             return;
-        }
-
-        if (!mapObfuscationBroadcastTxes.count(txNew.GetHash())) {
-            CObfuscationBroadcastTx dstx;
-            dstx.tx = txNew;
-            dstx.vin = activeFundamentalnode.vin;
-            dstx.vchSig = vchSig;
-            dstx.sigTime = sigTime;
-
-            mapObfuscationBroadcastTxes.insert(std::make_pair(txNew.GetHash(), dstx));
         }
 
         CInv inv(MSG_DSTX, txNew.GetHash());
