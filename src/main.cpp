@@ -4737,7 +4737,6 @@ bool ProcessNewBlock(CValidationState& state, CNode* pfrom, CBlock* pblock, CDis
 
     if (!fLiteMode) {
         if (fundamentalnodeSync.RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_LIST) {
-            obfuScationPool.NewBlock();
             fundamentalnodePayments.ProcessBlock(GetHeight() + 10);
             budget.NewBlock();
         }

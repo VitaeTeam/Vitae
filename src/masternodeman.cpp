@@ -1043,10 +1043,6 @@ void ThreadCheckObfuScationPool()
                 CleanTransactionLocksList();
             }
 
-            //if(c % FUNDAMENTALNODES_DUMP_SECONDS == 0) DumpFundamentalnodes();
-
-            obfuScationPool.CheckTimeout();
-            obfuScationPool.CheckForCompleteQueue();
         }
     }
 }
