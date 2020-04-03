@@ -279,7 +279,7 @@ void ProposalFrame::SendVote(std::string strHash, int nVote)
             continue;
         }
 
-        CMasternode* pmn = mnodeman.Find(pubKeyMasternode);
+        CFundamentalnode* pmn = mnodeman.Find(pubKeyMasternode);
         if (pmn == NULL) {
             mnresult += mne.getAlias() + ": " + "Can't find masternode by pubkey" + "<br />";
             failed++;
