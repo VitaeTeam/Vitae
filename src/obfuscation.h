@@ -8,11 +8,11 @@
 #ifndef OBFUSCATION_H
 #define OBFUSCATION_H
 
+#include "activemasternode.h"
 #include "main.h"
 #include "fundamentalnode-payments.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
-#include "obfuscation-relay.h"
 #include "sync.h"
 
 //#include "activemasternode.h"

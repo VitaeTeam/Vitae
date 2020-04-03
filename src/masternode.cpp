@@ -5,13 +5,15 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "masternode.h"
+
+#include "activemasternode.h"
+#include "addrman.h"
+#include "init.h"
 #include "masternodeman.h"
 #include "messagesigner.h"
 #include "obfuscation.h"
 //#include "core.h"
 #include "util.h"
-#include "sync.h"
-#include "addrman.h"
 
 #include <boost/foreach.hpp>
 
