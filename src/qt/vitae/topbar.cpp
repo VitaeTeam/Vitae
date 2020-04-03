@@ -4,7 +4,6 @@
 
 #include "qt/vitae/topbar.h"
 #include "qt/vitae/forms/ui_topbar.h"
-#include <QPixmap>
 #include "qt/vitae/lockunlock.h"
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/receivedialog.h"
@@ -17,12 +16,16 @@
 #include "qt/guiutil.h"
 #include "optionsmodel.h"
 #include "qt/platformstyle.h"
-#include "wallet/wallet.h"
 #include "walletmodel.h"
 #include "addresstablemodel.h"
 #include "ui_interface.h"
 
 #include "fundamentalnode-sync.h"
+
+#include "masternode-sync.h"
+#include "wallet/wallet.h"
+
+#include <QPixmap>
 
 #define REQUEST_UPGRADE_WALLET 1
 

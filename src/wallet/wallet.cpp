@@ -12,6 +12,7 @@
 #include "init.h"
 #include "guiinterfaceutil.h"
 #include "fundamentalnode-budget.h"
+#include "fundamentalnode-payments.h"
 #include "script/sign.h"
 #include "spork.h"
 #include "swifttx.h"    // mapTxLockReq

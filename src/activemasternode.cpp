@@ -3,7 +3,10 @@
 
 //#include "core.h"
 #include "activemasternode.h"
+
 #include "addrman.h"
+#include "masternode-sync.h"
+#include "masternode.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
 #include "main.h"

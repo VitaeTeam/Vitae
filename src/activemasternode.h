@@ -12,8 +12,8 @@
 #include "net.h"
 #include "key.h"
 #include "masternode.h"
-//#include "core.h"
-#include "init.h"
+#include "net.h"
+#include "sync.h"
 #include "wallet/wallet.h"
 #include "obfuscation.h"
 

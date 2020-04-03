@@ -6,13 +6,14 @@
 
 #include "masternode.h"
 
-#include "activemasternode.h"
 #include "addrman.h"
 #include "init.h"
+#include "masternode-payments.h"
+#include "masternode-sync.h"
 #include "masternodeman.h"
 #include "messagesigner.h"
-#include "obfuscation.h"
 //#include "core.h"
+#include "sync.h"
 #include "util.h"
 
 #include <boost/foreach.hpp>

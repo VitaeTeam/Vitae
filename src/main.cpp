@@ -29,7 +29,6 @@
 #include "merkleblock.h"
 #include "messagesigner.h"
 #include "net.h"
-#include "obfuscation.h"
 #include "pow.h"
 #include "spork.h"
 #include "sporkdb.h"

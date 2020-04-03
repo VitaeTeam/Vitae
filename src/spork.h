@@ -12,12 +12,12 @@
 #include "key.h"
 #include "messagesigner.h"
 #include "main.h"
+#include "messagesigner.h"
 #include "net.h"
 #include "sporkid.h"
 #include "sync.h"
 #include "util.h"
 
-#include "obfuscation.h"
 #include "protocol.h"
 
 

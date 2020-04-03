@@ -6,16 +6,19 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "masternodeman.h"
+
+#include "addrman.h"
+#include "masternode-payments.h"
+#include "masternode-sync.h"
 #include "masternode.h"
 #include "activemasternode.h"
 #include "messagesigner.h"
-#include "obfuscation.h"
 #include "spork.h"
 //#include "core.h"
 #include "main.h"
 #include "swifttx.h"
 #include "util.h"
-#include "addrman.h"
+
 #include <boost/filesystem.hpp>
 #include "activefundamentalnode.h"
 
@@ -25,6 +28,8 @@ RecursiveMutex cs_process_message;
 
 /** Masternode manager */
 CMasternodeMan m_nodeman;
+/** Keep track of the active Masternode */
+CActiveMasternode activeMasternode;
 
 struct CompareValueOnly
 {

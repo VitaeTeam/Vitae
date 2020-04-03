@@ -8,6 +8,7 @@
 #ifndef MASTERNODEMAN_H
 #define MASTERNODEMAN_H
 
+#include "activemasternode.h"
 //#include "bignum.h"
 #include "sync.h"
 #include "net.h"
@@ -23,8 +24,12 @@
 #define MASTERNODES_DSEG_SECONDS               (3*60*60)
 
 class CMasternodeMan;
+class CActiveMasternode;
 
 extern CMasternodeMan m_nodeman;
+extern CActiveMasternode activeMasternode;
+extern std::string strMasterNodePrivKey;
+
 void DumpMasternodes();
 
 /** Access to the MN database (mncache.dat)
