@@ -159,4 +159,6 @@ public:
 	int GetMinMasternodePaymentsProto();
 };
 
+void ThreadCheckObfuScationPool();
+
 #endif
