@@ -323,7 +323,6 @@ extern UniValue getserials(const UniValue& params, bool fHelp);
 extern void validaterange(const UniValue& params, int& heightStart, int& heightEnd, int minHeightStart=1);
 
 extern UniValue obfuscation(const UniValue& params, bool fHelp); // in rpcfundamentalnode.cpp
-extern UniValue getpoolinfo(const UniValue& params, bool fHelp);
 extern UniValue fundamentalnode(const UniValue& params, bool fHelp);
 extern UniValue listfundamentalnodes(const UniValue& params, bool fHelp);
 extern UniValue getfundamentalnodecount(const UniValue& params, bool fHelp);
