@@ -2577,7 +2577,7 @@ UniValue listmintedzerocoins(const UniValue& params, bool fHelp)
             "  {\n"
             "    \"serial hash\": \"xxx\",   (string) Mint serial hash in hex format.\n"
             "    \"version\": n,   (numeric) Zerocoin version number.\n"
-            "    \"zPIV ID\": \"xxx\",   (string) Pubcoin in hex format.\n"
+            "    \"zVITAE ID\": \"xxx\",   (string) Pubcoin in hex format.\n"
             "    \"denomination\": n,   (numeric) Coin denomination.\n"
             "    \"confirmations\": n   (numeric) Number of confirmations.\n"
             "  }\n"
@@ -2608,7 +2608,7 @@ UniValue listmintedzerocoins(const UniValue& params, bool fHelp)
             UniValue objMint(UniValue::VOBJ);
             objMint.push_back(Pair("serial hash", m.hashSerial.GetHex()));  // Serial hash
             objMint.push_back(Pair("version", m.nVersion));                 // Zerocoin version
-            objMint.push_back(Pair("zPIV ID", m.hashPubcoin.GetHex()));     // PubCoin
+            objMint.push_back(Pair("zVITAE ID", m.hashPubcoin.GetHex()));     // PubCoin
             int denom = libzerocoin::ZerocoinDenominationToInt(m.denom);
             objMint.push_back(Pair("denomination", denom));                 // Denomination
             int nConfirmations = (m.nHeight && nBestHeight > m.nHeight) ? nBestHeight - m.nHeight : 0;
