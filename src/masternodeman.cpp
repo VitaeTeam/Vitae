@@ -593,26 +593,6 @@ CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight
     return NULL;
 }
 
-void CMasternodeMan::ProcessMasternodeConnections()
-{
-    //we don't care about this for regtest
-    /*if(CBaseChainParams::REGTEST) return;
-
-    LOCK(cs_vNodes);
-
-    if(!obfuScationPool.pSubmittedToFundamentalnode) return;
-
-    for(CNode* pnode : vNodes)
-    {
-        if(darkSendPool.pSubmittedToMasternode->addr == pnode->addr) continue;
-
-        if(pnode->fDarkSendMaster){
-            LogPrintf("Closing Masternode connection %s \n", pnode->addr.ToString().c_str());
-            pnode->CloseSocketDisconnect();
-        }
-    }*/
-}
-
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
 
