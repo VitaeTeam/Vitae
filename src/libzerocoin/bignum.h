@@ -707,7 +707,6 @@ inline bool operator<(const CBigNum& a, const CBigNum& b)  { return (BN_cmp(a.bn
 inline bool operator>(const CBigNum& a, const CBigNum& b)  { return (BN_cmp(a.bn, b.bn) > 0); }
 inline std::ostream& operator<<(std::ostream &strm, const CBigNum &b) { return strm << b.ToString(10); }
 
-#endif
 #if defined(USE_NUM_GMP)
 /** C++ wrapper for BIGNUM (Gmp bignum) */
 class CBigNum
