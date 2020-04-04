@@ -40,7 +40,7 @@ Notable Changes
 Minimum Supported MacOS Version
 ------
 
-The minimum supported version of MacOS (OSX) has been moved from 10.8 Mountain Lion to 10.10 Yosemite. Users still running a MacOS version prior to Yosemite will need to upgrade their OS if they wish to continue using the latest version(s) of the PIVX Core wallet.
+The minimum supported version of MacOS (OSX) has been moved from 10.8 Mountain Lion to 10.10 Yosemite. Users still running a MacOS version prior to Yosemite will need to upgrade their OS if they wish to continue using the latest version(s) of the VITAE Core wallet.
 
 Attacks, Exploits, and Mitigations
 ------
@@ -49,28 +49,28 @@ Attacks, Exploits, and Mitigations
 
 On Janurary 22 2019, Decentralized Systems Lab out of the University of Illinois published a study entitled “[‘Fake Stake’ attacks on chain-based Proof-of-Stake cryptocurrencies](https://medium.com/@dsl_uiuc/fake-stake-attacks-on-chain-based-proof-of-stake-cryptocurrencies-b8b05723f806)”, which outlined a type of Denial of Service attack that could take place on a number of Proof of Stake based networks by exhausting a client's RAM or Disk resources.
 
-A full report provided by PIVX developers is available on the [PIVX Website](https://pivx.org/fake-stake-official-pivx-report/), which includes additional findings, mitigation details, and resources for testing. This type of attack has no risk to users' privacy and does not affect their holdings.
+A full report provided by VITAE developers is available on the [VITAE Website](https://vitaetoken.io/fake-stake-official-vitae-report/), which includes additional findings, mitigation details, and resources for testing. This type of attack has no risk to users' privacy and does not affect their holdings.
 
 ### Wrapped Serials
 
-On March 6th 2019, an attack was detected on the PIVX network zerocoin protocol, or zPIV. The vulnerability allows an attacker to fake serials accepted by the network and thus to spend zerocoins that have never been minted. As severe as it is, it does not harm users’ privacy and does not affect their holdings directly.
+On March 6th 2019, an attack was detected on the VITAE network zerocoin protocol, or zVIT. The vulnerability allows an attacker to fake serials accepted by the network and thus to spend zerocoins that have never been minted. As severe as it is, it does not harm users’ privacy and does not affect their holdings directly.
 
-As a result of this, all zPIV functionality was disabled via one of our sporks shortly after verification of this exploit. A full report, detailing how this attack was performed, as well as investigation results and mitigation methods is available [On Medium](https://medium.com/@dev.pivx/report-wrapped-serials-attack-5f4bf7b51701).
+As a result of this, all zVIT functionality was disabled via one of our sporks shortly after verification of this exploit. A full report, detailing how this attack was performed, as well as investigation results and mitigation methods is available [On Medium](https://medium.com/@dev.vitae/report-wrapped-serials-attack-5f4bf7b51701).
 
-zPIV functions will be restored after v3.2.0 is pushed out and the majority of the network has upgraded.
+zVIT functions will be restored after v3.2.0 is pushed out and the majority of the network has upgraded.
 
 Major New Features
 ------
 
 ### BIP65 (CHECKLOCKTIMEVERIFY) Soft-Fork
 
-PIVX Core v3.2.0 introduces new consensus rules for scripting pathways to support the [BIP65](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki) standard. This is being carried out as a soft-fork in order to provide ample time for stakers to update their wallet version.
+VITAE Core v3.2.0 introduces new consensus rules for scripting pathways to support the [BIP65](https://github.com/bitcoin/bips/blob/master/bip-0065.mediawiki) standard. This is being carried out as a soft-fork in order to provide ample time for stakers to update their wallet version.
 
 ### Automint Addresses
 
-A new "Automint Addresses" feature has been added to the wallet that allows for the creation of new addresses who's purpose is to automatically convert any PIV funds received by such addresses to zPIV. The feature as a whole can be enabled/disabled either at runtime using the `-enableautoconvertaddress` option, via RPC/Console with the `enableautomintaddress` command, or via the GUI's options dialog, with the default being enabled.
+A new "Automint Addresses" feature has been added to the wallet that allows for the creation of new addresses who's purpose is to automatically convert any VIT funds received by such addresses to zVIT. The feature as a whole can be enabled/disabled either at runtime using the `-enableautoconvertaddress` option, via RPC/Console with the `enableautomintaddress` command, or via the GUI's options dialog, with the default being enabled.
 
-Creation of these automint addresses is currently only available via the RPC/Console `createautomintaddress` command, which takes no additional arguments. The command returns a new PIVX address each time, but addresses created by this command can be re-used if desired.
+Creation of these automint addresses is currently only available via the RPC/Console `createautomintaddress` command, which takes no additional arguments. The command returns a new VITAE address each time, but addresses created by this command can be re-used if desired.
 
 ### In-wallet Proposal Voting
 
@@ -80,13 +80,13 @@ A new UI wallet tab has been introduced that allows users to view the current bu
 
 Support for the ZLN Protocol has been added, which allows for a node to opt-in to providing extended network services for the protocol. By default, this functionality is disabled, but can be enabled by using the `-peerbloomfilterszc` runtime option.
 
-A full technical writeup of the protocol can be found [Here](https://pivx.org/wp-content/uploads/2018/11/Zerocoin_Light_Node_Protocol.pdf).
+A full technical writeup of the protocol can be found [Here](https://vitaetoken.io/wp-content/uploads/2018/11/Zerocoin_Light_Node_Protocol.pdf).
 
 ### Precomputed Zerocoin Proofs
 
-This introduces the ability to do most of the heavy computation required for zPIV spends **before** actually initiating the spend. A new thread, `ThreadPrecomputeSpends`, is added which constantly runs in the background.
+This introduces the ability to do most of the heavy computation required for zVIT spends **before** actually initiating the spend. A new thread, `ThreadPrecomputeSpends`, is added which constantly runs in the background.
 
-`ThreadPrecomputeSpends`' purpose is to monitor the wallet's zPIV mints and perform partial witness accumulations up to `nHeight - 20` blocks from the chain's tip (to ensure that it only ever computes data that is at least 2 accumulator checkpoints deep), retaining the results in memory.
+`ThreadPrecomputeSpends`' purpose is to monitor the wallet's zVIT mints and perform partial witness accumulations up to `nHeight - 20` blocks from the chain's tip (to ensure that it only ever computes data that is at least 2 accumulator checkpoints deep), retaining the results in memory.
 
 Additionally, a file based cache is introduced, `precomputes.dat`, which serves as a place to store any precomputed data between sessions, or when the in-memory cache size is exhausted. Swapping data between memory and disk file is done as needed, and periodic cache flushes to the disk are routine.
 
@@ -97,11 +97,11 @@ This also introduces 2 new runtime configuration options:
 
 A new RPC command, `clearspendcache`, has been added that allows for the clearing/resetting of the precompute cache (both memory and disk). This command takes no additional arguments.
 
-Finally, the "security level" option for spending zPIV has been completely removed, and all zPIV spends now spend at what was formerly "security level" `100`. This change has been reflected in any RPC command that previously took a security level argument, as well as in the GUI's Privacy section for spending zPIV.
+Finally, the "security level" option for spending zVIT has been completely removed, and all zVIT spends now spend at what was formerly "security level" `100`. This change has been reflected in any RPC command that previously took a security level argument, as well as in the GUI's Privacy section for spending zVIT.
 
 ### Regression Test Suite
 
-The RegTest network mode has been re-worked to once again allow for the generation of on-demand PoW and PoS blocks. Additionally, many of the existing functional test scripts have been adapted for use with PIVX, and we now have a solid testing base for highly customizable tests to be written.
+The RegTest network mode has been re-worked to once again allow for the generation of on-demand PoW and PoS blocks. Additionally, many of the existing functional test scripts have been adapted for use with VITAE, and we now have a solid testing base for highly customizable tests to be written.
 
 With this, the old `setgenerate` RPC command no longer functions in regtest mode, instead a new `generate` command has been introduced that is more suited for use in regtest mode.
 
