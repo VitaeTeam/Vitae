@@ -12,7 +12,7 @@
 #include "db.h"
 #include "key.h"
 #include "keystore.h"
-#include "zpiv/zerocoin.h"
+#include "zvit/zerocoin.h"
 #include "libzerocoin/Accumulator.h"
 #include "libzerocoin/Denominations.h"
 #include "zvit/zvittracker.h"

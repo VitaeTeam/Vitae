@@ -11,7 +11,7 @@
 #include "main.h"
 #include "pow.h"
 #include "uint256.h"
-#include "zpiv/accumulators.h"
+#include "zvit/accumulators.h"
 
 #include <stdint.h>
 

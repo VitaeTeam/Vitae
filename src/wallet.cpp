@@ -8,7 +8,7 @@
 
 #include "wallet.h"
 
-#include "zpiv/accumulators.h"
+#include "zvit/accumulators.h"
 #include "base58.h"
 #include "checkpoints.h"
 #include "coincontrol.h"
@@ -39,7 +39,7 @@
 #include <boost/thread.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <zpiv/witness.h>
+#include <zvit/witness.h>
 
 using namespace std;
 

@@ -5,7 +5,7 @@
 #include "zVitcontroldialog.h"
 #include "ui_zVitcontroldialog.h"
 
-#include "zpiv/accumulators.h"
+#include "zvit/accumulators.h"
 #include "main.h"
 #include "walletmodel.h"
 

@@ -367,7 +367,7 @@ libbitcoin_common_a_SOURCES = \
   coins.cpp \
   compressor.cpp \
   primitives/block.cpp \
-  zpiv/deterministicmint.cpp \
+  zvit/deterministicmint.cpp \
   primitives/transaction.cpp \
   masternode.cpp \
   masternode-pos.cpp \

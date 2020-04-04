@@ -8,8 +8,8 @@
 
 #include "main.h"
 
-#include "zpiv/accumulators.h"
-#include "zpiv/accumulatormap.h"
+#include "zvit/accumulators.h"
+#include "zvit/accumulatormap.h"
 #include "addrman.h"
 #include "alert.h"
 #include "blocksignature.h"
@@ -41,7 +41,7 @@
 #include "masternodeman.h"
 #include "activemasternode.h"
 
-#include "zpiv/zerocoin.h"
+#include "zvit/zerocoin.h"
 #include "libzerocoin/Denominations.h"
 #include "invalid.h"
 #include <sstream>

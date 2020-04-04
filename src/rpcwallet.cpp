@@ -25,7 +25,7 @@
 
 #include "libzerocoin/Coin.h"
 #include "spork.h"
-#include "zpiv/deterministicmint.h"
+#include "zvit/deterministicmint.h"
 #include <boost/assign/list_of.hpp>
 #include <boost/thread/thread.hpp>
 

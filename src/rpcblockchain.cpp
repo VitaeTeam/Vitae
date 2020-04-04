@@ -15,8 +15,8 @@
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
-#include "zpiv/accumulatormap.h"
-#include "zpiv/accumulators.h"
+#include "zvit/accumulatormap.h"
+#include "zvit/accumulators.h"
 #include "wallet.h"
 #include "zvitchain.h"
 #include <stdint.h>
