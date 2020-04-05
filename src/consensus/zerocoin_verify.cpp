@@ -201,6 +201,14 @@ bool RecalculateVITSupply(int nHeightStart, bool fSkipZpiv)
     if (nHeightStart == consensus.height_start_ZC)
         nSupplyPrev = CAmount(649916627717750);
 
+        nSupplyPrev = CAmount(5449796547496199);
+
+    if (!fSkipZpiv) {
+        // initialize supply to 0
+        mapZerocoinSupply.clear();
+        for (auto& denom : libzerocoin::zerocoinDenomList) mapZerocoinSupply.insert(std::make_pair(denom, 0));
+    }
+
     uiInterface.ShowProgress(_("Recalculating VIT supply..."), 0);
     while (true) {
         if (pindex->nHeight % 1000 == 0) {
