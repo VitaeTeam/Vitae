@@ -135,13 +135,6 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
 
     result.push_back(Pair("moneysupply",ValueFromAmount(blockindex->nMoneySupply)));
 
-    UniValue zVitObj(UniValue::VOBJ);
-    for (auto denom : libzerocoin::zerocoinDenomList) {
-        zVitObj.push_back(Pair(std::to_string(denom), ValueFromAmount(blockindex->mapZerocoinSupply.at(denom) * (denom*COIN))));
-    }
-    zVitObj.push_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
-    result.push_back(Pair("zVITsupply", zVitObj));
-
     //////////
     ////////// Coin stake data ////////////////
     /////////
@@ -496,18 +489,6 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
-            "  \"zVITsupply\" :\n"
-            "  {\n"
-            "     \"1\" : n,            (numeric) supply of 1 zVIT denomination\n"
-            "     \"5\" : n,            (numeric) supply of 5 zVIT denomination\n"
-            "     \"10\" : n,           (numeric) supply of 10 zVIT denomination\n"
-            "     \"50\" : n,           (numeric) supply of 50 zVIT denomination\n"
-            "     \"100\" : n,          (numeric) supply of 100 zVIT denomination\n"
-            "     \"500\" : n,          (numeric) supply of 500 zVIT denomination\n"
-            "     \"1000\" : n,         (numeric) supply of 1000 zVIT denomination\n"
-            "     \"5000\" : n,         (numeric) supply of 5000 zVIT denomination\n"
-            "     \"total\" : n,        (numeric) The total supply of all zVIT denominations\n"
-            "  },\n"
             "  \"stakeModifier\" : \"xxx\",       (string) Proof of Stake modifier\n"
             "  \"hashProofOfStake\" : \"hash\",   (string) Proof of Stake hash\n"
             "  }\n"
