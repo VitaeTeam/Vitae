@@ -3795,14 +3795,14 @@ UniValue clearspendcache(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    CzPIVTracker* zpivTracker = pwalletMain->zpivTracker.get();
+    CzVITTracker* zvitTracker = pwalletMain->zvitTracker.get();
 
     {
         int nTries = 0;
         while (nTries < 100) {
-            TRY_LOCK(zpivTracker->cs_spendcache, fLocked);
+            TRY_LOCK(zvitTracker->cs_spendcache, fLocked);
             if (fLocked) {
-                if (zpivTracker->ClearSpendCache()) {
+                if (zvitTracker->ClearSpendCache()) {
                     fClearSpendCache = true;
                     CWalletDB walletdb("precomputes.dat", "cr+");
                     walletdb.EraseAllPrecomputes();

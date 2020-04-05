@@ -32,7 +32,7 @@
 #include "denomination_functions.h"
 #include "libzerocoin/Denominations.h"
 #include "zvit/zvitwallet.h"
-#include "zvit/zpivtracker.h"
+#include "zvit/zvittracker.h"
 #include "zvit/deterministicmint.h"
 #include <assert.h>
 
@@ -3128,7 +3128,7 @@ bool CWallet::CreateCoinStake(
             FillBlockPayee(txNew, nMinFee, true, stakeInput->IsZPIV());
 
             {
-                TRY_LOCK(zpivTracker->cs_spendcache, fLocked);
+                TRY_LOCK(zvitTracker->cs_spendcache, fLocked);
                 if (!fLocked)
                     continue;
 
@@ -4777,20 +4777,20 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
 bool CWallet::CheckCoinSpend(libzerocoin::CoinSpend& spend, libzerocoin::Accumulator& accumulator, CZerocoinSpendReceipt& receipt)
 {
     if (!spend.Verify(accumulator)) {
-        receipt.SetStatus(_("The transaction did not verify"), ZPIV_BAD_SERIALIZATION);
+        receipt.SetStatus(_("The transaction did not verify"), ZVIT_BAD_SERIALIZATION);
         return error("%s : The transaction did not verify", __func__);
     }
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST && IsSerialKnown(spend.getCoinSerialNumber())) {
         //Tried to spend an already spent zPIV
-        receipt.SetStatus(_("The coin spend has been used"), ZPIV_SPENT_USED_ZPIV);
+        receipt.SetStatus(_("The coin spend has been used"), ZVIT_SPENT_USED_ZVIT);
         uint256 hashSerial = GetSerialHash(spend.getCoinSerialNumber());
-        if(!zpivTracker->HasSerialHash(hashSerial))
+        if(!zvitTracker->HasSerialHash(hashSerial))
             return error("%s: serialhash %s not found in tracker", __func__, hashSerial.GetHex());
 
-        CMintMeta meta = zpivTracker->Get(hashSerial);
+        CMintMeta meta = zvitTracker->Get(hashSerial);
         meta.isUsed = true;
-        if (!zpivTracker->UpdateState(meta))
+        if (!zvitTracker->UpdateState(meta))
             LogPrintf("%s: failed to write zerocoinmint\n", __func__);
 
         return false;
@@ -4816,14 +4816,14 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
                          CZerocoinSpendReceipt& receipt, libzerocoin::SpendType spendType, CBlockIndex* pindexCheckpoint)
 {
     // Default error status if not changed below
-    receipt.SetStatus(_("Transaction Mint Started"), ZPIV_TXMINT_GENERAL);
+    receipt.SetStatus(_("Transaction Mint Started"), ZVIT_TXMINT_GENERAL);
     libzerocoin::ZerocoinParams* paramsAccumulator = Params().Zerocoin_Params(false);
     AccumulatorMap mapAccumulators(paramsAccumulator);
     int64_t nTimeStart = GetTimeMicros();
 
     int nLockAttempts = 0;
     while (nLockAttempts < 100) {
-        TRY_LOCK(zpivTracker->cs_spendcache, lockSpendcache);
+        TRY_LOCK(zvitTracker->cs_spendcache, lockSpendcache);
         if (!lockSpendcache) {
             fGlobalUnlockSpendCache = true;
             MilliSleep(100);
@@ -4833,8 +4833,8 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
 
         for (auto &it : mapMintsSelected) {
             CZerocoinMint mint = it.second;
-            CMintMeta meta = zpivTracker->Get(GetSerialHash(mint.GetSerialNumber()));
-            CoinWitnessData *coinWitness = zpivTracker->GetSpendCache(meta.hashStake);
+            CMintMeta meta = zvitTracker->Get(GetSerialHash(mint.GetSerialNumber()));
+            CoinWitnessData *coinWitness = zvitTracker->GetSpendCache(meta.hashStake);
 
             if (!coinWitness->nHeightAccEnd) {
                 *coinWitness = CoinWitnessData(mint);
@@ -4844,7 +4844,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
             // Generate the witness for each mint being spent
             if (!GenerateAccumulatorWitness(coinWitness, mapAccumulators, pindexCheckpoint)) {
                 receipt.SetStatus(_("Couldn't generate the accumulator witness"),
-                                  ZPIV_FAILED_ACCUMULATOR_INITIALIZATION);
+                                  ZVIT_FAILED_ACCUMULATOR_INITIALIZATION);
                 return error("%s : %s", __func__, receipt.GetStatusMessage());
             }
 
@@ -4884,7 +4884,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
                                              *coinWitness->pWitness, hashTxOut, spendType);
 
                 if (!CheckCoinSpend(spend, accumulator, receipt)) {
-                    receipt.SetStatus(_("CoinSpend: failed check"), ZPIV_SPEND_ERROR);
+                    receipt.SetStatus(_("CoinSpend: failed check"), ZVIT_SPEND_ERROR);
                     return error("%s : %s", __func__, receipt.GetStatusMessage());
                 }
 
@@ -4897,7 +4897,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
                 int64_t nTime5 = GetTimeMicros();
                 LogPrint("bench", "        - CoinSpend verified in %.2fms\n", 0.001 * (nTime5 - nTime4));
             } catch (const std::exception &) {
-                receipt.SetStatus(_("CoinSpend: Accumulator witness does not verify"), ZPIV_INVALID_WITNESS);
+                receipt.SetStatus(_("CoinSpend: Accumulator witness does not verify"), ZVIT_INVALID_WITNESS);
                 return error("%s : %s", __func__, receipt.GetStatusMessage());
             }
         }
@@ -4906,14 +4906,14 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
 
     if (nLockAttempts == 100) {
         LogPrintf("%s : could not get lock on cs_spendcache\n", __func__);
-        receipt.SetStatus(_("could not get lock on cs_spendcache"), ZPIV_TXMINT_GENERAL);
+        receipt.SetStatus(_("could not get lock on cs_spendcache"), ZVIT_TXMINT_GENERAL);
         return false;
     }
 
     int64_t nTimeFinished = GetTimeMicros();
     LogPrint("bench", "    - %s took %.2fms [%.3fms/spend]\n", __func__, 0.001 * (nTimeFinished - nTimeStart), 0.001 * (nTimeFinished - nTimeStart) / mapMintsSelected.size());
 
-    receipt.SetStatus(_("Spend Valid"), ZPIV_SPEND_OKAY); // Everything okay
+    receipt.SetStatus(_("Spend Valid"), ZVIT_SPEND_OKAY); // Everything okay
 
     return true;
 }
@@ -5665,7 +5665,7 @@ void CWallet::PrecomputeSpends()
             CoinWitnessCacheData tempDataHolder;
 
             {
-                TRY_LOCK(zpivTracker->cs_spendcache, fLocked);
+                TRY_LOCK(zvitTracker->cs_spendcache, fLocked);
                 if (!fLocked)
                     continue;
 
@@ -5681,7 +5681,7 @@ void CWallet::PrecomputeSpends()
 
                 uint256 serialHash = stakeInput->GetSerialHash();
                 setInputHashes.insert(serialHash);
-                CoinWitnessData* witnessData = zpivTracker->GetSpendCache(serialHash);
+                CoinWitnessData* witnessData = zvitTracker->GetSpendCache(serialHash);
 
                 // Initialize nHeightStop so it can be set below
                 int nHeightStop = 0;
