@@ -998,19 +998,18 @@ int CMasternodeMan::GetMinMasternodePaymentsProto()
     else
         return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT; // Also allow old peers as long as they are allowed to run
 }
-void ThreadCheckObfuScationPool()
+void ThreadCheckMasternodes()
 {
     if (fLiteMode) return; //disable all Fundamentalnode related functionality
 
     // Make this thread recognisable as the wallet flushing thread
-    util::ThreadRename("vitae-obfuscation");
+    util::ThreadRename("vitae-masternodeman");
     LogPrintf("Masternodes thread started\n");
 
     unsigned int c = 0;
 
     while (true) {
         MilliSleep(1000);
-        //LogPrintf("ThreadCheckObfuScationPool::check timeout\n");
 
         // try to sync from all available nodes, one step at a time
         fundamentalnodeSync.Process();
@@ -1027,7 +1026,6 @@ void ThreadCheckObfuScationPool()
                 fundamentalnodePayments.CleanPaymentList();
                 CleanTransactionLocksList();
             }
-
         }
     }
 }
