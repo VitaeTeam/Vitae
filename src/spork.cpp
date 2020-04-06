@@ -80,7 +80,7 @@ void CSporkManager::LoadSporksFromDB()
 
 void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    if (fLiteMode) return; // disable all obfuscation/fundamentalnode related functionality
+    if (fLiteMode) return; // disable all fundamentalnode related functionality
 
     int nChainHeight = 0;
     {

@@ -602,7 +602,7 @@ CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight
 void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
 
-    if(fMNLiteMode) return; //disable all Darksend/Masternode related functionality
+    if(fMNLiteMode) return; //disable all Masternode related functionality
     if(IsInitialBlockDownload()) return;
 
     LOCK(cs_process_message);
@@ -1000,7 +1000,7 @@ int CMasternodeMan::GetMinMasternodePaymentsProto()
 }
 void ThreadCheckObfuScationPool()
 {
-    if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
+    if (fLiteMode) return; //disable all Fundamentalnode related functionality
 
     // Make this thread recognisable as the wallet flushing thread
     util::ThreadRename("vitae-obfuscation");

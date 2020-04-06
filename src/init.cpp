@@ -2099,7 +2099,7 @@ bool AppInit2()
     nSwiftTXDepth = GetArg("-swifttxdepth", nSwiftTXDepth);
     nSwiftTXDepth = std::min(std::max(nSwiftTXDepth, 0), 60);
 
-    //lite mode disables all Fundamentalnode and Obfuscation related functionality
+    //lite mode disables all Fundamentalnode related functionality
     fLiteMode = GetBoolArg("-litemode", false);
     if (fFundamentalNode && fLiteMode) {
         return UIError("You can not start a fundamentalnode in litemode");

@@ -37,7 +37,7 @@ int nCompleteTXLocks;
 
 void ProcessMessageSwiftTX(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    if (fLiteMode) return; //disable all obfuscation/fundamentalnode related functionality
+    if (fLiteMode) return; //disable all fundamentalnode related functionality
     if (!sporkManager.IsSporkActive(SPORK_2_SWIFTTX)) return;
     if (!fundamentalnodeSync.IsBlockchainSynced()) return;
 
