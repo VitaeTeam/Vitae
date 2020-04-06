@@ -314,7 +314,6 @@ UniValue getmasternodecount (const UniValue& params, bool fHelp)
             "{\n"
             "  \"total\": n,        (numeric) Total masternodes\n"
             "  \"stable\": n,       (numeric) Stable count\n"
-            "  \"obfcompat\": n,    (numeric) Obfuscation Compatible\n"
             "  \"enabled\": n,      (numeric) Enabled masternodes\n"
             "  \"inqueue\": n       (numeric) Masternodes in queue\n"
             "}\n"
@@ -333,7 +332,6 @@ UniValue getmasternodecount (const UniValue& params, bool fHelp)
 
     obj.push_back(Pair("total", mnodeman.size()));
     obj.push_back(Pair("stable", mnodeman.stable_size()));
-    obj.push_back(Pair("obfcompat", mnodeman.CountEnabled(ActiveProtocol())));
     obj.push_back(Pair("enabled", mnodeman.CountEnabled()));
     obj.push_back(Pair("inqueue", nCount));
     obj.push_back(Pair("ipv4", ipv4));
