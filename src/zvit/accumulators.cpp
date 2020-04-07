@@ -514,7 +514,7 @@ void AccumulateRange(CoinWitnessData* coinWitness, int nHeightEnd)
         coinWitness->nMintsAdded += AddBlockMintsToAccumulator(coinWitness, pindex, true);
         coinWitness->nHeightAccEnd = pindex->nHeight;
 
-        // 10 blocks were accumulated twice when zPIV v2 was activated
+        // 10 blocks were accumulated twice when zVIT v2 was activated
         if (pindex->nHeight == Params().Zerocoin_Block_Double_Accumulated() + 10 && !fDoubleCounted) {
             pindex = chainActive[Params().Zerocoin_Block_Double_Accumulated()];
             fDoubleCounted = true;
@@ -692,7 +692,7 @@ bool calculateAccumulatedBlocksFor(
         // Add it
         nMintsAdded += AddBlockMintsToAccumulator(coin, nHeightMintAdded, pindex, &witnessAccumulator, true);
 
-        // 10 blocks were accumulated twice when zPIV v2 was activated
+        // 10 blocks were accumulated twice when zVIT v2 was activated
         if (pindex->nHeight == 1050010 && !fDoubleCounted) {
             pindex = chainActive[1050000];
             fDoubleCounted = true;

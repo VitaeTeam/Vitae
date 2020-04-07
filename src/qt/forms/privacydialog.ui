@@ -258,7 +258,7 @@
                               </font>
                              </property>
                              <property name="toolTip">
-                              <string>Total Balance including unconfirmed and immature zPIV</string>
+                              <string>Total Balance including unconfirmed and immature zVIT</string>
                              </property>
                              <property name="text">
                               <string>Total Zerocoin  Balance:</string>
@@ -283,10 +283,10 @@
                               </font>
                              </property>
                              <property name="toolTip">
-                              <string>Total Balance including unconfirmed and immature zPIV</string>
+                              <string>Total Balance including unconfirmed and immature zVIT</string>
                              </property>
                              <property name="text">
-                              <string>0 zPIV</string>
+                              <string>0 zVIT</string>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -335,7 +335,7 @@
                               </font>
                              </property>
                              <property name="text">
-                              <string>0 zPIV</string>
+                              <string>0 zVIT</string>
                              </property>
                             </widget>
                            </item>
@@ -357,7 +357,7 @@
                          <item>
                           <widget class="QPushButton" name="pushButtonShowDenoms">
                            <property name="toolTip">
-                            <string>Show zPIV denominations list</string>
+                            <string>Show zVIT denominations list</string>
                            </property>
                            <property name="text">
                             <string>Show Denominations</string>

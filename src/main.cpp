@@ -1012,7 +1012,7 @@ bool ContextualCheckZerocoinSpend(const CTransaction& tx, const CoinSpend& spend
     //Reject serial's that are already in the blockchain
     int nHeightTx = 0;
     if (IsSerialInBlockchain(spend.getCoinSerialNumber(), nHeightTx))
-        return error("%s : zPIV spend with serial %s is already in block %d\n", __func__,
+        return error("%s : zVIT spend with serial %s is already in block %d\n", __func__,
                      spend.getCoinSerialNumber().GetHex(), nHeightTx);
 
     return true;
@@ -2911,13 +2911,13 @@ void AddWrappedSerialsInflation()
 void RecalculateZVITMinted()
 {
     CBlockIndex *pindex = chainActive[Params().Zerocoin_StartHeight()];
-    uiInterface.ShowProgress(_("Recalculating minted ZPIV..."), 0);
+    uiInterface.ShowProgress(_("Recalculating minted ZVIT..."), 0);
     while (true) {
         // Log Message and feedback message every 1000 blocks
         if (pindex->nHeight % 1000 == 0) {
             LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
             int percent = std::max(1, std::min(99, (int)((double)(pindex->nHeight - Params().Zerocoin_StartHeight()) * 100 / (chainActive.Height() - Params().Zerocoin_StartHeight()))));
-            uiInterface.ShowProgress(_("Recalculating minted ZPIV..."), percent);
+            uiInterface.ShowProgress(_("Recalculating minted ZVIT..."), percent);
         }
 
         //overwrite possibly wrong vMintsInBlock data
@@ -2943,12 +2943,12 @@ void RecalculateZVITMinted()
 void RecalculateZVITSpent()
 {
     CBlockIndex* pindex = chainActive[Params().Zerocoin_StartHeight()];
-    uiInterface.ShowProgress(_("Recalculating spent ZPIV..."), 0);
+    uiInterface.ShowProgress(_("Recalculating spent ZVIT..."), 0);
     while (true) {
         if (pindex->nHeight % 1000 == 0) {
             LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
             int percent = std::max(1, std::min(99, (int)((double)(pindex->nHeight - Params().Zerocoin_StartHeight()) * 100 / (chainActive.Height() - Params().Zerocoin_StartHeight()))));
-            uiInterface.ShowProgress(_("Recalculating spent ZPIV..."), percent);
+            uiInterface.ShowProgress(_("Recalculating spent ZVIT..."), percent);
         }
 
         //Rewrite zVITAE supply
@@ -3172,7 +3172,7 @@ bool UpdateZVITAESupply(const CBlock& block, CBlockIndex* pindex, bool fJustChec
         LogPrint("zero", "%s coins for denomination %d pubcoin %s\n", __func__, denom, pindex->mapZerocoinSupply.at(denom));
 
     // Update Wrapped Serials amount
-    // A one-time event where only the zPIV supply was off (due to serial duplication off-chain on main net)
+    // A one-time event where only the zVIT supply was off (due to serial duplication off-chain on main net)
     if (Params().NetworkID() == CBaseChainParams::MAIN && pindex->nHeight == Params().Zerocoin_Block_EndFakeSerial() + 1
             && pindex->GetZerocoinSupply() < Params().GetSupplyBeforeFakeSerial() + GetWrapppedSerialInflationAmount()) {
         for (auto denom : libzerocoin::zerocoinDenomList) {
@@ -3394,9 +3394,9 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         RecalculateVITSupply(Params().Zerocoin_StartHeight());
     }
 
-    //Track zPIV money supply in the block index
+    //Track zVIT money supply in the block index
     if (!UpdateZVITAESupply(block, pindex, fJustCheck))
-        return state.DoS(100, error("%s: Failed to calculate new zPIV supply for block=%s height=%d", __func__,
+        return state.DoS(100, error("%s: Failed to calculate new zVIT supply for block=%s height=%d", __func__,
                                     block.GetHash().GetHex(), pindex->nHeight), REJECT_INVALID);
 
     // track money supply and mint amount info
@@ -4920,7 +4920,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             // Split height
             splitHeight = prev->nHeight;
 
-            // Now that this loop if completed. Check if we have zPIV inputs.
+            // Now that this loop if completed. Check if we have zVIT inputs.
             if(hasZPIVInputs){
                 for (const CTxIn& zPivInput : zVITInputs) {
                     CoinSpend spend = TxInToZerocoinSpend(zPivInput);

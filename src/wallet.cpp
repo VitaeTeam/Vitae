@@ -4179,7 +4179,7 @@ void CWallet::CreateAutoMintTransaction(const CAmount& nMintAmount, CCoinControl
         CAmount nZerocoinBalance = GetZerocoinBalance(false);
         CAmount nBalance = GetUnlockedCoins();
         CAmount dPercentage = 100 * (double)nZerocoinBalance / (double)(nZerocoinBalance + nBalance);
-        LogPrintf("CWallet::AutoZeromint() @ block %ld: successfully minted %ld zPIV. Current percentage of zPIV: %lf%%\n",
+        LogPrintf("CWallet::AutoZeromint() @ block %ld: successfully minted %ld zVIT. Current percentage of zVIT: %lf%%\n",
                   chainActive.Tip()->nHeight, nMintAmount, dPercentage);
         // Re-adjust startup time to delay next Automint for 5 minutes
         nStartupTime = GetAdjustedTime();
@@ -4782,7 +4782,7 @@ bool CWallet::CheckCoinSpend(libzerocoin::CoinSpend& spend, libzerocoin::Accumul
     }
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST && IsSerialKnown(spend.getCoinSerialNumber())) {
-        //Tried to spend an already spent zPIV
+        //Tried to spend an already spent zVIT
         receipt.SetStatus(_("The coin spend has been used"), ZVIT_SPENT_USED_ZVIT);
         uint256 hashSerial = GetSerialHash(spend.getCoinSerialNumber());
         if(!zvitTracker->HasSerialHash(hashSerial))
@@ -4864,7 +4864,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
             if (nVersion >= libzerocoin::PrivateCoin::PUBKEY_VERSION) {
                 CKey key;
                 if (!mint.GetKeyPair(key))
-                    return error("%s: failed to set zPIV privkey mint version=%d", __func__, nVersion);
+                    return error("%s: failed to set zVIT privkey mint version=%d", __func__, nVersion);
                 privateCoin.setPrivKey(key.GetPrivKey());
             }
             int64_t nTime3 = GetTimeMicros();
@@ -5629,7 +5629,7 @@ void CWallet::PrecomputeSpends()
             nLastCacheWriteDB = nLastCacheCleanUpTime;
         }
 
-        // Get the list of zPIV inputs
+        // Get the list of zVIT inputs
         std::list <std::unique_ptr<CStakeInput>> listInputs;
         if (!SelectStakeCoins(listInputs, 0, true)) {
             MilliSleep(5000);

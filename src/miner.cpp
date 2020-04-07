@@ -521,13 +521,13 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
                 CBigNum bnSerial = spend.getCoinSerialNumber();
                 CKey key;
                 if (!pwallet->GetZerocoinKey(bnSerial, key)) {
-                    LogPrintf("%s: failed to find zPIV with serial %s, unable to sign block\n", __func__, bnSerial.GetHex());
+                    LogPrintf("%s: failed to find zVIT with serial %s, unable to sign block\n", __func__, bnSerial.GetHex());
                     return NULL;
                 }
 
-                //Sign block with the zPIV key
+                //Sign block with the zVIT key
                 if (!SignBlockWithKey(*pblock, key)) {
-                    LogPrintf("BitcoinMiner(): Signing new block with zPIV key failed \n");
+                    LogPrintf("BitcoinMiner(): Signing new block with zVIT key failed \n");
                     return NULL;
                 }
             } else if (!SignBlock(*pblock, *pwallet)) {

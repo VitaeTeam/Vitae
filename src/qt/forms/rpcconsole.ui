@@ -1351,7 +1351,7 @@
        <item row="4" column="0">
         <widget class="QLabel" name="wallet_customzvitbackuppath_label">
          <property name="text">
-          <string>Custom zPIV Backup Path:</string>
+          <string>Custom zVIT Backup Path:</string>
          </property>
          <property name="visible">
           <bool>false</bool>

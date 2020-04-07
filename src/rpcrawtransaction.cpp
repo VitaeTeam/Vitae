@@ -916,7 +916,7 @@ UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 1)
         throw runtime_error(
             "createrawzerocoinstake mint_input \n"
-            "\nCreates raw zPIV coinstakes (without MN output).\n" +
+            "\nCreates raw zVIT coinstakes (without MN output).\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
@@ -937,7 +937,7 @@ UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV is currently disabled due to maintenance.");
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT is currently disabled due to maintenance.");
 
     std::string serial_hash = params[0].get_str();
     if (!IsHex(serial_hash))

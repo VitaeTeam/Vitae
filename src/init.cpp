@@ -1543,7 +1543,7 @@ bool AppInit2()
                         LogPrintf("Current GetZerocoinSupply: %d vs %d\n", pblockindex->GetZerocoinSupply()/COIN , zvitSupplyCheckpoint/COIN);
                         reindexDueWrappedSerials = true;
                     } else if (pblockindex->GetZerocoinSupply() > zvitSupplyCheckpoint) {
-                        // Trigger global zPIV reindex
+                        // Trigger global zVIT reindex
                         reindexZerocoin = true;
                         LogPrintf("Current GetZerocoinSupply: %d vs %d\n", pblockindex->GetZerocoinSupply()/COIN , zvitSupplyCheckpoint/COIN);
                     }
@@ -2174,7 +2174,7 @@ bool AppInit2()
         threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
 
         if (GetBoolArg("-precompute", true)) {
-            // Run a thread to precompute any zPIV spends
+            // Run a thread to precompute any zVIT spends
             threadGroup.create_thread(boost::bind(&ThreadPrecomputeSpends));
         }
     }
