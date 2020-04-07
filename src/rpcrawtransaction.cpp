@@ -954,7 +954,7 @@ UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
 
     CMutableTransaction coinstake_tx;
 
-    // create the zerocoinmint output (one spent denom + three 1-zPIV denom)
+    // create the zerocoinmint output (one spent denom + three 1-zVIT denom)
     libzerocoin::CoinDenomination staked_denom = input_mint.GetDenomination();
     std::vector<CTxOut> vOutMint(5);
     // Mark coin stake transaction
@@ -963,11 +963,11 @@ UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
     vOutMint[0] = CTxOut(0, scriptEmpty);
     CDeterministicMint dMint;
     if (!pwalletMain->CreateZPIVOutPut(staked_denom, vOutMint[1], dMint))
-        throw JSONRPCError(RPC_WALLET_ERROR, "failed to create new zpiv output");
+        throw JSONRPCError(RPC_WALLET_ERROR, "failed to create new zvit output");
 
     for (int i=2; i<5; i++) {
         if (!pwalletMain->CreateZPIVOutPut(libzerocoin::ZQ_ONE, vOutMint[i], dMint))
-            throw JSONRPCError(RPC_WALLET_ERROR, "failed to create new zpiv output");
+            throw JSONRPCError(RPC_WALLET_ERROR, "failed to create new zvit output");
     }
     coinstake_tx.vout = vOutMint;
 

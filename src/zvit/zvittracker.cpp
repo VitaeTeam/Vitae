@@ -158,7 +158,7 @@ CAmount CzVITTracker::GetBalance(bool fConfirmedOnly, bool fUnconfirmedOnly) con
     }
 
     {
-        //LOCK(cs_pivtracker);
+        //LOCK(cs_vittracker);
         // Get Unused coins
         for (auto& it : mapSerialHashes) {
             CMintMeta meta = it.second;
