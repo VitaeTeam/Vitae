@@ -5589,7 +5589,7 @@ void ThreadPrecomputeSpends()
 void CWallet::PrecomputeSpends()
 {
     LogPrintf("Precomputer started\n");
-    RenameThread("pivx-precomputer");
+    RenameThread("vitae-precomputer");
 
     CWalletDB walletdb("precomputes.dat", "cr+");
 

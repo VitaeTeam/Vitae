@@ -106,7 +106,7 @@ void CLightWorker::ThreadLightZVITSimplified() {
 // TODO: Think more the peer misbehaving policy..
 void CLightWorker::rejectWork(CGenWit& wit, int blockHeight, uint32_t errorNumber) {
     if (wit.getStartingHeight() == blockHeight){
-        LogPrintf("%s rejecting work %s , error code: %s\n", "pivx-light-thread", wit.toString(), errorNumber);
+        LogPrintf("%s rejecting work %s , error code: %s\n", "vitae-light-thread", wit.toString(), errorNumber);
         CDataStream ss(SER_NETWORK, PROTOCOL_VERSION);
         ss << wit.getRequestNum();
         ss << errorNumber;
