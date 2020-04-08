@@ -11,18 +11,23 @@
  **/
 // Copyright (c) 2017 The VITAE developers
 
-#include <stdlib.h>
 #include "Commitment.h"
 #include "hash.h"
 
 namespace libzerocoin {
 
 //Commitment class
-Commitment::Commitment::Commitment(const IntegerGroupParams* p,
+Commitment::Commitment(const IntegerGroupParams* p,
                                    const CBigNum& value): params(p), contents(value) {
 	this->randomness = CBigNum::randBignum(params->groupOrder);
 	this->commitmentValue = (params->g.pow_mod(this->contents, params->modulus).mul_mod(
 	                         params->h.pow_mod(this->randomness, params->modulus), params->modulus));
+}
+
+Commitment::Commitment(const IntegerGroupParams* p, const CBigNum& bnSerial, const CBigNum& bnRandomness): params(p), contents(bnSerial) {
+    this->randomness = bnRandomness;
+    this->commitmentValue = (params->g.pow_mod(this->contents, params->modulus).mul_mod(
+        params->h.pow_mod(this->randomness, params->modulus), params->modulus));
 }
 
 const CBigNum& Commitment::getCommitmentValue() const {
@@ -132,12 +137,7 @@ bool CommitmentProofOfKnowledge::Verify(const CBigNum& A, const CBigNum& B) cons
 	CBigNum computedChallenge = calculateChallenge(A, B, T1, T2);
 
 	// Return success if the computed challenge matches the incoming challenge
-	if(computedChallenge == this->challenge) {
-		return true;
-	}
-
-	// Otherwise return failure
-	return false;
+	return computedChallenge == this->challenge;
 }
 
 const CBigNum CommitmentProofOfKnowledge::calculateChallenge(const CBigNum& a, const CBigNum& b, const CBigNum &commitOne, const CBigNum &commitTwo) const {

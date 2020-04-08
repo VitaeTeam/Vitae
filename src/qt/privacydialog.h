@@ -49,7 +49,7 @@ public:
     void setZVitControlLabels(int64_t nAmount, int nQuantity);
 
 public slots:
-    void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
+    void setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                     const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                     const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance);
 protected:
@@ -70,9 +70,9 @@ private:
     CAmount currentWatchOnlyBalance;
     CAmount currentWatchUnconfBalance;
     CAmount currentWatchImmatureBalance;
-    
-    int nSecurityLevel = 0;
+
     bool fMinimizeChange = false;
+    bool fDenomsMinimized;
 
     int nDisplayUnit;
     bool updateLabel(const QString& address);
@@ -101,8 +101,13 @@ private slots:
     void on_pushButtonSpentReset_clicked();
     void on_pushButtonSpendzVIT_clicked();
     void on_pushButtonZVitControl_clicked();
+    void on_pushButtonHideDenoms_clicked();
+    void on_pushButtonShowDenoms_clicked();
     void on_pasteButton_clicked();
+    void minimizeDenomsSection(bool fMinimize);
     void updateDisplayUnit();
+    void updateAutomintStatus();
+    void updateSPORK20Status();
 };
 
 #endif // BITCOIN_QT_PRIVACYDIALOG_H

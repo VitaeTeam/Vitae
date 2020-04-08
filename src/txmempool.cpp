@@ -567,13 +567,18 @@ void CTxMemPool::check(const CCoinsViewCache* pcoins) const
                 fDependsWait = true;
             } else {
                 const CCoins* coins = pcoins->AccessCoins(txin.prevout.hash);
-                assert(coins && coins->IsAvailable(txin.prevout.n));
+                if(!txin.scriptSig.IsZerocoinSpend())
+                    assert(coins && coins->IsAvailable(txin.prevout.n));
             }
             // Check whether its inputs are marked in mapNextTx.
-            std::map<COutPoint, CInPoint>::const_iterator it3 = mapNextTx.find(txin.prevout);
-            assert(it3 != mapNextTx.end());
-            assert(it3->second.ptx == &tx);
-            assert(it3->second.n == i);
+            if(!txin.scriptSig.IsZerocoinSpend()) {
+                std::map<COutPoint, CInPoint>::const_iterator it3 = mapNextTx.find(txin.prevout);
+                assert(it3 != mapNextTx.end());
+                assert(it3->second.ptx == &tx);
+                assert(it3->second.n == i);
+            }else{
+                fDependsWait=false;
+            }
             i++;
         }
         if (fDependsWait)
@@ -622,6 +627,15 @@ void CTxMemPool::queryHashes(vector<uint256>& vtxid)
     vtxid.reserve(mapTx.size());
     for (map<uint256, CTxMemPoolEntry>::iterator mi = mapTx.begin(); mi != mapTx.end(); ++mi)
         vtxid.push_back((*mi).first);
+}
+
+void CTxMemPool::getTransactions(std::set<uint256>& setTxid)
+{
+    setTxid.clear();
+
+    LOCK(cs);
+    for (map<uint256, CTxMemPoolEntry>::iterator mi = mapTx.begin(); mi != mapTx.end(); ++mi)
+        setTxid.insert((*mi).first);
 }
 
 bool CTxMemPool::lookup(uint256 hash, CTransaction& result) const

@@ -3,13 +3,11 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-// clang-format off
-#include "net.h"
+#include "netbase.h"
 #include "fundamentalnodeconfig.h"
 #include "util.h"
 #include "ui_interface.h"
 #include <base58.h>
-// clang-format on
 
 CFundamentalnodeConfig fundamentalnodeConfig;
 
@@ -60,15 +58,25 @@ bool CFundamentalnodeConfig::read(std::string& strErr)
             }
         }
 
+        int port = 0;
+        std::string hostname = "";
+        SplitHostPort(ip, port, hostname);
+        if(port == 0 || hostname == "") {
+            strErr = _("Failed to parse host:port string") + "\n"+
+                     strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"";
+            streamConfig.close();
+            return false;
+        }
+
         if (Params().NetworkID() == CBaseChainParams::MAIN) {
-            if (CService(ip).GetPort() != 8765) {
+            if (port != 8765) {
                 strErr = _("Invalid port detected in fundamentalnode.conf") + "\n" +
                          strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"" + "\n" +
                          _("(must be 8765 for mainnet)");
                 streamConfig.close();
                 return false;
             }
-        } else if (CService(ip).GetPort() == 8765) {
+        } else if (port == 8765) {
             strErr = _("Invalid port detected in fundamentalnode.conf") + "\n" +
                      strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"" + "\n" +
                      _("(8765 could be used only on mainnet)");

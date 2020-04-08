@@ -11,7 +11,6 @@
 #include "util.h"
 #include "sync.h"
 #include "addrman.h"
-#include <boost/lexical_cast.hpp>
 
 CCriticalSection cs_masternodepayments;
 
@@ -285,7 +284,7 @@ void CMasternode::Check()
 bool CMasternodePayments::CheckSignature(CMasternodePaymentWinner& winner)
 {
     //note: need to investigate why this is failing
-    std::string strMessage = winner.vin.ToString().c_str() + boost::lexical_cast<std::string>(winner.nBlockHeight) + winner.payee.ToString();
+    std::string strMessage = winner.vin.ToString().c_str() + std::to_string(winner.nBlockHeight) + winner.payee.ToString();
     std::string strPubKey = (Params().NetworkID() == CBaseChainParams::MAIN) ? strMainPubKey : strTestPubKey;
     CPubKey pubkey(ParseHex(strPubKey));
 
@@ -299,7 +298,7 @@ bool CMasternodePayments::CheckSignature(CMasternodePaymentWinner& winner)
 
 bool CMasternodePayments::Sign(CMasternodePaymentWinner& winner)
 {
-    std::string strMessage = winner.vin.ToString().c_str() + boost::lexical_cast<std::string>(winner.nBlockHeight) + winner.payee.ToString();
+    std::string strMessage = winner.vin.ToString().c_str() + std::to_string(winner.nBlockHeight) + winner.payee.ToString();
 
     CKey key2;
     CPubKey pubkey2;
@@ -560,3 +559,19 @@ bool CMasternodePayments::SetPrivKey(std::string strPrivKey)
         return false;
     }
 }
+
+bool CMasternodeBroadcast::CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext)
+{
+    CService service = CService(strService);
+    int nDefaultPort = Params().GetDefaultPort();
+    
+    if (service.GetPort() != nDefaultPort) {
+        strErrorRet = strprintf("Invalid port %u for masternode %s, only %d is supported on %s-net.", 
+                                        service.GetPort(), strService, nDefaultPort, Params().NetworkIDString());
+        LogPrint("masternode", "%s - %s\n", strContext, strErrorRet);
+        return false;
+    }
+ 
+    return true;
+}
+

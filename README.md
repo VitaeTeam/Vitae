@@ -34,7 +34,7 @@ More information at [vitaetoken.io](http://www.vitaetoken.io)
 <tr><td>3-200</td><td>30 VITAE</td><td rowspan=1>Initial Mining</td><td rowspan=1> Approx 1 Days</td></tr>
 <tr><th colspan=4>PoS Phase</th></tr>
 <tr><th>Block Height</th><th colspan=3>Reward Amount</th></tr>
-<tr><td>201-Infinite</td><td colspan=3>Variable based on <a href="https://pivx.org/knowledge-base/see-saw-rewards-mechanism/">SeeSaw Reward Mechanism</a></td></tr>
+<tr><td>201-Infinite</td><td colspan=3>Variable based on <a href="https://vitae.org/knowledge-base/see-saw-rewards-mechanism/">SeeSaw Reward Mechanism</a></td></tr>
 </table>
 
 ### PoW Rewards Breakdown

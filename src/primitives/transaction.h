@@ -8,6 +8,7 @@
 #define BITCOIN_PRIMITIVES_TRANSACTION_H
 
 #include "amount.h"
+#include "libzerocoin/CoinSpend.h"
 #include "script/script.h"
 #include "serialize.h"
 #include "uint256.h"
@@ -80,6 +81,7 @@ public:
 
     explicit CTxIn(COutPoint prevoutIn, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<unsigned int>::max());
     CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn=CScript(), uint32_t nSequenceIn=std::numeric_limits<uint32_t>::max());
+    CTxIn(const libzerocoin::CoinSpend& spend, libzerocoin::CoinDenomination denom);
 
     ADD_SERIALIZE_METHODS;
 
@@ -261,7 +263,7 @@ public:
 
     bool IsZerocoinSpend() const
     {
-        return (vin.size() > 0 && vin[0].prevout.IsNull() && vin[0].scriptSig[0] == OP_ZEROCOINSPEND);
+        return (vin.size() > 0 && vin[0].prevout.hash == 0 && vin[0].scriptSig[0] == OP_ZEROCOINSPEND);
     }
 
     bool IsZerocoinMint() const
@@ -290,11 +292,7 @@ public:
         return (vin.size() == 1 && vin[0].prevout.IsNull() && !ContainsZerocoins());
     }
 
-    bool IsCoinStake() const
-    {
-        // ppcoin: the coin stake transaction is marked with the first output empty
-        return (vin.size() > 0 && (!vin[0].prevout.IsNull()) && vout.size() >= 2 && vout[0].IsEmpty());
-    }
+    bool IsCoinStake() const;
 
     friend bool operator==(const CTransaction& a, const CTransaction& b)
     {
@@ -307,8 +305,6 @@ public:
     }
 
     std::string ToString() const;
-
-    bool GetCoinAge(uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
 };
 
 /** A mutable version of CTransaction. */
