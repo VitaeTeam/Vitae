@@ -2160,7 +2160,7 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
     }
 
     //zVIT
-    if ((GetBoolArg("-zvitstake", true) || fPrecompute)  && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if ((GetBoolArg("-zvitstake", true) || fPrecompute)  && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
         //Only update zVIT set once per update interval
         bool fUpdate = false;
         static int64_t nTimeLastUpdate = 0;

@@ -107,7 +107,7 @@ private slots:
     void minimizeDenomsSection(bool fMinimize);
     void updateDisplayUnit();
     void updateAutomintStatus();
-    void updateSPORK16Status();
+    void updateSPORK20Status();
 };
 
 #endif // BITCOIN_QT_PRIVACYDIALOG_H
