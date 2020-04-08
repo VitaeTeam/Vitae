@@ -79,7 +79,6 @@ bool fListen = true;
 uint64_t nLocalServices = NODE_NETWORK;
 CCriticalSection cs_mapLocalHost;
 map<CNetAddr, LocalServiceInfo> mapLocalHost;
-static bool vfReachable[NET_MAX] = {};
 static bool vfLimited[NET_MAX] = {};
 static CNode* pnodeLocalHost = NULL;
 uint64_t nLocalHostNonce = 0;
@@ -239,14 +238,6 @@ void AdvertizeLocal(CNode* pnode)
     }
 }
 
-void SetReachable(enum Network net, bool fFlag)
-{
-    LOCK(cs_mapLocalHost);
-    vfReachable[net] = fFlag;
-    if (net == NET_IPV6 && fFlag)
-        vfReachable[NET_IPV4] = true;
-}
-
 // learn a new local address
 bool AddLocal(const CService& addr, int nScore)
 {
@@ -269,7 +260,6 @@ bool AddLocal(const CService& addr, int nScore)
             info.nScore = nScore + (fAlready ? 1 : 0);
             info.nPort = addr.GetPort();
         }
-        SetReachable(addr.GetNetwork());
     }
 
     return true;
@@ -332,7 +322,7 @@ bool IsLocal(const CService& addr)
 bool IsReachable(enum Network net)
 {
     LOCK(cs_mapLocalHost);
-    return vfReachable[net] && !vfLimited[net];
+    return !vfLimited[net];
 }
 
 /** check whether a given address is in a network we can probably connect to */
@@ -1735,6 +1725,10 @@ void StartNode(boost::thread_group& threadGroup, CScheduler& scheduler)
     CNode::SetBannedSetDirty(false); //no need to write down just read or nonexistent data
     CNode::SweepBanned(); //sweap out unused entries
 
+    // Initialize random numbers. Even when rand() is only usable for trivial use-cases most nodes should have a different 
+    // seed after all the file-IO done at this point. Should be good enough even when nodes are started via scripts.
+    srand(time(NULL));
+
     LogPrintf("Loaded %i addresses from peers.dat  %dms\n",
         addrman.size(), GetTimeMillis() - nStart);
     fAddressesInitialized = true;
@@ -2181,8 +2175,10 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
     if (mapArgs.count("-fuzzmessagestest"))
         Fuzz(GetArg("-fuzzmessagestest", 10));
 
-    if (ssSend.size() == 0)
+    if (ssSend.size() == 0) {
+	    LEAVE_CRITICAL_SECTION(cs_vSend);
         return;
+    }
 
     // Set the size
     unsigned int nSize = ssSend.size() - CMessageHeader::HEADER_SIZE;

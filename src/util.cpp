@@ -151,7 +151,7 @@ volatile bool fReopenDebugLog = false;
 
 /** Init OpenSSL library multithreading support */
 static CCriticalSection** ppmutexOpenSSL;
-void locking_callback(int mode, int i, const char* file, int line)
+void locking_callback(int mode, int i, const char* file, int line) NO_THREAD_SAFETY_ANALYSIS
 {
     if (mode & CRYPTO_LOCK) {
         ENTER_CRITICAL_SECTION(*ppmutexOpenSSL[i]);
@@ -753,6 +753,26 @@ boost::filesystem::path GetTempPath()
 #endif
 }
 
+double double_safe_addition(double fValue, double fIncrement)
+{
+    double fLimit = std::numeric_limits<double>::max() - fValue;
+
+    if (fLimit > fIncrement)
+        return fValue + fIncrement;
+    else
+        return std::numeric_limits<double>::max();
+}
+
+double double_safe_multiplication(double fValue, double fmultiplicator)
+{
+    double fLimit = std::numeric_limits<double>::max() / fmultiplicator;
+
+    if (fLimit > fmultiplicator)
+        return fValue * fmultiplicator;
+    else
+        return std::numeric_limits<double>::max();
+}
+
 void runCommand(std::string strCommand)
 {
     int nErr = ::system(strCommand.c_str());
@@ -801,6 +821,18 @@ void SetupEnvironment()
     // boost::filesystem::path, which is then used to explicitly imbue the path.
     std::locale loc = boost::filesystem::path::imbue(std::locale::classic());
     boost::filesystem::path::imbue(loc);
+}
+
+bool SetupNetworking()
+{
+#ifdef WIN32
+    // Initialize Windows Sockets
+    WSADATA wsadata;
+    int ret = WSAStartup(MAKEWORD(2,2), &wsadata);
+    if (ret != NO_ERROR || LOBYTE(wsadata.wVersion ) != 2 || HIBYTE(wsadata.wVersion) != 2)
+        return false;
+#endif
+    return true;
 }
 
 void SetThreadPriority(int nPriority)

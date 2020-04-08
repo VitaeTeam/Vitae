@@ -73,6 +73,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"listunspent", 0},
         {"listunspent", 1},
         {"listunspent", 2},
+        {"listunspent", 3},
         {"getblock", 1},
         {"getblockheader", 1},
         {"gettransaction", 1},
@@ -125,6 +126,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"listspentzerocoins", 0},
         {"listzerocoinamounts", 0},
         {"mintzerocoin", 0},
+        {"mintzerocoin", 1},
         {"spendzerocoin", 0},
         {"spendzerocoin", 1},
         {"spendzerocoin", 2},
@@ -134,6 +136,12 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"exportzerocoins", 1},
         {"resetmintzerocoin", 0},
         {"getspentzerocoinamount", 1},
+        {"generatemintlist", 0},
+        {"generatemintlist", 1},
+        {"searchdzvit", 0},
+        {"searchdzvit", 1},
+        {"searchdzvit", 2},
+        {"getaccumulatorvalues", 0},
         {"getfeeinfo", 0}
     };
 

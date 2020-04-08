@@ -7,9 +7,11 @@
 
 #include "amount.h"
 #include "fundamentalnodelist.h"
+#include "askpassphrasedialog.h"
 #include "masternodelist.h"
 
 #include <QStackedWidget>
+#include <ui_interface.h>
 
 class BitcoinGUI;
 class ClientModel;
@@ -116,7 +118,7 @@ public slots:
     /** Change encrypted wallet passphrase */
     void changePassphrase();
     /** Ask for passphrase to unlock wallet temporarily */
-    void unlockWallet();
+    void unlockWallet(AskPassphraseDialog::Context context);
     /** Lock wallet */
     void lockWallet();
     /** Toggle wallet lock state */

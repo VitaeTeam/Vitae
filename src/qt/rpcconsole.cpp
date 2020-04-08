@@ -17,6 +17,9 @@
 #include "rpcclient.h"
 #include "rpcserver.h"
 #include "util.h"
+#ifdef ENABLE_WALLET
+#include "wallet.h"
+#endif // ENABLE_WALLET
 
 #include <openssl/crypto.h>
 
@@ -33,6 +36,7 @@
 #include <QSignalMapper>
 #include <QThread>
 #include <QTime>
+#include <QTimer>
 #include <QStringList>
 
 #if QT_VERSION < 0x050000
@@ -78,6 +82,39 @@ public slots:
 
 signals:
     void reply(int category, const QString& command);
+};
+
+/** Class for handling RPC timers
+ * (used for e.g. re-locking the wallet after a timeout)
+ */
+class QtRPCTimerBase: public QObject, public RPCTimerBase
+{
+    Q_OBJECT
+public:
+    QtRPCTimerBase(boost::function<void(void)>& func, int64_t millis):
+        func(func)
+    {
+        timer.setSingleShot(true);
+        connect(&timer, SIGNAL(timeout()), this, SLOT(timeout()));
+        timer.start(millis);
+    }
+    ~QtRPCTimerBase() {}
+private slots:
+    void timeout() { func(); }
+private:
+    QTimer timer;
+    boost::function<void(void)> func;
+};
+
+class QtRPCTimerInterface: public RPCTimerInterface
+{
+public:
+    ~QtRPCTimerInterface() {}
+    const char *Name() { return "Qt"; }
+    RPCTimerBase* NewTimer(boost::function<void(void)>& func, int64_t millis)
+    {
+        return new QtRPCTimerBase(func, millis);
+    }
 };
 
 #include "rpcconsole.moc"
@@ -221,7 +258,7 @@ void RPCExecutor::request(const QString& command)
     }
 }
 
-RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
+RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                           ui(new Ui::RPCConsole),
                                           clientModel(0),
                                           historyPtr(0),
@@ -255,12 +292,38 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
     // set library version labels
     ui->openSSLVersion->setText(SSLeay_version(SSLEAY_VERSION));
 #ifdef ENABLE_WALLET
+    std::string strPathCustom = GetArg("-backuppath", "");
+    std::string strzPIVPathCustom = GetArg("zvitbackuppath", "");
+    int nCustomBackupThreshold = GetArg("-custombackupthreshold", DEFAULT_CUSTOMBACKUPTHRESHOLD);
+
+    if(!strPathCustom.empty()) {
+        ui->wallet_custombackuppath->setText(QString::fromStdString(strPathCustom));
+        ui->wallet_custombackuppath_label->show();
+        ui->wallet_custombackuppath->show();
+    }
+
+    if(!strzPIVPathCustom.empty()) {
+        ui->wallet_customzvitbackuppath->setText(QString::fromStdString(strzPIVPathCustom));
+        ui->wallet_customzvitbackuppath_label->setVisible(true);
+        ui->wallet_customzvitbackuppath->setVisible(true);
+    }
+
+    if((!strPathCustom.empty() || !strzPIVPathCustom.empty()) && nCustomBackupThreshold > 0) {
+        ui->wallet_custombackupthreshold->setText(QString::fromStdString(std::to_string(nCustomBackupThreshold)));
+        ui->wallet_custombackupthreshold_label->setVisible(true);
+        ui->wallet_custombackupthreshold->setVisible(true);
+    }
+
     ui->berkeleyDBVersion->setText(DbEnv::version(0, 0, 0));
     ui->wallet_path->setText(QString::fromStdString(GetDataDir().string() + QDir::separator().toLatin1() + GetArg("-wallet", "wallet.dat")));
 #else
+
     ui->label_berkeleyDBVersion->hide();
     ui->berkeleyDBVersion->hide();
 #endif
+    // Register RPC timer interface
+    rpcTimerInterface = new QtRPCTimerInterface();
+    RPCRegisterTimerInterface(rpcTimerInterface);
 
     startExecutor();
     setTrafficGraphRange(INITIAL_TRAFFIC_GRAPH_MINS);
@@ -274,6 +337,8 @@ RPCConsole::~RPCConsole()
 {
     GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
     emit stopExecutor();
+    RPCUnregisterTimerInterface(rpcTimerInterface);
+    delete rpcTimerInterface;
     delete ui;
 }
 

@@ -153,6 +153,8 @@ public:
 
     void Remove(CTxIn vin);
 
+    int GetEstimatedMasternodes(int nBlock);
+
     /// Update fundamentalnode list and maps using provided CFundamentalnodeBroadcast
     void UpdateFundamentalnodeList(CFundamentalnodeBroadcast mnb);
 };
