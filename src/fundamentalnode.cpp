@@ -599,7 +599,7 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
 
         int64_t nValueIn = 0;
 
-        BOOST_FOREACH (const CTxIn& txin, tx2.vin) {
+        for (const CTxIn& txin : tx2.vin) {
             // First try finding the previous transaction in database
             CTransaction txPrev;
             uint256 hashBlockPrev;

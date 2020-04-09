@@ -2115,7 +2115,7 @@ bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, 
     //CTransaction txVin;
     //uint256 hash;
     if (GetTransaction(vin.prevout.hash, Tx, hashBlock, true)) {
-        BOOST_FOREACH (CTxOut out, Tx.vout) {
+        for (CTxOut out : Tx.vout) {
             if (out.nValue == FN_MAGIC_AMOUNT ) {
                 if (out.scriptPubKey == payee2) return true;
             }

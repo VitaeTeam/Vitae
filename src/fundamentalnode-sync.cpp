@@ -222,7 +222,7 @@ void CFundamentalnodeSync::ClearFulfilledRequest()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         pnode->ClearFulfilledRequest("getspork");
         pnode->ClearFulfilledRequest("fnsync");
         pnode->ClearFulfilledRequest("fnwsync");
@@ -264,7 +264,7 @@ void CFundamentalnodeSync::Process()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         if (Params().NetworkID() == CBaseChainParams::REGTEST) {
             if (RequestedFundamentalnodeAttempt <= 2) {
                 pnode->PushMessage("getsporks"); //get current network sporks
