@@ -240,7 +240,7 @@ bool GetTransaction(const uint256& hash, CTransaction& tx, uint256& hashBlock, b
 
 // ***TODO***
 double ConvertBitsToDouble(unsigned int nBits);
-int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount = 0);
+int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount = 0, bool isZVITAEStake = false);
 int64_t GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCount, bool isZVITAEStake);
 
 unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader* pblock, bool fProofOfStake);

@@ -739,7 +739,7 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         nFundamentalnode_Drift_Count = mnodeman.size() + Params().FundamentalnodeCountDrift();
     }
 
-    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count);
+    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count, txNew.HasZerocoinSpendInputs());
 
     //require at least 6 signatures
     BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments)

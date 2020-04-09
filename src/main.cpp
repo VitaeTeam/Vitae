@@ -1813,7 +1813,7 @@ bool AcceptableFundamentalTxn(CTxMemPool& pool, CValidationState& state, const C
     }
 
     // Check for conflicts with in-memory transactions
-    if (!tx.IsZerocoinSpend()) {
+    if (!tx.HasZerocoinSpendInputs()) {
         LOCK(pool.cs); // protect pool.mapNextTx
         for (unsigned int i = 0; i < tx.vin.size(); i++) {
             COutPoint outpoint = tx.vin[i].prevout;
@@ -2321,7 +2321,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
         return ret;
 }
 
-int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount)
+int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamentalnodeCount, bool isZVITAEStake)
 {
     int64_t ret = 0;
 
