@@ -143,6 +143,9 @@
 /* Define to 1 if you have the `gdi32' library (-lgdi32). */
 #undef HAVE_LIBGDI32
 
+/* Define this symbol if libgmp is installed */
+#undef HAVE_LIBGMP
+
 /* Define to 1 if you have the `imm32' library (-limm32). */
 #undef HAVE_LIBIMM32
 
@@ -311,6 +314,12 @@
 
 /* Define if dbus support should be compiled in */
 #undef USE_DBUS
+
+/* Define this symbol to use the gmp implementation */
+#undef USE_NUM_GMP
+
+/* Define this symbol to use openssl implementation */
+#undef USE_NUM_OPENSSL
 
 /* Define if QR support should be compiled in */
 #undef USE_QRCODE
