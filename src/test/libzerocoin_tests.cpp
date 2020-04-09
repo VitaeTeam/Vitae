@@ -23,7 +23,7 @@
 #include "libzerocoin/Coin.h"
 #include "libzerocoin/CoinSpend.h"
 #include "libzerocoin/Accumulator.h"
-#include "test_pivx.h"
+#include "test_vitae.h"
 
 using namespace std;
 using namespace libzerocoin;

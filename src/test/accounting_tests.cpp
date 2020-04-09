@@ -5,7 +5,7 @@
 #include "wallet.h"
 #include "walletdb.h"
 
-#include "test/test_pivx.h"
+#include "test/test_vitae.h"
 
 #include <stdint.h>
 

@@ -5,7 +5,7 @@
 
 #define BOOST_TEST_MODULE Vitae Test Suite
 
-#include "test_pivx.h"
+#include "test_vitae.h"
 
 #include "main.h"
 #include "random.h"

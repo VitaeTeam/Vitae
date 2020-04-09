@@ -10,7 +10,7 @@
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-#include "test_pivx.h"
+#include "test_vitae.h"
 
 // how many times to run all the tests to have a chance to catch errors that only show up with particular random shuffles
 #define RUN_TESTS 100

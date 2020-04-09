@@ -4,7 +4,7 @@
 
 #include "compressor.h"
 #include "util.h"
-#include "test/test_pivx.h"
+#include "test/test_vitae.h"
 
 #include <stdint.h>
 
