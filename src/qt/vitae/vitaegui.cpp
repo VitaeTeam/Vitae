@@ -609,7 +609,7 @@ bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
     // Connect actions..
     connect(fundamentalNodesWidget, &FundamentalNodesWidget::message, this, &VITAEGUI::message);
     connect(masterNodesWidget, &MasterNodesWidget::message, this, &VITAEGUI::message);
-    connect(coldStakingWidget, &MasterNodesWidget::message, this, &VITAEGUI::message);
+    connect(coldStakingWidget, &ColdStakingWidget::message, this, &VITAEGUI::message);
     connect(topBar, &TopBar::message, this, &VITAEGUI::message);
     connect(sendWidget, &SendWidget::message,this, &VITAEGUI::message);
     connect(receiveWidget, &ReceiveWidget::message,this, &VITAEGUI::message);
