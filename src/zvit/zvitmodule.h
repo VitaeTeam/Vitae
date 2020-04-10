@@ -17,7 +17,7 @@
 #include "uint256.h"
 #include <streams.h>
 #include <utilstrencodings.h>
-#include "zpiv/zerocoin.h"
+#include "zvit/zerocoin.h"
 
 class PublicCoinSpend : public libzerocoin::CoinSpend{
 public:

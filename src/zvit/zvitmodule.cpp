@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "zpiv/zpivmodule.h"
-#include "zpivchain.h"
+#include "zvit/zvitmodule.h"
+#include "zvitchain.h"
 #include "chainparams.h"
 #include "libzerocoin/Commitment.h"
 #include "libzerocoin/Coin.h"
