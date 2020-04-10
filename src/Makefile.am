@@ -584,10 +584,10 @@ if GLIBC_BACK_COMPAT
 endif
 
 check-security: $(bin_PROGRAMS)
-if HARDEN
-	@echo "Checking binary security..."
-	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
-endif
+#if HARDEN
+#	@echo "Checking binary security..."
+#	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
+#endif
 
 %.pb.cc %.pb.h: %.proto
 	@test -f $(PROTOC)
