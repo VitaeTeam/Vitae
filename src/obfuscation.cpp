@@ -39,9 +39,6 @@ map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
 // Keep track of the active Fundamentalnode
 CActiveFundamentalnode activeFundamentalnode;
 
-// Keep track of the active Masternode
-CActiveMasternode activeMasternode;
-
 int randomizeList(int i) { return std::rand() % i; }
 
 void CObfuscationPool::Reset()
@@ -619,7 +616,7 @@ bool CObfuscationQueue::Sign()
     CPubKey pubkey2;
     std::string errorMessage = "";
 
-    if (!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key2, pubkey2)) {
+    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, key2, pubkey2)) {
         LogPrintf("CObfuscationQueue():Relay - ERROR: Invalid Masternodeprivkey: '%s'\n", errorMessage);
         return false;
     }

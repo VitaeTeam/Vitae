@@ -715,7 +715,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         //  - this is expensive, so it's only done once per Masternode
         uint256 blockHash;
         CTransaction tx;
-        if(!obfuScationSigner.IsMnVinAssociatedWithPubkey(vin, pubkey, tx, blockHash)) {
+        if(!obfuScationSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
             LogPrintf("dsee - Got mismatched pubkey and vin Fehler1\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
