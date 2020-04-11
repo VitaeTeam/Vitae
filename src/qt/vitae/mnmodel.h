@@ -8,7 +8,7 @@
 #include <QAbstractTableModel>
 #include "masternode.h"
 #include "masternodeconfig.h"
-
+ 
 class MNModel : public QAbstractTableModel
 {
     Q_OBJECT
