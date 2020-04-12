@@ -206,7 +206,12 @@ public:
         return n;
     }
 
-    void Check();
+    void Check(bool forceCheck = false);
+
+    bool IsBroadcastedWithin(int seconds)
+    {
+        return (GetAdjustedTime() - sigTime) < seconds;
+    }
 
     bool UpdatedWithin(int seconds)
     {
