@@ -269,6 +269,9 @@ void PrepareShutdown()
     }
 #endif
 
+    // Disconnect all slots
+    UnregisterAllValidationInterfaces();
+
 #ifndef WIN32
     try {
         boost::filesystem::remove(GetPidFile());
@@ -276,7 +279,6 @@ void PrepareShutdown()
         LogPrintf("%s: Unable to remove pidfile: %s\n", __func__, e.what());
     }
 #endif
-    UnregisterAllValidationInterfaces();
 }
 
 /**
