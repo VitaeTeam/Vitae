@@ -39,21 +39,21 @@ VITAE Core should also work on most other Unix-like systems but is not frequentl
 Notable Changes
 ==============
 
-## zPIV Public Spends
+## zVIT Public Spends
 
-Recent exploits of the Zerocoin protocol (Wrapped serials and broken P1 proof) required us to enable the zerocoin spork and deactivate zPIV functionality in order to secure the supply until the pertinent review process was completed.
+Recent exploits of the Zerocoin protocol (Wrapped serials and broken P1 proof) required us to enable the zerocoin spork and deactivate zVIT functionality in order to secure the supply until the pertinent review process was completed.
 
-Moving forward from this undesired situation, we are enabling a secure and chain storage friendly solution for the zerocoin public spend (aka zPIV to PIV conversion).
+Moving forward from this undesired situation, we are enabling a secure and chain storage friendly solution for the zerocoin public spend (aka zVIT to VIT conversion).
 
 The explanation of how this works can be found in #891
 
-After block `1,880,000` has past, `SPORK_16` will be deactivated to allow zPIV spends to occur using this new public spend method for version 2 zPIV (version 1 zPIV won't be spendable, see note below). zPIV public spends, as the name suggests, are **NOT** private, they reveal the input mint that is being spent. The minting of **NEW** zPIV, as well as zPIV staking will remain disabled for the time being.
+After block `1,880,000` has past, `SPORK_16` will be deactivated to allow zVIT spends to occur using this new public spend method for version 2 zVIT (version 1 zVIT won't be spendable, see note below). zVIT public spends, as the name suggests, are **NOT** private, they reveal the input mint that is being spent. The minting of **NEW** zVIT, as well as zVIT staking will remain disabled for the time being.
 
-It is advised that users spend/convert their existing zPIV to PIV, which can be done via the GUI or RPC as it was prior to the disabling of zPIV. Note that with the public spend method, the restriction on the number of denominations per transaction (previously 7) has been lifted, and now allows for several hundred denominations per transaction.
+It is advised that users spend/convert their existing zVIT to VIT, which can be done via the GUI or RPC as it was prior to the disabling of zVIT. Note that with the public spend method, the restriction on the number of denominations per transaction (previously 7) has been lifted, and now allows for several hundred denominations per transaction.
 
-*Note on version 1 zPIV*: Version 1 zPIV was only available to me minted between versions v3.0.0 (Oct 6, 2017) and v3.1.0 (May 8, 2018). The announcement that version 1 zPIV was deprecated went out on May 1, 2018 with a recommendation for users to spend/convert their version 1 zPIV.
+*Note on version 1 zVIT*: Version 1 zVIT was only available to me minted between versions v3.0.0 (Oct 6, 2017) and v3.1.0 (May 8, 2018). The announcement that version 1 zVIT was deprecated went out on May 1, 2018 with a recommendation for users to spend/convert their version 1 zVIT.
 
-Version 1 zPIV will be made spendable at a later date due to the extra work required in order to make these version 1 mints spendable.
+Version 1 zVIT will be made spendable at a later date due to the extra work required in order to make these version 1 mints spendable.
 
 ## GUI Changes
 
@@ -63,23 +63,23 @@ The options/settings UI dialog has been cleaned up to no longer show settings th
 
 ### Privacy Tab
 
-Notice text has been added to the privacy tab indicating that zPIV minting is disabled, as well as the removal of UI elements that supported such functionality. Notice text has also been added indicating that zPIV spends are currently **NOT** private.
+Notice text has been added to the privacy tab indicating that zVIT minting is disabled, as well as the removal of UI elements that supported such functionality. Notice text has also been added indicating that zVIT spends are currently **NOT** private.
 
 ## RPC Changes
 
 ### Removal of Deprecated Commands
 
-The `masternode` and `mnbudget` RPC commands, which were marked as deprecated in PIVX Core v2.3.1 (September 19, 2017), have now been completely removed from PIVX Core.
+The `masternode` and `mnbudget` RPC commands, which were marked as deprecated in VITAE Core v2.3.1 (September 19, 2017), have now been completely removed from VITAE Core.
 
-Several new commands were added in v2.3.1 to replace the two aforementioned commands, reference the [v2.3.1 Release Notes](https://github.com/PIVX-Project/PIVX/blob/master/doc/release-notes/release-notes-2.3.1.md#rpc-changes) for further details.
+Several new commands were added in v2.3.1 to replace the two aforementioned commands, reference the [v2.3.1 Release Notes](https://github.com/VitaeTeam/Vitae/blob/master/doc/release-notes/release-notes-2.3.1.md#rpc-changes) for further details.
 
 ### New `getblockindexstats` Command
 
 A new RPC command (`getblockindexstats`) has been introduced which serves the purpose of obtaining statistical information on a range of blocks. The information returned is as follows:
   * transaction count (not including coinbase/coinstake txes)
   * transaction count (including coinbase/coinstake txes)
-  * zPIV per-denom mint count
-  * zPIV per-denom spend count
+  * zVIT per-denom mint count
+  * zVIT per-denom spend count
   * total transaction bytes
   * total fees in block range
   * average fee per kB
@@ -117,9 +117,9 @@ Result:
         denom_5: xxxx,         (numeric) number of PUBLIC spends of denom_5 occurred over the block range
          ...                   ... number of PUBLIC spends of other denominations: ..., 10, 50, 100, 500, 1000, 5000
   },
-  txbytes: xxxxx,              (numeric) Sum of the size of all txes (zPIV excluded) over block range
-  ttlfee: xxxxx,               (numeric) Sum of the fee amount of all txes (zPIV mints excluded) over block range
-  ttlfee_all: xxxxx,           (numeric) Sum of the fee amount of all txes (zPIV mints included) over block range
+  txbytes: xxxxx,              (numeric) Sum of the size of all txes (zVIT excluded) over block range
+  ttlfee: xxxxx,               (numeric) Sum of the fee amount of all txes (zVIT mints excluded) over block range
+  ttlfee_all: xxxxx,           (numeric) Sum of the fee amount of all txes (zVIT mints included) over block range
   feeperkb: xxxxx,             (numeric) Average fee per kb (excluding zc txes)
 }
 ```
