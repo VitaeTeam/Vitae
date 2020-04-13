@@ -14,9 +14,9 @@ To add more pivxd tests, add `BOOST_AUTO_TEST_CASE` functions to the existing
 .cpp files in the `test/` directory or add new .cpp files that
 implement new BOOST_FIXTURE_TEST_SUITE sections.
 
-To run the pivx-qt tests manually, launch `src/qt/test/test_pivx-qt`
+To run the vitae-qt tests manually, launch `src/qt/test/test_pivx-qt`
 
-To add more pivx-qt tests, add them to the `src/qt/test/` directory and
+To add more vitae-qt tests, add them to the `src/qt/test/` directory and
 the `src/qt/test/test_main.cpp` file.
 
 ### Running individual tests
@@ -35,7 +35,7 @@ Run `test_pivx --help` for the full list.
 ### Note on adding test cases
 
 The sources in this directory are unit test cases.  Boost includes a
-unit testing framework, and since pivx already uses boost, it makes
+unit testing framework, and since vitae already uses boost, it makes
 sense to simply use this framework rather than require developers to
 configure some other framework (we want as few impediments to creating
 unit tests as possible).

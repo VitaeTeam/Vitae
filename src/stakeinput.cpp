@@ -170,7 +170,7 @@ bool CZVitStake::MarkSpent(CWallet *pwallet, const uint256& txid)
     return true;
 }
 
-//!PIV Stake
+//!VIT Stake
 bool CVitStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
@@ -246,7 +246,7 @@ bool CVitStake::GetModifier(uint64_t& nStakeModifier)
 
 CDataStream CVitStake::GetUniqueness()
 {
-    //The unique identifier for a PIV stake is the outpoint
+    //The unique identifier for a VIT stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;

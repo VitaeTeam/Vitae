@@ -70,7 +70,7 @@ Disable-wallet mode
 --------------------
 **Note:** This functionality is not yet completely implemented, and compilation using the below option will currently fail.
 
-When the intention is to run only a P2P node without a wallet, PIVX Core may be compiled in
+When the intention is to run only a P2P node without a wallet, VITAE Core may be compiled in
 disable-wallet mode with:
 
     ./configure --disable-wallet

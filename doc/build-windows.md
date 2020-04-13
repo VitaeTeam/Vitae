@@ -5,9 +5,9 @@ Below are some notes on how to build Vitae Core for Windows.
 
 The options known to work for building Vitae Core on Windows are:
 
-Below are some notes on how to build Pivx Core for Windows.
+Below are some notes on how to build Vitae Core for Windows.
 
-The options known to work for building Pivx Core on Windows are:
+The options known to work for building Vitae Core on Windows are:
 
 * On Linux, using the [Mingw-w64](https://mingw-w64.org/doku.php) cross compiler tool chain. Ubuntu Bionic 18.04 is required
 and is the platform used to build the Vitae Core Windows release binaries.
@@ -77,8 +77,8 @@ If you want to build the windows installer with `make deploy` you need [NSIS](ht
 
 Acquire the source in the usual way:
 
-    git clone https://github.com/pivx-project/pivx.git
-    cd pivx
+    git clone https://github.com/VitaeTeam/Vitae.git
+    cd Vitae
 
 ## Building for 64-bit Windows
 

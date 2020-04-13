@@ -1800,7 +1800,7 @@ bool less_then_denom(const COutput& out1, const COutput& out2)
 bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount, bool fPrecompute)
 {
     LOCK(cs_main);
-    //Add PIV
+    //Add VIT
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS);
     CAmount nAmountSelected = 0;
@@ -1875,7 +1875,7 @@ bool CWallet::MintableCoins()
     CAmount nBalance = GetBalance();
     CAmount nZvitBalance = GetZerocoinBalance(false);
 
-    // Regular PIV
+    // Regular VIT
     if (nBalance > 0) {
         if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
             return error("%s : invalid reserve balance amount", __func__);
@@ -2060,7 +2060,7 @@ bool CWallet::GetBudgetSystemCollateralTX(CWalletTx& tx, uint256 hash, bool useI
     CAmount nFeeRet = 0;
     std::string strFail = "";
     vector<pair<CScript, CAmount> > vecSend;
-    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX_OLD)); // Old 50 PIV collateral
+    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX_OLD)); // Old 50 VIT collateral
 
     CCoinControl* coinControl = NULL;
     bool success = CreateTransaction(vecSend, tx, reservekey, nFeeRet, strFail, coinControl, ALL_COINS, useIX, (CAmount)0);
@@ -2083,7 +2083,7 @@ bool CWallet::GetBudgetFinalizationCollateralTX(CWalletTx& tx, uint256 hash, boo
     CAmount nFeeRet = 0;
     std::string strFail = "";
     vector<pair<CScript, CAmount> > vecSend;
-    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX)); // New 5 PIV collateral
+    vecSend.push_back(make_pair(scriptChange, BUDGET_FEE_TX)); // New 5 VIT collateral
 
     CCoinControl* coinControl = NULL;
     bool success = CreateTransaction(vecSend, tx, reservekey, nFeeRet, strFail, coinControl, ALL_COINS, useIX, (CAmount)0);

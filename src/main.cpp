@@ -3123,12 +3123,12 @@ bool RecalculateVITSupply(int nHeightStart)
     if (nHeightStart == Params().Zerocoin_StartHeight())
         nSupplyPrev = CAmount(649916627717750);
 
-    uiInterface.ShowProgress(_("Recalculating PIV supply..."), 0);
+    uiInterface.ShowProgress(_("Recalculating VIT supply..."), 0);
     while (true) {
         if (pindex->nHeight % 1000 == 0) {
             LogPrintf("%s : block %d...\n", __func__, pindex->nHeight);
             int percent = std::max(1, std::min(99, (int)((double)((pindex->nHeight - nHeightStart) * 100) / (chainActive.Height() - nHeightStart))));
-            uiInterface.ShowProgress(_("Recalculating PIV supply..."), percent);
+            uiInterface.ShowProgress(_("Recalculating VIT supply..."), percent);
         }
 
         CBlock block;

@@ -107,7 +107,7 @@ Create the macOS SDK tarball, see the [macOS build instructions](build-osx.md#de
 
 NOTE: Gitian is sometimes unable to download files. If you have errors, try the step below.
 
-By default, Gitian will fetch source files as needed. To cache them ahead of time, make sure you have checked out the tag you want to build in pivx, then:
+By default, Gitian will fetch source files as needed. To cache them ahead of time, make sure you have checked out the tag you want to build in vitae, then:
 
     pushd ./gitian-builder
     make -C ../vitae/depends download SOURCES_PATH=`pwd`/cache/common
@@ -130,9 +130,9 @@ The gbuild invocations below <b>DO NOT DO THIS</b> by default.
     ./bin/gsign --signer "$SIGNER" --release ${VERSION}-linux --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-linux.yml
     mv build/out/vitae-*.tar.gz build/out/src/vitae-*.tar.gz ../
 
-    ./bin/gbuild --num-make 2 --memory 3000 --commit vitae=v${VERSION} ../pivx/contrib/gitian-descriptors/gitian-win.yml
+    ./bin/gbuild --num-make 2 --memory 3000 --commit vitae=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-win.yml
     ./bin/gsign --signer "$SIGNER" --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win.yml
-    mv build/out/vitae-*-win-unsigned.tar.gz inputs/pivx-win-unsigned.tar.gz
+    mv build/out/vitae-*-win-unsigned.tar.gz inputs/vitae-win-unsigned.tar.gz
     mv build/out/vitae-*.zip build/out/vitae-*.exe ../
 
     ./bin/gbuild --num-make 2 --memory 3000 --commit vitae=v${VERSION} ../vitae/contrib/gitian-descriptors/gitian-osx.yml
@@ -143,7 +143,7 @@ The gbuild invocations below <b>DO NOT DO THIS</b> by default.
 
 Build output expected:
 
-  1. source tarball (`pivx-${VERSION}.tar.gz`)
+  1. source tarball (`vitae-${VERSION}.tar.gz`)
   2. linux 32-bit and 64-bit dist tarballs (`vitae-${VERSION}-linux[32|64].tar.gz`)
   3. windows 32-bit and 64-bit unsigned installers and dist zips (`vitae-${VERSION}-win[32|64]-setup-unsigned.exe`, `vitae-${VERSION}-win[32|64].zip`)
   4. macOS unsigned installer and dist tarball (`vitae-${VERSION}-osx-unsigned.dmg`, `vitae-${VERSION}-osx64.tar.gz`)
@@ -210,7 +210,7 @@ Codesigner only: Commit the detached codesign payloads:
 Non-codesigners: wait for Windows/macOS detached signatures:
 
 - Once the Windows/macOS builds each have 3 matching signatures, they will be signed with their respective release keys.
-- Detached signatures will then be committed to the [pivx-detached-sigs](https://github.com/VITAE-Project/vitae-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
+- Detached signatures will then be committed to the [vitae-detached-sigs](https://github.com/VITAE-Project/vitae-detached-sigs) repository, which can be combined with the unsigned apps to create signed binaries.
 
 Create (and optionally verify) the signed macOS binary:
 

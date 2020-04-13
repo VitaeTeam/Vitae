@@ -29,7 +29,7 @@ Drag VITAE-Qt to your applications folder, and then run VITAE-Qt.
 * See the documentation at the [VITAE Wiki](https://github.com/VITAE-Project/VITAE/wiki)
 for help and more information.
 * Ask for help on [BitcoinTalk](https://bitcointalk.org/index.php?topic=1262920.0) or on the [VITAE Forum](http://forum.vitae.org/).
-* Join our Discord server [Discord Server](https://discord.pivx.org)
+* Join our Discord server [Discord Server](https://discord.vitae.org)
 
 Building
 ---------------------

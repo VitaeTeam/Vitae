@@ -45,17 +45,17 @@ reachable from the Tor network. Add these lines to your /etc/tor/torrc (or equiv
 config file): *Needed for Tor version 0.2.7.0 and older versions of Tor only. For newer
 versions of Tor see [Section 3](#3-automatically-listen-on-tor).*
 
-	HiddenServiceDir /var/lib/tor/pivx-service/
+	HiddenServiceDir /var/lib/tor/vitae-service/
 	HiddenServicePort 51472 127.0.0.1:51472
 	HiddenServicePort 61472 127.0.0.1:61472
 
 The directory can be different of course, but (both) port numbers should be equal to
 your pivxd's P2P listen port (51472 by default).
 
-	-externalip=X   You can tell pivx about its publicly reachable address using
+	-externalip=X   You can tell vitae about its publicly reachable address using
 	                this option, and this can be a .onion address. Given the above
 	                configuration, you can find your .onion address in
-	                /var/lib/tor/pivx-service/hostname. For connections
+	                /var/lib/tor/vitae-service/hostname. For connections
 	                coming from unroutable addresses (such as 127.0.0.1, where the
 	                Tor proxy typically runs), .onion addresses are given
 	                preference for your node to advertise itself with.

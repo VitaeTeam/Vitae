@@ -82,7 +82,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
         ui->anonymizationCheckBox->setChecked(false);
     }
 
-    // It doesn't make sense to show the checkbox for sending PIV because you wouldn't check it anyway.
+    // It doesn't make sense to show the checkbox for sending VIT because you wouldn't check it anyway.
     if (context == Context::Send_PIV || context == Context::Send_zPIV) {
         ui->anonymizationCheckBox->hide();
     }

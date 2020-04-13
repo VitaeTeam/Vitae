@@ -96,7 +96,7 @@ pass `--with-incompatible-bdb` to configure.
 
 Otherwise, you can build from self-compiled `depends` (see above).
 
-To build PIVX Core without wallet, see [*Disable-wallet mode*](/doc/build-unix.md#disable-wallet-mode)
+To build VITAE Core without wallet, see [*Disable-wallet mode*](/doc/build-unix.md#disable-wallet-mode)
 
 
 Optional (see --with-miniupnpc and --enable-upnp-default):

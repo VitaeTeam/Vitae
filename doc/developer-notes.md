@@ -22,7 +22,7 @@ Developer Notes
     - [Threads](#threads)
     - [Ignoring IDE/editor files](#ignoring-ideeditor-files)
 - [Development guidelines](#development-guidelines)
-    - [General PIVX Core](#general-pivx-core)
+    - [General VITAE Core](#general-vitae-core)
     - [Wallet](#wallet)
     - [General C++](#general-c)
     - [C++ data structures](#c-data-structures)
@@ -125,7 +125,7 @@ Refer to [/test/functional/README.md#style-guidelines](/test/functional/README.m
 Coding Style (Doxygen-compatible comments)
 ------------------------------------------
 
-PIVX Core uses [Doxygen](http://www.doxygen.nl/) to generate its official documentation.
+VITAE Core uses [Doxygen](http://www.doxygen.nl/) to generate its official documentation.
 
 Use Doxygen-compatible comment blocks for functions, methods, and fields.
 
@@ -661,7 +661,7 @@ directly upstream without being PRed directly against the project.  They will be
 subtree merge.
 
 Others are external projects without a tight relationship with our project.  Changes to these should also
-be sent upstream but bugfixes may also be prudent to PR against PIVX Core so that they can be integrated
+be sent upstream but bugfixes may also be prudent to PR against VITAE Core so that they can be integrated
 quickly.  Cosmetic changes should be purely taken upstream.
 
 There is a tool in `test/lint/git-subtree-check.sh` to check a subtree directory for consistency with
@@ -691,7 +691,7 @@ you must be aware of.
 
 In most configurations we use the default LevelDB value for `max_open_files`,
 which is 1000 at the time of this writing. If LevelDB actually uses this many
-file descriptors it will cause problems with PIVX's `select()` loop, because
+file descriptors it will cause problems with VITAE's `select()` loop, because
 it may cause new sockets to be created where the fd value is >= 1024. For this
 reason, on 64-bit Unix systems we rely on an internal LevelDB optimization that
 uses `mmap()` + `close()` to open table files without actually retaining
@@ -860,7 +860,7 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 - Try not to overload methods on argument type. E.g. don't make `getblock(true)` and `getblock("hash")`
   do different things.
 
-  - *Rationale*: This is impossible to use with `pivx-cli`, and can be surprising to users.
+  - *Rationale*: This is impossible to use with `vitae-cli`, and can be surprising to users.
 
   - *Exception*: Some RPC calls can take both an `int` and `bool`, most notably when a bool was switched
     to a multi-value, or due to other historical reasons. **Always** have false map to 0 and
@@ -879,7 +879,7 @@ A few guidelines for introducing and reviewing new RPC interfaces:
 
 - Add every non-string RPC argument `(method, idx, name)` to the table `vRPCConvertParams` in `rpc/client.cpp`.
 
-  - *Rationale*: `pivx-cli` and the GUI debug console use this table to determine how to
+  - *Rationale*: `vitae-cli` and the GUI debug console use this table to determine how to
     convert a plaintext command line to JSON. If the types don't match, the method can be unusable
     from there.
 
