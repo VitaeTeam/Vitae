@@ -44,12 +44,12 @@ namespace ZPIVModule {
         uint8_t nVersion = mint.GetVersion();
         if (nVersion < libzerocoin::PrivateCoin::PUBKEY_VERSION) {
             // No v1 serials accepted anymore.
-            return error("%s: failed to set zPIV privkey mint version=%d\n", __func__, nVersion);
+            return error("%s: failed to set zVIT privkey mint version=%d\n", __func__, nVersion);
         }
 
         CKey key;
         if (!mint.GetKeyPair(key))
-            return error("%s: failed to set zPIV privkey mint version=%d\n", __func__, nVersion);
+            return error("%s: failed to set zVIT privkey mint version=%d\n", __func__, nVersion);
 
         PublicCoinSpend spend(params, mint.GetSerialNumber(), mint.GetRandomness(), key.GetPubKey());
         spend.setTxOutHash(hashTxOut);
@@ -122,7 +122,7 @@ namespace ZPIVModule {
         }
         if (!ZPIVModule::parseCoinSpend(txIn, tx, prevOut, publicSpend)) {
             return state.Invalid(error("%s: invalid public coin spend parse %s\n", __func__,
-                                       tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zpiv");
+                                       tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvit");
         }
         return true;
     }

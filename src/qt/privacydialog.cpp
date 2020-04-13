@@ -810,9 +810,9 @@ void PrivacyDialog::updateSPORK20Status()
     bool fButtonsEnabled = false;
     bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
-        // Mint zPIV
+        // Mint zVIT
         //ui->pushButtonMintzPIV->setEnabled(false);
-        //ui->pushButtonMintzPIV->setToolTip(tr("zPIV is currently disabled due to maintenance."));
+        //ui->pushButtonMintzPIV->setToolTip(tr("zVIT is currently disabled due to maintenance."));
 
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(false);

@@ -2794,7 +2794,7 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
 
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST)
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV minting is DISABLED");
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT minting is DISABLED");
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -3032,7 +3032,7 @@ extern UniValue DoZvitSpend(const CAmount nAmount, bool fMintChange, bool fMinim
 {
     // zerocoin MINT is disabled. fMintChange should be false here. Double check
     if (fMintChange && Params().NetworkID() != CBaseChainParams::REGTEST)
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV minting is DISABLED, cannot mint change");
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT minting is DISABLED, cannot mint change");
 
     int64_t nTimeStart = GetTimeMillis();
     CBitcoinAddress address = CBitcoinAddress(); // Optional sending address. Dummy initialization here.

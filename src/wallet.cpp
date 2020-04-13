@@ -1462,7 +1462,7 @@ CAmount CWallet::GetBalance() const
 CAmount CWallet::GetZerocoinBalance(bool fMatureOnly) const
 {
     if (fMatureOnly) {
-        // This code is not removed just for when we back to use zPIV in the future, for now it's useless,
+        // This code is not removed just for when we back to use zVIT in the future, for now it's useless,
         // every public coin spend is now spendable without need to have new mints on top.
 
         //if (chainActive.Height() > nLastMaturityCheck)
@@ -1835,7 +1835,7 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
         }
     }
 
-    /* Disable zPIV Staking
+    /* Disable zVIT Staking
     //zVIT
     if ((GetBoolArg("-zvitstake", true) || fPrecompute)  && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
         //Only update zVIT set once per update interval

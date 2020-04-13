@@ -551,7 +551,7 @@ CLEANFILES += univalue/*.gcda univalue/*.gcno
 CLEANFILES += wallet/*.gcda wallet/*.gcno
 CLEANFILES += wallet/test/*.gcda wallet/test/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
-CLEANFILES += zpiv/*.gcda zpiv/*.gcno
+CLEANFILES += zvit/*.gcda zvit/*.gcno
 CLEANFILES += obj/build.h
 
 EXTRA_DIST =

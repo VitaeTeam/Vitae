@@ -1513,9 +1513,9 @@ UniValue getblockindexstats(const UniValue& params, bool fHelp) {
                 "        \"denom_5\": xxxx           (numeric) number of PUBLIC spends of denom_5 occurred over the block range\n"
                 "         ...                    ... number of PUBLIC spends of other denominations: ..., 10, 50, 100, 500, 1000, 5000\n"
                 "  }\n"
-                "  \"txbytes\": xxxxx                (numeric) Sum of the size of all txes (zPIV excluded) over block range\n"
-                "  \"ttlfee\": xxxxx                 (numeric) Sum of the fee amount of all txes (zPIV mints excluded) over block range\n"
-                "  \"ttlfee_all\": xxxxx             (numeric) Sum of the fee amount of all txes (zPIV mints included) over block range\n"
+                "  \"txbytes\": xxxxx                (numeric) Sum of the size of all txes (zVIT excluded) over block range\n"
+                "  \"ttlfee\": xxxxx                 (numeric) Sum of the fee amount of all txes (zVIT mints excluded) over block range\n"
+                "  \"ttlfee_all\": xxxxx             (numeric) Sum of the fee amount of all txes (zVIT mints included) over block range\n"
                 "  \"feeperkb\": xxxxx               (numeric) Average fee per kb (excluding zc txes)\n"
                 "}\n"
 

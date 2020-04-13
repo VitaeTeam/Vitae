@@ -1070,7 +1070,7 @@ bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const Coi
     if (pindex->nHeight >= Params().Zerocoin_Block_Public_Spend_Enabled()) {
         //Reject V1 old serials.
         if (v1Serial) {
-            return error("%s : zPIV v1 serial spend not spendable, serial %s, tx %s\n", __func__,
+            return error("%s : zVIT v1 serial spend not spendable, serial %s, tx %s\n", __func__,
                          spend->getCoinSerialNumber().GetHex(), tx.GetHash().GetHex());
         }
     }
@@ -1440,13 +1440,13 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 bool isPrivZerocoinSpend = txIn.IsZerocoinSpend();
                 if (!isPrivZerocoinSpend && !isPublicSpend) {
                     return state.Invalid(error("%s: AcceptToMemoryPool failed for tx %s, every input must be a zcspend or zcpublicspend", __func__,
-                                        tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zpiv");
+                                        tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvit");
                 }
 
                 // Check enforcement
                 if (!CheckPublicCoinSpendEnforced(chainActive.Height(), isPublicSpend)){
                     return state.Invalid(error("%s: AcceptToMemoryPool failed for tx %s", __func__,
-                                               tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zpiv");
+                                               tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvit");
                 }
 
                 if (isPublicSpend) {
