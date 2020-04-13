@@ -45,7 +45,7 @@ For linux (including i386, ARM) cross compilation:
 
     sudo apt-get install g++-riscv64-linux-gnu binutils-riscv64-linux-gnu
 
-RISC-V known issue: gcc-7.3.0 and gcc-7.3.1 result in a broken `test_pivx` executable (see https://github.com/bitcoin/bitcoin/pull/13543),
+RISC-V known issue: gcc-7.3.0 and gcc-7.3.1 result in a broken `test_vitae` executable (see https://github.com/bitcoin/bitcoin/pull/13543),
 this is apparently fixed in gcc-8.1.0.
 
 Dependency Options:

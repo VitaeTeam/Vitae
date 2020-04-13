@@ -15,7 +15,7 @@ Service User
 
 All three Linux startup configurations assume the existence of a "vitae" user
 and group.  They must be created before attempting to use these scripts.
-The macOS configuration assumes pivxd will be set up for the current user.
+The macOS configuration assumes vitaed will be set up for the current user.
 
 Configuration
 ---------------------------------
@@ -83,10 +83,10 @@ OpenRC).
 
 ### macOS
 
-Binary:              `/usr/local/bin/pivxd`
-Configuration file:  `~/Library/Application Support/PIVX/vitae.conf`
-Data directory:      `~/Library/Application Support/PIVX`
-Lock file:           `~/Library/Application Support/PIVX/.lock`
+Binary:              `/usr/local/bin/vitaed`
+Configuration file:  `~/Library/Application Support/VITAE/vitae.conf`
+Data directory:      `~/Library/Application Support/VITAE`
+Lock file:           `~/Library/Application Support/VITAE/.lock`
 
 Installing Service Configuration
 -----------------------------------
@@ -98,7 +98,7 @@ Installing this .service file consists of just copying it to
 `systemctl daemon-reload` in order to update running systemd configuration.
 
 To test, run `systemctl start vitaed` and to enable for system startup run
-`systemctl enable pivxd`
+`systemctl enable vitaed`
 
 NOTE: When installing for systemd in Debian/Ubuntu the .service file needs to be copied to the /lib/systemd/system directory instead.
 
@@ -129,13 +129,13 @@ setting the VITAED and FLAGS environment variables in the file
 
 ### macOS
 
-Copy org.vitae.pivxd.plist into ~/Library/LaunchAgents. Load the launch agent by
-running `launchctl load ~/Library/LaunchAgents/org.vitae.pivxd.plist`.
+Copy org.vitae.vitaed.plist into ~/Library/LaunchAgents. Load the launch agent by
+running `launchctl load ~/Library/LaunchAgents/org.vitae.vitaed.plist`.
 
-This Launch Agent will cause pivxd to start whenever the user logs in.
+This Launch Agent will cause vitaed to start whenever the user logs in.
 
-NOTE: This approach is intended for those wanting to run pivxd as the current user.
-You will need to modify org.vitae.pivxd.plist if you intend to use it as a
+NOTE: This approach is intended for those wanting to run vitaed as the current user.
+You will need to modify org.vitae.vitaed.plist if you intend to use it as a
 Launch Daemon with a dedicated vitae user.
 
 Auto-respawn
