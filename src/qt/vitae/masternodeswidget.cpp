@@ -5,7 +5,6 @@
 #include "qt/vitae/masternodeswidget.h"
 #include "qt/vitae/forms/ui_masternodeswidget.h"
 
-#include "qt/vitae/loadingdialog.h"
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/mnrow.h"
 #include "qt/vitae/mninfodialog.h"
@@ -274,10 +273,10 @@ void MasterNodesWidget::onStartAllClicked(int type)
             return;
         }
         isLoading = true;
-        // Action performed on a separate thread
-        LoadingDialog *dialog = new LoadingDialog(window);
-        dialog->execute(this, type, std::move(pctx));
-        openDialogWithOpaqueBackgroundFullScreen(dialog, window);
+        if (!execute(type, std::move(pctx))) {
+            isLoading = false;
+            inform(tr("Cannot perform Mastenodes start"));
+        }
     }
 }
 
