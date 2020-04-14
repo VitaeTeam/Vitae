@@ -123,8 +123,13 @@ bool fSucessfullyLoaded = false;
 std::vector<int64_t> obfuScationDenominations;
 std::string strBudgetMode = "";
 
+bool fMasterNode = false;
 std::string strMasterNodePrivKey = "";
 std::string strMasterNodeAddr = "";
+bool fMNLiteMode = false;
+
+int64_t enforceMasternodePaymentsTime = 4085657524;
+bool fMNSucessfullyLoaded = false;
 
 std::map<std::string, std::string> mapArgs;
 std::map<std::string, std::vector<std::string> > mapMultiArgs;

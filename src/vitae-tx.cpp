@@ -566,8 +566,6 @@ static int CommandLineRawTx(int argc, char* argv[])
             if (argc < 2)
                 throw std::runtime_error("too few parameters");
 
-                throw runtime_error("too few parameters");
-
             // param: hex-encoded vitae transaction
             std::string strHexTx(argv[1]);
             if (strHexTx == "-") // "-" implies standard input

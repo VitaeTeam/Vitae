@@ -412,7 +412,7 @@ void CzVITWallet::UpdateCount()
     walletdb.WriteZVITCount(nCountLastUsed);
 }
 
-void CzVITWallet::GenerateDeterministicZPIV(libzerocoin::CoinDenomination denom, Plibzerocoin::rivateCoin& coin, CDeterministicMint& dMint, bool fGenerateOnly)
+void CzVITWallet::GenerateDeterministicZPIV(libzerocoin::CoinDenomination denom, libzerocoin::PrivateCoin& coin, CDeterministicMint& dMint, bool fGenerateOnly)
 {
     GenerateMint(nCountLastUsed + 1, denom, coin, dMint);
     if (fGenerateOnly)

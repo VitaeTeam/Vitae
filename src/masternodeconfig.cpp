@@ -50,7 +50,7 @@ bool CMasternodeConfig::read(std::string& strErr)
             }
         } else {
             size_t pos = donation.find_first_of(":");
-            if(pos == string::npos) { // no ":" found
+            if(pos == std::string::npos) { // no ":" found
                 donationPercent = "100";
                 donationAddress = donation;
             } else {
