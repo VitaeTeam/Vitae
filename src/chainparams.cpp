@@ -138,8 +138,8 @@ public:
 
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
-        nPivxBadBlockTime = 1471401614; // Skip nBit validation of Block 259201 per PR #915
-        nPivxBadBlocknBits = 0x1c056dac; // Skip nBit validation of Block 259201 per PR #915
+        nVitaeBadBlockTime = 1471401614; // Skip nBit validation of Block 259201 per PR #915
+        nVitaeBadBlocknBits = 0x1c056dac; // Skip nBit validation of Block 259201 per PR #915
         nModifierUpdateBlock = 615800;
         nZerocoinStartHeight = 209467;
         nZerocoinStartTime = 1536314400; // september 7, 2018 12:00:00 UTC
@@ -277,8 +277,8 @@ public:
         nTargetTimespan = 1 * 45; // VITAE: 1 day
         nTargetSpacing = 1 * 45;  // VITAE: 1 minute
         nLastPOWBlock = 200;
-        nPivxBadBlockTime = 1489001494; // Skip nBit validation of Block 259201 per PR #915
-        nPivxBadBlocknBits = 0x1e0a20bd; // Skip nBit validation of Block 201 per PR #915
+        nVitaeBadBlockTime = 1489001494; // Skip nBit validation of Block 259201 per PR #915
+        nVitaeBadBlocknBits = 0x1e0a20bd; // Skip nBit validation of Block 201 per PR #915
         nMaturity = 15;
         nFundamentalnodeCountDrift = 4;
         nMasternodeCountDrift = 4;

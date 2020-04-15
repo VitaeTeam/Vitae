@@ -119,8 +119,8 @@ public:
     /** Height or Time Based Activations **/
     int ModifierUpgradeBlock() const { return nModifierUpdateBlock; }
     int LAST_POW_BLOCK() const { return nLastPOWBlock; }
-    int PivxBadBlockTime() const { return nPivxBadBlockTime; }
-    int PivxBadBlocknBits() const { return nPivxBadBlocknBits; }
+    int VitaeBadBlockTime() const { return nVitaeBadBlockTime; }
+    int VitaeBadBlocknBits() const { return nVitaeBadBlocknBits; }
     int Zerocoin_StartHeight() const { return nZerocoinStartHeight; }
     int Zerocoin_Block_EnforceSerialRange() const { return nBlockEnforceSerialRange; }
     int Zerocoin_Block_RecalculateAccumulators() const { return nBlockRecalculateAccumulators; }
@@ -157,8 +157,8 @@ protected:
     int64_t nTargetSpacing;
     int nLastPOWBlock;
     int nFundamentalnodeCountDrift;
-    int64_t nPivxBadBlockTime;
-    unsigned int nPivxBadBlocknBits;
+    int64_t nVitaeBadBlockTime;
+    unsigned int nVitaeBadBlocknBits;
 	int nMasternodeCountDrift;
     int nMaturity;
     int nModifierUpdateBlock;

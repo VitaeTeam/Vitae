@@ -4688,9 +4688,9 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
     }
 
     if (block.nBits != nBitsRequired) {
-        // Pivx Specific reference to the block with the wrong threshold was used.
-        if ((block.nTime == Params().PivxBadBlockTime()) && (block.nBits == Params().PivxBadBlocknBits())) {
-            // accept PIVX block minted with incorrect proof of work threshold
+        // Vitae Specific reference to the block with the wrong threshold was used.
+        if ((block.nTime == Params().VitaeBadBlockTime()) && (block.nBits == Params().VitaeBadBlocknBits())) {
+            // accept VITAE block minted with incorrect proof of work threshold
             return true;
         }
 
