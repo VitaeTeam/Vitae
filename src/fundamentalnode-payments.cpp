@@ -471,7 +471,23 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
                 txNew.vout[i].nValue = fundamentalnodePayment;
 
                 //subtract mn payment from the stake reward
-                txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                //txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                if (!txNew.vout[1].IsZerocoinMint()) {
+                    if (i == 2) {
+                        // Majority of cases; do it quick and move on
+                        txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                    } else if (i > 2) {
+                        // special case, stake is split between (i-1) outputs
+                        unsigned int outputs = i-1;
+                        CAmount mnPaymentSplit = fundamentalnodePayment / outputs;
+                        CAmount mnPaymentRemainder = fundamentalnodePayment - (mnPaymentSplit * outputs);
+                        for (unsigned int j=1; j<=outputs; j++) {
+                            txNew.vout[j].nValue -= mnPaymentSplit;
+                        }
+                        // in case it's not an even division, take the last bit of dust from the last one
+                        txNew.vout[outputs].nValue -= mnPaymentRemainder;
+                    }
+                }
             } else {
                 txNew.vout.resize(2);
                 txNew.vout[1].scriptPubKey = payee;
