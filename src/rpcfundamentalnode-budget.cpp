@@ -155,37 +155,32 @@ UniValue fnbudget(const UniValue& params, bool fHelp)
 void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std::string &strURL,
                        int &nPaymentCount, int &nBlockStart, CBitcoinAddress &address, CAmount &nAmount)
 {
-    int nBlockMin = 0;
-    CBlockIndex* pindexPrev = chainActive.Tip();
-
     strProposalName = SanitizeString(params[0].get_str());
     if (strProposalName.size() > 20)
-        throw std::runtime_error("Invalid proposal name, limit of 20 characters.");
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid proposal name, limit of 20 characters.");
 
     strURL = SanitizeString(params[1].get_str());
     if (strURL.size() > 64)
-        throw std::runtime_error("Invalid url, limit of 64 characters.");
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid url, limit of 64 characters.");
 
     nPaymentCount = params[2].get_int();
     if (nPaymentCount < 1)
-        throw std::runtime_error("Invalid payment count, must be more than zero.");
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid payment count, must be more than zero.");
 
-    // Start must be in the next budget cycle
-    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+    CBlockIndex* pindexPrev = chainActive.Tip();
+    if (!pindexPrev)
+        throw JSONRPCError(RPC_IN_WARMUP, "Try again after active chain is loaded");
+
+    // Start must be in the next budget cycle or later
+    const int budgetCycleBlocks = GetBudgetPaymentCycleBlocks();
+    int pHeight = pindexPrev->nHeight;
+
+    int nBlockMin = pHeight - (pHeight % budgetCycleBlocks) + budgetCycleBlocks;
 
     nBlockStart = params[3].get_int();
-    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0) {
-        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
-        throw std::runtime_error(strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext));
+    if ((nBlockStart < nBlockMin) || ((nBlockStart % budgetCycleBlocks) != 0)) {
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nBlockMin));
     }
-
-    int nBlockEnd = nBlockStart + (GetBudgetPaymentCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
-
-    if (nBlockStart < nBlockMin)
-        throw std::runtime_error("Invalid block start, must be more than current height.");
-
-    if (nBlockEnd < pindexPrev->nHeight)
-        throw std::runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
 
     address = params[4].get_str();
     if (!address.IsValid())
@@ -214,6 +209,10 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("preparebudget", "\"test-proposal\" \"https://forum.vitae.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
             HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://forum.vitae.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
+
+    if (!pwalletMain) {
+        throw JSONRPCError(RPC_IN_WARMUP, "Try again after active chain is loaded");
+    }
 
     if (pwalletMain->IsLocked())
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
