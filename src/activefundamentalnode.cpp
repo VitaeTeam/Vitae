@@ -188,7 +188,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
         }
 
         pmn->lastPing = mnp;
-        mnodeman.mapSeenFundamentalnodePing.insert(make_pair(mnp.GetHash(), mnp));
+        mnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(mnp.GetHash(), mnp));
 
         //mnodeman.mapSeenFundamentalnodeBroadcast.lastPing is probably outdated, so we'll update it
         CFundamentalnodeBroadcast mnb(*pmn);
@@ -352,7 +352,7 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
     TRY_LOCK(pwalletMain->cs_wallet, fWallet);
     if (!fWallet) return false;
 
-    vector<COutput> possibleCoins = SelectCoinsFundamentalnode();
+    std::vector<COutput> possibleCoins = SelectCoinsFundamentalnode();
     COutput* selectedOutput;
 
     // Find the vin
@@ -425,11 +425,11 @@ bool CActiveFundamentalnode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& 
 }
 
 // get all possible outputs for running Fundamentalnode
-vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
+std::vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
 {
-    vector<COutput> vCoins;
-    vector<COutput> filteredCoins;
-    vector<COutPoint> confLockedCoins;
+    std::vector<COutput> vCoins;
+    std::vector<COutput> filteredCoins;
+    std::vector<COutPoint> confLockedCoins;
 
     // Temporary unlock MN coins from fundamentalnode.conf
     if (GetBoolArg("-mnconflock", true)) {

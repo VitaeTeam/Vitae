@@ -17,9 +17,6 @@
 #include "main.h"
 #include <boost/lexical_cast.hpp>
 
-using namespace std;
-using namespace boost;
-
 class CMNSporkMessage;
 class CMNSporkManager;
 
@@ -189,7 +186,7 @@ void CMNSporkManager::Relay(CMNSporkMessage& msg)
 {
     CInv inv(MSG_MN_SPORK, msg.GetHash());
 
-    vector<CInv> vInv;
+    std::vector<CInv> vInv;
     vInv.push_back(inv);
     LOCK(cs_vNodes);
     for(CNode* pnode : vNodes){

@@ -10,8 +10,6 @@
 #include "main.h"
 #include "fundamentalnode.h"
 
-using namespace std;
-
 extern CCriticalSection cs_vecPayments;
 extern CCriticalSection cs_mapFundamentalnodeBlocks;
 extern CCriticalSection cs_mapFundamentalnodePayeeVotes;

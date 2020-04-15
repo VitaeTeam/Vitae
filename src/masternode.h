@@ -49,8 +49,8 @@ class CMasternodePayments;
 class CMasternodePaymentWinner;
 
 extern CMasternodePayments masternodePayments;
-extern map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
-extern map<int64_t, uint256> mapCacheBlockHashesMN;
+extern std::map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
+extern std::map<int64_t, uint256> mapCacheBlockHashesMN;
 
 
 void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);

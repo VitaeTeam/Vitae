@@ -25,12 +25,10 @@
 static const CAmount FUNDAMENTALNODE_AMOUNT = 10000* COIN;
 static const CAmount FN_MAGIC_AMOUNT = 0.1234 *COIN;
 
-using namespace std;
-
 class CFundamentalnode;
 class CFundamentalnodeBroadcast;
 class CFundamentalnodePing;
-extern map<int64_t, uint256> mapCacheBlockHashes;
+extern std::map<int64_t, uint256> mapCacheBlockHashes;
 
 bool GetBlockHash(uint256& hash, int nBlockHeight);
 

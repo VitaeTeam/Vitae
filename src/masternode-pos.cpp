@@ -19,9 +19,6 @@
 #include <boost/lexical_cast.hpp>
 #include "masternodeman.h"
 
-using namespace std;
-using namespace boost;
-
 std::map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
 CMasternodeScanning mnscan;
 CActiveMasternode activeMasternode;
@@ -74,7 +71,7 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
         if(mapMasternodeScanningErrors.count(mnse.GetHash())){
             return;
         }
-        mapMasternodeScanningErrors.insert(make_pair(mnse.GetHash(), mnse));
+        mapMasternodeScanningErrors.insert(std::make_pair(mnse.GetHash(), mnse));
 
         if(!mnse.IsValid())
         {
@@ -173,14 +170,14 @@ void CMasternodeScanning::DoMasternodePOSChecks()
         // we couldn't connect to the node, let's send a scanning error
         CMasternodeScanningError mnse(activeMasternode.vin, pmn->vin, SCANNING_ERROR_NO_RESPONSE, nBlockHeight);
         mnse.Sign();
-        mapMasternodeScanningErrors.insert(make_pair(mnse.GetHash(), mnse));
+        mapMasternodeScanningErrors.insert(std::make_pair(mnse.GetHash(), mnse));
         mnse.Relay();
     }
 
     // success
     CMasternodeScanningError mnse(activeMasternode.vin, pmn->vin, SCANNING_SUCCESS, nBlockHeight);
     mnse.Sign();
-    mapMasternodeScanningErrors.insert(make_pair(mnse.GetHash(), mnse));
+    mapMasternodeScanningErrors.insert(std::make_pair(mnse.GetHash(), mnse));
     mnse.Relay();
 }
 
@@ -251,7 +248,7 @@ void CMasternodeScanningError::Relay()
 {
     CInv inv(MSG_MASTERNODE_SCANNING_ERROR, GetHash());
 
-    vector<CInv> vInv;
+    std::vector<CInv> vInv;
     vInv.push_back(inv);
     LOCK(cs_vNodes);
     for(CNode* pnode : vNodes){

@@ -17,8 +17,6 @@
 #define FUNDAMENTALNODES_DUMP_SECONDS (15 * 60)
 #define FUNDAMENTALNODES_DSEG_SECONDS (3 * 60 * 60)
 
-using namespace std;
-
 class CFundamentalnodeMan;
 
 extern CFundamentalnodeMan mnodeman;
@@ -68,9 +66,9 @@ private:
 
 public:
     // Keep track of all broadcasts I've seen
-    map<uint256, CFundamentalnodeBroadcast> mapSeenFundamentalnodeBroadcast;
+    std::map<uint256, CFundamentalnodeBroadcast> mapSeenFundamentalnodeBroadcast;
     // Keep track of all pings I've seen
-    map<uint256, CFundamentalnodePing> mapSeenFundamentalnodePing;
+    std::map<uint256, CFundamentalnodePing> mapSeenFundamentalnodePing;
 
     // keep track of dsq count to prevent fundamentalnodes from gaming obfuscation queue
     int64_t nDsqCount;
@@ -135,7 +133,7 @@ public:
         return vFundamentalnodes;
     }
 
-    std::vector<pair<int, CFundamentalnode> > GetFundamentalnodeRanks(int64_t nBlockHeight, int minProtocol = 0);
+    std::vector<std::pair<int, CFundamentalnode> > GetFundamentalnodeRanks(int64_t nBlockHeight, int minProtocol = 0);
     int GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol = 0, bool fOnlyActive = true);
     CFundamentalnode* GetFundamentalnodeByRank(int nRank, int64_t nBlockHeight, int minProtocol = 0, bool fOnlyActive = true);
 

@@ -19,7 +19,7 @@ CCriticalSection cs_masternodepayments;
 /** Object for who's going to get paid on which blocks */
 CMasternodePayments masternodePayments;
 // keep track of Masternode votes I've seen
-map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
+std::map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
 // keep track of the scanning errors I've seen
 std::map<uint256, int> mapSeenMasternodeScanningErrors;
 // cache block hashes as we calculate them
@@ -81,7 +81,7 @@ void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDa
             return;
         }
 
-        mapSeenMasternodeVotes.insert(make_pair(hash, winner));
+        mapSeenMasternodeVotes.insert(std::make_pair(hash, winner));
 
         if(masternodePayments.AddWinningMasternode(winner)){
             masternodePayments.Relay(winner);
@@ -91,8 +91,8 @@ void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDa
 
 struct CompareValueOnly
 {
-    bool operator()(const pair<int64_t, CTxIn>& t1,
-                    const pair<int64_t, CTxIn>& t2) const
+    bool operator()(const std::pair<int64_t, CTxIn>& t1,
+                    const std::pair<int64_t, CTxIn>& t2) const
     {
         return t1.first < t2.first;
     }
@@ -388,7 +388,7 @@ bool CMasternodePayments::AddWinningMasternode(CMasternodePaymentWinner& winnerI
                 winner.payee = winnerIn.payee;
                 winner.vchSig = winnerIn.vchSig;
 
-                mapSeenMasternodeVotes.insert(make_pair(winnerIn.GetHash(), winnerIn));
+                mapSeenMasternodeVotes.insert(std::make_pair(winnerIn.GetHash(), winnerIn));
 
                 return true;
             }
@@ -398,7 +398,7 @@ bool CMasternodePayments::AddWinningMasternode(CMasternodePaymentWinner& winnerI
     // if it's not in the vector
     if(!foundBlock){
         vWinning.push_back(winnerIn);
-        mapSeenMasternodeVotes.insert(make_pair(winnerIn.GetHash(), winnerIn));
+        mapSeenMasternodeVotes.insert(std::make_pair(winnerIn.GetHash(), winnerIn));
 
         return true;
     }
@@ -414,7 +414,7 @@ void CMasternodePayments::CleanPaymentList()
 
     int nLimit = std::max(((int)m_nodeman.size())*2, 1000);
 
-    vector<CMasternodePaymentWinner>::iterator it;
+    std::vector<CMasternodePaymentWinner>::iterator it;
     for(it=vWinning.begin();it<vWinning.end();it++){
         if(chainActive.Tip()->nHeight - (*it).nBlockHeight > nLimit){
             if(fDebug) LogPrintf("CMasternodePayments::CleanPaymentList - Removing old Masternode payment - block %d\n", (*it).nBlockHeight);
@@ -526,7 +526,7 @@ void CMasternodePayments::Relay(CMasternodePaymentWinner& winner)
 {
         CInv inv(MSG_MASTERNODE_WINNER, winner.GetHash());
 
-    vector<CInv> vInv;
+    std::vector<CInv> vInv;
     vInv.push_back(inv);
     LOCK(cs_vNodes);
     for(CNode* pnode : vNodes){

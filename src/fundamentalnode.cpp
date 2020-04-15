@@ -11,7 +11,7 @@
 #include "util.h"
 
 // keep track of the scanning errors I've seen
-map<uint256, int> mapSeenFundamentalnodeScanningErrors;
+std::map<uint256, int> mapSeenFundamentalnodeScanningErrors;
 // cache block hashes as we calculate them
 std::map<int64_t, uint256> mapCacheBlockHashes;
 
@@ -147,7 +147,7 @@ bool CFundamentalnode::UpdateFromNewBroadcast(CFundamentalnodeBroadcast& mnb)
         int nDoS = 0;
         if (mnb.lastPing == CFundamentalnodePing() || (mnb.lastPing != CFundamentalnodePing() && mnb.lastPing.CheckAndUpdate(nDoS, false))) {
             lastPing = mnb.lastPing;
-            mnodeman.mapSeenFundamentalnodePing.insert(make_pair(lastPing.GetHash(), lastPing));
+            mnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(lastPing.GetHash(), lastPing));
         }
         return true;
     }
