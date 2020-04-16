@@ -156,7 +156,7 @@ bool ComputeNextStakeModifier(const CBlockIndex* pindexPrev, uint64_t& nStakeMod
 
     // Sort candidate blocks by timestamp
     std::vector<std::pair<int64_t, uint256> > vSortedByTimestamp;
-    vSortedByTimestamp.reserve(64 * MODIFIER_INTERVAL  / Params().TargetSpacing(false));
+    vSortedByTimestamp.reserve(64 * MODIFIER_INTERVAL  / Params().TargetSpacing());
     int64_t nSelectionInterval = GetStakeModifierSelectionInterval();
     int64_t nSelectionIntervalStart = (pindexPrev->GetBlockTime() / MODIFIER_INTERVAL ) * MODIFIER_INTERVAL  - nSelectionInterval;
     const CBlockIndex* pindex = pindexPrev;
@@ -458,7 +458,7 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex)
 // Check stake modifier hard checkpoints
 bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierChecksum)
 {
-    if (fTestNet) return true; // Testnet has no checkpoints
+    if (Params().NetworkID() != CBaseChainParams::MAIN) return true; // Testnet has no checkpoints
     if (mapStakeModifierCheckpoints.count(nHeight)) {
         return nStakeModifierChecksum == mapStakeModifierCheckpoints[nHeight];
     }
