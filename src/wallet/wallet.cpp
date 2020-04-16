@@ -3565,9 +3565,12 @@ bool CWallet::MultiSend()
             continue;
 
         COutPoint outpoint(out.tx->GetHash(), out.i);
+        bool isCoinStake = out.tx->IsCoinStake();
+        bool isMNOutPoint = isCoinStake && (out.i == ((int)out.tx->vout.size()) - 1) &&
+                (out.tx->vout[1].scriptPubKey != out.tx->vout[out.i].scriptPubKey);
         bool sendMSonFNReward = fMultiSendFundamentalnodeReward && outpoint.IsFundamentalnodeReward(out.tx);
-        bool sendMSonMNReward = fMultiSendMasternodeReward && outpoint.IsMasternodeReward(out.tx);
-        bool sendMSOnStake = fMultiSendStake && out.tx->IsCoinStake() && !sendMSonMNReward; //output is either mnreward or stake reward, not both
+        bool sendMSonMNReward = fMultiSendMasternodeReward && isMNOutPoint;
+        bool sendMSOnStake = fMultiSendStake && isCoinStake && !sendMSonMNReward; //output is either mnreward or stake reward, not both
 
         if (!(sendMSOnStake || sendMSonMNReward || sendMSonFNReward))
             continue;
