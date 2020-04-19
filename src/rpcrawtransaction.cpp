@@ -961,11 +961,11 @@ UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
     scriptEmpty.clear();
     vOutMint[0] = CTxOut(0, scriptEmpty);
     CDeterministicMint dMint;
-    if (!pwalletMain->CreateZPIVOutPut(staked_denom, vOutMint[1], dMint))
+    if (!pwalletMain->CreateZVITOutPut(staked_denom, vOutMint[1], dMint))
         throw JSONRPCError(RPC_WALLET_ERROR, "failed to create new zvit output");
 
     for (int i=2; i<5; i++) {
-        if (!pwalletMain->CreateZPIVOutPut(libzerocoin::ZQ_ONE, vOutMint[i], dMint))
+        if (!pwalletMain->CreateZVITOutPut(libzerocoin::ZQ_ONE, vOutMint[i], dMint))
             throw JSONRPCError(RPC_WALLET_ERROR, "failed to create new zvit output");
     }
     coinstake_tx.vout = vOutMint;

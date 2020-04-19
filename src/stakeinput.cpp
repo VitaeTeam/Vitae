@@ -131,7 +131,7 @@ bool CZVitStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmou
     CTxOut outReward;
     libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
     CDeterministicMint dMint;
-    if (!pwallet->CreateZPIVOutPut(denomStaked, outReward, dMint))
+    if (!pwallet->CreateZVITOutPut(denomStaked, outReward, dMint))
         return error("%s: failed to create zVIT output", __func__);
     vout.emplace_back(outReward);
 
@@ -142,7 +142,7 @@ bool CZVitStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmou
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
-        if (!pwallet->CreateZPIVOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
+        if (!pwallet->CreateZVITOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
             return error("%s: failed to create zVIT output", __func__);
         vout.emplace_back(out);
 
