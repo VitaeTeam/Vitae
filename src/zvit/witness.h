@@ -1,5 +1,5 @@
-#ifndef PIVX_WITNESS_H
-#define PIVX_WITNESS_H
+#ifndef VITAE_WITNESS_H
+#define VITAE_WITNESS_H
 
 
 #include <libzerocoin/Accumulator.h>
@@ -75,4 +75,4 @@ public:
         READWRITE(accumulatorDenom);
     };
 };
-#endif //PIVX_WITNESS_H
+#endif //VITAE_WITNESS_H

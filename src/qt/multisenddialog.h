@@ -36,4 +36,4 @@ private:
     WalletModel* model;
 };
 
-#endif // PIVX_QT_MULTISENDDIALOG_H
+#endif // VITAE_QT_MULTISENDDIALOG_H

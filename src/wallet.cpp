@@ -4883,7 +4883,7 @@ void ThreadPrecomputeSpends()
 
 void CWallet::PrecomputeSpends()
 {
-    // We don't even need to worry about this code.. no zPIV.
+    // We don't even need to worry about this code.. no zVIT.
     /*
     LogPrintf("Precomputer started\n");
     RenameThread("vitae-precomputer");

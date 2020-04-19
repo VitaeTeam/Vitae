@@ -36,9 +36,9 @@ Apple released it's last Mountain Lion update August 13, 2015, and officially en
 VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
 
 
-Apple released it's last Mountain Lion update August 13, 2015, and officially ended support on [December 14, 2015](http://news.fnal.gov/2015/10/mac-os-x-mountain-lion-10-8-end-of-life-december-14/). PIVX Core software starting with v3.2.0 will no longer run on MacOS versions prior to Yosemite (10.10). Please do not report issues about MacOS versions prior to Yosemite to the issue tracker.
+Apple released it's last Mountain Lion update August 13, 2015, and officially ended support on [December 14, 2015](http://news.fnal.gov/2015/10/mac-os-x-mountain-lion-10-8-end-of-life-december-14/). VITAE Core software starting with v3.2.0 will no longer run on MacOS versions prior to Yosemite (10.10). Please do not report issues about MacOS versions prior to Yosemite to the issue tracker.
 
-PIVX Core should also work on most other Unix-like systems but is not frequently tested on them.
+VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
 
 
 Notable Changes
@@ -127,7 +127,7 @@ Detailed release notes follow. This overview includes changes that affect behavi
 
 ### Wallet
  - #939 `37ad934ad8` [Wallet] Remove (explicitely) unused tx comparator (warrows)
- - #971 `bbeabc4d63` [Wallet][zPIV] zc public spend parse crash in wallet startup. (furszy)
+ - #971 `bbeabc4d63` [Wallet][zVIT] zc public spend parse crash in wallet startup. (furszy)
  - #980 `8b81d8f6f9` [Wallet] Remove Bitcoin Core 0.8 block hardlinking (JSKitty)
  - #982 `a0a1af9f78` [Miner] Don't create new keys when generating PoS blocks (random-zebra)
 

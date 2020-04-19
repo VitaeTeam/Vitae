@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_SPENDTYPE_H
-#define PIVX_SPENDTYPE_H
+#ifndef VITAE_SPENDTYPE_H
+#define VITAE_SPENDTYPE_H
 
 #include <cstdint>
 
@@ -16,4 +16,4 @@ namespace libzerocoin {
     };
 }
 
-#endif //PIVX_SPENDTYPE_H
+#endif //VITAE_SPENDTYPE_H
