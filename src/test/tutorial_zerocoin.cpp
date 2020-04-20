@@ -24,6 +24,7 @@
 #include "libzerocoin/Coin.h"
 #include "libzerocoin/CoinSpend.h"
 #include "libzerocoin/Accumulator.h"
+#include "test_vitae.h"
 
 using namespace std;
 
@@ -128,7 +129,7 @@ ZerocoinTutorial()
 			// accepted as a valid transaction in the block chain.
 			cout << "Error: coin is not valid!";
 		}
-		
+
 		cout << "Deserialized and verified the coin." << endl;
 
 		/********************************************************************/
@@ -209,7 +210,7 @@ ZerocoinTutorial()
 
 		// Construct the CoinSpend object. This acts like a signature on the
 		// transaction.
-        libzerocoin::CoinSpend spend(params, newCoin, accumulator, 0, witness, 0);//(0) - Presstab
+        libzerocoin::CoinSpend spend(params, params, newCoin, accumulator, 0, witness, 0, libzerocoin::SpendType::SPEND);//(0) - Presstab
 
 		// This is a sanity check. The CoinSpend object should always verify,
 		// but why not check before we put it onto the wire?
@@ -217,11 +218,11 @@ ZerocoinTutorial()
 			cout << "ERROR: Our new CoinSpend transaction did not verify!" << endl;
 			return false;
 		}
-		
+
 		// Serialize the CoinSpend object into a buffer.
 		CDataStream serializedCoinSpend(SER_NETWORK, PROTOCOL_VERSION);
 		serializedCoinSpend << spend;
-		
+
 		cout << "Successfully generated a coin spend transaction." << endl;
 
 		/********************************************************************/
@@ -236,12 +237,12 @@ ZerocoinTutorial()
 		/********************************************************************/
 
 		// Deserialize the CoinSpend intro a fresh object
-		libzerocoin::CoinSpend newSpend(params, serializedCoinSpend);
+		libzerocoin::CoinSpend newSpend(params, params, serializedCoinSpend);
 
 		// Create a new metadata object to contain the hash of the received
 		// ZEROCOIN_SPEND transaction. If we were a real client we'd actually
 		// compute the hash of the received transaction here.
-		
+
 		// If we were a real client we would now re-compute the Accumulator
 		// from the information given in the ZEROCOIN_SPEND transaction.
 		// For our purposes we'll just use the one we calculated above.
@@ -273,7 +274,7 @@ ZerocoinTutorial()
 	return false;
 }
 
-BOOST_AUTO_TEST_SUITE(tutorial_libzerocoin)
+BOOST_FIXTURE_TEST_SUITE(tutorial_libzerocoin, TestingSetup)
 BOOST_AUTO_TEST_CASE(tutorial_libzerocoin_tests)
 {
 	cout << "libzerocoin v" << ZEROCOIN_VERSION_STRING << " tutorial." << endl << endl;

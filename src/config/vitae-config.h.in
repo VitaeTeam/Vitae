@@ -143,6 +143,9 @@
 /* Define to 1 if you have the `gdi32' library (-lgdi32). */
 #undef HAVE_LIBGDI32
 
+/* Define this symbol if libgmp is installed */
+#undef HAVE_LIBGMP
+
 /* Define to 1 if you have the `imm32' library (-limm32). */
 #undef HAVE_LIBIMM32
 
@@ -263,8 +266,7 @@
 /* Define this symbol if boost sleep_for works */
 #undef HAVE_WORKING_BOOST_SLEEP_FOR
 
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
+/* Define to the sub-directory where libtool stores uninstalled libraries. */
 #undef LT_OBJDIR
 
 /* Define to the address where bug reports for this package should be sent. */
@@ -285,12 +287,15 @@
 /* Define to the version of this package. */
 #undef PACKAGE_VERSION
 
-/* Define to necessary symbol if this constant uses a non-standard name on
+/* Define to necessary symbol if this constant uses a non-standard name on
    your system. */
 #undef PTHREAD_CREATE_JOINABLE
 
 /* Define this symbol if the qt platform is cocoa */
 #undef QT_QPA_PLATFORM_COCOA
+
+/* Define this symbol if the minimal qt platform exists */
+#undef QT_QPA_PLATFORM_MINIMAL
 
 /* Define this symbol if the qt platform is windows */
 #undef QT_QPA_PLATFORM_WINDOWS
@@ -310,6 +315,12 @@
 /* Define if dbus support should be compiled in */
 #undef USE_DBUS
 
+/* Define this symbol to use the gmp implementation */
+#undef USE_NUM_GMP
+
+/* Define this symbol to use openssl implementation */
+#undef USE_NUM_OPENSSL
+
 /* Define if QR support should be compiled in */
 #undef USE_QRCODE
 
@@ -327,6 +338,11 @@
 # ifndef WORDS_BIGENDIAN
 #  undef WORDS_BIGENDIAN
 # endif
+#endif
+
+/* Enable large inode numbers on Mac OS X 10.5.  */
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */

@@ -39,7 +39,10 @@ static const char* ppszTypeName[] =
     "mn winner",
     "mn scan error",
     "mn announce",
-    "mn ping"
+    "mn ping",
+        "pubcoins",
+        "genwit",
+        "accvalue"
 };
 
 CMessageHeader::CMessageHeader()
@@ -106,7 +109,6 @@ void CAddress::Init()
 {
     nServices = NODE_NETWORK;
     nTime = 100000000;
-    nLastTry = 0;
 }
 
 CInv::CInv()
@@ -151,8 +153,10 @@ bool CInv::IsFundamentalNodeType() const{
 
 const char* CInv::GetCommand() const
 {
-    if (!IsKnownType())
+    if (!IsKnownType()) {
         LogPrint("net", "CInv::GetCommand() : type=%d unknown type", type);
+        return "UNKNOWN";
+    }
 
     return ppszTypeName[type];
 }

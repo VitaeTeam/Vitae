@@ -25,6 +25,7 @@
 #include "libzerocoin/Coin.h"
 #include "libzerocoin/CoinSpend.h"
 #include "libzerocoin/Accumulator.h"
+#include "test_vitae.h"
 
 using namespace std;
 using namespace libzerocoin;
@@ -337,7 +338,7 @@ Testb_MintAndSpend()
 
 		// Now spend the coin
 		timer.start();
-		CoinSpend spend(gg_Params, *(ggCoins[0]), acc, 0, wAcc, 0); //(0) presstab
+		CoinSpend spend(gg_Params, gg_Params, *(ggCoins[0]), acc, 0, wAcc, 0, SpendType::SPEND); //(0) presstab
 		timer.stop();
 
 		cout << "\tSPEND ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
@@ -349,7 +350,7 @@ Testb_MintAndSpend()
 		ss << spend;
 		timer.stop();
 
-		CoinSpend newSpend(gg_Params, ss);
+		CoinSpend newSpend(gg_Params, gg_Params, ss);
 
 		cout << "\tSERIALIZE ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
 
@@ -402,7 +403,8 @@ Testb_RunAllTests()
 	cout << ggSuccessfulTests << " out of " << ggNumTests << " tests passed." << endl << endl;
 	delete gg_Params;
 }
-BOOST_AUTO_TEST_SUITE(benchmark_zerocoin)
+
+BOOST_FIXTURE_TEST_SUITE(benchmark_zerocoin, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(benchmark_test)
 {

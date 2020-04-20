@@ -8,10 +8,10 @@
 #include "script/script.h"
 #include "script/standard.h"
 #include "uint256.h"
+#include "test_vitae.h"
 
 #include <vector>
 
-#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
 using namespace std;
@@ -24,7 +24,7 @@ Serialize(const CScript& s)
     return sSerialized;
 }
 
-BOOST_AUTO_TEST_SUITE(sigopcount_tests)
+BOOST_FIXTURE_TEST_SUITE(sigopcount_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(GetSigOpCount)
 {
