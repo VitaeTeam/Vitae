@@ -17,15 +17,15 @@ class CObfuScationRelay
 {
 public:
     CTxIn vinFundamentalnode;
-    vector<unsigned char> vchSig;
-    vector<unsigned char> vchSig2;
+    std::vector<unsigned char> vchSig;
+    std::vector<unsigned char> vchSig2;
     int nBlockHeight;
     int nRelayType;
     CTxIn in;
     CTxOut out;
 
     CObfuScationRelay();
-    CObfuScationRelay(CTxIn& vinFundamentalnodeIn, vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2);
+    CObfuScationRelay(CTxIn& vinFundamentalnodeIn, std::vector<unsigned char>& vchSigIn, int nBlockHeightIn, int nRelayTypeIn, CTxIn& in2, CTxOut& out2);
 
     ADD_SERIALIZE_METHODS;
 

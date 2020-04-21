@@ -18,7 +18,6 @@
 #include <boost/algorithm/string/case_conv.hpp> // for to_lower()
 #include <univalue.h>
 
-using namespace std;
 
 class CRPCConvertParam
 {
@@ -34,6 +33,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getaddednodeinfo", 0},
         {"setgenerate", 0},
         {"setgenerate", 1},
+        {"generate", 0},
         {"getnetworkhashps", 0},
         {"getnetworkhashps", 1},
         {"sendtoaddress", 1},
@@ -50,6 +50,12 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"getbalance", 1},
         {"getbalance", 2},
         {"getblockhash", 0},
+        { "waitforblockheight", 0 },
+        { "waitforblockheight", 1 },
+        { "waitforblock", 1 },
+        { "waitforblock", 2 },
+        { "waitfornewblock", 0 },
+        { "waitfornewblock", 1 },
         {"move", 2},
         {"move", 3},
         {"sendfrom", 2},
@@ -73,12 +79,14 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"listunspent", 0},
         {"listunspent", 1},
         {"listunspent", 2},
+        {"listunspent", 3},
         {"getblock", 1},
         {"getblockheader", 1},
         {"gettransaction", 1},
         {"getrawtransaction", 1},
         {"createrawtransaction", 0},
         {"createrawtransaction", 1},
+        {"createrawtransaction", 2},
         {"signrawtransaction", 1},
         {"signrawtransaction", 2},
         {"sendrawtransaction", 1},
@@ -122,19 +130,42 @@ static const CRPCConvertParam vRPCConvertParams[] =
         {"autocombinerewards", 1},
         {"getzerocoinbalance", 0},
         {"listmintedzerocoins", 0},
+        {"listmintedzerocoins", 1},
         {"listspentzerocoins", 0},
         {"listzerocoinamounts", 0},
         {"mintzerocoin", 0},
+        {"mintzerocoin", 1},
         {"spendzerocoin", 0},
         {"spendzerocoin", 1},
         {"spendzerocoin", 2},
-        {"spendzerocoin", 3},
+        {"spendrawzerocoin", 2},
+        {"spendzerocoinmints", 0},
         {"importzerocoins", 0},
         {"exportzerocoins", 0},
         {"exportzerocoins", 1},
         {"resetmintzerocoin", 0},
         {"getspentzerocoinamount", 1},
-        {"getfeeinfo", 0}
+        {"generatemintlist", 0},
+        {"generatemintlist", 1},
+        {"searchdzvit", 0},
+        {"searchdzvit", 1},
+        {"searchdzvit", 2},
+        {"getaccumulatorvalues", 0},
+        {"getaccumulatorwitness",2},
+        {"getmintsvalues", 2},
+        {"enableautomintaddress", 0},
+        {"getblockindexstats", 0},
+        {"getblockindexstats", 1},
+        {"getblockindexstats", 2},
+        {"getmintsinblocks", 0},
+        {"getmintsinblocks", 1},
+        {"getmintsinblocks", 2},
+        {"getserials", 0},
+        {"getserials", 1},
+        {"getserials", 2},
+        {"getfeeinfo", 0},
+        {"getchecksumblock", 1},
+        {"getchecksumblock", 2},
     };
 
 class CRPCConvertTable
@@ -172,7 +203,7 @@ UniValue ParseNonRFCJSONValue(const std::string& strVal)
     UniValue jVal;
     if (!jVal.read(std::string("[")+strVal+std::string("]")) ||
         !jVal.isArray() || jVal.size()!=1)
-        throw runtime_error(string("Error parsing JSON:")+strVal);
+        throw std::runtime_error(std::string("Error parsing JSON:")+strVal);
     return jVal[0];
 }
 

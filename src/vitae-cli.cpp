@@ -13,18 +13,23 @@
 #include "utilstrencodings.h"
 
 #include <boost/filesystem/operations.hpp>
+#include <stdio.h>
+
+#include <event2/event.h>
+#include <event2/http.h>
+#include <event2/buffer.h>
+#include <event2/keyvalq_struct.h>
 
 #include <univalue.h>
 
 #define _(x) std::string(x) /* Keep the _() around in case gettext or such will be used later to translate non-UI */
 
-using namespace std;
-using namespace boost;
-using namespace boost::asio;
+
+static const int DEFAULT_HTTP_CLIENT_TIMEOUT=900;
 
 std::string HelpMessageCli()
 {
-    string strUsage;
+    std::string strUsage;
     strUsage += HelpMessageGroup(_("Options:"));
     strUsage += HelpMessageOpt("-?", _("This help message"));
     strUsage += HelpMessageOpt("-conf=<file>", strprintf(_("Specify configuration file (default: %s)"), "vitae.conf"));
@@ -37,9 +42,7 @@ std::string HelpMessageCli()
     strUsage += HelpMessageOpt("-rpcwait", _("Wait for RPC server to start"));
     strUsage += HelpMessageOpt("-rpcuser=<user>", _("Username for JSON-RPC connections"));
     strUsage += HelpMessageOpt("-rpcpassword=<pw>", _("Password for JSON-RPC connections"));
-
-    strUsage += HelpMessageGroup(_("SSL options: (see the Bitcoin Wiki for SSL setup instructions)"));
-    strUsage += HelpMessageOpt("-rpcssl", _("Use OpenSSL (https) for JSON-RPC connections"));
+    strUsage += HelpMessageOpt("-rpcclienttimeout=<n>", strprintf(_("Timeout during HTTP requests (default: %d)"), DEFAULT_HTTP_CLIENT_TIMEOUT));
 
     return strUsage;
 }
@@ -96,32 +99,75 @@ static bool AppInitRPC(int argc, char* argv[])
         fprintf(stderr, "Error: Invalid combination of -regtest and -testnet.\n");
         return false;
     }
+    if (GetBoolArg("-rpcssl", false))
+    {
+        fprintf(stderr, "Error: SSL mode for RPC (-rpcssl) is no longer supported.\n");
+        return false;
+    }
     return true;
 }
 
-UniValue CallRPC(const string& strMethod, const UniValue& params)
+
+/** Reply structure for request_done to fill in */
+struct HTTPReply
 {
-    // Connect to localhost
-    bool fUseSSL = GetBoolArg("-rpcssl", false);
-    asio::io_service io_service;
-    ssl::context context(io_service, ssl::context::sslv23);
-    context.set_options(ssl::context::no_sslv2 | ssl::context::no_sslv3);
-    asio::ssl::stream<asio::ip::tcp::socket> sslStream(io_service, context);
-    SSLIOStreamDevice<asio::ip::tcp> d(sslStream, fUseSSL);
-    iostreams::stream<SSLIOStreamDevice<asio::ip::tcp> > stream(d);
+    int status;
+    std::string body;
+};
 
-    const bool fConnected = d.connect(GetArg("-rpcconnect", "127.0.0.1"), GetArg("-rpcport", itostr(BaseParams().RPCPort())));
-    if (!fConnected)
-        throw CConnectionFailed("couldn't connect to server");
+static void http_request_done(struct evhttp_request *req, void *ctx)
+{
+    HTTPReply *reply = static_cast<HTTPReply*>(ctx);
 
-    // Find credentials to use
+    if (req == NULL) {
+        /* If req is NULL, it means an error occurred while connecting, but
+         * I'm not sure how to find out which one. We also don't really care.
+         */
+        reply->status = 0;
+        return;
+    }
+
+    reply->status = evhttp_request_get_response_code(req);
+
+    struct evbuffer *buf = evhttp_request_get_input_buffer(req);
+    if (buf)
+    {
+        size_t size = evbuffer_get_length(buf);
+        const char *data = (const char*)evbuffer_pullup(buf, size);
+        if (data)
+            reply->body = std::string(data, size);
+        evbuffer_drain(buf, size);
+    }
+}
+
+UniValue CallRPC(const std::string& strMethod, const UniValue& params)
+{
+    std::string host = GetArg("-rpcconnect", "127.0.0.1");
+    int port = GetArg("-rpcport", BaseParams().RPCPort());
+
+    // Create event base
+    struct event_base *base = event_base_new(); // TODO RAII
+    if (!base)
+        throw std::runtime_error("cannot create event_base");
+
+    // Synchronously look up hostname
+    struct evhttp_connection *evcon = evhttp_connection_base_new(base, NULL, host.c_str(), port); // TODO RAII
+    if (evcon == NULL)
+        throw std::runtime_error("create connection failed");
+    evhttp_connection_set_timeout(evcon, GetArg("-rpcclienttimeout", DEFAULT_HTTP_CLIENT_TIMEOUT));
+
+    HTTPReply response;
+    struct evhttp_request *req = evhttp_request_new(http_request_done, (void*)&response); // TODO RAII
+    if (req == NULL)
+        throw std::runtime_error("create http request failed");
+
+    // Get credentials
     std::string strRPCUserColonPass;
     if (mapArgs["-rpcpassword"] == "") {
         // Try fall back to cookie-based authentication if no password is provided
         if (!GetAuthCookie(&strRPCUserColonPass)) {
-            throw runtime_error(strprintf(
-                _("You must set rpcpassword=<password> in the configuration file:\n%s\n"
-                  "If the file does not exist, create it with owner-readable-only file permissions."),
+            throw std::runtime_error(strprintf(
+                 _("Could not locate RPC credentials. No authentication cookie could be found, and no rpcpassword is set in the configuration file (%s)"),
                     GetConfigFile().string().c_str()));
 
         }
@@ -129,45 +175,52 @@ UniValue CallRPC(const string& strMethod, const UniValue& params)
         strRPCUserColonPass = mapArgs["-rpcuser"] + ":" + mapArgs["-rpcpassword"];
     }
 
-    // HTTP basic authentication
-    map<string, string> mapRequestHeaders;
-    mapRequestHeaders["Authorization"] = string("Basic ") + EncodeBase64(strRPCUserColonPass);
+    struct evkeyvalq *output_headers = evhttp_request_get_output_headers(req);
+    assert(output_headers);
+    evhttp_add_header(output_headers, "Host", host.c_str());
+    evhttp_add_header(output_headers, "Connection", "close");
+    evhttp_add_header(output_headers, "Authorization", (std::string("Basic ") + EncodeBase64(strRPCUserColonPass)).c_str());
 
-    // Send request
-    string strRequest = JSONRPCRequest(strMethod, params, 1);
-    string strPost = HTTPPost(strRequest, mapRequestHeaders);
-    stream << strPost << std::flush;
+    // Attach request data
+    std::string strRequest = JSONRPCRequest(strMethod, params, 1);
+    struct evbuffer * output_buffer = evhttp_request_get_output_buffer(req);
+    assert(output_buffer);
+    evbuffer_add(output_buffer, strRequest.data(), strRequest.size());
 
-    // Receive HTTP reply status
-    int nProto = 0;
-    int nStatus = ReadHTTPStatus(stream, nProto);
+    int r = evhttp_make_request(evcon, req, EVHTTP_REQ_POST, "/");
+    if (r != 0) {
+        evhttp_connection_free(evcon);
+        event_base_free(base);
+        throw CConnectionFailed("send http request failed");
+    }
 
-    // Receive HTTP reply message headers and body
-    map<string, string> mapHeaders;
-    string strReply;
-    ReadHTTPMessage(stream, mapHeaders, strReply, nProto, std::numeric_limits<size_t>::max());
+    event_base_dispatch(base);
+    evhttp_connection_free(evcon);
+    event_base_free(base);
 
-    if (nStatus == HTTP_UNAUTHORIZED)
-        throw runtime_error("incorrect rpcuser or rpcpassword (authorization failed)");
-    else if (nStatus >= 400 && nStatus != HTTP_BAD_REQUEST && nStatus != HTTP_NOT_FOUND && nStatus != HTTP_INTERNAL_SERVER_ERROR)
-        throw runtime_error(strprintf("server returned HTTP error %d", nStatus));
-    else if (strReply.empty())
-        throw runtime_error("no response from server");
+    if (response.status == 0)
+        throw CConnectionFailed("couldn't connect to server");
+    else if (response.status == HTTP_UNAUTHORIZED)
+        throw std::runtime_error("incorrect rpcuser or rpcpassword (authorization failed)");
+    else if (response.status >= 400 && response.status != HTTP_BAD_REQUEST && response.status != HTTP_NOT_FOUND && response.status != HTTP_INTERNAL_SERVER_ERROR)
+        throw std::runtime_error(strprintf("server returned HTTP error %d", response.status));
+    else if (response.body.empty())
+        throw std::runtime_error("no response from server");
 
     // Parse reply
     UniValue valReply(UniValue::VSTR);
-    if (!valReply.read(strReply))
-        throw runtime_error("couldn't parse reply from server");
+    if (!valReply.read(response.body))
+        throw std::runtime_error("couldn't parse reply from server");
     const UniValue& reply = valReply.get_obj();
     if (reply.empty())
-        throw runtime_error("expected reply to have result, error and id properties");
+        throw std::runtime_error("expected reply to have result, error and id properties");
 
     return reply;
 }
 
 int CommandLineRPC(int argc, char* argv[])
 {
-    string strPrint;
+    std::string strPrint;
     int nRet = 0;
     try {
         // Skip switches
@@ -178,8 +231,8 @@ int CommandLineRPC(int argc, char* argv[])
 
         // Method
         if (argc < 2)
-            throw runtime_error("too few parameters");
-        string strMethod = argv[1];
+            throw std::runtime_error("too few parameters");
+        std::string strMethod = argv[1];
 
         // Parameters default to strings
         std::vector<std::string> strParams(&argv[2], &argv[argc]);
@@ -223,7 +276,7 @@ int CommandLineRPC(int argc, char* argv[])
     } catch (boost::thread_interrupted) {
         throw;
     } catch (std::exception& e) {
-        strPrint = string("error: ") + e.what();
+        strPrint = std::string("error: ") + e.what();
         nRet = EXIT_FAILURE;
     } catch (...) {
         PrintExceptionContinue(NULL, "CommandLineRPC()");
@@ -239,6 +292,10 @@ int CommandLineRPC(int argc, char* argv[])
 int main(int argc, char* argv[])
 {
     SetupEnvironment();
+    if (!SetupNetworking()) {
+        fprintf(stderr, "Error: Initializing networking failed\n");
+        exit(1);
+    }
 
     try {
         if (!AppInitRPC(argc, argv))

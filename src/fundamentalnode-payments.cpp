@@ -19,7 +19,6 @@
 #include "masternodeman.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CFundamentalnodePayments fundamentalnodePayments;
@@ -86,7 +85,7 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
     // Don't try to resize to a negative number if file is small
     if (dataSize < 0)
         dataSize = 0;
-    vector<unsigned char> vchData;
+    std::vector<unsigned char> vchData;
     vchData.resize(dataSize);
     uint256 hashIn;
 
@@ -229,6 +228,8 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
 
 bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 {
+    TrxValidationStatus transactionStatus = TrxValidationStatus::InValid;
+
     if (!fundamentalnodeSync.IsSynced()) { //there is no budget data to use to check anything -- find the longest chain
         LogPrint("mnpayments", "Client not synced, skipping block payee checks\n");
         return true;
@@ -252,7 +253,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         if(pindex != NULL){
             if(pindex->GetBlockHash() == block.hashPrevBlock){
                 CAmount stakeReward = GetBlockValue(pindex->nHeight + 1);
-                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward);//todo++
+                CAmount masternodePaymentAmount = GetMasternodePayment(pindex->nHeight+1, stakeReward, 0, false);//todo++
 
                 bool fIsInitialDownload = IsInitialBlockDownload();
 
@@ -311,17 +312,25 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
     //check if it's a budget block
     if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)) {
         if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
-            if (budget.IsTransactionValid(txNew, nBlockHeight))
+            transactionStatus = budget.IsTransactionValid(txNew, nBlockHeight);
+            if (transactionStatus == TrxValidationStatus::Valid) {
                 return true;
+            }
 
-            LogPrint("fundamentalnode","Invalid budget payment detected %s\n", txNew.ToString().c_str());
-            if (IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT))
-                return false;
+            if (transactionStatus == TrxValidationStatus::InValid) {
+                LogPrint("fundamentalnode","Invalid budget payment detected %s\n", txNew.ToString().c_str());
+                if (IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT))
+                    return false;
 
-            LogPrint("fundamentalnode","Budget enforcement is disabled, accepting block\n");
-            return true;
+                LogPrint("fundamentalnode","Budget enforcement is disabled, accepting block\n");
+            }
         }
     }
+
+    // If we end here the transaction was either TrxValidationStatus::InValid and Budget enforcement is disabled, or
+    // a double budget payment (status = TrxValidationStatus::DoublePayment) was detected, or no/not enough masternode
+    // votes (status = TrxValidationStatus::VoteThreshold) for a finalized budget were found
+    // In all cases a masternode will get the payment for this block
 
     //check for fundamentalnode payee
     if (fundamentalnodePayments.IsTransactionValid(txNew, nBlockHeight))
@@ -405,7 +414,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
 
     CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
     CAmount fundamentalnodePayment = GetFundamentalnodePayment(pindexPrev->nHeight + 1, blockValue);
-    CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue);
+    CAmount masternodepayment = GetMasternodePayment(pindexPrev->nHeight +1 , blockValue, 0, false);
 
     //txNew.vout[0].nValue = blockValue;
 
@@ -462,7 +471,23 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
                 txNew.vout[i].nValue = fundamentalnodePayment;
 
                 //subtract mn payment from the stake reward
-                txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                //txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                if (!txNew.vout[1].IsZerocoinMint()) {
+                    if (i == 2) {
+                        // Majority of cases; do it quick and move on
+                        txNew.vout[i - 1].nValue -= fundamentalnodePayment;
+                    } else if (i > 2) {
+                        // special case, stake is split between (i-1) outputs
+                        unsigned int outputs = i-1;
+                        CAmount mnPaymentSplit = fundamentalnodePayment / outputs;
+                        CAmount mnPaymentRemainder = fundamentalnodePayment - (mnPaymentSplit * outputs);
+                        for (unsigned int j=1; j<=outputs; j++) {
+                            txNew.vout[j].nValue -= mnPaymentSplit;
+                        }
+                        // in case it's not an even division, take the last bit of dust from the last one
+                        txNew.vout[outputs].nValue -= mnPaymentRemainder;
+                    }
+                }
             } else {
                 txNew.vout.resize(2);
                 txNew.vout[1].scriptPubKey = payee;
@@ -625,7 +650,7 @@ bool CFundamentalnodePaymentWinner::Sign(CKey& keyFundamentalnode, CPubKey& pubK
     std::string strFundamentalNodeSignMessage;
 
     std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
-                             boost::lexical_cast<std::string>(nBlockHeight) +
+                             std::to_string(nBlockHeight) +
                              payee.ToString();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
@@ -730,19 +755,19 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         nFundamentalnode_Drift_Count = mnodeman.size() + Params().FundamentalnodeCountDrift();
     }
 
-    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count);
+    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count, txNew.HasZerocoinSpendInputs());
 
     //require at least 6 signatures
-    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments)
+    for (CFundamentalnodePayee& payee : vecPayments)
         if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
             nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;
 
-    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
+    for (CFundamentalnodePayee& payee : vecPayments) {
         bool found = false;
-        BOOST_FOREACH (CTxOut out, txNew.vout) {
+        for (CTxOut out : txNew.vout) {
             if (payee.scriptPubKey == out.scriptPubKey) {
                 if(out.nValue >= requiredFundamentalnodePayment)
                     found = true;
@@ -776,15 +801,15 @@ std::string CFundamentalnodeBlockPayees::GetRequiredPaymentsString()
 
     std::string ret = "Unknown";
 
-    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
+    for (CFundamentalnodePayee& payee : vecPayments) {
         CTxDestination address1;
         ExtractDestination(payee.scriptPubKey, address1);
         CBitcoinAddress address2(address1);
 
         if (ret != "Unknown") {
-            ret += ", " + address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret += ", " + address2.ToString() + ":" + std::to_string(payee.nVotes);
         } else {
-            ret = address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret = address2.ToString() + ":" + std::to_string(payee.nVotes);
         }
     }
 
@@ -959,7 +984,7 @@ bool CFundamentalnodePaymentWinner::SignatureValid()
 
     if (pmn != NULL) {
         std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
-                                 boost::lexical_cast<std::string>(nBlockHeight) +
+                                 std::to_string(nBlockHeight) +
                                  payee.ToString();
 
         std::string errorMessage = "";

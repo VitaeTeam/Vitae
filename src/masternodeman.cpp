@@ -14,7 +14,6 @@
 #include "main.h"
 #include "util.h"
 #include "addrman.h"
-#include <boost/lexical_cast.hpp>
 #include <boost/filesystem.hpp>
 
 #define MN_WINNER_MINIMUM_AGE 8000    // Age in seconds. This should be > MASTERNODE_REMOVAL_SECONDS to avoid misconfigured new nodes in the list.
@@ -26,16 +25,16 @@ CMasternodeMan m_nodeman;
 
 struct CompareValueOnly
 {
-    bool operator()(const pair<int64_t, CTxIn>& t1,
-                    const pair<int64_t, CTxIn>& t2) const
+    bool operator()(const std::pair<int64_t, CTxIn>& t1,
+                    const std::pair<int64_t, CTxIn>& t2) const
     {
         return t1.first < t2.first;
     }
 };
 struct CompareValueOnlyMN
 {
-    bool operator()(const pair<int64_t, CMasternode>& t1,
-                    const pair<int64_t, CMasternode>& t2) const
+    bool operator()(const std::pair<int64_t, CMasternode>& t1,
+                    const std::pair<int64_t, CMasternode>& t2) const
     {
         return t1.first < t2.first;
     }
@@ -103,7 +102,7 @@ CMasternodeDB::ReadResult CMasternodeDB::Read(CMasternodeMan& mnodemanToLoad)
     // Don't try to resize to a negative number if file is small
     if (dataSize < 0)
         dataSize = 0;
-    vector<unsigned char> vchData;
+    std::vector<unsigned char> vchData;
     vchData.resize(dataSize);
     uint256 hashIn;
 
@@ -223,7 +222,7 @@ void CMasternodeMan::Check()
 {
     LOCK(cs);
 
-    BOOST_FOREACH(CMasternode& mn, vMasternodes)
+    for(CMasternode& mn : vMasternodes)
         mn.Check();
 }
 
@@ -234,7 +233,7 @@ void CMasternodeMan::CheckAndRemove()
     Check();
 
     //remove inactive
-    vector<CMasternode>::iterator it = vMasternodes.begin();
+    std::vector<CMasternode>::iterator it = vMasternodes.begin();
     while(it != vMasternodes.end()){
         if((*it).activeState == CMasternode::MASTERNODE_REMOVE || (*it).activeState == CMasternode::MASTERNODE_VIN_SPENT){
             if(fDebug) LogPrintf("CMasternodeMan: Removing inactive Masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
@@ -245,7 +244,7 @@ void CMasternodeMan::CheckAndRemove()
     }
 
     // check who's asked for the Masternode list
-    map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
+    std::map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
     while(it1 != mAskedUsForMasternodeList.end()){
         if((*it1).second < GetTime()) {
             mAskedUsForMasternodeList.erase(it1++);
@@ -265,7 +264,7 @@ void CMasternodeMan::CheckAndRemove()
     }
 
     // check which Masternodes we've asked for
-    map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
+    std::map<COutPoint, int64_t>::iterator it2 = mWeAskedForMasternodeListEntry.begin();
     while(it2 != mWeAskedForMasternodeListEntry.end()){
         if((*it2).second < GetTime()){
             mWeAskedForMasternodeListEntry.erase(it2++);
@@ -290,7 +289,7 @@ int CMasternodeMan::CountEnabled()
 {
     int i = 0;
 
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+    for(CMasternode& mn : vMasternodes) {
         mn.Check();
         if(mn.IsEnabled()) i++;
     }
@@ -302,7 +301,7 @@ void CMasternodeMan::CountNetworks(int protocolVersion, int& ipv4, int& ipv6, in
 {
     protocolVersion = protocolVersion == -1 ? GetMinMasternodePaymentsProto() : protocolVersion;
 
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         mn.Check();
         std::string strHost;
         int port;
@@ -327,7 +326,7 @@ int CMasternodeMan::CountMasternodesAboveProtocol(int protocolVersion)
 {
     int i = 0;
 
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+    for(CMasternode& mn : vMasternodes) {
         mn.Check();
         if(mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         i++;
@@ -343,7 +342,7 @@ int CMasternodeMan::stable_size ()
     int64_t nMasternode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nMasternode_Age = 0;
 
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
         if (mn.protocolVersion < nMinProtocol) {
             continue; // Skip obsolete versions
         }
@@ -383,7 +382,7 @@ CMasternode *CMasternodeMan::Find(const CTxIn &vin)
 {
     LOCK(cs);
 
-    BOOST_FOREACH(CMasternode& mn, vMasternodes)
+    for(CMasternode& mn : vMasternodes)
     {
         if(mn.vin.prevout == vin.prevout)
             return &mn;
@@ -395,7 +394,7 @@ CMasternode *CMasternodeMan::Find(const CPubKey &pubKeyMasternode)
 {
 LOCK(cs);
 
-BOOST_FOREACH(CMasternode& mn, vMasternodes)
+for(CMasternode& mn : vMasternodes)
 {
 if(mn.pubkey2 == pubKeyMasternode)
 return &mn;
@@ -409,7 +408,7 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
 
     CMasternode *pOldestMasternode = NULL;
 
-    BOOST_FOREACH(CMasternode &mn, vMasternodes)
+    for(CMasternode &mn : vMasternodes)
     {
         mn.Check();
         if(!mn.IsEnabled()) continue;
@@ -419,7 +418,7 @@ CMasternode* CMasternodeMan::FindOldestNotInVec(const std::vector<CTxIn> &vVins,
         //}
 
         bool found = false;
-        BOOST_FOREACH(const CTxIn& vin, vVins)
+        for(const CTxIn& vin : vVins)
             if(mn.vin.prevout == vin.prevout)
             {
                 found = true;
@@ -451,7 +450,7 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
     CMasternode* winner = NULL;
 
     // scan for winner
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+    for(CMasternode& mn : vMasternodes) {
         mn.Check();
         if(mn.protocolVersion < minProtocol || !mn.IsEnabled()) continue;
 
@@ -472,14 +471,14 @@ CMasternode* CMasternodeMan::GetCurrentMasterNode(int mod, int64_t nBlockHeight,
 
 int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
-    std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
+    std::vector<std::pair<unsigned int, CTxIn> > vecMasternodeScores;
 
     //make sure we know about this block
     uint256 hash = 0;
     if(!GetBlockHashMN(hash, nBlockHeight)) return -1;
 
     // scan for winner
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+    for(CMasternode& mn : vMasternodes) {
 
         if(mn.protocolVersion < minProtocol) continue;
         if(fOnlyActive) {
@@ -491,13 +490,13 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
         unsigned int n2 = 0;
         memcpy(&n2, &n, sizeof(n2));
 
-        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
+        vecMasternodeScores.push_back(std::make_pair(n2, mn.vin));
     }
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(unsigned int, CTxIn)& s, vecMasternodeScores){
+    for (PAIRTYPE(unsigned int, CTxIn)& s : vecMasternodeScores){
         rank++;
         if(s.second == vin) {
             return rank;
@@ -507,17 +506,17 @@ int CMasternodeMan::GetMasternodeRank(const CTxIn& vin, int64_t nBlockHeight, in
     return -1;
 }
 
-std::vector<pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t nBlockHeight, int minProtocol)
+std::vector<std::pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t nBlockHeight, int minProtocol)
 {
-    std::vector<pair<unsigned int, CMasternode> > vecMasternodeScores;
-    std::vector<pair<int, CMasternode> > vecMasternodeRanks;
+    std::vector<std::pair<unsigned int, CMasternode> > vecMasternodeScores;
+    std::vector<std::pair<int, CMasternode> > vecMasternodeRanks;
 
     //make sure we know about this block
     uint256 hash = 0;
     if(!GetBlockHashMN(hash, nBlockHeight)) return vecMasternodeRanks;
 
     // scan for winner
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+    for(CMasternode& mn : vMasternodes) {
 
         mn.Check();
 
@@ -530,15 +529,15 @@ std::vector<pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t 
         unsigned int n2 = 0;
         memcpy(&n2, &n, sizeof(n2));
 
-        vecMasternodeScores.push_back(make_pair(n2, mn));
+        vecMasternodeScores.push_back(std::make_pair(n2, mn));
     }
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnlyMN());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(unsigned int, CMasternode)& s, vecMasternodeScores){
+    for (PAIRTYPE(unsigned int, CMasternode)& s : vecMasternodeScores){
         rank++;
-        vecMasternodeRanks.push_back(make_pair(rank, s.second));
+        vecMasternodeRanks.push_back(std::make_pair(rank, s.second));
     }
 
     return vecMasternodeRanks;
@@ -546,10 +545,10 @@ std::vector<pair<int, CMasternode> > CMasternodeMan::GetMasternodeRanks(int64_t 
 
 CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
-    std::vector<pair<unsigned int, CTxIn> > vecMasternodeScores;
+    std::vector<std::pair<unsigned int, CTxIn> > vecMasternodeScores;
 
     // scan for winner
-    BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+    for(CMasternode& mn : vMasternodes) {
 
         if(mn.protocolVersion < minProtocol) continue;
         if(fOnlyActive) {
@@ -561,13 +560,13 @@ CMasternode* CMasternodeMan::GetMasternodeByRank(int nRank, int64_t nBlockHeight
         unsigned int n2 = 0;
         memcpy(&n2, &n, sizeof(n2));
 
-        vecMasternodeScores.push_back(make_pair(n2, mn.vin));
+        vecMasternodeScores.push_back(std::make_pair(n2, mn.vin));
     }
 
     sort(vecMasternodeScores.rbegin(), vecMasternodeScores.rend(), CompareValueOnly());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(unsigned int, CTxIn)& s, vecMasternodeScores){
+    for (PAIRTYPE(unsigned int, CTxIn)& s : vecMasternodeScores){
         rank++;
         if(rank == nRank) {
             return Find(s.second);
@@ -586,7 +585,7 @@ void CMasternodeMan::ProcessMasternodeConnections()
 
     if(!obfuScationPool.pSubmittedToFundamentalnode) return;
 
-    BOOST_FOREACH(CNode* pnode, vNodes)
+    for(CNode* pnode : vNodes)
     {
         if(darkSendPool.pSubmittedToMasternode->addr == pnode->addr) continue;
 
@@ -611,7 +610,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         CService addr;
         CPubKey pubkey;
         CPubKey pubkey2;
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         int64_t sigTime;
         int count;
         int current;
@@ -636,7 +635,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         std::string vchPubKey(pubkey.begin(), pubkey.end());
         std::string vchPubKey2(pubkey2.begin(), pubkey2.end());
 
-        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion)  + donationAddress.ToString() + boost::lexical_cast<std::string>(donationPercentage);
+        strMessage = addr.ToString() + std::to_string(sigTime) + vchPubKey + vchPubKey2 + std::to_string(protocolVersion)  + donationAddress.ToString() + std::to_string(donationPercentage);
 
         if(donationPercentage < 0 || donationPercentage > 100){
             LogPrintf("dsee - donation percentage out of range %d\n", donationPercentage);
@@ -716,7 +715,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         //  - this is expensive, so it's only done once per Masternode
         uint256 blockHash;
         CTransaction tx;
-        if(!obfuScationSigner.IsMnVinAssociatedWithPubkey(vin, pubkey, tx, blockHash)) {
+        if(!obfuScationSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
             LogPrintf("dsee - Got mismatched pubkey and vin Fehler1\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -798,7 +797,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
     else if (strCommand == "dseep") { //DarkSend Election Entry Ping
 
         CTxIn vin;
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         int64_t sigTime;
         bool stop;
         vRecv >> vin >> vchSig >> sigTime >> stop;
@@ -823,7 +822,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             // take this only if it's newer
             if(pmn->lastDseep < sigTime)
             {
-                std::string strMessage = pmn->addr.ToString() + boost::lexical_cast<std::string>(sigTime) + boost::lexical_cast<std::string>(stop);
+                std::string strMessage = pmn->addr.ToString() + std::to_string(sigTime) + std::to_string(stop);
 
                 std::string errorMessage = "";
                 if(!obfuScationSigner.VerifyMessage(pmn->pubkey2, vchSig, strMessage, errorMessage))
@@ -869,7 +868,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
     } else if (strCommand == "mvote") { //Masternode Vote
 
         CTxIn vin;
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         int nVote;
         vRecv >> vin >> vchSig >> nVote;
 
@@ -879,7 +878,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         {
             if((GetAdjustedTime() - pmn->lastVote) > (60*60))
             {
-                std::string strMessage = vin.ToString() + boost::lexical_cast<std::string>(nVote);
+                std::string strMessage = vin.ToString() + std::to_string(nVote);
 
                 std::string errorMessage = "";
                 if(!obfuScationSigner.VerifyMessage(pmn->pubkey2, vchSig, strMessage, errorMessage))
@@ -893,7 +892,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 
                 //send to all peers
                 LOCK(cs_vNodes);
-                BOOST_FOREACH(CNode* pnode, vNodes)
+                for(CNode* pnode : vNodes)
                     pnode->PushMessage("mvote", vin, vchSig, nVote);
             }
 
@@ -927,7 +926,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         int count = this->size();
         int i = 0;
 
-        BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+        for(CMasternode& mn : vMasternodes) {
 
             if(mn.addr.IsRFC1918()) continue; //local network
 
@@ -952,14 +951,14 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
 void CMasternodeMan::RelayMasternodeEntry(const CTxIn vin, const CService addr, const std::vector<unsigned char> vchSig, const int64_t nNow, const CPubKey pubkey, const CPubKey pubkey2, const int count, const int current, const int64_t lastUpdated, const int protocolVersion, CScript donationAddress, int donationPercentage)
 {
      LOCK(cs_vNodes);
-     BOOST_FOREACH(CNode* pnode, vNodes)
+     for(CNode* pnode : vNodes)
      pnode->PushMessage("dsee", vin, addr, vchSig, nNow, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
 }
 
 void CMasternodeMan::RelayMasternodeEntryPing(const CTxIn vin, const std::vector<unsigned char> vchSig, const int64_t nNow, const bool stop)
 {
     LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes)
+    for(CNode* pnode : vNodes)
         pnode->PushMessage("dseep", vin, vchSig, nNow, stop);
 }
 
@@ -967,7 +966,7 @@ void CMasternodeMan::Remove(CTxIn vin)
 {
     LOCK(cs);
 
-    vector<CMasternode>::iterator it = vMasternodes.begin();
+    std::vector<CMasternode>::iterator it = vMasternodes.begin();
     while(it != vMasternodes.end()){
         if((*it).vin == vin){
             if(fDebug) LogPrintf("CMasternodeMan: Removing Masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);

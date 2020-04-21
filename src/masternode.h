@@ -43,15 +43,14 @@
 static const int64_t MASTERNODEAMOUNT = 20000 ;
 extern std::string strMasterNodePrivKey;
 
-using namespace std;
 
 class CMasternode;
 class CMasternodePayments;
 class CMasternodePaymentWinner;
 
 extern CMasternodePayments masternodePayments;
-extern map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
-extern map<int64_t, uint256> mapCacheBlockHashesMN;
+extern std::map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
+extern std::map<int64_t, uint256> mapCacheBlockHashesMN;
 
 
 void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
@@ -363,6 +362,14 @@ public:
 
     //slow
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
+};
+
+// This class was removed by original Vitae.
+// Now put it back partially to try to keep align with the upstream
+class CMasternodeBroadcast
+{
+public:
+    static bool CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext);
 };
 
 #endif

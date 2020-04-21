@@ -92,7 +92,7 @@ void CFundamentalnodeSync::AddedFundamentalnodeList(uint256 hash)
         }
     } else {
         lastFundamentalnodeList = GetTime();
-        mapSeenSyncMNB.insert(make_pair(hash, 1));
+        mapSeenSyncMNB.insert(std::make_pair(hash, 1));
     }
 }
 
@@ -105,7 +105,7 @@ void CFundamentalnodeSync::AddedFundamentalnodeWinner(uint256 hash)
         }
     } else {
         lastFundamentalnodeWinner = GetTime();
-        mapSeenSyncMNW.insert(make_pair(hash, 1));
+        mapSeenSyncMNW.insert(std::make_pair(hash, 1));
     }
 }
 
@@ -119,7 +119,7 @@ void CFundamentalnodeSync::AddedBudgetItem(uint256 hash)
         }
     } else {
         lastBudgetItem = GetTime();
-        mapSeenSyncBudget.insert(make_pair(hash, 1));
+        mapSeenSyncBudget.insert(std::make_pair(hash, 1));
     }
 }
 
@@ -222,7 +222,7 @@ void CFundamentalnodeSync::ClearFulfilledRequest()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         pnode->ClearFulfilledRequest("getspork");
         pnode->ClearFulfilledRequest("fnsync");
         pnode->ClearFulfilledRequest("fnwsync");
@@ -264,7 +264,7 @@ void CFundamentalnodeSync::Process()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         if (Params().NetworkID() == CBaseChainParams::REGTEST) {
             if (RequestedFundamentalnodeAttempt <= 2) {
                 pnode->PushMessage("getsporks"); //get current network sporks

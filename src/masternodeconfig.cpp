@@ -5,9 +5,10 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "net.h"
+#include "netbase.h"
 #include "masternodeconfig.h"
 #include "util.h"
+#include "ui_interface.h"
 #include <base58.h>
 
 CMasternodeConfig masternodeConfig;
@@ -17,8 +18,9 @@ void CMasternodeConfig::add(std::string alias, std::string ip, std::string privK
     entries.push_back(cme);
 }
 
-bool CMasternodeConfig::read(std::string& strErr) {
-
+bool CMasternodeConfig::read(std::string& strErr)
+{
+    int linenumber = 1;
     boost::filesystem::path pathMasternodeConfigFile = GetMasternodeConfigFile();
     boost::filesystem::ifstream streamConfig(pathMasternodeConfigFile);
 
@@ -30,8 +32,7 @@ bool CMasternodeConfig::read(std::string& strErr) {
         return true; // Nothing to read, so just return
 	}
 
-    for(std::string line; std::getline(streamConfig, line); )
-    {
+    for (std::string line; std::getline(streamConfig, line); linenumber++) {
         if(line.empty()) {
             continue;
         }
@@ -49,7 +50,7 @@ bool CMasternodeConfig::read(std::string& strErr) {
             }
         } else {
             size_t pos = donation.find_first_of(":");
-            if(pos == string::npos) { // no ":" found
+            if(pos == std::string::npos) { // no ":" found
                 donationPercent = "100";
                 donationAddress = donation;
             } else {
@@ -64,14 +65,39 @@ bool CMasternodeConfig::read(std::string& strErr) {
             }
         }
 
-        if(Params().NetworkID() == CBaseChainParams::MAIN){
-            if(CService(ip).GetPort() != 8765) {
-                strErr = "Invalid port detected in masternode.conf: " + line + " (must be 8765 for mainnet)";
+        if (!(iss >> alias >> ip >> privKey >> txHash >> outputIndex)) {
+            iss.str(line);
+            iss.clear();
+            if (!(iss >> alias >> ip >> privKey >> txHash >> outputIndex)) {
+                strErr = _("Could not parse masternode.conf") + "\n" +
+                         strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"";
                 streamConfig.close();
                 return false;
             }
-        } else if(CService(ip).GetPort() == 8765) {
-            strErr = "Invalid port detected in masternode.conf: " + line + " (8765 must be only on mainnet)";
+        }
+
+        int port = 0;
+        std::string hostname = "";
+        SplitHostPort(ip, port, hostname);
+        if(port == 0 || hostname == "") {
+            strErr = _("Failed to parse host:port string") + "\n"+
+                     strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"";
+            streamConfig.close();
+            return false;
+        }
+
+        if (Params().NetworkID() == CBaseChainParams::MAIN) {
+            if (port != 8765) {
+                strErr = _("Invalid port detected in masternode.conf") + "\n" +
+                         strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"" + "\n" +
+                         _("(must be 51472 for mainnet)");
+                streamConfig.close();
+                return false;
+            }
+        } else if (port == 8765) {
+            strErr = _("Invalid port detected in masternode.conf") + "\n" +
+                     strprintf(_("Line: %d"), linenumber) + "\n\"" + line + "\"" + "\n" +
+                     _("(51472 could be used only on mainnet)");
             streamConfig.close();
             return false;
         }
