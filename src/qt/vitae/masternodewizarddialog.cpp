@@ -4,11 +4,14 @@
 
 #include "qt/vitae/masternodewizarddialog.h"
 #include "qt/vitae/forms/ui_masternodewizarddialog.h"
-#include "qt/vitae/qtutils.h"
+
+#include "activemasternode.h"
 #include "optionsmodel.h"
 #include "pairresult.h"
-#include "activemasternode.h"
+#include "qt/vitae/mnmodel.h"
 #include "qt/vitae/guitransactionsutils.h"
+#include "qt/vitae/qtutils.h"
+
 #include <QFile>
 #include <QIntValidator>
 #include <QHostAddress>
@@ -182,12 +185,11 @@ bool MasterNodeWizardDialog::createMN()
             returnStr = tr("IP or port cannot be empty");
             return false;
         }
-        // TODO: Validate IP address..
-        int portInt = portStr.toInt();
-        if (portInt <= 0 && portInt > 999999) {
-            returnStr = tr("Invalid port number");
+        if (!MNModel::validateMNIP(addressStr)) {
+            returnStr = tr("Invalid IP address");
             return false;
         }
+
         // ip + port
         std::string ipAddress = addressStr.toStdString();
         std::string port = portStr.toStdString();
