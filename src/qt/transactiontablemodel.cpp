@@ -365,7 +365,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
         return tr("Spent zVITAE");
     case TransactionRecord::RecvFromZerocoinSpend:
         return tr("Received VITAE from zVITAE");
-    case TransactionRecord::ZerocoinSpend_Change_zVit:
+    case TransactionRecord::ZerocoinSpend_Change_zVITAE:
         return tr("Minted Change as zVITAE from zVITAE Spend");
     case TransactionRecord::ZerocoinSpend_FromMe:
         return tr("Converted zVITAE to VITAE");
@@ -425,7 +425,7 @@ QString TransactionTableModel::formatTxToAddress(const TransactionRecord* wtx, b
     case TransactionRecord::SendToOther:
         return QString::fromStdString(wtx->address) + watchAddress;
     case TransactionRecord::ZerocoinMint:
-    case TransactionRecord::ZerocoinSpend_Change_zVit:
+    case TransactionRecord::ZerocoinSpend_Change_zVITAE:
         return tr("Anonymous (zVITAE Transaction)");
     case TransactionRecord::StakeZVIT:
         return tr("zVITAE Accumulator");
