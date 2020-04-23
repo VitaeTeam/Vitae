@@ -2,7 +2,7 @@
 // Created by furszy on 3/21/19.
 //
 
-#include "PIVXGUI.h"
+#include "VITAEGUI.h"
 
 #ifdef Q_OS_MAC
 #include "macdockiconhandler.h"
@@ -14,14 +14,15 @@
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QApplication>
 
 
 #include "util.h"
 
 
-const QString PIVXGUI::DEFAULT_WALLET = "~Default";
+const QString VITAEGUI::DEFAULT_WALLET = "~Default";
 
-PIVXGUI::PIVXGUI(const NetworkStyle* networkStyle, QWidget* parent) :
+VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         QMainWindow(parent),
         clientModel(0){
 
@@ -100,7 +101,7 @@ PIVXGUI::PIVXGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 }
 
 //
-PIVXGUI::~PIVXGUI() {
+VITAEGUI::~VITAEGUI() {
 
 }
 
@@ -110,7 +111,7 @@ PIVXGUI::~PIVXGUI() {
 
 
 
-void PIVXGUI::setClientModel(ClientModel* clientModel) {
+void VITAEGUI::setClientModel(ClientModel* clientModel) {
     this->clientModel = clientModel;
     // TODO: Complete me..
 }
@@ -118,7 +119,7 @@ void PIVXGUI::setClientModel(ClientModel* clientModel) {
 
 // Wallet methods..
 #ifdef ENABLE_WALLET
-bool PIVXGUI::addWallet(const QString& name, WalletModel* walletModel)
+bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
 {
     //if (!walletFrame)
     //    return false;
@@ -127,14 +128,14 @@ bool PIVXGUI::addWallet(const QString& name, WalletModel* walletModel)
     return true;
 }
 
-bool PIVXGUI::setCurrentWallet(const QString& name)
+bool VITAEGUI::setCurrentWallet(const QString& name)
 {
     //if (!walletFrame)
     //    return false;
     return true;//walletFrame->setCurrentWallet(name);
 }
 
-void PIVXGUI::removeAllWallets()
+void VITAEGUI::removeAllWallets()
 {
     //if (!walletFrame)
     //    return;

@@ -8,7 +8,7 @@
 #include "config/vitae-config.h"
 #endif
 
-#include "qt/pivx/PIVXGUI.h"
+#include "qt/vitae/VITAEGUI.h"
 
 #include "clientmodel.h"
 #include "guiconstants.h"
@@ -200,7 +200,7 @@ public:
     /// Get process return value
     int getReturnValue() { return returnValue; }
 
-    /// Get window identifier of QMainWindow (PIVXGUI)
+    /// Get window identifier of QMainWindow (VITAEGUI)
     WId getMainWinId() const;
 
 public slots:
@@ -220,7 +220,7 @@ private:
     QThread* coreThread;
     OptionsModel* optionsModel;
     ClientModel* clientModel;
-    PIVXGUI* window;
+    VITAEGUI* window;
     QTimer* pollShutdownTimer;
 #ifdef ENABLE_WALLET
     PaymentServer* paymentServer;
@@ -349,7 +349,7 @@ void BitcoinApplication::createOptionsModel()
 
 void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
 {
-    window = new PIVXGUI(networkStyle, 0);
+    window = new VITAEGUI(networkStyle, 0);
 
     pollShutdownTimer = new QTimer(window);
     connect(pollShutdownTimer, SIGNAL(timeout()), window, SLOT(detectShutdown()));
@@ -436,8 +436,8 @@ void BitcoinApplication::initializeResult(int retval)
         if (pwalletMain) {
             walletModel = new WalletModel(pwalletMain, optionsModel);
 
-            window->addWallet(PIVXGUI::DEFAULT_WALLET, walletModel);
-            window->setCurrentWallet(PIVXGUI::DEFAULT_WALLET);
+            window->addWallet(VITAEGUI::DEFAULT_WALLET, walletModel);
+            window->setCurrentWallet(VITAEGUI::DEFAULT_WALLET);
 
             connect(walletModel, SIGNAL(coinsSent(CWallet*, SendCoinsRecipient, QByteArray)),
                 paymentServer, SLOT(fetchPaymentACK(CWallet*, const SendCoinsRecipient&, QByteArray)));

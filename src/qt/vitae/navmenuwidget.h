@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class NavMenuWidget;
@@ -14,7 +14,7 @@ class NavMenuWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit NavMenuWidget(PIVXGUI* mainWindow, QWidget *parent = nullptr);
+    explicit NavMenuWidget(VITAEGUI* mainWindow, QWidget *parent = nullptr);
     ~NavMenuWidget();
 
 private slots:
@@ -28,7 +28,7 @@ private slots:
 private:
     Ui::NavMenuWidget *ui;
 
-    PIVXGUI* window;
+    VITAEGUI* window;
 };
 
 #endif // NAVMENUWIDGET_H
