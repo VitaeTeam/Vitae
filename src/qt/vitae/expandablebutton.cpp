@@ -1,5 +1,5 @@
-#include "qt/pivx/expandablebutton.h"
-#include "qt/pivx/forms/ui_expandablebutton.h"
+#include "qt/vitae/expandablebutton.h"
+#include "qt/vitae/forms/ui_expandablebutton.h"
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
 #include <QStyle>

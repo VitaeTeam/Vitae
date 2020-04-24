@@ -1,5 +1,5 @@
-#include "qt/pivx/walletpassworddialog.h"
-#include "qt/pivx/forms/ui_walletpassworddialog.h"
+#include "qt/vitae/walletpassworddialog.h"
+#include "qt/vitae/forms/ui_walletpassworddialog.h"
 #include <QGraphicsDropShadowEffect>
 
 WalletPasswordDialog::WalletPasswordDialog(QWidget *parent) :

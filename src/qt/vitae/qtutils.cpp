@@ -1,4 +1,4 @@
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 //#include "snackbar.h"
 
@@ -6,7 +6,7 @@
 #include <QStyle>
 
 // Open dialog at the bottom
-bool openDialog(QDialog *widget, PIVXGUI *gui){
+bool openDialog(QDialog *widget, VITAEGUI *gui){
     widget->setWindowFlags(Qt::CustomizeWindowHint);
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
     QPropertyAnimation* animation = new QPropertyAnimation(widget, "pos");
@@ -21,7 +21,7 @@ bool openDialog(QDialog *widget, PIVXGUI *gui){
     return res;
 }
 
-void closeDialog(QDialog *widget, PIVXGUI *gui){
+void closeDialog(QDialog *widget, VITAEGUI *gui){
     widget->setWindowFlags(Qt::CustomizeWindowHint);
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
     QPropertyAnimation* animation = new QPropertyAnimation(widget, "pos");
@@ -40,7 +40,7 @@ void openDialogFullScreen(QWidget *parent, QWidget * dialog){
     dialog->resize(parent->width(),parent->height());
 }
 
-bool openDialogWithOpaqueBackgroundY(QDialog *widget, PIVXGUI *gui, double posX, int posY){
+bool openDialogWithOpaqueBackgroundY(QDialog *widget, VITAEGUI *gui, double posX, int posY){
     widget->setWindowFlags(Qt::CustomizeWindowHint);
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
     QPropertyAnimation* animation = new QPropertyAnimation(widget, "pos");
@@ -56,11 +56,11 @@ bool openDialogWithOpaqueBackgroundY(QDialog *widget, PIVXGUI *gui, double posX,
     return res;
 }
 
-bool openDialogWithOpaqueBackground(QDialog *widget, PIVXGUI *gui, double posX){
+bool openDialogWithOpaqueBackground(QDialog *widget, VITAEGUI *gui, double posX){
     return openDialogWithOpaqueBackgroundY(widget, gui, posX, 5);
 }
 
-bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, PIVXGUI *gui){
+bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, VITAEGUI *gui){
     widget->setWindowFlags(Qt::CustomizeWindowHint);
     widget->setAttribute(Qt::WA_TranslucentBackground, true);
 

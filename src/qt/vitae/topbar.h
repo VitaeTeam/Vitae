@@ -5,7 +5,7 @@
 
 #include <QWidget>
 
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class TopBar;
@@ -16,7 +16,7 @@ class TopBar : public QWidget
     Q_OBJECT
 
 public:
-    explicit TopBar(PIVXGUI* _mainWindow, QWidget *parent = nullptr);
+    explicit TopBar(VITAEGUI* _mainWindow, QWidget *parent = nullptr);
     ~TopBar();
 
     void showTop();
@@ -31,7 +31,7 @@ private slots:
     void lockDropdownClicked(const StateClicked&);
 private:
     Ui::TopBar *ui;
-    PIVXGUI* mainWindow;
+    VITAEGUI* mainWindow;
     LockUnlock *lockUnlockWidget = nullptr;
     bool chkBtnLock,chkBtnUnlock, chkBtnStaking;
 };

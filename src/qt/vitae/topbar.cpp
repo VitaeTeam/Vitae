@@ -1,13 +1,13 @@
-#include "qt/pivx/topbar.h"
-#include "qt/pivx/forms/ui_topbar.h"
+#include "qt/vitae/topbar.h"
+#include "qt/vitae/forms/ui_topbar.h"
 #include <QPixmap>
 #include <QFile>
-#include "qt/pivx/lockunlock.h"
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/receivedialog.h"
-#include "qt/pivx/walletpassworddialog.h"
+#include "qt/vitae/lockunlock.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/receivedialog.h"
+#include "qt/vitae/walletpassworddialog.h"
 
-TopBar::TopBar(PIVXGUI* _mainWindow, QWidget *parent) :
+TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TopBar),
     mainWindow(_mainWindow)

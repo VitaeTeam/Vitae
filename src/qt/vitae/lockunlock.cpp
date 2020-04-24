@@ -1,5 +1,5 @@
-#include "qt/pivx/lockunlock.h"
-#include "qt/pivx/forms/ui_lockunlock.h"
+#include "qt/vitae/lockunlock.h"
+#include "qt/vitae/forms/ui_lockunlock.h"
 
 LockUnlock::LockUnlock(QWidget *parent) :
     QWidget(parent),

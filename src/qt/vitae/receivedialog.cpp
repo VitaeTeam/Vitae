@@ -1,5 +1,5 @@
-#include "qt/pivx/receivedialog.h"
-#include "qt/pivx/forms/ui_receivedialog.h"
+#include "qt/vitae/receivedialog.h"
+#include "qt/vitae/forms/ui_receivedialog.h"
 #include <QFile>
 
 ReceiveDialog::ReceiveDialog(QWidget *parent) :
