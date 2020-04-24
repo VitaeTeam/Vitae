@@ -125,147 +125,147 @@
         <file alias="spinner-034">res/movies/spinner-034.png</file>
     </qresource>
     <qresource prefix="/">
-        <file>vitae/res/img/bg-splash.jpg</file>
-        <file>vitae/res/img/bg-splash@2x.jpg</file>
-        <file>vitae/res/img/bg-splash@3x.jpg</file>
-        <file>vitae/res/img/bg-welcome-container.jpg</file>
-        <file>vitae/res/img/bg-welcome.jpg</file>
-        <file>vitae/res/img/img-dashboard-banner.jpg</file>
-        <file>vitae/res/img/ic-check-sync.png</file>
-        <file>vitae/res/img/ic-coin-zpiv.png</file>
-        <file>vitae/res/img/img-logo-vitae.png</file>
-        <file>vitae/res/img/img-logo-vitae@2x.png</file>
-        <file>vitae/res/img/img-logo-vitae@3x.png</file>
-        <file>vitae/res/img/img-nav-logo-vitae.png</file>
-        <file>vitae/res/img/img-nav-logo.png</file>
-        <file>vitae/res/img/img-qr-test-big.png</file>
-        <file>vitae/res/img/img-qr-test.png</file>
-        <file>vitae/res/img/img-welcome-step1.png</file>
-        <file>vitae/res/img/img-welcome-step2.png</file>
-        <file>vitae/res/img/img-welcome-step3.png</file>
-        <file>vitae/res/img/img-welcome-step4.png</file>
-        <file>vitae/res/img/bg-multi-number-dark.svg</file>
-        <file>vitae/res/img/bg-multi-number.svg</file>
-        <file>vitae/res/img/btn-radio-active.svg</file>
-        <file>vitae/res/img/btn-radio-off.svg</file>
-        <file>vitae/res/img/ic-add-label.svg</file>
-        <file>vitae/res/img/ic-add-liliac.svg</file>
-        <file>vitae/res/img/ic-add-purple.svg</file>
-        <file>vitae/res/img/ic-add.svg</file>
-        <file>vitae/res/img/ic-address-book-grey.svg</file>
-        <file>vitae/res/img/ic-address-book-white.svg</file>
-        <file>vitae/res/img/ic-address-book.svg</file>
-        <file>vitae/res/img/ic-address-send-white.svg</file>
-        <file>vitae/res/img/ic-address-send.svg</file>
-        <file>vitae/res/img/ic-arrow-drop-down-white.svg</file>
-        <file>vitae/res/img/ic-arrow-drop-down.svg</file>
-        <file>vitae/res/img/ic-arrow-drop-up-white.svg</file>
-        <file>vitae/res/img/ic-arrow-drop-up.svg</file>
-        <file>vitae/res/img/ic-arrow-drop-white-down.svg</file>
-        <file>vitae/res/img/ic-arrow-purple-down.svg</file>
-        <file>vitae/res/img/ic-arrow-right-white.svg</file>
-        <file>vitae/res/img/ic-arrow-right.svg</file>
-        <file>vitae/res/img/ic-arrow-white-left.svg</file>
-        <file>vitae/res/img/ic-arrow-white-right.svg</file>
-        <file>vitae/res/img/ic-check-active.svg</file>
-        <file>vitae/res/img/ic-check-box.svg</file>
-        <file>vitae/res/img/ic-check-connect-off.svg</file>
-        <file>vitae/res/img/ic-check-connect.svg</file>
-        <file>vitae/res/img/ic-check-dark.svg</file>
-        <file>vitae/res/img/ic-check-liliac-on.svg</file>
-        <file>vitae/res/img/ic-check-locked-off.svg</file>
-        <file>vitae/res/img/ic-check-locked.svg</file>
-        <file>vitae/res/img/ic-check-mint-off.svg</file>
-        <file>vitae/res/img/ic-check-mint.svg</file>
-        <file>vitae/res/img/ic-check-peers-off.svg</file>
-        <file>vitae/res/img/ic-check-peers.svg</file>
-        <file>vitae/res/img/ic-check-staking-off.svg</file>
-        <file>vitae/res/img/ic-check-staking.svg</file>
-        <file>vitae/res/img/ic-check-sync-off.svg</file>
-        <file>vitae/res/img/ic-check-sync.svg</file>
-        <file>vitae/res/img/ic-check-theme-dark.svg</file>
-        <file>vitae/res/img/ic-check-theme-light.svg</file>
-        <file>vitae/res/img/ic-check-white.svg</file>
-        <file>vitae/res/img/ic-check.svg</file>
-        <file>vitae/res/img/ic-chevron-left.svg</file>
-        <file>vitae/res/img/ic-chevron-right.svg</file>
-        <file>vitae/res/img/ic-clear-liliac.svg</file>
-        <file>vitae/res/img/ic-clear-purple.svg</file>
-        <file>vitae/res/img/ic-close-white.svg</file>
-        <file>vitae/res/img/ic-close.svg</file>
-        <file>vitae/res/img/ic-coin-piv.svg</file>
-        <file>vitae/res/img/ic-coin-zpiv.svg</file>
-        <file>vitae/res/img/ic-combo-box.svg</file>
-        <file>vitae/res/img/ic-connect.svg</file>
-        <file>vitae/res/img/ic-copy-liliac.svg</file>
-        <file>vitae/res/img/ic-copy.svg</file>
-        <file>vitae/res/img/ic-exit.svg</file>
-        <file>vitae/res/img/ic-expand.svg</file>
-        <file>vitae/res/img/ic-folder.svg</file>
-        <file>vitae/res/img/ic-label-liliac.svg</file>
-        <file>vitae/res/img/ic-label.svg</file>
-        <file>vitae/res/img/ic-menu-hover.svg</file>
-        <file>vitae/res/img/ic-mint.svg</file>
-        <file>vitae/res/img/ic-nav-address-active.svg</file>
-        <file>vitae/res/img/ic-nav-address-hover.svg</file>
-        <file>vitae/res/img/ic-nav-address.svg</file>
-        <file>vitae/res/img/ic-nav-dashboard-active.svg</file>
-        <file>vitae/res/img/ic-nav-dashboard-hover.svg</file>
-        <file>vitae/res/img/ic-nav-dashboard.svg</file>
-        <file>vitae/res/img/ic-nav-master-active.svg</file>
-        <file>vitae/res/img/ic-nav-master-hover.svg</file>
-        <file>vitae/res/img/ic-nav-master.svg</file>
-        <file>vitae/res/img/ic-nav-privacy-active.svg</file>
-        <file>vitae/res/img/ic-nav-privacy-hover.svg</file>
-        <file>vitae/res/img/ic-nav-privacy.svg</file>
+        <file alias="bg-splash">vitae/res/img/bg-splash.jpg</file>
+        <file alias="bg-splash-2x">vitae/res/img/bg-splash@2x.jpg</file>
+        <file alias="bg-splash-3x">vitae/res/img/bg-splash@3x.jpg</file>
+        <file alias="bg-welcome-container">vitae/res/img/bg-welcome-container.jpg</file>
+        <file alias="bg-welcome">vitae/res/img/bg-welcome.jpg</file>
+        <file alias="img-dashboard-banner">vitae/res/img/img-dashboard-banner.jpg</file>
+        <file alias="ic-check-sync">vitae/res/img/ic-check-sync.png</file>
+        <file alias="ic-coin-zpiv">vitae/res/img/ic-coin-zpiv.png</file>
+        <file alias="img-logo-vitae">vitae/res/img/img-logo-vitae.png</file>
+        <file alias="img-logo-vitae-2x">vitae/res/img/img-logo-vitae@2x.png</file>
+        <file alias="img-logo-vitae-3x">vitae/res/img/img-logo-vitae@3x.png</file>
+        <file alias="img-nav-logo-vitae">vitae/res/img/img-nav-logo-vitae.png</file>
+        <file alias="img-nav-logo">vitae/res/img/img-nav-logo.png</file>
+        <file alias="img-qr-test-big">vitae/res/img/img-qr-test-big.png</file>
+        <file alias="img-qr-test">vitae/res/img/img-qr-test.png</file>
+        <file alias="img-welcome-step1">vitae/res/img/img-welcome-step1.png</file>
+        <file alias="img-welcome-step2">vitae/res/img/img-welcome-step2.png</file>
+        <file alias="img-welcome-step3">vitae/res/img/img-welcome-step3.png</file>
+        <file alias="img-welcome-step4">vitae/res/img/img-welcome-step4.png</file>
+        <file alias="bg-multi-number-dark">vitae/res/img/bg-multi-number-dark.svg</file>
+        <file alias="bg-multi-number">vitae/res/img/bg-multi-number.svg</file>
+        <file alias="btn-radio-active">vitae/res/img/btn-radio-active.svg</file>
+        <file alias="btn-radio-off">vitae/res/img/btn-radio-off.svg</file>
+        <file alias="ic-add-label">vitae/res/img/ic-add-label.svg</file>
+        <file alias="ic-add-liliac">vitae/res/img/ic-add-liliac.svg</file>
+        <file alias="ic-add-purple">vitae/res/img/ic-add-purple.svg</file>
+        <file alias="ic-add">vitae/res/img/ic-add.svg</file>
+        <file alias="ic-address-book-grey">vitae/res/img/ic-address-book-grey.svg</file>
+        <file alias="ic-address-book-white">vitae/res/img/ic-address-book-white.svg</file>
+        <file alias="ic-address-book">vitae/res/img/ic-address-book.svg</file>
+        <file alias="ic-address-send-white">vitae/res/img/ic-address-send-white.svg</file>
+        <file alias="ic-address-send">vitae/res/img/ic-address-send.svg</file>
+        <file alias="ic-arrow-drop-down-white">vitae/res/img/ic-arrow-drop-down-white.svg</file>
+        <file alias="ic-arrow-drop-down">vitae/res/img/ic-arrow-drop-down.svg</file>
+        <file alias="ic-arrow-drop-up-white">vitae/res/img/ic-arrow-drop-up-white.svg</file>
+        <file alias="ic-arrow-drop-up">vitae/res/img/ic-arrow-drop-up.svg</file>
+        <file alias="ic-arrow-drop-white-down">vitae/res/img/ic-arrow-drop-white-down.svg</file>
+        <file alias="ic-arrow-purple-down">vitae/res/img/ic-arrow-purple-down.svg</file>
+        <file alias="ic-arrow-right-white">vitae/res/img/ic-arrow-right-white.svg</file>
+        <file alias="ic-arrow-right">vitae/res/img/ic-arrow-right.svg</file>
+        <file alias="ic-arrow-white-left">vitae/res/img/ic-arrow-white-left.svg</file>
+        <file alias="ic-arrow-white-right">vitae/res/img/ic-arrow-white-right.svg</file>
+        <file alias="ic-check-active">vitae/res/img/ic-check-active.svg</file>
+        <file alias="ic-check-box">vitae/res/img/ic-check-box.svg</file>
+        <file alias="ic-check-connect-off">vitae/res/img/ic-check-connect-off.svg</file>
+        <file alias="ic-check-connect">vitae/res/img/ic-check-connect.svg</file>
+        <file alias="ic-check-dark">vitae/res/img/ic-check-dark.svg</file>
+        <file alias="ic-check-liliac-on">vitae/res/img/ic-check-liliac-on.svg</file>
+        <file alias="ic-check-locked-off">vitae/res/img/ic-check-locked-off.svg</file>
+        <file alias="ic-check-locked">vitae/res/img/ic-check-locked.svg</file>
+        <file alias="ic-check-mint-off">vitae/res/img/ic-check-mint-off.svg</file>
+        <file alias="ic-check-mint">vitae/res/img/ic-check-mint.svg</file>
+        <file alias="ic-check-peers-off">vitae/res/img/ic-check-peers-off.svg</file>
+        <file alias="ic-check-peers">vitae/res/img/ic-check-peers.svg</file>
+        <file alias="ic-check-staking-off">vitae/res/img/ic-check-staking-off.svg</file>
+        <file alias="ic-check-staking">vitae/res/img/ic-check-staking.svg</file>
+        <file alias="ic-check-sync-off">vitae/res/img/ic-check-sync-off.svg</file>
+        <file alias="ic-check-sync">vitae/res/img/ic-check-sync.svg</file>
+        <file alias="ic-check-theme-dark">vitae/res/img/ic-check-theme-dark.svg</file>
+        <file alias="ic-check-theme-light">vitae/res/img/ic-check-theme-light.svg</file>
+        <file alias="ic-check-white">vitae/res/img/ic-check-white.svg</file>
+        <file alias="ic-check">vitae/res/img/ic-check.svg</file>
+        <file alias="ic-chevron-left">vitae/res/img/ic-chevron-left.svg</file>
+        <file alias="ic-chevron-right">vitae/res/img/ic-chevron-right.svg</file>
+        <file alias="ic-clear-liliac">vitae/res/img/ic-clear-liliac.svg</file>
+        <file alias="ic-clear-purple">vitae/res/img/ic-clear-purple.svg</file>
+        <file alias="ic-close-white">vitae/res/img/ic-close-white.svg</file>
+        <file alias="ic-close">vitae/res/img/ic-close.svg</file>
+        <file alias="ic-coin-piv">vitae/res/img/ic-coin-piv.svg</file>
+        <file alias="ic-coin-zpiv">vitae/res/img/ic-coin-zpiv.svg</file>
+        <file alias="ic-combo-box">vitae/res/img/ic-combo-box.svg</file>
+        <file alias="ic-connect">vitae/res/img/ic-connect.svg</file>
+        <file alias="ic-copy-liliac">vitae/res/img/ic-copy-liliac.svg</file>
+        <file alias="ic-copy">vitae/res/img/ic-copy.svg</file>
+        <file alias="ic-exit">vitae/res/img/ic-exit.svg</file>
+        <file alias="ic-expand">vitae/res/img/ic-expand.svg</file>
+        <file alias="ic-folder">vitae/res/img/ic-folder.svg</file>
+        <file alias="ic-label-liliac">vitae/res/img/ic-label-liliac.svg</file>
+        <file alias="ic-label">vitae/res/img/ic-label.svg</file>
+        <file alias="ic-menu-hover">vitae/res/img/ic-menu-hover.svg</file>
+        <file alias="ic-mint">vitae/res/img/ic-mint.svg</file>
+        <file alias="ic-nav-address-active">vitae/res/img/ic-nav-address-active.svg</file>
+        <file alias="ic-nav-address-hover">vitae/res/img/ic-nav-address-hover.svg</file>
+        <file alias="ic-nav-address">vitae/res/img/ic-nav-address.svg</file>
+        <file alias="ic-nav-dashboard-active">vitae/res/img/ic-nav-dashboard-active.svg</file>
+        <file alias="ic-nav-dashboard-hover">vitae/res/img/ic-nav-dashboard-hover.svg</file>
+        <file alias="ic-nav-dashboard">vitae/res/img/ic-nav-dashboard.svg</file>
+        <file alias="ic-nav-master-active">vitae/res/img/ic-nav-master-active.svg</file>
+        <file alias="ic-nav-master-hover">vitae/res/img/ic-nav-master-hover.svg</file>
+        <file alias="ic-nav-master">vitae/res/img/ic-nav-master.svg</file>
+        <file alias="ic-nav-privacy-active">vitae/res/img/ic-nav-privacy-active.svg</file>
+        <file alias="ic-nav-privacy-hover">vitae/res/img/ic-nav-privacy-hover.svg</file>
+        <file alias="ic-nav-privacy">vitae/res/img/ic-nav-privacy.svg</file>
         <file alias="ic-nav-receive-active">vitae/res/img/ic-nav-receive-active.svg</file>
         <file alias="ic-nav-receive-hover">vitae/res/img/ic-nav-receive-hover.svg</file>
         <file alias="ic-nav-receive">vitae/res/img/ic-nav-receive.svg</file>
-        <file>vitae/res/img/ic-nav-send-active.svg</file>
-        <file>vitae/res/img/ic-nav-send-hover.svg</file>
-        <file>vitae/res/img/ic-nav-send.svg</file>
-        <file>vitae/res/img/ic-nav-settings-active.svg</file>
-        <file>vitae/res/img/ic-nav-settings-hover.svg</file>
-        <file>vitae/res/img/ic-nav-settings.svg</file>
-        <file>vitae/res/img/ic-radio-liliac-on.svg</file>
-        <file>vitae/res/img/ic-receive-off.svg</file>
-        <file>vitae/res/img/ic-receive-on.svg</file>
-        <file>vitae/res/img/ic-received.svg</file>
-        <file>vitae/res/img/ic-send.svg</file>
-        <file>vitae/res/img/ic-submenu-lock.svg</file>
-        <file>vitae/res/img/ic-submenu-staking.svg</file>
-        <file>vitae/res/img/ic-submenu-unlock.svg</file>
-        <file>vitae/res/img/ic-switch-liliac-on.svg</file>
-        <file>vitae/res/img/ic-switch-off.svg</file>
-        <file>vitae/res/img/ic-switch-on.svg</file>
-        <file>vitae/res/img/ic-transaction-mint.svg</file>
-        <file>vitae/res/img/ic-transaction-received.svg</file>
-        <file>vitae/res/img/ic-transaction-sent.svg</file>
-        <file>vitae/res/img/ic-transaction-staked.svg</file>
-        <file>vitae/res/img/ic-unlock-staking.svg</file>
-        <file>vitae/res/img/ic-update-liliac.svg</file>
-        <file>vitae/res/img/ic-update.svg</file>
-        <file>vitae/res/img/ic-wallet-status-locked.svg</file>
-        <file>vitae/res/img/ic-wallet-status-staking.svg</file>
-        <file>vitae/res/img/ic-wallet-status-unlocked.svg</file>
-        <file>vitae/res/img/ic-watch-password-white.svg</file>
-        <file>vitae/res/img/ic-watch-password.svg</file>
-        <file>vitae/res/img/img-empty-contacts.svg</file>
-        <file>vitae/res/img/img-empty-dark-contacts.svg</file>
-        <file>vitae/res/img/img-empty-dark-error.svg</file>
-        <file>vitae/res/img/img-empty-dark-masternode.svg</file>
-        <file>vitae/res/img/img-empty-dark-multisend.svg</file>
-        <file>vitae/res/img/img-empty-dark-peers.svg</file>
-        <file>vitae/res/img/img-empty-dark-staking-off.svg</file>
-        <file>vitae/res/img/img-empty-dark-transactions.svg</file>
-        <file>vitae/res/img/img-empty-error.svg</file>
-        <file>vitae/res/img/img-empty-masternode.svg</file>
-        <file>vitae/res/img/img-empty-multisend.svg</file>
-        <file>vitae/res/img/img-empty-peers.svg</file>
-        <file>vitae/res/img/img-empty-staking-off.svg</file>
-        <file>vitae/res/img/img-empty-staking-on.svg</file>
-        <file>vitae/res/img/img-empty-transactions.svg</file>
-        <file>vitae/res/img/img-nav-logo.svg</file>
-        <file>vitae/res/img/img-qr.svg</file>
+        <file alias="ic-nav-send-active">vitae/res/img/ic-nav-send-active.svg</file>
+        <file alias="ic-nav-send-hover">vitae/res/img/ic-nav-send-hover.svg</file>
+        <file alias="ic-nav-send">vitae/res/img/ic-nav-send.svg</file>
+        <file alias="ic-nav-settings-active">vitae/res/img/ic-nav-settings-active.svg</file>
+        <file alias="ic-nav-settings-hover">vitae/res/img/ic-nav-settings-hover.svg</file>
+        <file alias="ic-nav-settings">vitae/res/img/ic-nav-settings.svg</file>
+        <file alias="ic-radio-liliac-on">vitae/res/img/ic-radio-liliac-on.svg</file>
+        <file alias="ic-receive-off">vitae/res/img/ic-receive-off.svg</file>
+        <file alias="ic-receive-on">vitae/res/img/ic-receive-on.svg</file>
+        <file alias="ic-received">vitae/res/img/ic-received.svg</file>
+        <file alias="ic-send">vitae/res/img/ic-send.svg</file>
+        <file alias="ic-submenu-lock">vitae/res/img/ic-submenu-lock.svg</file>
+        <file alias="ic-submenu-staking">vitae/res/img/ic-submenu-staking.svg</file>
+        <file alias="ic-submenu-unlock">vitae/res/img/ic-submenu-unlock.svg</file>
+        <file alias="ic-switch-liliac-on">vitae/res/img/ic-switch-liliac-on.svg</file>
+        <file alias="ic-switch-off">vitae/res/img/ic-switch-off.svg</file>
+        <file alias="ic-switch-on">vitae/res/img/ic-switch-on.svg</file>
+        <file alias="ic-transaction-mint">vitae/res/img/ic-transaction-mint.svg</file>
+        <file alias="ic-transaction-received">vitae/res/img/ic-transaction-received.svg</file>
+        <file alias="ic-transaction-sent">vitae/res/img/ic-transaction-sent.svg</file>
+        <file alias="ic-transaction-staked">vitae/res/img/ic-transaction-staked.svg</file>
+        <file alias="ic-unlock-staking">vitae/res/img/ic-unlock-staking.svg</file>
+        <file alias="ic-update-liliac">vitae/res/img/ic-update-liliac.svg</file>
+        <file alias="ic-update">vitae/res/img/ic-update.svg</file>
+        <file alias="ic-wallet-status-locked">vitae/res/img/ic-wallet-status-locked.svg</file>
+        <file alias="ic-wallet-status-staking">vitae/res/img/ic-wallet-status-staking.svg</file>
+        <file alias="ic-wallet-status-unlocked">vitae/res/img/ic-wallet-status-unlocked.svg</file>
+        <file alias="ic-watch-password-white">vitae/res/img/ic-watch-password-white.svg</file>
+        <file alias="ic-watch-password">vitae/res/img/ic-watch-password.svg</file>
+        <file alias="img-empty-contacts">vitae/res/img/img-empty-contacts.svg</file>
+        <file alias="img-empty-dark-contacts">vitae/res/img/img-empty-dark-contacts.svg</file>
+        <file alias="img-empty-dark-error">vitae/res/img/img-empty-dark-error.svg</file>
+        <file alias="img-empty-dark-masternode">vitae/res/img/img-empty-dark-masternode.svg</file>
+        <file alias="img-empty-dark-multisend">vitae/res/img/img-empty-dark-multisend.svg</file>
+        <file alias="img-empty-dark-peers">vitae/res/img/img-empty-dark-peers.svg</file>
+        <file alias="img-empty-dark-staking-off">vitae/res/img/img-empty-dark-staking-off.svg</file>
+        <file alias="img-empty-dark-transactions">vitae/res/img/img-empty-dark-transactions.svg</file>
+        <file alias="img-empty-error">vitae/res/img/img-empty-error.svg</file>
+        <file alias="img-empty-masternode">vitae/res/img/img-empty-masternode.svg</file>
+        <file alias="img-empty-multisend">vitae/res/img/img-empty-multisend.svg</file>
+        <file alias="img-empty-peers">vitae/res/img/img-empty-peers.svg</file>
+        <file alias="img-empty-staking-off">vitae/res/img/img-empty-staking-off.svg</file>
+        <file alias="img-empty-staking-on">vitae/res/img/img-empty-staking-on.svg</file>
+        <file alias="img-empty-transactions">vitae/res/img/img-empty-transactions.svg</file>
+        <file alias="img-nav-logo">vitae/res/img/img-nav-logo.svg</file>
+        <file alias="img-qr">vitae/res/img/img-qr.svg</file>
     </qresource>
 </RCC>
