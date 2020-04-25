@@ -9,7 +9,7 @@
 
 class AddressViewDelegate;
 class TooltipMenu;
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -25,7 +25,7 @@ class AddressesWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit AddressesWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit AddressesWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~AddressesWidget();
 
     void setWalletModel(WalletModel *model);
@@ -40,7 +40,7 @@ private slots:
 private:
     Ui::AddressesWidget *ui;
 
-    PIVXGUI* window;
+    VITAEGUI* window;
 
     FurAbstractListItemDelegate* delegate;
     AddressTableModel* addressTablemodel;

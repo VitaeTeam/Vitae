@@ -166,7 +166,7 @@ void VITAEGUI::goToReceive() {
     stackedContainer->setCurrentWidget(receiveWidget);
 }
 
-void PIVXGUI::goToAddresses() {
+void VITAEGUI::goToAddresses() {
     stackedContainer->setCurrentWidget(addressesWidget);
 }
 

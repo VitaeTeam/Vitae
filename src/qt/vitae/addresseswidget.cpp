@@ -1,13 +1,13 @@
-#include "qt/pivx/addresseswidget.h"
-#include "qt/pivx/forms/ui_addresseswidget.h"
-#include "qt/pivx/addresslabelrow.h"
-#include "qt/pivx/addnewaddressdialog.h"
-#include "qt/pivx/tooltipmenu.h"
+#include "qt/vitae/addresseswidget.h"
+#include "qt/vitae/forms/ui_addresseswidget.h"
+#include "qt/vitae/addresslabelrow.h"
+#include "qt/vitae/addnewaddressdialog.h"
+#include "qt/vitae/tooltipmenu.h"
 
 
-#include "qt/pivx/PIVXGUI.h"
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/snackbar.h"
+#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/snackbar.h"
 #include "walletmodel.h"
 
 #include <QAbstractItemDelegate>
@@ -46,9 +46,7 @@ public:
     bool isLightTheme;
 };
 
-#include "qt/pivx/moc_addresseswidget.cpp"
-
-AddressesWidget::AddressesWidget(PIVXGUI* _window, QWidget *parent) :
+AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::AddressesWidget),
     window(_window)

@@ -1,5 +1,5 @@
-#include "qt/pivx/tooltipmenu.h"
-#include "qt/pivx/forms/ui_tooltipmenu.h"
+#include "qt/vitae/tooltipmenu.h"
+#include "qt/vitae/forms/ui_tooltipmenu.h"
 
 #include <QTimer>
 
