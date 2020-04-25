@@ -1,13 +1,13 @@
-#include "qt/pivx/receivewidget.h"
-#include "qt/pivx/forms/ui_receivewidget.h"
-#include "qt/pivx/requestdialog.h"
-//#include "qt/pivx/addnewcontactdialog.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/receivewidget.h"
+#include "qt/vitae/forms/ui_receivewidget.h"
+#include "qt/vitae/requestdialog.h"
+//#include "qt/vitae/addnewcontactdialog.h"
+#include "qt/vitae/qtutils.h"
 
-#include "qt/pivx/PIVXGUI.h"
-#include "qt/pivx/myaddressrow.h"
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/furlistrow.h"
+#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/myaddressrow.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/furlistrow.h"
 #include "walletmodel.h"
 
 #include <QAbstractItemDelegate>
@@ -45,9 +45,7 @@ public:
     bool isLightTheme;
 };
 
-#include "qt/pivx/moc_receivewidget.cpp"
-
-ReceiveWidget::ReceiveWidget(PIVXGUI* _window, QWidget *parent) :
+ReceiveWidget::ReceiveWidget(VITAEGUI* _window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ReceiveWidget),
     window(_window)

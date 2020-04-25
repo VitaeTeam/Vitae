@@ -1,5 +1,5 @@
-#include "qt/pivx/addnewaddressdialog.h"
-#include "qt/pivx/forms/ui_addnewaddressdialog.h"
+#include "qt/vitae/addnewaddressdialog.h"
+#include "qt/vitae/forms/ui_addnewaddressdialog.h"
 
 AddNewAddressDialog::AddNewAddressDialog(QWidget *parent) :
     QWidget(parent),

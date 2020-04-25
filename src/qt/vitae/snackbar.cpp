@@ -1,10 +1,10 @@
-#include "qt/pivx/snackbar.h"
-#include "qt/pivx/forms/ui_snackbar.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/snackbar.h"
+#include "qt/vitae/forms/ui_snackbar.h"
+#include "qt/vitae/qtutils.h"
 #include <QTimer>
 
 
-SnackBar::SnackBar(PIVXGUI* _window, QWidget *parent) :
+SnackBar::SnackBar(VITAEGUI* _window, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SnackBar),
     window(_window)

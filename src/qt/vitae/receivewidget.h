@@ -2,12 +2,12 @@
 #define RECEIVEWIDGET_H
 
 #include "addresstablemodel.h"
-#include "qt/pivx/furabstractlistitemdelegate.h"
+#include "qt/vitae/furabstractlistitemdelegate.h"
 
 #include <QSpacerItem>
 #include <QWidget>
 
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -23,7 +23,7 @@ class ReceiveWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ReceiveWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit ReceiveWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~ReceiveWidget();
 
     void setWalletModel(WalletModel* model);
@@ -37,7 +37,7 @@ private slots:
     void onLabelClicked();
 private:
     Ui::ReceiveWidget *ui;
-    PIVXGUI* window;
+    VITAEGUI* window;
 
     FurAbstractListItemDelegate *delegate;
     AddressTableModel* addressTableModel;

@@ -160,7 +160,7 @@ void VITAEGUI::goToSend() {
     stackedContainer->setCurrentWidget(sendWidget);
 }
 
-void PIVXGUI::goToReceive() {
+void VITAEGUI::goToReceive() {
     stackedContainer->setCurrentWidget(receiveWidget);
 }
 

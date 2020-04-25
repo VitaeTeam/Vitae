@@ -1,5 +1,5 @@
-#include "qt/pivx/requestdialog.h"
-#include "qt/pivx/forms/ui_requestdialog.h"
+#include "qt/vitae/requestdialog.h"
+#include "qt/vitae/forms/ui_requestdialog.h"
 #include "QGraphicsDropShadowEffect"
 #include "QListView"
 
