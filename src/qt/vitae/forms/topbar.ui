@@ -634,7 +634,7 @@ border:none;</string>
   <customwidget>
    <class>ExpandableButton</class>
    <extends>QWidget</extends>
-   <header>qt/pivx/expandablebutton.h</header>
+   <header>qt/vitae/expandablebutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

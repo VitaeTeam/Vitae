@@ -1,5 +1,5 @@
-#include "qt/pivx/txviewholder.h"
-#include "qt/pivx/txrow.h"
+#include "qt/vitae/txviewholder.h"
+#include "qt/vitae/txrow.h"
 
 QWidget* TxViewHolder::createHolder(int pos){
     TxRow *row = new TxRow(isLightTheme);

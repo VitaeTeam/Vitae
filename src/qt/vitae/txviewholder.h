@@ -1,7 +1,7 @@
 #ifndef TXVIEWHOLDER_H
 #define TXVIEWHOLDER_H
 
-#include "qt/pivx/furlistrow.h"
+#include "qt/vitae/furlistrow.h"
 
 
 class TxViewHolder : public FurListRow

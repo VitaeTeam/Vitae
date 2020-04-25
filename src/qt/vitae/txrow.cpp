@@ -1,5 +1,5 @@
-#include "qt/pivx/txrow.h"
-#include "qt/pivx/forms/ui_txrow.h"
+#include "qt/vitae/txrow.h"
+#include "qt/vitae/forms/ui_txrow.h"
 
 TxRow::TxRow(bool isLightTheme, QWidget *parent) :
     QWidget(parent),

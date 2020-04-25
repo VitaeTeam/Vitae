@@ -1,5 +1,5 @@
-#include "qt/pivx/txdetaildialog.h"
-#include "qt/pivx/forms/ui_txdetaildialog.h"
+#include "qt/vitae/txdetaildialog.h"
+#include "qt/vitae/forms/ui_txdetaildialog.h"
 
 TxDetailDialog::TxDetailDialog(QWidget *parent) :
     QDialog(parent),

@@ -217,6 +217,8 @@ BITCOIN_QT_H = \
   qt/vitae/navmenuwidget.h \
   qt/vitae/lockunlock.h \
   qt/vitae/receivedialog.h \
+  qt/vitae/furabstractlistitemdelegate.h \
+  qt/vitae/txviewholder.h \
   qt/vitae/qtutils.h \
   qt/vitae/expandablebutton.h \
   qt/vitae/walletpassworddialog.h \
@@ -437,7 +439,7 @@ RES_ICONS = \
   qt/vitae/res/img/ic-nav-address-hover.svg \
   qt/vitae/res/img/ic-update-liliac.svg
 
-BITCOIN_QT_CPP = \
+BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
   qt/bitcoinaddressvalidator.cpp \
   qt/bitcoinamountfield.cpp \
@@ -464,12 +466,9 @@ BITCOIN_QT_CPP = \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
-if TARGET_WINDOWS
-BITCOIN_QT_CPP += qt/winshutdownmonitor.cpp
-endif
+BITCOIN_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
 
-if ENABLE_WALLET
-BITCOIN_QT_CPP += \
+BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
@@ -509,6 +508,8 @@ BITCOIN_QT_CPP += \
   qt/vitae/navmenuwidget.cpp \
   qt/vitae/lockunlock.cpp \
   qt/vitae/receivedialog.cpp \
+  qt/vitae/furabstractlistitemdelegate.cpp \
+  qt/vitae/txviewholder.cpp \
   qt/vitae/qtutils.cpp \
   qt/vitae/expandablebutton.cpp \
   qt/vitae/walletpassworddialog.cpp \

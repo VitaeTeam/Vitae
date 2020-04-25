@@ -1,9 +1,9 @@
-#include "qt/pivx/dashboardwidget.h"
-#include "qt/pivx/forms/ui_dashboardwidget.h"
-#include "qt/pivx/txdetaildialog.h"
-#include "qt/pivx/txrow.h"
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/txviewholder.h"
+#include "qt/vitae/dashboardwidget.h"
+#include "qt/vitae/forms/ui_dashboardwidget.h"
+#include "qt/vitae/txdetaildialog.h"
+#include "qt/vitae/txrow.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/txviewholder.h"
 #include "walletmodel.h"
 #include <QFile>
 #include <QAbstractItemDelegate>
@@ -32,7 +32,7 @@
 
 #include "moc_dashboardwidget.cpp"
 
-DashboardWidget::DashboardWidget(PIVXGUI* _window, QWidget *parent) :
+DashboardWidget::DashboardWidget(VITAEGUI* _window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DashboardWidget),
     window(_window)

@@ -1,10 +1,10 @@
 #ifndef DASHBOARDWIDGET_H
 #define DASHBOARDWIDGET_H
 
-#include "qt/pivx/furabstractlistitemdelegate.h"
-#include "qt/pivx/furlistrow.h"
+#include "qt/vitae/furabstractlistitemdelegate.h"
+#include "qt/vitae/furlistrow.h"
 #include "transactiontablemodel.h"
-#include "qt/pivx/txrow.h"
+#include "qt/vitae/txrow.h"
 
 #include <QWidget>
 
@@ -17,7 +17,7 @@
  QT_CHARTS_USE_NAMESPACE
  */
 
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -33,7 +33,7 @@ class DashboardWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DashboardWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit DashboardWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~DashboardWidget();
 
     void setWalletModel(WalletModel *model);
@@ -45,7 +45,7 @@ private slots:
     void changeChartColors();
 private:
     Ui::DashboardWidget *ui;
-    PIVXGUI* window;
+    VITAEGUI* window;
     // Painter delegate
     FurAbstractListItemDelegate* txViewDelegate;
     // Model

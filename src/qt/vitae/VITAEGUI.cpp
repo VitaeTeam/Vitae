@@ -119,7 +119,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 }
 
 
-void PIVXGUI::createTrayIcon(const NetworkStyle* networkStyle)
+void VITAEGUI::createTrayIcon(const NetworkStyle* networkStyle)
 {
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
@@ -148,7 +148,7 @@ void VITAEGUI::setClientModel(ClientModel* clientModel) {
     // TODO: Complete me..
 }
 
-void PIVXGUI::goToDashboard() {
+void VITAEGUI::goToDashboard() {
 
 }
 

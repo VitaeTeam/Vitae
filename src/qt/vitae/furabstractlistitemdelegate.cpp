@@ -1,5 +1,4 @@
-#include "qt/pivx/furabstractlistitemdelegate.h"
-#include "qt/pivx/moc_furabstractlistitemdelegate.cpp"
+#include "qt/vitae/furabstractlistitemdelegate.h"
 
 FurAbstractListItemDelegate::FurAbstractListItemDelegate(int _rowHeight, FurListRow *_row, QObject *parent) :
     QAbstractItemDelegate(parent), rowHeight(_rowHeight), row(_row){}
