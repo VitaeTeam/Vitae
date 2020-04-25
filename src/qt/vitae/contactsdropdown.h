@@ -2,8 +2,8 @@
 #define CONTACTSDROPDOWN_H
 
 #include "addresstablemodel.h"
-#include "qt/pivx/contactdropdownrow.h"
-#include "qt/pivx/furabstractlistitemdelegate.h"
+#include "qt/vitae/contactdropdownrow.h"
+#include "qt/vitae/furabstractlistitemdelegate.h"
 
 #include <QListView>
 #include <QObject>

@@ -1,5 +1,5 @@
-#include "qt/pivx/myaddressrow.h"
-#include "qt/pivx/forms/ui_myaddressrow.h"
+#include "qt/vitae/myaddressrow.h"
+#include "qt/vitae/forms/ui_myaddressrow.h"
 #include "QFile"
 
 MyAddressRow::MyAddressRow(QWidget *parent) :

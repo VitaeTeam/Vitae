@@ -1,5 +1,5 @@
-#include "qt/pivx/contactdropdownrow.h"
-#include "qt/pivx/forms/ui_contactdropdownrow.h"
+#include "qt/vitae/contactdropdownrow.h"
+#include "qt/vitae/forms/ui_contactdropdownrow.h"
 
 ContactDropdownRow::ContactDropdownRow(bool isLightTheme, bool isHover, QWidget *parent) :
     QWidget(parent),

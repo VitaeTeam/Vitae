@@ -4,11 +4,11 @@
 #include <QWidget>
 #include <QPushButton>
 
-#include "qt/pivx/contactsdropdown.h"
-#include "qt/pivx/sendmultirow.h"
+#include "qt/vitae/contactsdropdown.h"
+#include "qt/vitae/sendmultirow.h"
 
 
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class send;
@@ -20,7 +20,7 @@ class SendWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit SendWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SendWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SendWidget();
 
 public slots:
@@ -39,7 +39,7 @@ private slots:
     void onContactsClicked();
 private:
     Ui::send *ui;
-    PIVXGUI* window;
+    VITAEGUI* window;
     QPushButton *coinIcon;
     QPushButton *btnContacts;
 

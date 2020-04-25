@@ -1,21 +1,21 @@
-#include "qt/pivx/send.h"
-#include "qt/pivx/forms/ui_send.h"
+#include "qt/vitae/send.h"
+#include "qt/vitae/forms/ui_send.h"
 
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/sendchangeaddressdialog.h"
-#include "qt/pivx/optionbutton.h"
-#include "qt/pivx/sendcustomfeedialog.h"
-#include "qt/pivx/coincontrolzpivdialog.h"
-#include "qt/pivx/coincontrolpivwidget.h"
-#include "qt/pivx/sendconfirmdialog.h"
-#include "qt/pivx/myaddressrow.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/sendchangeaddressdialog.h"
+#include "qt/vitae/optionbutton.h"
+#include "qt/vitae/sendcustomfeedialog.h"
+#include "qt/vitae/coincontrolzpivdialog.h"
+#include "qt/vitae/coincontrolpivwidget.h"
+#include "qt/vitae/sendconfirmdialog.h"
+#include "qt/vitae/myaddressrow.h"
 
 #include <QFile>
 #include <QGraphicsDropShadowEffect>
 
 #include <iostream>
 
-SendWidget::SendWidget(PIVXGUI* _window, QWidget *parent) :
+SendWidget::SendWidget(VITAEGUI* _window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::send),
     window(_window),

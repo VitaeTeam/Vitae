@@ -1,5 +1,5 @@
-#include "qt/pivx/coincontrolzpivdialog.h"
-#include "qt/pivx/forms/ui_coincontrolzpivdialog.h"
+#include "qt/vitae/coincontrolzpivdialog.h"
+#include "qt/vitae/forms/ui_coincontrolzpivdialog.h"
 
 CoinControlZpivDialog::CoinControlZpivDialog(QWidget *parent) :
     QDialog(parent),

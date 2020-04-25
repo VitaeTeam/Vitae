@@ -1,5 +1,5 @@
-#include "qt/pivx/sendmultirow.h"
-#include "qt/pivx/forms/ui_sendmultirow.h"
+#include "qt/vitae/sendmultirow.h"
+#include "qt/vitae/forms/ui_sendmultirow.h"
 #include <QGraphicsDropShadowEffect>
 
 SendMultiRow::SendMultiRow(QWidget *parent) :

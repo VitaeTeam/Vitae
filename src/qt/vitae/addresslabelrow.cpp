@@ -1,5 +1,5 @@
-#include "qt/pivx/addresslabelrow.h"
-#include "qt/pivx/forms/ui_addresslabelrow.h"
+#include "qt/vitae/addresslabelrow.h"
+#include "qt/vitae/forms/ui_addresslabelrow.h"
 #include "QFile"
 
 AddressLabelRow::AddressLabelRow(bool isLightTheme, bool isHover , QWidget *parent) :

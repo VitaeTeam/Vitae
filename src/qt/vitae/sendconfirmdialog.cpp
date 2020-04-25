@@ -1,5 +1,5 @@
-#include "qt/pivx/sendconfirmdialog.h"
-#include "qt/pivx/forms/ui_sendconfirmdialog.h"
+#include "qt/vitae/sendconfirmdialog.h"
+#include "qt/vitae/forms/ui_sendconfirmdialog.h"
 
 SendConfirmDialog::SendConfirmDialog(QWidget *parent) :
     QDialog(parent),

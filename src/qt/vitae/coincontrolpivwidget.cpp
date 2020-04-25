@@ -1,5 +1,5 @@
-#include "qt/pivx/coincontrolpivwidget.h"
-#include "qt/pivx/forms/ui_coincontrolpivwidget.h"
+#include "qt/vitae/coincontrolpivwidget.h"
+#include "qt/vitae/forms/ui_coincontrolpivwidget.h"
 
 CoinControlPivWidget::CoinControlPivWidget(QWidget *parent) :
     QDialog(parent),

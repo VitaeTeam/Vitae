@@ -1,5 +1,5 @@
-#include "qt/pivx/sendcustomfeedialog.h"
-#include "qt/pivx/forms/ui_sendcustomfeedialog.h"
+#include "qt/vitae/sendcustomfeedialog.h"
+#include "qt/vitae/forms/ui_sendcustomfeedialog.h"
 #include "QListView"
 #include "QGraphicsDropShadowEffect"
 

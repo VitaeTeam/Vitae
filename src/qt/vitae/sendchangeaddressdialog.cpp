@@ -1,5 +1,5 @@
-#include "qt/pivx/sendchangeaddressdialog.h"
-#include "qt/pivx/forms/ui_sendchangeaddressdialog.h"
+#include "qt/vitae/sendchangeaddressdialog.h"
+#include "qt/vitae/forms/ui_sendchangeaddressdialog.h"
 #include "QGraphicsDropShadowEffect"
 
 SendChangeAddressDialog::SendChangeAddressDialog(QWidget *parent) :

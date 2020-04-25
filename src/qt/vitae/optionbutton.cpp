@@ -1,5 +1,5 @@
-#include "qt/pivx/optionbutton.h"
-#include "qt/pivx/forms/ui_optionbutton.h"
+#include "qt/vitae/optionbutton.h"
+#include "qt/vitae/forms/ui_optionbutton.h"
 
 #include <QMouseEvent>
 

@@ -1,11 +1,11 @@
-#include "qt/pivx/contactsdropdown.h"
+#include "qt/vitae/contactsdropdown.h"
 
 #include <QPainter>
 #include <QSizePolicy>
-#include "qt/pivx/addresslabelrow.h"
-#include "qt/pivx/contactdropdownrow.h"
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/furlistrow.h"
+#include "qt/vitae/addresslabelrow.h"
+#include "qt/vitae/contactdropdownrow.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/furlistrow.h"
 #include "walletmodel.h"
 
 #define DECORATION_SIZE 70
@@ -35,8 +35,6 @@ public:
     bool isLightTheme;
 };
 
-
-#include "qt/pivx/moc_contactsdropdown.cpp"
 
 ContactsDropdown::ContactsDropdown(int minWidth, int minHeight, QWidget *parent) :
     QWidget(parent)
