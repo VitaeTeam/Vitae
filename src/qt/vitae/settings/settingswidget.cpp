@@ -4,15 +4,6 @@
 
 #include "qt/vitae/settings/settingswidget.h"
 #include "qt/vitae/settings/forms/ui_settingswidget.h"
-#include "qt/vitae/settings/settingsbackupwallet.h"
-#include "qt/vitae/settings/settingsbittoolwidget.h"
-#include "qt/vitae/settings/settingswalletrepairwidget.h"
-#include "qt/vitae/settings/settingswalletoptionswidget.h"
-#include "qt/vitae/settings/settingsmainoptionswidget.h"
-#include "qt/vitae/settings/settingsdisplayoptionswidget.h"
-#include "qt/vitae/settings/settingsmultisendwidget.h"
-#include "qt/vitae/settings/settingsinformationwidget.h"
-#include "qt/vitae/settings/settingsconsolewidget.h"
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/defaultdialog.h"
 #include "optionsmodel.h"
@@ -84,6 +75,9 @@ SettingsWidget::SettingsWidget(VITAEGUI* parent) :
         ui->pushButtonTools2,
         ui->pushButtonTools5,
     };
+
+    /* disable multisend for now */
+    ui->pushButtonFile3->setVisible(false);
 
     menus.insert(ui->pushButtonFile, ui->fileButtonsWidget);
     menus.insert(ui->pushButtonConfiguration, ui->configurationButtonsWidget);
