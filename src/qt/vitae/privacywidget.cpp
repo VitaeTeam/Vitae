@@ -1,19 +1,19 @@
-#include "qt/pivx/privacywidget.h"
-#include "qt/pivx/forms/ui_privacywidget.h"
+#include "qt/vitae/privacywidget.h"
+#include "qt/vitae/forms/ui_privacywidget.h"
 #include <QFile>
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/coincontrolzpivdialog.h"
-#include "qt/pivx/denomgenerationdialog.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/coincontrolzpivdialog.h"
+#include "qt/vitae/denomgenerationdialog.h"
 #include <QGraphicsDropShadowEffect>
-#include "qt/pivx/defaultdialog.h"
-#include "qt/pivx/furlistrow.h"
-#include "qt/pivx/txviewholder.h"
+#include "qt/vitae/defaultdialog.h"
+#include "qt/vitae/furlistrow.h"
+#include "qt/vitae/txviewholder.h"
 #include "walletmodel.h"
 
 #define DECORATION_SIZE 70
 #define NUM_ITEMS 3
 
-PrivacyWidget::PrivacyWidget(PIVXGUI* _window, QWidget *parent) :
+PrivacyWidget::PrivacyWidget(VITAEGUI* _window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PrivacyWidget),
     window(_window)

@@ -1,13 +1,13 @@
 #ifndef PRIVACYWIDGET_H
 #define PRIVACYWIDGET_H
 
-#include "qt/pivx/furabstractlistitemdelegate.h"
+#include "qt/vitae/furabstractlistitemdelegate.h"
 #include "transactiontablemodel.h"
 
 #include <QLabel>
 #include <QWidget>
 
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -23,7 +23,7 @@ class PrivacyWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit PrivacyWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit PrivacyWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~PrivacyWidget();
 
     void setWalletModel(WalletModel *_model);
@@ -36,7 +36,7 @@ private slots:
     void onTotalZpivClicked();
 private:
     Ui::PrivacyWidget *ui;
-    PIVXGUI* window;
+    VITAEGUI* window;
     FurAbstractListItemDelegate *delegate = nullptr;
     TransactionTableModel* model = nullptr;
 };

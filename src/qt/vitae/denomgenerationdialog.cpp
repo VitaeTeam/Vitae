@@ -1,5 +1,5 @@
-#include "qt/pivx/denomgenerationdialog.h"
-#include "qt/pivx/forms/ui_denomgenerationdialog.h"
+#include "qt/vitae/denomgenerationdialog.h"
+#include "qt/vitae/forms/ui_denomgenerationdialog.h"
 #include "QGraphicsDropShadowEffect"
 
 DenomGenerationDialog::DenomGenerationDialog(QWidget *parent) :

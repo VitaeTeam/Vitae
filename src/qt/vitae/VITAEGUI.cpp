@@ -12,7 +12,7 @@
 #include "networkstyle.h"
 #include "notificator.h"
 
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 
 #include <QHBoxLayout>
@@ -176,12 +176,12 @@ void VITAEGUI::goToAddresses() {
     stackedContainer->setCurrentWidget(addressesWidget);
 }
 
-void PIVXGUI::goToPrivacy() {
+void VITAEGUI::goToPrivacy() {
     stackedContainer->setCurrentWidget(privacyWidget);
 }
 
 
-void PIVXGUI::changeTheme(bool isLightTheme){
+void VITAEGUI::changeTheme(bool isLightTheme){
     // Change theme in all of the childs here..
 
     QString css = isLightTheme ? getLightTheme() : getDarkTheme();
@@ -194,7 +194,7 @@ void PIVXGUI::changeTheme(bool isLightTheme){
     updateStyle(this);
 }
 
-void PIVXGUI::resizeEvent(QResizeEvent* event){
+void VITAEGUI::resizeEvent(QResizeEvent* event){
     // Parent..
     QMainWindow::resizeEvent(event);
     // background
@@ -203,7 +203,7 @@ void PIVXGUI::resizeEvent(QResizeEvent* event){
     emit windowResizeEvent(event);
 }
 
-void PIVXGUI::showHide(bool show){
+void VITAEGUI::showHide(bool show){
     if(!op) op = new QLabel(this);
     if(!show){
         op->setVisible(false);
@@ -230,7 +230,7 @@ void PIVXGUI::showHide(bool show){
     }
 }
 
-int PIVXGUI::getNavWidth(){
+int VITAEGUI::getNavWidth(){
     return this->navMenu->width();
 }
 

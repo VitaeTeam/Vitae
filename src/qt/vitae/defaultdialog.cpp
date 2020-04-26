@@ -1,5 +1,5 @@
-#include "qt/pivx/defaultdialog.h"
-#include "qt/pivx/forms/ui_defaultdialog.h"
+#include "qt/vitae/defaultdialog.h"
+#include "qt/vitae/forms/ui_defaultdialog.h"
 
 DefaultDialog::DefaultDialog(QWidget *parent) :
     QDialog(parent),
