@@ -91,7 +91,8 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
     } else if (wtx.HasZerocoinSpendInputs()) {
         //zerocoin spend outputs
         bool fFeeAssigned = false;
-        for (const CTxOut& txout : wtx.vout) {
+        for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++) {
+            const CTxOut& txout = wtx.vout[nOut];
             // change that was reminted as zerocoins
             if (txout.IsZerocoinMint()) {
                 // do not display record if this isn't from our wallet
@@ -107,7 +108,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                     sub.debit -= (wtx.GetZerocoinSpent() - wtx.GetValueOut());
                     fFeeAssigned = true;
                 }
-                sub.idx = parts.size();
+                sub.idx = nOut;
                 parts.append(sub);
                 continue;
             }
@@ -131,7 +132,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
                 sub.address = mapValue["recvzerocoinspend"];
                 if (strAddress != "")
                     sub.address = strAddress;
-                sub.idx = parts.size();
+                sub.idx = nOut;
                 parts.append(sub);
                 continue;
             }
@@ -148,7 +149,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             sub.address = mapValue["zerocoinspend"];
             if (strAddress != "")
                 sub.address = strAddress;
-            sub.idx = parts.size();
+            sub.idx = nOut;
             parts.append(sub);
         }
     } else if (wtx.HasP2CSOutputs()) {
@@ -169,12 +170,13 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
         //
         // Credit
         //
-        for (const CTxOut& txout : wtx.vout) {
+        for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++) {
+            const CTxOut& txout = wtx.vout[nOut];
             isminetype mine = wallet->IsMine(txout);
             if (mine) {
                 TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
                 CTxDestination address;
-                sub.idx = parts.size(); // sequence number
+                sub.idx = nOut; // vout index
                 sub.credit = txout.nValue;
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address)) {
@@ -249,7 +251,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             for (unsigned int nOut = 0; nOut < wtx.vout.size(); nOut++) {
                 const CTxOut& txout = wtx.vout[nOut];
                 TransactionRecord sub(hash, nTime, wtx.GetTotalSize());
-                sub.idx = parts.size();
+                sub.idx = nOut;
                 sub.involvesWatchAddress = involvesWatchAddress;
 
                 if (wallet->IsMine(txout)) {
