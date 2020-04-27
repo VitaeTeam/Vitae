@@ -2,7 +2,7 @@
 #define SETTINGSDISPLAYOPTIONSWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsDisplayOptionsWidget;
@@ -13,7 +13,7 @@ class SettingsDisplayOptionsWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsDisplayOptionsWidget(PIVXGUI* _window = nullptr, QWidget *parent = nullptr);
+    explicit SettingsDisplayOptionsWidget(VITAEGUI* _window = nullptr, QWidget *parent = nullptr);
     ~SettingsDisplayOptionsWidget();
 
 private:

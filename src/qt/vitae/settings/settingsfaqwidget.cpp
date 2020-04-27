@@ -1,5 +1,5 @@
-#include "qt/pivx/settings/settingsfaqwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsfaqwidget.h"
+#include "qt/vitae/settings/settingsfaqwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsfaqwidget.h"
 #include <QScrollBar>
 #include "QFile"
 

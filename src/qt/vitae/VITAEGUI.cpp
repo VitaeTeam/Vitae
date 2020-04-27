@@ -182,7 +182,7 @@ void VITAEGUI::goToPrivacy() {
     stackedContainer->setCurrentWidget(privacyWidget);
 }
 
-void PIVXGUI::goToSettings() {
+void VITAEGUI::goToSettings() {
     stackedContainer->setCurrentWidget(settingsWidget);
 }
 

@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingsbittoolwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsbittoolwidget.h"
+#include "qt/vitae/settings/settingsbittoolwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsbittoolwidget.h"
 #include "QGraphicsDropShadowEffect"
 
-SettingsBitToolWidget::SettingsBitToolWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsBitToolWidget::SettingsBitToolWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsBitToolWidget)
 {

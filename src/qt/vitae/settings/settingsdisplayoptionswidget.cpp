@@ -1,9 +1,9 @@
-#include "qt/pivx/settings/settingsdisplayoptionswidget.h"
-#include "qt/pivx/settings/forms/ui_settingsdisplayoptionswidget.h"
+#include "qt/vitae/settings/settingsdisplayoptionswidget.h"
+#include "qt/vitae/settings/forms/ui_settingsdisplayoptionswidget.h"
 #include "QGraphicsDropShadowEffect"
 #include "QListView"
 
-SettingsDisplayOptionsWidget::SettingsDisplayOptionsWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsDisplayOptionsWidget::SettingsDisplayOptionsWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window,parent),
     ui(new Ui::SettingsDisplayOptionsWidget)
 {

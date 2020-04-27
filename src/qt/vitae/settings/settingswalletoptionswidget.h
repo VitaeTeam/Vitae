@@ -2,7 +2,7 @@
 #define SETTINGSWALLETOPTIONSWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 namespace Ui {
 class SettingsWalletOptionsWidget;
 }
@@ -12,7 +12,7 @@ class SettingsWalletOptionsWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsWalletOptionsWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsWalletOptionsWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsWalletOptionsWidget();
 
 private:

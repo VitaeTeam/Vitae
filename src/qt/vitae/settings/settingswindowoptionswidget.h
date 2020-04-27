@@ -2,7 +2,7 @@
 #define SETTINGSWINDOWOPTIONSWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsWindowOptionsWidget;
@@ -13,7 +13,7 @@ class SettingsWindowOptionsWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsWindowOptionsWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsWindowOptionsWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsWindowOptionsWidget();
 
 private:

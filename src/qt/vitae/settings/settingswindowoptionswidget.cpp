@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingswindowoptionswidget.h"
-#include "qt/pivx/settings/settingswindowoptionswidget.h"
-#include "qt/pivx/settings/forms/ui_settingswindowoptionswidget.h"
+#include "qt/vitae/settings/settingswindowoptionswidget.h"
+#include "qt/vitae/settings/settingswindowoptionswidget.h"
+#include "qt/vitae/settings/forms/ui_settingswindowoptionswidget.h"
 
-SettingsWindowOptionsWidget::SettingsWindowOptionsWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsWindowOptionsWidget::SettingsWindowOptionsWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsWindowOptionsWidget)
 {

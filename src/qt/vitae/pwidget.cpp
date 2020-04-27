@@ -1,9 +1,7 @@
-#include "qt/pivx/pwidget.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/pwidget.h"
+#include "qt/vitae/qtutils.h"
 
-#include "qt/pivx/moc_pwidget.cpp"
-
-PWidget::PWidget(PIVXGUI* _window, QWidget *parent) : QWidget(parent), window(_window)
+PWidget::PWidget(VITAEGUI* _window, QWidget *parent) : QWidget(parent), window(_window)
 {
     if(window)
         connect(window, SIGNAL(themeChanged(bool, QString&)), this, SLOT(changeTheme(bool, QString&)));

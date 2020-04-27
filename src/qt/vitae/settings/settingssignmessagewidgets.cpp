@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingssignmessagewidgets.h"
-#include "qt/pivx/settings/forms/ui_settingssignmessagewidgets.h"
+#include "qt/vitae/settings/settingssignmessagewidgets.h"
+#include "qt/vitae/settings/forms/ui_settingssignmessagewidgets.h"
 #include "QGraphicsDropShadowEffect"
 
-SettingsSignMessageWidgets::SettingsSignMessageWidgets(PIVXGUI* _window, QWidget *parent) :
+SettingsSignMessageWidgets::SettingsSignMessageWidgets(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsSignMessageWidgets)
 {

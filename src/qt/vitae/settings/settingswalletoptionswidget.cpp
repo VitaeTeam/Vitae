@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingswalletoptionswidget.h"
-#include "qt/pivx/settings/forms/ui_settingswalletoptionswidget.h"
+#include "qt/vitae/settings/settingswalletoptionswidget.h"
+#include "qt/vitae/settings/forms/ui_settingswalletoptionswidget.h"
 #include "QListView"
 
-SettingsWalletOptionsWidget::SettingsWalletOptionsWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsWalletOptionsWidget::SettingsWalletOptionsWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsWalletOptionsWidget)
 {

@@ -2,7 +2,7 @@
 #define SETTINGSPEERSLISTWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsPeersListWidget;
@@ -13,7 +13,7 @@ class SettingsPeersListWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsPeersListWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsPeersListWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsPeersListWidget();
 
 private:

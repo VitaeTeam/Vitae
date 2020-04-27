@@ -2,7 +2,7 @@
 #define SETTINGSNETWORKMONITORWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsNetworkMonitorWidget;
@@ -13,7 +13,7 @@ class SettingsNetworkMonitorWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsNetworkMonitorWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsNetworkMonitorWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsNetworkMonitorWidget();
 
 private:

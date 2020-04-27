@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingsopenurlwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsopenurlwidget.h"
+#include "qt/vitae/settings/settingsopenurlwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsopenurlwidget.h"
 #include "QGraphicsDropShadowEffect"
 
-SettingsOpenUrlWidget::SettingsOpenUrlWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsOpenUrlWidget::SettingsOpenUrlWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsOpenUrlWidget)
 {

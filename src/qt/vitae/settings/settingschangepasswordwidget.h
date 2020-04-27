@@ -2,7 +2,7 @@
 #define SETTINGSCHANGEPASSWORDWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 namespace Ui {
 class SettingsChangePasswordWidget;
 }
@@ -12,7 +12,7 @@ class SettingsChangePasswordWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsChangePasswordWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsChangePasswordWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsChangePasswordWidget();
 
 private:

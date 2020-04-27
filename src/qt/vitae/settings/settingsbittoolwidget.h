@@ -2,7 +2,7 @@
 #define SETTINGSBITTOOLWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsBitToolWidget;
@@ -13,7 +13,7 @@ class SettingsBitToolWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsBitToolWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsBitToolWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsBitToolWidget();
 
 private:

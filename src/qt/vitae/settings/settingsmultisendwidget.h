@@ -2,7 +2,7 @@
 #define SETTINGSMULTISENDWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 class PIVXGUI;
 
@@ -15,7 +15,7 @@ class SettingsMultisendWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsMultisendWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsMultisendWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsMultisendWidget();
 
 private slots:
@@ -23,7 +23,7 @@ private slots:
 
 private:
     Ui::SettingsMultisendWidget *ui;
-    PIVXGUI* window;
+    VITAEGUI* window;
 };
 
 #endif // SETTINGSMULTISENDWIDGET_H

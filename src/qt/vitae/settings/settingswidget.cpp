@@ -1,28 +1,28 @@
-#include "qt/pivx/settings/settingswidget.h"
-#include "qt/pivx/settings/settingsbackupwallet.h"
-#include "qt/pivx/settings/settingsbittoolwidget.h"
-#include "qt/pivx/settings/settingschangepasswordwidget.h"
-#include "qt/pivx/settings/settingsopenurlwidget.h"
-#include "qt/pivx/settings/settingswalletrepairwidget.h"
-#include "qt/pivx/settings/settingsnetworkwidget.h"
-#include "qt/pivx/settings/settingswalletoptionswidget.h"
-#include "qt/pivx/settings/settingsmainoptionswidget.h"
-#include "qt/pivx/settings/settingsdisplayoptionswidget.h"
-#include "qt/pivx/settings/settingsmultisendwidget.h"
-#include "qt/pivx/settings/settingsinformationwidget.h"
-#include "qt/pivx/settings/settingspeerslistwidget.h"
-#include "qt/pivx/settings/settingslockwalletwidget.h"
-#include "qt/pivx/settings/settingsconsolewidget.h"
-#include "qt/pivx/settings/settingswindowoptionswidget.h"
-#include "qt/pivx/settings/settingsnetworkmonitorwidget.h"
-#include "qt/pivx/settings/settingsfaqwidget.h"
-#include "qt/pivx/settings/forms/ui_settingswidget.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/settings/settingswidget.h"
+#include "qt/vitae/settings/settingsbackupwallet.h"
+#include "qt/vitae/settings/settingsbittoolwidget.h"
+#include "qt/vitae/settings/settingschangepasswordwidget.h"
+#include "qt/vitae/settings/settingsopenurlwidget.h"
+#include "qt/vitae/settings/settingswalletrepairwidget.h"
+#include "qt/vitae/settings/settingsnetworkwidget.h"
+#include "qt/vitae/settings/settingswalletoptionswidget.h"
+#include "qt/vitae/settings/settingsmainoptionswidget.h"
+#include "qt/vitae/settings/settingsdisplayoptionswidget.h"
+#include "qt/vitae/settings/settingsmultisendwidget.h"
+#include "qt/vitae/settings/settingsinformationwidget.h"
+#include "qt/vitae/settings/settingspeerslistwidget.h"
+#include "qt/vitae/settings/settingslockwalletwidget.h"
+#include "qt/vitae/settings/settingsconsolewidget.h"
+#include "qt/vitae/settings/settingswindowoptionswidget.h"
+#include "qt/vitae/settings/settingsnetworkmonitorwidget.h"
+#include "qt/vitae/settings/settingsfaqwidget.h"
+#include "qt/vitae/settings/forms/ui_settingswidget.h"
+#include "qt/vitae/qtutils.h"
 #include <QFile>
 #include <QScrollBar>
 
 
-SettingsWidget::SettingsWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsWidget::SettingsWidget(VITAEGUI* _window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SettingsWidget),
     window(_window)

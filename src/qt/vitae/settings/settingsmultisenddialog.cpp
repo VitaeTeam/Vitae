@@ -1,5 +1,5 @@
-#include "qt/pivx/settings/settingsmultisenddialog.h"
-#include "qt/pivx/settings/forms/ui_settingsmultisenddialog.h"
+#include "qt/vitae/settings/settingsmultisenddialog.h"
+#include "qt/vitae/settings/forms/ui_settingsmultisenddialog.h"
 #include "QGraphicsDropShadowEffect"
 #include "QListView"
 

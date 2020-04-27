@@ -1,7 +1,7 @@
 #ifndef SETTINGSMAINOPTIONSWIDGET_H
 #define SETTINGSMAINOPTIONSWIDGET_H
 
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 #include <QWidget>
 
@@ -14,7 +14,7 @@ class SettingsMainOptionsWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsMainOptionsWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsMainOptionsWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsMainOptionsWidget();
 
 private:

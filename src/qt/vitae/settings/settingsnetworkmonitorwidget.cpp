@@ -1,7 +1,7 @@
-#include "qt/pivx/settings/settingsnetworkmonitorwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsnetworkmonitorwidget.h"
+#include "qt/vitae/settings/settingsnetworkmonitorwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsnetworkmonitorwidget.h"
 
-SettingsNetworkMonitorWidget::SettingsNetworkMonitorWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsNetworkMonitorWidget::SettingsNetworkMonitorWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window,parent),
     ui(new Ui::SettingsNetworkMonitorWidget)
 {

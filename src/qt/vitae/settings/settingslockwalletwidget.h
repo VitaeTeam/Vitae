@@ -2,7 +2,7 @@
 #define SETTINGSLOCKWALLETWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsLockWalletWidget;
@@ -13,7 +13,7 @@ class SettingsLockWalletWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsLockWalletWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsLockWalletWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsLockWalletWidget();
 
 private:

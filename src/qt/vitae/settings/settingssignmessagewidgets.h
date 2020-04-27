@@ -2,7 +2,7 @@
 #define SETTINGSSIGNMESSAGEWIDGETS_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 namespace Ui {
 class SettingsSignMessageWidgets;
 }
@@ -12,7 +12,7 @@ class SettingsSignMessageWidgets : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsSignMessageWidgets(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsSignMessageWidgets(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsSignMessageWidgets();
 
 private:

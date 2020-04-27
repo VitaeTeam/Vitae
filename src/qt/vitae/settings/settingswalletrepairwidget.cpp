@@ -1,7 +1,7 @@
-#include "qt/pivx/settings/settingswalletrepairwidget.h"
-#include "qt/pivx/settings/forms/ui_settingswalletrepairwidget.h"
+#include "qt/vitae/settings/settingswalletrepairwidget.h"
+#include "qt/vitae/settings/forms/ui_settingswalletrepairwidget.h"
 
-SettingsWalletRepairWidget::SettingsWalletRepairWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsWalletRepairWidget::SettingsWalletRepairWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsWalletRepairWidget)
 {

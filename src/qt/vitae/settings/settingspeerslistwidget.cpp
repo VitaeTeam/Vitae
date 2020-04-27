@@ -1,7 +1,7 @@
-#include "qt/pivx/settings/settingspeerslistwidget.h"
-#include "qt/pivx/settings/forms/ui_settingspeerslistwidget.h"
+#include "qt/vitae/settings/settingspeerslistwidget.h"
+#include "qt/vitae/settings/forms/ui_settingspeerslistwidget.h"
 
-SettingsPeersListWidget::SettingsPeersListWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsPeersListWidget::SettingsPeersListWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsPeersListWidget)
 {

@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingsconsolewidget.h"
-#include "qt/pivx/settings/forms/ui_settingsconsolewidget.h"
+#include "qt/vitae/settings/settingsconsolewidget.h"
+#include "qt/vitae/settings/forms/ui_settingsconsolewidget.h"
 #include "QGraphicsDropShadowEffect"
 
-SettingsConsoleWidget::SettingsConsoleWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsConsoleWidget::SettingsConsoleWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window,parent),
     ui(new Ui::SettingsConsoleWidget)
 {

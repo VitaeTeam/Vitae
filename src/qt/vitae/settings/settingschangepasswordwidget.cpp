@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingschangepasswordwidget.h"
-#include "qt/pivx/settings/forms/ui_settingschangepasswordwidget.h"
+#include "qt/vitae/settings/settingschangepasswordwidget.h"
+#include "qt/vitae/settings/forms/ui_settingschangepasswordwidget.h"
 #include "QGraphicsDropShadowEffect"
 
-SettingsChangePasswordWidget::SettingsChangePasswordWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsChangePasswordWidget::SettingsChangePasswordWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsChangePasswordWidget)
 {

@@ -1,7 +1,7 @@
-#include "qt/pivx/settings/settingslockwalletwidget.h"
-#include "qt/pivx/settings/forms/ui_settingslockwalletwidget.h"
+#include "qt/vitae/settings/settingslockwalletwidget.h"
+#include "qt/vitae/settings/forms/ui_settingslockwalletwidget.h"
 
-SettingsLockWalletWidget::SettingsLockWalletWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsLockWalletWidget::SettingsLockWalletWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsLockWalletWidget)
 {

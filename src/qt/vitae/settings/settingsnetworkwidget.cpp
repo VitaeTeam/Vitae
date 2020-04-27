@@ -1,8 +1,8 @@
-#include "qt/pivx/settings/settingsnetworkwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsnetworkwidget.h"
+#include "qt/vitae/settings/settingsnetworkwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsnetworkwidget.h"
 #include "QGraphicsDropShadowEffect"
 
-SettingsNetworkWidget::SettingsNetworkWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsNetworkWidget::SettingsNetworkWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsNetworkWidget)
 {

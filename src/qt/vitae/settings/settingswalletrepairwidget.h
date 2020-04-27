@@ -2,7 +2,7 @@
 #define SETTINGSWALLETREPAIRWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 namespace Ui {
 class SettingsWalletRepairWidget;
@@ -13,7 +13,7 @@ class SettingsWalletRepairWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit SettingsWalletRepairWidget(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit SettingsWalletRepairWidget(VITAEGUI* _window, QWidget *parent = nullptr);
     ~SettingsWalletRepairWidget();
 
 private:

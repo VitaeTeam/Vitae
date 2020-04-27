@@ -1,7 +1,7 @@
-#include "qt/pivx/settings/settingsinformationwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsinformationwidget.h"
+#include "qt/vitae/settings/settingsinformationwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsinformationwidget.h"
 
-SettingsInformationWidget::SettingsInformationWidget(PIVXGUI* _window,QWidget *parent) :
+SettingsInformationWidget::SettingsInformationWidget(VITAEGUI* _window,QWidget *parent) :
     PWidget(_window,parent),
     ui(new Ui::SettingsInformationWidget)
 {

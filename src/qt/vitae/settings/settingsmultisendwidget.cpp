@@ -1,9 +1,9 @@
-#include "qt/pivx/settings/settingsmultisendwidget.h"
-#include "qt/pivx/settings/forms/ui_settingsmultisendwidget.h"
-#include "qt/pivx/settings/settingsmultisenddialog.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/settings/settingsmultisendwidget.h"
+#include "qt/vitae/settings/forms/ui_settingsmultisendwidget.h"
+#include "qt/vitae/settings/settingsmultisenddialog.h"
+#include "qt/vitae/qtutils.h"
 
-SettingsMultisendWidget::SettingsMultisendWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsMultisendWidget::SettingsMultisendWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsMultisendWidget),
     window(_window)

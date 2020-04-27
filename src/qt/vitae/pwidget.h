@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class PWidget;
@@ -14,13 +14,13 @@ class PWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PWidget(PIVXGUI* _window = nullptr, QWidget *parent = nullptr);
+    explicit PWidget(VITAEGUI* _window = nullptr, QWidget *parent = nullptr);
 
 protected slots:
     void changeTheme(bool isLightTheme, QString &theme);
 
 private:
-    PIVXGUI* window;
+    VITAEGUI* window;
 
 };
 

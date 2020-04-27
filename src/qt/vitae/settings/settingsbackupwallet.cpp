@@ -1,9 +1,9 @@
-#include "qt/pivx/settings/settingsbackupwallet.h"
-#include "qt/pivx/settings/forms/ui_settingsbackupwallet.h"
+#include "qt/vitae/settings/settingsbackupwallet.h"
+#include "qt/vitae/settings/forms/ui_settingsbackupwallet.h"
 #include <QFile>
 #include <QGraphicsDropShadowEffect>
 
-SettingsBackupWallet::SettingsBackupWallet(PIVXGUI* _window, QWidget *parent) :
+SettingsBackupWallet::SettingsBackupWallet(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsBackupWallet)
 {
