@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "qt/vitae/pwidget.h"
 
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class SettingsMultisendWidget;

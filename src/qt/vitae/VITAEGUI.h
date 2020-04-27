@@ -67,6 +67,8 @@ public slots:
     void goToMasterNodes();
     void goToSettings();
 
+    void connectActions();
+
 #ifdef ENABLE_WALLET
     /** Set the wallet model.
         The wallet model represents a bitcoin wallet, and offers access to the list of transactions, address book and sending
@@ -122,8 +124,6 @@ signals:
     void receivedURI(const QString& uri);
     /** Restart handling */
     void requestedRestart(QStringList args);
-
-    void connectActions();
 };
 
 

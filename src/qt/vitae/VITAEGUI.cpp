@@ -151,7 +151,7 @@ static Qt::Modifier shortKey
 /**
  * Here add every event connection
  */
-void PIVXGUI::connectActions() {
+void VITAEGUI::connectActions() {
 
     QShortcut *homeShort = new QShortcut(this);
     QShortcut *sendShort = new QShortcut(this);
