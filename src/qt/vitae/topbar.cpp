@@ -7,9 +7,9 @@
 #include "qt/vitae/receivedialog.h"
 #include "qt/vitae/walletpassworddialog.h"
 
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/receivedialog.h"
-#include "qt/pivx/walletpassworddialog.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/receivedialog.h"
+#include "qt/vitae/walletpassworddialog.h"
 
 #include "bitcoinunits.h"
 #include "clientmodel.h"
