@@ -46,7 +46,7 @@ void TxRow::setType(bool isLightTheme, TransactionRecord::Type type){
             css = "text-list-amount-send";
             break;
         case TransactionRecord::Generated:
-        case TransactionRecord::StakeZPIV:
+        case TransactionRecord::StakeZVIT:
         case TransactionRecord::MNReward:
             path = "://ic-transaction-staked";
             css = "text-list-amount-send";
@@ -61,7 +61,7 @@ void TxRow::setType(bool isLightTheme, TransactionRecord::Type type){
         case TransactionRecord::SendToAddress:
         case TransactionRecord::SendToOther:
         case TransactionRecord::ZerocoinSpend:
-        case TransactionRecord::ZerocoinSpend_Change_zPiv:
+        case TransactionRecord::ZerocoinSpend_Change_zVit:
         case TransactionRecord::ZerocoinSpend_FromMe:
             path = "://ic-transaction-sent";
             css = "text-list-amount-send";

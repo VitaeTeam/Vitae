@@ -322,3 +322,4 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
 
 QString TopBar::formatBalance(CAmount amount){
     return (amount == 0) ? ("0.00 " + BitcoinUnits::name(nDisplayUnit)) : BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, amount, false, BitcoinUnits::separatorAlways, true);
+}
