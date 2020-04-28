@@ -227,7 +227,7 @@ void VITAEGUI::setClientModel(ClientModel* clientModel) {
 /**
  * TODO remove QMessageBox for the snackbar..
  */
-void PIVXGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
+void VITAEGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
 {
     QString strTitle = tr("PIVX Core"); // default title
     // Default to information icon
@@ -284,7 +284,7 @@ void PIVXGUI::message(const QString& title, const QString& message, unsigned int
 }
 
 
-void PIVXGUI::showNormalIfMinimized(bool fToggleHidden)
+void VITAEGUI::showNormalIfMinimized(bool fToggleHidden)
 {
     if (!clientModel)
         return;
