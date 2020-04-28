@@ -1,5 +1,5 @@
-#include "qt/pivx/addnewcontactdialog.h"
-#include "qt/pivx/forms/ui_addnewcontactdialog.h"
+#include "qt/vitae/addnewcontactdialog.h"
+#include "qt/vitae/forms/ui_addnewcontactdialog.h"
 #include "QGraphicsDropShadowEffect"
 #include "QFile"
 
