@@ -20,6 +20,8 @@
 #include "wallet.h"
 #include "walletmodel.h"
 
+#include "fundamentalnode-sync.h"
+
 
 TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
     QWidget(parent),
@@ -295,8 +297,8 @@ void TopBar::setNumBlocks(int count) {
             break;
     }
 
-    if (masternodeSync.IsBlockchainSynced()) {
-        if (masternodeSync.IsSynced()) {
+    if (fundamentalnodeSync.IsBlockchainSynced()) {
+        if (fundamentalnodeSync.IsSynced()) {
             // Node synced
             text = "Synced";
             // TODO: Set synced icon to pushButtonSync here..
@@ -304,10 +306,10 @@ void TopBar::setNumBlocks(int count) {
 
             // TODO: Show out of sync warning
 
-            int nAttempt = masternodeSync.RequestedMasternodeAttempt < MASTERNODE_SYNC_THRESHOLD ?
-                       masternodeSync.RequestedMasternodeAttempt + 1 :
-                       MASTERNODE_SYNC_THRESHOLD;
-            int progress = nAttempt + (masternodeSync.RequestedMasternodeAssets - 1) * MASTERNODE_SYNC_THRESHOLD;
+            int nAttempt = fundamentalnodeSync.RequestedFundamentalnodeAttempt < FUNDAMENTALNODE_SYNC_THRESHOLD ?
+                       fundamentalnodeSync.RequestedFundamentalnodeAttempt + 1 :
+                       FUNDAMENTALNODE_SYNC_THRESHOLD;
+            int progress = nAttempt + (fundamentalnodeSync.RequestedFundamentalnodeAssets - 1) * FUNDAMENTALNODE_SYNC_THRESHOLD;
             text = std::string("Synchronizing additional data: %p%", progress);
         }
 
