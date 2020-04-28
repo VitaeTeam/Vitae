@@ -1,7 +1,8 @@
 #include "qt/vitae/qtutils.h"
 
-#include "qt/pivx/snackbar.h"
-#include "qrencode.h"
+#include "qt/vitae/snackbar.h"
+// upstream-error
+//#include "qrencode.h"
 #include "guiconstants.h"
 
 #include <QFile>
@@ -82,6 +83,9 @@ bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, VITAEGUI *gui){
 }
 
 QPixmap encodeToQr(QString str, QString &errorStr){
+    return QPixmap();
+    // upstream-error
+    /*
     if (!str.isEmpty()) {
         // limit URI length
         if (str.length() > MAX_URI_LENGTH) {
@@ -106,6 +110,7 @@ QPixmap encodeToQr(QString str, QString &errorStr){
             return QPixmap::fromImage(myImage);
         }
     }
+    */
 }
 
 QString getLightTheme(){
