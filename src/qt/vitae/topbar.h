@@ -4,6 +4,7 @@
 #include <QWidget>
 #include "lockunlock.h"
 #include "amount.h"
+#include <QTimer>
 
 class VITAEGUI;
 class WalletModel;
