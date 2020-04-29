@@ -6,7 +6,7 @@
 #include "optionsmodel.h"
 #include "guiutil.h"
 #include "bitcoinunits.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 SendMultiRow::SendMultiRow(QWidget *parent) :
     QWidget(parent),
