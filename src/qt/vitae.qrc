@@ -267,5 +267,7 @@
         <file alias="img-empty-transactions">vitae/res/img/img-empty-transactions.svg</file>
         <file alias="img-nav-logo">vitae/res/img/img-nav-logo.svg</file>
         <file alias="img-qr">vitae/res/img/img-qr.svg</file>
+        <file alias="ic-contact-arrow-down">vitae/res/img/ic-contact-arrow-down.svg</file>
+        <file alias="ic-contact-arrow-down-white">vitae/res/img/ic-contact-arrow-down-white.svg</file>
     </qresource>
 </RCC>
