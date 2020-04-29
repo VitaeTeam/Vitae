@@ -5,7 +5,7 @@
 #include "qt/vitae/qtutils.h"
 #include "walletmodel.h"
 #include "optionsmodel.h"
-#include "qt/pivx/settings/settingsfaqwidget.h"
+#include "qt/vitae/settings/settingsfaqwidget.h"
 #include <QFile>
 #include <QAbstractItemDelegate>
 #include <QPainter>
