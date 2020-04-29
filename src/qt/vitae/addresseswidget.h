@@ -4,7 +4,7 @@
 #include "addresstablemodel.h"
 #include "tooltipmenu.h"
 #include "furabstractlistitemdelegate.h"
-#include "qt/pivx/AddressFilterProxyModel.h"
+#include "qt/vitae/AddressFilterProxyModel.h"
 
 #include <QWidget>
 

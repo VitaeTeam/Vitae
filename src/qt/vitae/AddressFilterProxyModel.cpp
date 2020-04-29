@@ -2,7 +2,7 @@
 // Created by furszy on 4/3/19.
 //
 
-#include "qt/pivx/AddressFilterProxyModel.h"
+#include "qt/vitae/AddressFilterProxyModel.h"
 
 
 bool AddressFilterProxyModel::filterAcceptsRow(int row, const QModelIndex& parent) const {
