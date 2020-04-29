@@ -684,7 +684,7 @@ bool WalletModel::getPubKey(const CKeyID& address, CPubKey& vchPubKeyOut) const
     return wallet->GetPubKey(address, vchPubKeyOut);
 }
 
-CBitcoinAddress WalletModel::getNewAddress(std::string label) const{
+CBitcoinAddress WalletModel::getNewAddress(const std::string & label) const{
     if (!wallet->IsLocked())
         wallet->TopUpKeyPool();
 

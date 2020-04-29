@@ -3,7 +3,7 @@
 #include "QGraphicsDropShadowEffect"
 #include "QListView"
 
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 #include "guiutil.h"
 #include "amount.h"
 #include "optionsmodel.h"
