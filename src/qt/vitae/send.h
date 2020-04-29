@@ -9,7 +9,7 @@
 #include <list>
 
 
-class PIVXGUI;
+class VITAEGUI;
 class ClientModel;
 class WalletModel;
 
