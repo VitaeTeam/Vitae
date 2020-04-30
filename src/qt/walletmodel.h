@@ -168,7 +168,7 @@ public:
 
     bool convertBackZpiv(
             CAmount value,
-            vector<CZerocoinMint> &vMintsSelected,
+            std::vector<CZerocoinMint> &vMintsSelected,
             bool fMintChange,
             bool fMinimizeChange,
             CZerocoinSpendReceipt &receipt,
