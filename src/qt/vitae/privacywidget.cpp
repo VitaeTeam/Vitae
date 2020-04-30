@@ -224,7 +224,7 @@ void PrivacyWidget::onMintClicked(){
     if (!walletModel || !walletModel->getOptionsModel())
         return;
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
         emit message(tr("Mint Zerocoin"), tr("Transaction sent"), CClientUIInterface::MSG_ERROR);
         return;
     }

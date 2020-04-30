@@ -21,7 +21,7 @@
 #include "wallet.h"
 #include "walletdb.h" // for BackupWallet
 #include <stdint.h>
-#include "primitives/deterministicmint.h"
+#include "zvit/deterministicmint.h"
 
 #include <QDebug>
 #include <QSet>
@@ -434,7 +434,7 @@ WalletModel::SendCoinsReturn WalletModel::sendCoins(WalletModelTransaction& tran
 
 bool WalletModel::mintCoins(CAmount value, CCoinControl* coinControl ,std::string &strError){
     CWalletTx wtx;
-    vector<CDeterministicMint> vMints;
+    std::vector<CDeterministicMint> vMints;
     strError = wallet->MintZerocoin(value, wtx, vMints, coinControl);
     return strError.empty();
 }
