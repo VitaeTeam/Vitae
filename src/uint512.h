@@ -1,4 +1,5 @@
-// Copyright (c) 2017 The VITAE Core developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2017-2020 The VITAE Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

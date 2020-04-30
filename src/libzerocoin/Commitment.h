@@ -9,8 +9,8 @@
  * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
  * @license    This project is released under the MIT license.
  **/
-// Copyright (c) 2017 The VITAE developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2020 The VITAE developers
+// Copyright (c) 2017-2020 The PIVX developers
 
 #ifndef COMMITMENT_H_
 #define COMMITMENT_H_

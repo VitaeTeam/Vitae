@@ -1,5 +1,6 @@
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
+// Distributed under the MIT/X11 software license, see the accompanying
 
 //#include "core.h"
 #include "activemasternode.h"

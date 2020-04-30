@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
-// Copyright (c) 2017-2019 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
