@@ -365,7 +365,7 @@ void VITAEGUI::showNormalIfMinimized(bool fToggleHidden)
         hide();
 }
 
-void PIVXGUI::detectShutdown() {
+void VITAEGUI::detectShutdown() {
     if (ShutdownRequested()) {
         if (rpcConsole)
             rpcConsole->hide();
