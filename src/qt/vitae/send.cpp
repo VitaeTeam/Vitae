@@ -729,7 +729,8 @@ void SendWidget::onContactsClicked(SendMultiRow* entry)
         menuContacts->setWalletModel(walletModel, AddressTableModel::Send);
         connect(menuContacts, &ContactsDropdown::contactSelected, [this](QString address, QString label) {
             if (focusedEntry) {
-                focusedEntry->setLabel(label);
+                if (label != "(no label)")
+                    focusedEntry->setLabel(label);
                 focusedEntry->setAddress(address);
             }
         });
