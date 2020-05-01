@@ -446,7 +446,7 @@ bool WalletModel::mintCoins(CAmount value, CCoinControl* coinControl ,std::strin
 
 bool WalletModel::createZpivSpend(
         CWalletTx &wtxNew,
-        vector<CZerocoinMint> &vMintsSelected,
+        std::vector<CZerocoinMint> &vMintsSelected,
         bool fMintChange,
         bool fMinimizeChange,
         CZerocoinSpendReceipt &receipt,
@@ -461,18 +461,17 @@ bool WalletModel::createZpivSpend(
     }
 
     // Default: assume something goes wrong. Depending on the problem this gets more specific below
-    int nStatus = ZPIV_SPEND_ERROR;
+    int nStatus = ZVIT_SPEND_ERROR;
 
     if (wallet->IsLocked()) {
-        receipt.SetStatus("Error: Wallet locked, unable to create transaction!", ZPIV_WALLET_LOCKED);
+        receipt.SetStatus("Error: Wallet locked, unable to create transaction!", ZVIT_WALLET_LOCKED);
         return false;
     }
 
     CReserveKey reserveKey(wallet);
-    vector<CDeterministicMint> vNewMints;
+    std::vector<CDeterministicMint> vNewMints;
     if (!wallet->CreateZerocoinSpendTransaction(
             value,
-            100,
             wtxNew,
             reserveKey,
             receipt,
@@ -492,7 +491,7 @@ bool WalletModel::createZpivSpend(
 }
 
 bool WalletModel::sendZpiv(
-        vector<CZerocoinMint> &vMintsSelected,
+        std::vector<CZerocoinMint> &vMintsSelected,
         bool fMintChange,
         bool fMinimizeChange,
         CZerocoinSpendReceipt &receipt,
@@ -509,7 +508,6 @@ bool WalletModel::sendZpiv(
     CWalletTx wtxNew;
     return wallet->SpendZerocoin(
             value,
-            100,
             wtxNew,
             receipt,
             vMintsSelected,

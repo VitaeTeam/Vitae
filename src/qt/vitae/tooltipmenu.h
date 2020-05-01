@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QModelIndex>
 
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -20,7 +20,7 @@ class TooltipMenu : public QWidget
     Q_OBJECT
 
 public:
-    explicit TooltipMenu(PIVXGUI* _window, QWidget *parent = nullptr);
+    explicit TooltipMenu(VITAEGUI* _window, QWidget *parent = nullptr);
     ~TooltipMenu() override;
 
     void setWalletModel(WalletModel *model);
@@ -38,7 +38,7 @@ private slots:
 
 private:
     Ui::TooltipMenu *ui;
-    PIVXGUI *window;
+    VITAEGUI *window;
     WalletModel *walletModel = nullptr;
     QModelIndex index;
 };

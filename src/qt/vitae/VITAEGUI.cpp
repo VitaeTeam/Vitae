@@ -16,7 +16,7 @@
 #include "ui_interface.h"
 #include "qt/vitae/qtutils.h"
 
-#include "qt/pivx/defaultdialog.h"
+#include "qt/vitae/defaultdialog.h"
 
 
 #include <QHBoxLayout>
@@ -356,7 +356,7 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
     }
 }
 
-bool PIVXGUI::openStandardDialog(QString title, QString body, QString okBtn, QString cancelBtn){
+bool VITAEGUI::openStandardDialog(QString title, QString body, QString okBtn, QString cancelBtn){
     showHide(true);
     DefaultDialog *dialog = new DefaultDialog(this);
     dialog->setText(title, body, okBtn, cancelBtn);

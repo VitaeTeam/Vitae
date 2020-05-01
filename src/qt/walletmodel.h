@@ -168,7 +168,7 @@ public:
 
     bool createZpivSpend(
             CWalletTx &wtxNew,
-            vector<CZerocoinMint> &vMintsSelected,
+            std::vector<CZerocoinMint> &vMintsSelected,
             bool fMintChange,
             bool fMinimizeChange,
             CZerocoinSpendReceipt &receipt,
@@ -177,7 +177,7 @@ public:
     );
 
     bool sendZpiv(
-            vector<CZerocoinMint> &vMintsSelected,
+            std::vector<CZerocoinMint> &vMintsSelected,
             bool fMintChange,
             bool fMinimizeChange,
             CZerocoinSpendReceipt &receipt,

@@ -407,7 +407,7 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
             std::list<std::pair<CBitcoinAddress*, CAmount>> outputs,
             std::string changeAddress = ""
      */
-    vector <CZerocoinMint> vMintsSelected;
+    std::vector <CZerocoinMint> vMintsSelected;
     CZerocoinSpendReceipt receipt;
     // TODO: Complete me..
 
@@ -425,7 +425,7 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
     } else {
         // TODO: Detail error on the receipt..
         QString body;
-        if (receipt.GetStatus() == ZPIV_SPEND_V1_SEC_LEVEL) {
+        if (receipt.GetStatus() == ZVIT_SPEND_V1_SEC_LEVEL) {
             body = tr("Version 1 zPIV require a security level of 100 to successfully spend.");
         } else {
             int nNeededSpends = receipt.GetNeededSpends(); // Number of spends we would need for this transaction

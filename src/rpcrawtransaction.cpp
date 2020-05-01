@@ -1023,13 +1023,13 @@ UniValue createrawzerocoinpublicspend(const UniValue& params, bool fHelp)
 
     std::string address_str = "";
     CBitcoinAddress address;
-    CBitcoinAddress* addr_ptr = nullptr;
+    std::list<std::pair<CBitcoinAddress*,CAmount>> addressesTo;
     if (params.size() > 1) {
         address_str = params[1].get_str();
         address = CBitcoinAddress(address_str);
         if(!address.IsValid())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
-        addr_ptr = &address;
+        addressesTo.push_back(std::make_pair(&address, CAmount(0)));
     }
 
     EnsureWalletIsUnlocked();
@@ -1048,7 +1048,7 @@ UniValue createrawzerocoinpublicspend(const UniValue& params, bool fHelp)
     CZerocoinSpendReceipt receipt;
     CReserveKey reserveKey(pwalletMain);
     std::vector<CDeterministicMint> vNewMints;
-    if (!pwalletMain->CreateZerocoinSpendTransaction(nAmount, rawTx, reserveKey, receipt, vMintsSelected, vNewMints, false, true, addr_ptr, nullptr, true))
+    if (!pwalletMain->CreateZerocoinSpendTransaction(nAmount, rawTx, reserveKey, receipt, vMintsSelected, vNewMints, false, true, addressesTo, nullptr, true))
         throw JSONRPCError(RPC_WALLET_ERROR, receipt.GetStatusMessage());
 
     // output the raw transaction

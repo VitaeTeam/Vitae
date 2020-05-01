@@ -4,15 +4,15 @@
 
 #include "ui_interface.h"
 #include "guiutil.h"
-#include "qt/pivx/PIVXGUI.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/VITAEGUI.h"
+#include "qt/vitae/qtutils.h"
 #include <QModelIndex>
 #include "addresstablemodel.h"
 
 #include <QTimer>
 #include <iostream>
 
-TooltipMenu::TooltipMenu(PIVXGUI *_window, QWidget *parent) :
+TooltipMenu::TooltipMenu(VITAEGUI *_window, QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TooltipMenu),
     window(_window)
