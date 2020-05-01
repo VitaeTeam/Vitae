@@ -74,7 +74,7 @@ class RPCExecutor : public QObject
     Q_OBJECT
 
 public slots:
-    void request(const QString& command);
+    void TEMPrequest(const QString& command);
 
 signals:
     void reply(int category, const QString& command);
@@ -129,7 +129,7 @@ public:
  * @param[out]   args        Parsed arguments will be appended to this list
  * @param[in]    strCommand  Command line to split
  */
-bool parseCommandLine(std::vector<std::string>& args, const std::string& strCommand)
+bool TEMPparseCommandLine(std::vector<std::string>& args, const std::string& strCommand)
 {
     enum CmdParseState {
         STATE_EATING_SPACES,
@@ -213,10 +213,10 @@ bool parseCommandLine(std::vector<std::string>& args, const std::string& strComm
     }
 }
 
-void RPCExecutor::request(const QString& command)
+void RPCExecutor::TEMPrequest(const QString& command)
 {
     std::vector<std::string> args;
-    if (!parseCommandLine(args, command.toStdString())) {
+    if (!TEMPparseCommandLine(args, command.toStdString())) {
         emit reply(RPCConsole::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
         return;
     }
@@ -750,7 +750,7 @@ void RPCConsole::startExecutor()
     // Replies from executor object must go to this object
     connect(executor, SIGNAL(reply(int, QString)), this, SLOT(message(int, QString)));
     // Requests from this object must go to executor
-    connect(this, SIGNAL(cmdRequest(QString)), executor, SLOT(request(QString)));
+    connect(this, SIGNAL(cmdRequest(QString)), executor, SLOT(TEMPrequest(QString)));
 
     // On stopExecutor signal
     // - queue executor for deletion (in execution thread)

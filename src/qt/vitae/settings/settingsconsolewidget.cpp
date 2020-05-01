@@ -7,8 +7,8 @@
 
 #include "chainparams.h"
 #include "main.h"
-#include "rpc/client.h"
-#include "rpc/server.h"
+#include "rpcclient.h"
+#include "rpcserver.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
 #include "wallet.h"
@@ -31,7 +31,7 @@
 #include <QTime>
 #include <QTimer>
 #include <QStringList>
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 const int CONSOLE_HISTORY = 50;
 const QSize ICON_SIZE(24, 24);
@@ -102,8 +102,6 @@ public:
         return new QtRPCTimerBase(func, millis);
     }
 };
-
-#include "qt/pivx/settings/moc_settingsconsolewidget.cpp"
 
 /**
  * Split shell command line into a list of arguments. Aims to emulate \c bash and friends.
@@ -244,7 +242,7 @@ void RPCExecutor::request(const QString& command)
     }
 }
 
-SettingsConsoleWidget::SettingsConsoleWidget(PIVXGUI* _window, QWidget *parent) :
+SettingsConsoleWidget::SettingsConsoleWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window,parent),
     ui(new Ui::SettingsConsoleWidget)
 {
