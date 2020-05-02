@@ -1,7 +1,7 @@
 #include "qt/vitae/navmenuwidget.h"
 #include "qt/vitae/forms/ui_navmenuwidget.h"
 #include <QFile>
-#include "qt/vitae/PIVXGUI.h"
+#include "qt/vitae/VITAEGUI.h"
 #include "qt/vitae/qtutils.h"
 
 NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :

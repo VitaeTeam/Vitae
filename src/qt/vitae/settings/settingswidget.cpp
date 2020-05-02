@@ -20,7 +20,7 @@
 #include "qt/vitae/qtutils.h"
 #include <QFile>
 #include <QScrollBar>
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 SettingsWidget::SettingsWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
