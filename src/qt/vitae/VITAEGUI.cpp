@@ -202,7 +202,7 @@ VITAEGUI::~VITAEGUI() {
 
 
 /** Get restart command-line parameters and request restart */
-void PIVXGUI::handleRestart(QStringList args){
+void VITAEGUI::handleRestart(QStringList args){
     if (!ShutdownRequested())
         emit requestedRestart(args);
 }
@@ -499,8 +499,8 @@ bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
     connect(sendWidget, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
     connect(topBar, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
     connect(privacyWidget, SIGNAL(message(QString, QString, unsigned int)), this, SLOT(message(QString, QString, unsigned int)));
-    connect(addressesWidget, &AddressesWidget::message,this, &PIVXGUI::message);
-    connect(settingsWidget, &SettingsWidget::message, this, &PIVXGUI::message);
+    connect(addressesWidget, &AddressesWidget::message,this, &VITAEGUI::message);
+    connect(settingsWidget, &SettingsWidget::message, this, &VITAEGUI::message);
 
     return true;
 }

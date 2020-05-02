@@ -1,5 +1,5 @@
-#include "qt/pivx/welcomecontentwidget.h"
-#include "qt/pivx/forms/ui_welcomecontentwidget.h"
+#include "qt/vitae/welcomecontentwidget.h"
+#include "qt/vitae/forms/ui_welcomecontentwidget.h"
 #include <QGraphicsDropShadowEffect>
 #include <QFile>
 #include <QListView>

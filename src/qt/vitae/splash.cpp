@@ -1,5 +1,5 @@
-#include "qt/pivx/splash.h"
-#include "qt/pivx/forms/ui_splash.h"
+#include "qt/vitae/splash.h"
+#include "qt/vitae/forms/ui_splash.h"
 #include "QFile"
 
 #include "init.h"
