@@ -2,7 +2,7 @@
 #include "qt/vitae/settings/forms/ui_settingsnetworkwidget.h"
 #include "QGraphicsDropShadowEffect"
 #include "optionsmodel.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 SettingsNetworkWidget::SettingsNetworkWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
