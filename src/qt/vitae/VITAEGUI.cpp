@@ -172,8 +172,8 @@ void VITAEGUI::connectActions() {
         goToSettings();
     });
 
-    connect(settingsWidget, &SettingsWidget::showHide, this, &PIVXGUI::showHide);
-    connect(settingsWidget, &SettingsWidget::execDialog, this, &PIVXGUI::execDialog);
+    connect(settingsWidget, &SettingsWidget::showHide, this, &VITAEGUI::showHide);
+    connect(settingsWidget, &SettingsWidget::execDialog, this, &VITAEGUI::execDialog);
 }
 
 
