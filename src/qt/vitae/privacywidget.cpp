@@ -344,7 +344,7 @@ void PrivacyWidget::onRescanMintsClicked(){
             CClientUIInterface::MSG_INFORMATION | CClientUIInterface::BTN_MASK | CClientUIInterface::MODAL,
             &ret);
     if (ret){
-        string strResetMintResult = walletModel->resetMintZerocoin();
+        std::string strResetMintResult = walletModel->resetMintZerocoin();
         emit message("", QString::fromStdString(strResetMintResult), CClientUIInterface::MSG_INFORMATION_SNACK);
     }
 }
@@ -357,7 +357,7 @@ void PrivacyWidget::onResetZeroClicked(){
             CClientUIInterface::MSG_INFORMATION | CClientUIInterface::BTN_MASK | CClientUIInterface::MODAL,
             &ret);
     if (ret){
-        string strResetMintResult = walletModel->resetSpentZerocoin();
+        std::string strResetMintResult = walletModel->resetSpentZerocoin();
         emit message("", QString::fromStdString(strResetMintResult), CClientUIInterface::MSG_INFORMATION_SNACK);
     }
 }
