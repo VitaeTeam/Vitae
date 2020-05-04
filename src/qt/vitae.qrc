@@ -131,9 +131,12 @@
         <file alias="bg-welcome-container">vitae/res/img/bg-welcome-container.jpg</file>
         <file alias="bg-welcome">vitae/res/img/bg-welcome.jpg</file>
         <file alias="img-dashboard-banner">vitae/res/img/img-dashboard-banner.jpg</file>
+        <file alias="bg-welcome-container">vitae/res/img/bg-welcome-container.jpg</file>
+        <file alias="bg-welcome">vitae/res/img/bg-welcome.jpg</file>
+        <file alias="img-dashboard-banner">vitae/res/img/img-dashboard-banner.jpg</file>
         <file alias="ic-check-sync">vitae/res/img/ic-check-sync.png</file>
         <file alias="ic-coin-zpiv">vitae/res/img/ic-coin-zpiv.png</file>
-        <file alias="img-logo-vitae">vitae/res/img/img-logo-vitae.png</file>
+        <file alias="img-logo-vitae-png">vitae/res/img/img-logo-vitae.png</file>
         <file alias="img-logo-vitae-2x">vitae/res/img/img-logo-vitae@2x.png</file>
         <file alias="img-logo-vitae-3x">vitae/res/img/img-logo-vitae@3x.png</file>
         <file alias="img-nav-logo-vitae">vitae/res/img/img-nav-logo-vitae.png</file>
@@ -273,5 +276,13 @@
         <file alias="ic-arrow-drop-up-purple">vitae/res/img/ic-arrow-drop-up-purple.svg</file>
         <file alias="bg-welcome-2x">vitae/res/img/bg-welcome@2x.jpg</file>
         <file alias="bg-welcome-3x">vitae/res/img/bg-welcome@3x.jpg</file>
+        <file alias="img-logo-pivx">vitae/res/img/img-logo-pivx.svg</file>
+        <file alias="bg-welcome-svg">vitae/res/img/bg-welcome.svg</file>
+        <file alias="bg-welcome-container">vitae/res/img/bg-welcome-container.svg</file>
+        <file alias="bg-welcome">vitae/res/img/bg-welcome.png</file>
+        <file alias="bg-welcome-container-png">vitae/res/img/bg-welcome-container.png</file>
+        <file alias="bg-welcome-container-2x">vitae/res/img/bg-welcome-container@2x.png</file>
+        <file alias="bg-welcome-container-3x">vitae/res/img/bg-welcome-container@3x.png</file>
+        <file alias="bg-dashboard-banner">vitae/res/img/bg-dashboard-banner.png</file>
     </qresource>
 </RCC>
