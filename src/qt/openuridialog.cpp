@@ -9,7 +9,7 @@
 
 #include "guiutil.h"
 #include "walletmodel.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 #include <QUrl>
 

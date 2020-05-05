@@ -2,7 +2,7 @@
 #include "qt/vitae/forms/ui_sendcustomfeedialog.h"
 #include "QListView"
 #include "QGraphicsDropShadowEffect"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 SendCustomFeeDialog::SendCustomFeeDialog(QWidget *parent) :
     QDialog(parent),
