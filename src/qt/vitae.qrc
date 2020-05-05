@@ -125,9 +125,8 @@
         <file alias="spinner-034">res/movies/spinner-034.png</file>
     </qresource>
     <qresource prefix="/">
-        <file alias="bg-splash">vitae/res/img/bg-splash.jpg</file>
-        <file alias="bg-splash-2x">vitae/res/img/bg-splash@2x.jpg</file>
-        <file alias="bg-splash-3x">vitae/res/img/bg-splash@3x.jpg</file>
+        <file alias="bg-splash">vitae/res/img/bg-splash.svg</file>
+        <file alias="bg-splash-png">vitae/res/img/bg-splash.png</file>
         <file alias="bg-welcome-container">vitae/res/img/bg-welcome-container.jpg</file>
         <file alias="bg-welcome">vitae/res/img/bg-welcome.jpg</file>
         <file alias="img-dashboard-banner">vitae/res/img/img-dashboard-banner.jpg</file>
