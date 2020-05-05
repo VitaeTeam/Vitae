@@ -81,7 +81,7 @@ Any users currently running a 32-bit Windows OS should seek to upgrade to a 64-b
 Removal of Partially translated locales
 ----------
 
-From version 4.1.0 and onward, releases will no longer include any translation for languages that are not at least 80% translated. 
+From version 4.1.0 and onward, releases will no longer include any translation for languages that are not at least 80% translated.
 
 MultiSend Disabled
 ----------
@@ -104,7 +104,7 @@ Addresses in the dropdown of the "Send Transaction" and "Send Delegation" widget
 
 ### Custom Fee
 
-The custom fee selected when sending a transaction is now saved in the wallet database and persisted across multiple sends and wallet's restarts ([#1406](https://github.com/PIVX-Project/PIVX/pull/1406)).
+The custom fee selected when sending a transaction is now saved in the wallet database and persisted across multiple sends and wallet's restarts ([#1406](https://github.com/PIVX-Project/PIVX/pull/1406)). The fee is now also validated against the maximum value (10000 times `minRelayTxFee`) and minimum value (`minTxFee`) ([#1576](https://github.com/PIVX-Project/PIVX/pull/1576)).
 
 ### Include delegations in send
 
@@ -325,6 +325,12 @@ Detailed release notes follow. For convenience in locating the code changes and 
  - #1577 `2205e3d302` [RPC][GUI][Bug] Disable/Hide multisend (random-zebra)
  - #1578 `c064baaf6e` [GUI][Bug] Fix transaction details output-index (random-zebra)
  - #1581 `55c9236429` [GUI] Do not create new SettingsMultisendWidget (furszy)
+ - #1588 `7694d5fc6d` [GUI][Bug] Fix editing of CS address labels (Fuzzbawls)
+ - #1589 `7694d5fc6d` [GUI][Bug] Don't clear address label during send address validation (Fuzzbawls)
+ - #1590 `1fc629be86` [GUI] Update translations from Transifex for 4.1 (Fuzzbawls)
+ - #1594 `e001ddf106` [GUI][Bug] Reconnect CS owner address edit-label action (Fuzzbawls)
+ - #1595 `7779ab1194` [GUI][Bug] Fix "Select all" / "Unselect all" logic in coincontrol (random-zebra)
+ - #1599 `72595d7692` [GUI][Bug] Fix language selection invalidly stored (furszy)
 
 ### RPC Interface
  - #1299 `523db49f49` [Trivial][Regtest][RPC] generate call failing properly when the wallet is locked (furszy)
@@ -405,6 +411,7 @@ Detailed release notes follow. For convenience in locating the code changes and 
  - #1484 `0a4072e4fc` [Net] Fix resource leak in ReadBinaryFile (practicalswift)
  - #1492 `86ecb08159` [Net] Relay actual peers instead of localhost on getaddr (akshaynexus)
  - #1538 `38f848ecb1` [P2P] Update hard coded seed nodes (Fuzzbawls)
+ - #1591 `8a96306de6` [P2P] Removing dead seeder (furszy)
 
 ### Build Systems
  - #1256 `05bd016774` [Build][Scripts] Update translation flow (Fuzzbawls)
@@ -466,6 +473,9 @@ Detailed release notes follow. For convenience in locating the code changes and 
 
 ### Scripts and Tools
  - #1433 `f5f6c3cd92` [Scripts] Only fetch translations for high-completion locals (Fuzzbawls)
+
+### Misc
+ - #1583 `7fdf29f816` Update copyright headers for files changed in 2020 (Fuzzbawls)
 
 ## Credits
 Thanks to everyone who directly contributed to this release:
