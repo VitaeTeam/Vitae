@@ -9,7 +9,7 @@
 #include "qt/vitae/sendmultirow.h"
 #include "walletmodel.h"
 #include "coincontroldialog.h"
-#include "zpivcontroldialog.h"
+#include "qt/zVitcontroldialog.h"
 
 static const int MAX_SEND_POPUP_ENTRIES = 8;
 

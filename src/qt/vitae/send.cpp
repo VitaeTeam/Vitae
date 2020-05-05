@@ -12,9 +12,9 @@
 #include "addresstablemodel.h"
 #include "coincontrol.h"
 #include "script/standard.h"
-#include <primitives/deterministicmint.h>
+#include "zvit/deterministicmint.h"
 #include "openuridialog.h"
-#include "zpivcontroldialog.h"
+#include "qt/zVitcontroldialog.h"
 
 
 #include <iostream>
@@ -362,10 +362,10 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
 
     // TODO: Complete me..
     // use mints from zPIV selector if applicable
-    vector<CMintMeta> vMintsToFetch;
-    vector<CZerocoinMint> vMintsSelected;
-    if (!ZPivControlDialog::setSelectedMints.empty()) {
-        vMintsToFetch = ZPivControlDialog::GetSelectedMints();
+    std::vector<CMintMeta> vMintsToFetch;
+    std::vector<CZerocoinMint> vMintsSelected;
+    if (!ZVitControlDialog::setSelectedMints.empty()) {
+        vMintsToFetch = ZVitControlDialog::GetSelectedMints();
 
         for (auto& meta : vMintsToFetch) {
             CZerocoinMint mint;
@@ -415,7 +415,7 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
     )
             ) {
         inform(tr("zPIV transaction sent!"));
-        ZPivControlDialog::setSelectedMints.clear();
+        ZVitControlDialog::setSelectedMints.clear();
         clearAll();
         return true;
     } else {
@@ -582,10 +582,10 @@ void SendWidget::onCoinControlClicked()
         coinControlDialog->exec();
         ui->btnCoinControl->setActive(CoinControlDialog::coinControl->HasSelected());
     }else{
-        ZPivControlDialog* zPivControl = new ZPivControlDialog(this);
+        ZVitControlDialog* zPivControl = new ZVitControlDialog(this);
         zPivControl->setModel(walletModel);
         zPivControl->exec();
-        ui->btnCoinControl->setActive(!ZPivControlDialog::setSelectedMints.empty());
+        ui->btnCoinControl->setActive(!ZVitControlDialog::setSelectedMints.empty());
     }
 }
 
