@@ -1,7 +1,7 @@
 #ifndef ADDRESSESWIDGET_H
 #define ADDRESSESWIDGET_H
 
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 #include "addresstablemodel.h"
 #include "tooltipmenu.h"
 #include "furabstractlistitemdelegate.h"

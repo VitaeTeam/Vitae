@@ -1,7 +1,7 @@
 #ifndef RECEIVEWIDGET_H
 #define RECEIVEWIDGET_H
 
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 #include "addresstablemodel.h"
 #include "qt/vitae/furabstractlistitemdelegate.h"
 #include "qt/vitae/AddressFilterProxyModel.h"

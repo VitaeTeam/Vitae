@@ -54,7 +54,7 @@ public:
     bool isLightTheme;
 };
 
-#include "qt/pivx/moc_addresseswidget.cpp"
+#include "qt/vitae/moc_addresseswidget.cpp"
 
 AddressesWidget::AddressesWidget(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
