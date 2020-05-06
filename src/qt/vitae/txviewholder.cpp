@@ -26,8 +26,8 @@ void TxViewHolder::init(QWidget* holder,const QModelIndex &index, bool isHovered
     bool isUnconfirmed = (rec->status.status == TransactionStatus::Unconfirmed) || (rec->status.status == TransactionStatus::Immature);
     QString label = indexType.data(Qt::DisplayRole).toString();
     if(rec->type != TransactionRecord::ZerocoinMint &&
-            rec->type !=  TransactionRecord::ZerocoinSpend_Change_zPiv &&
-            rec->type !=  TransactionRecord::StakeZPIV){
+            rec->type !=  TransactionRecord::ZerocoinSpend_Change_zVit &&
+            rec->type !=  TransactionRecord::StakeZVIT){
         QString address = rIndex.data(Qt::DisplayRole).toString();
         if(address.length() > 20) {
             address = address.left(ADDRESS_SIZE) + "..." + address.right(ADDRESS_SIZE);

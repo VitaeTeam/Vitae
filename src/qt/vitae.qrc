@@ -244,6 +244,10 @@
         <file alias="ic-transaction-received">vitae/res/img/ic-transaction-received.svg</file>
         <file alias="ic-transaction-sent">vitae/res/img/ic-transaction-sent.svg</file>
         <file alias="ic-transaction-staked">vitae/res/img/ic-transaction-staked.svg</file>
+        <file alias="ic-transaction-mint-inactive">vitae/res/img/ic-transaction-mint-inactive.svg</file>
+        <file alias="ic-transaction-received-inactive">vitae/res/img/ic-transaction-received-inactive.svg</file>
+        <file alias="ic-transaction-sent-inactive">vitae/res/img/ic-transaction-sent-inactive.svg</file>
+        <file alias="ic-transaction-staked-inactive">vitae/res/img/ic-transaction-staked-inactive.svg</file>
         <file alias="ic-unlock-staking">vitae/res/img/ic-unlock-staking.svg</file>
         <file alias="ic-update-liliac">vitae/res/img/ic-update-liliac.svg</file>
         <file alias="ic-update">vitae/res/img/ic-update.svg</file>
