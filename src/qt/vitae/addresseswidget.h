@@ -3,7 +3,7 @@
 
 #include "qt/vitae/pwidget.h"
 #include "addresstablemodel.h"
-#include "qt/pivx/tooltipmenu.h"
+#include "qt/vitae/tooltipmenu.h"
 #include "furabstractlistitemdelegate.h"
 #include "qt/vitae/AddressFilterProxyModel.h"
 
