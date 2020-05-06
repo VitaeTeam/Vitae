@@ -239,6 +239,7 @@
         <file alias="ic-switch-liliac-on">vitae/res/img/ic-switch-liliac-on.svg</file>
         <file alias="ic-switch-off">vitae/res/img/ic-switch-off.svg</file>
         <file alias="ic-switch-on">vitae/res/img/ic-switch-on.svg</file>
+        <file alias="ic-transaction-warning">vitae/res/img/ic-transaction-mint.svg</file>
         <file alias="ic-transaction-mint">vitae/res/img/ic-transaction-mint.svg</file>
         <file alias="ic-transaction-received">vitae/res/img/ic-transaction-received.svg</file>
         <file alias="ic-transaction-sent">vitae/res/img/ic-transaction-sent.svg</file>
