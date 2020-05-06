@@ -133,13 +133,10 @@
         <file alias="bg-welcome-container">vitae/res/img/bg-welcome-container.jpg</file>
         <file alias="bg-welcome">vitae/res/img/bg-welcome.jpg</file>
         <file alias="img-dashboard-banner">vitae/res/img/img-dashboard-banner.jpg</file>
-        <file alias="ic-check-sync">vitae/res/img/ic-check-sync.png</file>
-        <file alias="ic-coin-zpiv">vitae/res/img/ic-coin-zpiv.png</file>
         <file alias="img-logo-vitae-png">vitae/res/img/img-logo-vitae.png</file>
         <file alias="img-logo-vitae-2x">vitae/res/img/img-logo-vitae@2x.png</file>
         <file alias="img-logo-vitae-3x">vitae/res/img/img-logo-vitae@3x.png</file>
         <file alias="img-nav-logo-vitae">vitae/res/img/img-nav-logo-vitae.png</file>
-        <file alias="img-nav-logo">vitae/res/img/img-nav-logo.png</file>
         <file alias="img-qr-test-big">vitae/res/img/img-qr-test-big.png</file>
         <file alias="img-qr-test">vitae/res/img/img-qr-test.png</file>
         <file alias="img-welcome-step1">vitae/res/img/img-welcome-step1.png</file>
