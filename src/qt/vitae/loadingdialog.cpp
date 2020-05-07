@@ -1,5 +1,5 @@
-#include "qt/pivx/loadingdialog.h"
-#include "qt/pivx/forms/ui_loadingdialog.h"
+#include "qt/vitae/loadingdialog.h"
+#include "qt/vitae/forms/ui_loadingdialog.h"
 #include <QMovie>
 
 LoadingDialog::LoadingDialog(QWidget *parent) :
