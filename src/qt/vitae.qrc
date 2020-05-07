@@ -269,10 +269,11 @@
         <file alias="img-empty-masternode">vitae/res/img/img-empty-masternode.svg</file>
         <file alias="img-empty-multisend">vitae/res/img/img-empty-multisend.svg</file>
         <file alias="img-empty-peers">vitae/res/img/img-empty-peers.svg</file>
-        <file alias="img-empty-privacy">vitae/res/img/img-empty-privacy.svg</file>
+        <file alias="img-empty-dark-staking-on">vitae/res/img/img-empty-dark-staking-on.svg</file>
         <file alias="img-empty-staking-off">vitae/res/img/img-empty-staking-off.svg</file>
         <file alias="img-empty-staking-on">vitae/res/img/img-empty-staking-on.svg</file>
         <file alias="img-empty-transactions">vitae/res/img/img-empty-transactions.svg</file>
+        <file alias="img-empty-privacy">vitae/res/img/img-empty-privacy.svg</file>
         <file alias="img-nav-logo">vitae/res/img/img-nav-logo.svg</file>
         <file alias="img-qr">vitae/res/img/img-qr.svg</file>
         <file alias="ic-contact-arrow-down">vitae/res/img/ic-contact-arrow-down.svg</file>
@@ -289,8 +290,7 @@
         <file alias="bg-welcome-container-2x">vitae/res/img/bg-welcome-container@2x.png</file>
         <file alias="bg-welcome-container-3x">vitae/res/img/bg-welcome-container@3x.png</file>
         <file alias="bg-dashboard-banner">vitae/res/img/bg-dashboard-banner.png</file>
-        <file alias="ic-check-liliac-indeterminate">vitae/res/img/ic-check-liliac-indeterminate.svg</file>
-        <file alias="ic-check-box-liliac-indeterminate">vitae/res/img/ic-check-box-liliac-indeterminate.svg</file>
+        <file alias="ic-check-box-dark-active">vitae/res/img/ic-check-box-dark-active.svg</file>
         <file alias="ic-check-box-indeterminate">vitae/res/img/ic-check-box-indeterminate.svg</file>
         <file alias="ic-check-liliac-indeterminate">vitae/res/img/ic-check-liliac-indeterminate.svg</file>
         <file alias="ani-loading">vitae/res/img/ani-loading.gif</file>
