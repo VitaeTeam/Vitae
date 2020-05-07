@@ -264,10 +264,12 @@
         <file alias="img-empty-dark-peers">vitae/res/img/img-empty-dark-peers.svg</file>
         <file alias="img-empty-dark-staking-off">vitae/res/img/img-empty-dark-staking-off.svg</file>
         <file alias="img-empty-dark-transactions">vitae/res/img/img-empty-dark-transactions.svg</file>
+        <file alias="img-empty-dark-privacy">vitae/res/img/img-empty-privacy-dark.svg</file>
         <file alias="img-empty-error">vitae/res/img/img-empty-error.svg</file>
         <file alias="img-empty-masternode">vitae/res/img/img-empty-masternode.svg</file>
         <file alias="img-empty-multisend">vitae/res/img/img-empty-multisend.svg</file>
         <file alias="img-empty-peers">vitae/res/img/img-empty-peers.svg</file>
+        <file alias="img-empty-privacy">vitae/res/img/img-empty-privacy.svg</file>
         <file alias="img-empty-staking-off">vitae/res/img/img-empty-staking-off.svg</file>
         <file alias="img-empty-staking-on">vitae/res/img/img-empty-staking-on.svg</file>
         <file alias="img-empty-transactions">vitae/res/img/img-empty-transactions.svg</file>
