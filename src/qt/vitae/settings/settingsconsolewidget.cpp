@@ -1,7 +1,7 @@
 #include "qt/vitae/settings/settingsconsolewidget.h"
 #include "qt/vitae/settings/forms/ui_settingsconsolewidget.h"
 #include "QGraphicsDropShadowEffect"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 #include "clientmodel.h"
 #include "guiutil.h"

@@ -391,7 +391,7 @@ void TopBar::setNumBlocks(int count) {
             int progress = nAttempt + (fundamentalnodeSync.RequestedFundamentalnodeAssets - 1) * FUNDAMENTALNODE_SYNC_THRESHOLD;
             if(progress >= 0){
                 text = std::string("Synchronizing additional data: %p%", progress);
-                progressBar->setMaximum(4 * MASTERNODE_SYNC_THRESHOLD);
+                progressBar->setMaximum(4 * FUNDAMENTALNODE_SYNC_THRESHOLD);
                 progressBar->setValue(progress);
                 needState = false;
             }
