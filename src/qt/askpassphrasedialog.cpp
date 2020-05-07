@@ -12,7 +12,7 @@
 #include "walletmodel.h"
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/loadingdialog.h"
-#include "qt/vitae/PIVXGUI.h"
+#include "qt/vitae/VITAEGUI.h"
 
 #include <QKeyEvent>
 #include <QMessageBox>

@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QThread>
 #include <iostream>
-#include "qt/pivx/prunnable.h"
+#include "qt/vitae/prunnable.h"
 
 namespace Ui {
 class LoadingDialog;

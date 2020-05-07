@@ -6,11 +6,11 @@
 #define BITCOIN_QT_ASKPASSPHRASEDIALOG_H
 
 #include <QDialog>
-#include "qt/pivx/prunnable.h"
+#include "qt/vitae/prunnable.h"
 #include "allocators.h"
 
 class WalletModel;
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui
 {
