@@ -23,7 +23,7 @@ public:
     void setClientModel(ClientModel* model);
     void setWalletModel(WalletModel* model);
 
-    PIVXGUI* getWindow() { return this->window; }
+    VITAEGUI* getWindow() { return this->window; }
 
 signals:
     void message(const QString& title, const QString& body, unsigned int style, bool* ret = nullptr);

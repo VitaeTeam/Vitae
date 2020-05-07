@@ -1,7 +1,7 @@
 #include "qt/vitae/txviewholder.h"
 #include "qt/vitae/txrow.h"
 
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 #include "transactiontablemodel.h"
 #include "transactionrecord.h"
 #include <QModelIndex>
