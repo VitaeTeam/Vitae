@@ -172,7 +172,6 @@
         <file alias="ic-arrow-white-right">vitae/res/img/ic-arrow-white-right.svg</file>
         <file alias="ic-check-active">vitae/res/img/ic-check-active.svg</file>
         <file alias="ic-check-box">vitae/res/img/ic-check-box.svg</file>
-        <file alias="ic-check-box-indeterminate">vitae/res/img/ic-check-box-indeterminate.svg</file>
         <file alias="ic-check-box-liliac-indeterminate">vitae/res/img/ic-check-box-liliac-indeterminate.svg</file>
         <file alias="ic-check-connect-off">vitae/res/img/ic-check-connect-off.svg</file>
         <file alias="ic-check-connect">vitae/res/img/ic-check-connect.svg</file>
