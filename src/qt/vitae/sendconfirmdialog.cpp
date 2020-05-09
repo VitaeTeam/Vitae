@@ -6,8 +6,8 @@
 #include "transactionrecord.h"
 #include "wallet.h"
 #include "guiutil.h"
-#include "qt/pivx/snackbar.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/snackbar.h"
+#include "qt/vitae/qtutils.h"
 #include <QList>
 #include <QDateTime>
 

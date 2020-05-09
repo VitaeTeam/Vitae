@@ -28,10 +28,6 @@ bool openDialogWithOpaqueBackgroundY(QDialog *widget, VITAEGUI *gui, double posX
 bool openDialogWithOpaqueBackground(QDialog *widget, VITAEGUI *gui, double posX = 3);
 bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, VITAEGUI *gui);
 
-bool openDialogWithOpaqueBackgroundY(QDialog *widget, PIVXGUI *gui, double posX = 3, int posY = 5);
-bool openDialogWithOpaqueBackground(QDialog *widget, PIVXGUI *gui, double posX = 3);
-bool openDialogWithOpaqueBackgroundFullScreen(QDialog *widget, PIVXGUI *gui);
-
 //
 QPixmap encodeToQr(QString str, QString &errorStr, QColor qrColor = Qt::black);
 
