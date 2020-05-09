@@ -14,7 +14,7 @@
 #include "qt/vitae/qtutils.h"
 #include "qt/vitae/loadingdialog.h"
 #include "qt/vitae/defaultdialog.h"
-#include "qt/vitae/PIVXGUI.h"
+#include "qt/vitae/VITAEGUI.h"
 #include <QDebug>
 
 #include <QKeyEvent>
@@ -304,7 +304,7 @@ bool AskPassphraseDialog::eventFilter(QObject* object, QEvent* event)
 }
 
 bool AskPassphraseDialog::openStandardDialog(QString title, QString body, QString okBtn, QString cancelBtn){
-    PIVXGUI* gui = static_cast<PIVXGUI*>(parentWidget());
+    VITAEGUI* gui = static_cast<VITAEGUI*>(parentWidget());
     DefaultDialog *confirmDialog = new DefaultDialog(gui);
     confirmDialog->setText(title, body, okBtn, cancelBtn);
     confirmDialog->adjustSize();
