@@ -350,3 +350,4 @@ void AskPassphraseDialog::initWatch(QWidget *parent) {
     int posXX = ui->layoutEdit->width() - 30;
     int posYY = 8;
     btnWatch->move(450, posYY);
+}
