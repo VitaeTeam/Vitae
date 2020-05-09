@@ -203,6 +203,8 @@
         <file alias="ic-connect">vitae/res/img/ic-connect.svg</file>
         <file alias="ic-copy-liliac">vitae/res/img/ic-copy-liliac.svg</file>
         <file alias="ic-copy">vitae/res/img/ic-copy.svg</file>
+        <file alias="ic-copy-big">vitae/res/img/ic-copy-big.svg</file>
+        <file alias="ic-copy-big-white">vitae/res/img/ic-copy-big-white.svg</file>
         <file alias="ic-exit">vitae/res/img/ic-exit.svg</file>
         <file alias="ic-expand">vitae/res/img/ic-expand.svg</file>
         <file alias="ic-folder">vitae/res/img/ic-folder.svg</file>
