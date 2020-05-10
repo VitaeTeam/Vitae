@@ -6,7 +6,7 @@
 #include "walletmodel.h"
 
 class WalletModel;
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class RequestDialog;

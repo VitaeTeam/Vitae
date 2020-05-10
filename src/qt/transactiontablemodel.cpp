@@ -94,7 +94,7 @@ public:
         if (hasZcTxes) return;
         if (record.type == TransactionRecord::ZerocoinMint ||
             record.type == TransactionRecord::ZerocoinSpend ||
-            record.type == TransactionRecord::ZerocoinSpend_Change_zPiv ||
+            record.type == TransactionRecord::ZerocoinSpend_Change_zVit ||
             record.type == TransactionRecord::ZerocoinSpend_FromMe) {
             hasZcTxes = true;
         }

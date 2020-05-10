@@ -43,8 +43,8 @@ ZVitControlDialog::ZVitControlDialog(QWidget *parent) :
 
     // Label Style
 
-    ui->labelZPiv->setProperty("cssClass", "text-main-purple");
-    ui->labelZPiv_int->setProperty("cssClass", "text-main-purple");
+    ui->labelZVit->setProperty("cssClass", "text-main-purple");
+    ui->labelZVit_int->setProperty("cssClass", "text-main-purple");
     ui->labelQuantity->setProperty("cssClass", "text-main-purple");
     ui->labelQuantity_int->setProperty("cssClass", "text-main-purple");
 

@@ -124,7 +124,7 @@ void RequestDialog::onNextClicked(){
 void RequestDialog::onCopyClicked(){
     if(info) {
         GUIUtil::setClipboard(GUIUtil::formatBitcoinURI(*info));
-        static_cast<PIVXGUI*>(parentWidget())->messageInfo(tr("URI copied to clipboard"));
+        static_cast<VITAEGUI*>(parentWidget())->messageInfo(tr("URI copied to clipboard"));
         close();
     }
 }
