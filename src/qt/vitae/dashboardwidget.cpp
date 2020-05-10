@@ -347,7 +347,7 @@ void DashboardWidget::refreshChart(){
         QModelIndex modelIndex = stakesFilter->index(i, TransactionTableModel::ToAddress);
         qint64 amount = llabs(modelIndex.data(TransactionTableModel::AmountRole).toLongLong());
         QDateTime datetime = modelIndex.data(TransactionTableModel::DateRole).toDateTime();
-        bool isPiv = modelIndex.data(TransactionTableModel::TypeRole).toInt() != TransactionRecord::StakeZPIV;
+        bool isPiv = modelIndex.data(TransactionTableModel::TypeRole).toInt() != TransactionRecord::StakeZVIT;
         int month = datetime.date().month();
         if (amountByMonths.contains(month)) {
             if (isPiv) {
