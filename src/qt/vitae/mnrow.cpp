@@ -1,6 +1,6 @@
-#include "qt/pivx/mnrow.h"
-#include "qt/pivx/forms/ui_mnrow.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/mnrow.h"
+#include "qt/vitae/forms/ui_mnrow.h"
+#include "qt/vitae/qtutils.h"
 
 MNRow::MNRow(QWidget *parent) :
     QWidget(parent),

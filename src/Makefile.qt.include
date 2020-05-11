@@ -179,7 +179,7 @@ QT_MOC_CPP = \
   qt/vitae/moc_addresslabelrow.cpp \
   qt/vitae/moc_contactdropdownrow.cpp \
   qt/vitae/moc_optionbutton.cpp \
-  qt/pivx/moc_mnmodel.cpp \
+  qt/vitae/moc_mnmodel.cpp \
   qt/vitae/moc_mnrow.cpp \
   qt/vitae/moc_masternodeswidget.cpp \
   qt/vitae/moc_myaddressrow.cpp \
@@ -322,7 +322,7 @@ BITCOIN_QT_H = \
   qt/vitae/addresslabelrow.h \
   qt/vitae/contactdropdownrow.h \
   qt/vitae/optionbutton.h \
-  qt/pivx/mnmodel.h \
+  qt/vitae/mnmodel.h \
   qt/vitae/mnrow.h \
   qt/vitae/masternodeswidget.h \
   qt/vitae/myaddressrow.h \
@@ -694,7 +694,7 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/contactdropdownrow.cpp \
   qt/vitae/contactsdropdown.cpp \
   qt/vitae/optionbutton.cpp \
-  qt/pivx/mnmodel.cpp \
+  qt/vitae/mnmodel.cpp \
   qt/vitae/mnrow.cpp \
   qt/vitae/masternodeswidget.cpp \
   qt/vitae/myaddressrow.cpp \

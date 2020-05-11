@@ -2,12 +2,12 @@
 #define MASTERNODESWIDGET_H
 
 #include <QWidget>
-#include "qt/pivx/pwidget.h"
-#include "qt/pivx/furabstractlistitemdelegate.h"
-#include "qt/pivx/mnmodel.h"
-#include "qt/pivx/tooltipmenu.h"
+#include "qt/vitae/pwidget.h"
+#include "qt/vitae/furabstractlistitemdelegate.h"
+#include "qt/vitae/mnmodel.h"
+#include "qt/vitae/tooltipmenu.h"
 
-class PIVXGUI;
+class VITAEGUI;
 
 namespace Ui {
 class MasterNodesWidget;
@@ -23,7 +23,7 @@ class MasterNodesWidget : public PWidget
 
 public:
 
-    explicit MasterNodesWidget(PIVXGUI *parent = nullptr);
+    explicit MasterNodesWidget(VITAEGUI *parent = nullptr);
     ~MasterNodesWidget();
 
     void loadWalletModel();

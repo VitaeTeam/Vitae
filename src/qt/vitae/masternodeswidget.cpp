@@ -1,17 +1,17 @@
-#include "qt/pivx/masternodeswidget.h"
-#include "qt/pivx/forms/ui_masternodeswidget.h"
-#include "qt/pivx/qtutils.h"
-#include "qt/pivx/mnrow.h"
+#include "qt/vitae/masternodeswidget.h"
+#include "qt/vitae/forms/ui_masternodeswidget.h"
+#include "qt/vitae/qtutils.h"
+#include "qt/vitae/mnrow.h"
 
-#include "activemasternode.h"
+#include "activefundamentalnode.h"
 #include "clientmodel.h"
 #include "guiutil.h"
 #include "init.h"
-#include "masternode-sync.h"
-#include "masternodeconfig.h"
-#include "masternodeman.h"
+#include "fundamentalnode-sync.h"
+#include "fundamentalnodeconfig.h"
+#include "fundamentalnodeman.h"
 #include "sync.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 #include "walletmodel.h"
 #include "askpassphrasedialog.h"
 
@@ -50,9 +50,7 @@ public:
     bool isLightTheme;
 };
 
-#include "qt/pivx/moc_masternodeswidget.cpp"
-
-MasterNodesWidget::MasterNodesWidget(PIVXGUI *parent) :
+MasterNodesWidget::MasterNodesWidget(VITAEGUI *parent) :
     PWidget(parent),
     ui(new Ui::MasterNodesWidget)
 {
@@ -176,16 +174,16 @@ void MasterNodesWidget::startAlias(QString strAlias)
     QString strStatusHtml;
     strStatusHtml += "<center>Alias: " + strAlias;
 
-    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         if (mne.getAlias() == strAlias.toStdString()) {
             std::string strError;
-            CMasternodeBroadcast mnb;
+            CFundamentalnodeBroadcast mnb;
 
-            bool fSuccess = CMasternodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb);
+            bool fSuccess = CFundamentalnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb);
 
             if (fSuccess) {
                 strStatusHtml += "<br>Successfully started masternode.";
-                mnodeman.UpdateMasternodeList(mnb);
+                mnodeman.UpdateFundamentalnodeList(mnb);
                 mnb.Relay();
             } else {
                 strStatusHtml += "<br>Failed to start masternode.<br>Error: " + QString::fromStdString(strError);

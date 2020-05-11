@@ -1,19 +1,19 @@
-#include "qt/pivx/mnmodel.h"
+#include "qt/vitae/mnmodel.h"
 
-#include "masternode-sync.h"
-#include "masternodeconfig.h"
-#include "masternodeman.h"
-#include "activemasternode.h"
+#include "fundamentalnode-sync.h"
+#include "fundamentalnodeconfig.h"
+#include "fundamentalnodeman.h"
+#include "activefundamentalnode.h"
 #include "sync.h"
 
 MNModel::MNModel(QObject *parent) : QAbstractTableModel(parent){
-    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
 
         CTxIn txin = CTxIn(uint256S(mne.getTxHash()), uint32_t(nIndex));
-        CMasternode* pmn = mnodeman.Find(txin);
+        CFundamentalnode* pmn = mnodeman.Find(txin);
         nodes.insert(QString::fromStdString(mne.getAlias()), std::make_pair(QString::fromStdString(mne.getIp()), pmn));
     }
 }
@@ -39,7 +39,7 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
             return QVariant();
 
     // rec could be null, always verify it.
-    CMasternode* rec = static_cast<CMasternode*>(index.internalPointer());
+    CFundamentalnode* rec = static_cast<CFundamentalnode*>(index.internalPointer());
     int row = index.row();
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
         switch (index.column()) {
@@ -55,8 +55,8 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
 QModelIndex MNModel::index(int row, int column, const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    std::pair<QString, CMasternode*> pair = nodes.values().value(row);
-    CMasternode* data = pair.second;
+    std::pair<QString, CFundamentalnode*> pair = nodes.values().value(row);
+    CFundamentalnode* data = pair.second;
     if (data) {
         return createIndex(row, column, data);
     } else if (!pair.first.isEmpty()){

@@ -2,7 +2,7 @@
 #define MNMODEL_H
 
 #include <QAbstractTableModel>
-#include "masternode.h"
+#include "fundamentalnode.h"
 
 class MNModel : public QAbstractTableModel
 {
@@ -27,7 +27,7 @@ public:
 
 private:
     // alias mn node ---> pair <ip, master node>
-    QMap<QString, std::pair<QString,CMasternode*>> nodes;
+    QMap<QString, std::pair<QString,CFundamentalnode*>> nodes;
 };
 
 #endif // MNMODEL_H
