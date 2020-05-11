@@ -168,6 +168,8 @@
         <file alias="ic-arrow-purple-down">vitae/res/img/ic-arrow-purple-down.svg</file>
         <file alias="ic-arrow-right-white">vitae/res/img/ic-arrow-right-white.svg</file>
         <file alias="ic-arrow-right">vitae/res/img/ic-arrow-right.svg</file>
+        <file alias="ic-arrow-left-white">vitae/res/img/ic-arrow-left-white.svg</file>
+        <file alias="ic-arrow-left">vitae/res/img/ic-arrow-left.svg</file>
         <file alias="ic-arrow-white-left">vitae/res/img/ic-arrow-white-left.svg</file>
         <file alias="ic-arrow-white-right">vitae/res/img/ic-arrow-white-right.svg</file>
         <file alias="ic-check-active">vitae/res/img/ic-check-active.svg</file>
