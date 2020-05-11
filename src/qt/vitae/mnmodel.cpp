@@ -47,7 +47,7 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
             case ADDRESS:
                 return nodes.values().value(row).first;
             case STATUS: {
-                std::pair<QString, CMasternode*> pair = nodes.values().value(row);
+                std::pair<QString, CFundamentalnode*> pair = nodes.values().value(row);
                 return (pair.second) ? QString::fromStdString(pair.second->GetStatus()) : "MISSING";
             }
         }
@@ -80,14 +80,14 @@ bool MNModel::removeMn(const QModelIndex& modelIndex) {
     return true;
 }
 
-bool MNModel::addMn(CMasternodeConfig::CMasternodeEntry* mne){
+bool MNModel::addMn(CFundamentalnodeConfig::CFundamentalnodeEntry* mne){
     beginInsertRows(QModelIndex(), nodes.size(), nodes.size());
     int nIndex;
     if(!mne->castOutputIndex(nIndex))
         return false;
 
     CTxIn txin = CTxIn(uint256S(mne->getTxHash()), uint32_t(nIndex));
-    CMasternode* pmn = mnodeman.Find(txin);
+    CFundamentalnode* pmn = mnodeman.Find(txin);
     nodes.insert(QString::fromStdString(mne->getAlias()), std::make_pair(QString::fromStdString(mne->getIp()), pmn));
     endInsertRows();
 }

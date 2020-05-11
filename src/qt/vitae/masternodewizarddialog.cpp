@@ -1,6 +1,6 @@
-#include "qt/pivx/masternodewizarddialog.h"
-#include "qt/pivx/forms/ui_masternodewizarddialog.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/masternodewizarddialog.h"
+#include "qt/vitae/forms/ui_masternodewizarddialog.h"
+#include "qt/vitae/qtutils.h"
 #include "QFile"
 #include "optionsmodel.h"
 
@@ -248,8 +248,8 @@ bool MasterNodeWizardDialog::createMN(){
                 throw std::runtime_error(strprintf(_("masternode.conf %s resides outside data directory %s"), strConfFile, strDataDir));
             }
 
-            filesystem::path pathBootstrap = GetDataDir() / strConfFile;
-            if (filesystem::exists(pathBootstrap)) {
+            boost::filesystem::path pathBootstrap = GetDataDir() / strConfFile;
+            if (boost::filesystem::exists(pathBootstrap)) {
                 boost::filesystem::path pathMasternodeConfigFile = GetMasternodeConfigFile();
                 boost::filesystem::ifstream streamConfig(pathMasternodeConfigFile);
 
@@ -303,8 +303,8 @@ bool MasterNodeWizardDialog::createMN(){
 
                 boost::filesystem::path pathOldConfFile("old_masternode.conf");
                 if (!pathOldConfFile.is_complete()) pathOldConfFile = GetDataDir() / pathOldConfFile;
-                if (filesystem::exists(pathOldConfFile)) {
-                    filesystem::remove(pathOldConfFile);
+                if (boost::filesystem::exists(pathOldConfFile)) {
+                    boost::filesystem::remove(pathOldConfFile);
                 }
                 rename(pathMasternodeConfigFile, pathOldConfFile);
 
@@ -312,7 +312,7 @@ bool MasterNodeWizardDialog::createMN(){
                 if (!pathNewConfFile.is_complete()) pathNewConfFile = GetDataDir() / pathNewConfFile;
                 rename(pathConfigFile, pathNewConfFile);
 
-                mnEntry = masternodeConfig.add(alias, ip, mnKeyString, "4ea6a8cb6590ced43b4a6fa4ccba7badfa90ab6567392196075fb1e84ad02fce", "1");
+                mnEntry = fundamentalnodeConfig.add(alias, ip, mnKeyString, "4ea6a8cb6590ced43b4a6fa4ccba7badfa90ab6567392196075fb1e84ad02fce", "1");
 
                 returnStr = tr("Master node created!");
                 return true;

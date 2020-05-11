@@ -13,9 +13,9 @@
 
 CMasternodeConfig masternodeConfig;
 
-CMasternodeConfig::CMasternodeEntry* CMasternodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex)
+CMasternodeConfig::CMasternodeEntry* CMasternodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex, std::string donationAddress, std::string donationPercent)
 {
-    CMasternodeEntry cme(alias, ip, privKey, txHash, outputIndex);
+    CMasternodeEntry cme(alias, ip, privKey, txHash, outputIndex, donationAddress, donationPercent);
     entries.push_back(cme);
     return &(entries[entries.size()-1]);
 }

@@ -101,7 +101,7 @@ public:
 
     void clear();
     bool read(std::string& strErr);
-    CMasternodeConfig::CMasternodeEntry* add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
+    CMasternodeConfig::CMasternodeEntry* add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex, std::string donationAddress, std::string donationPercent);
     void remove(std::string alias);
 
 
