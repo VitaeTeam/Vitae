@@ -281,7 +281,7 @@ void VITAEGUI::messageInfo(const QString& text){
 }
 
 
-void PIVXGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
+void VITAEGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
 {
     try {
         QString strTitle = tr("PIVX Core"); // default title
