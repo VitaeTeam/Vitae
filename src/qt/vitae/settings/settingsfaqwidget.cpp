@@ -1,7 +1,7 @@
 #include "qt/vitae/settings/settingsfaqwidget.h"
 #include "qt/vitae/settings/forms/ui_settingsfaqwidget.h"
 #include <QScrollBar>
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 SettingsFaqWidget::SettingsFaqWidget(QWidget *parent) :
     QDialog(parent),

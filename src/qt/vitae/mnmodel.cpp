@@ -54,7 +54,7 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
             case ADDRESS:
                 return nodes.values().value(row).first;
             case PUB_KEY:
-                return (isAvailable) ? QString::fromStdString(nodes.values().value(row).second->pubKeyMasternode.GetHash().GetHex()) : "No available";
+                return (isAvailable) ? QString::fromStdString(nodes.values().value(row).second->pubKeyFundamentalnode.GetHash().GetHex()) : "No available";
             case COLLATERAL_ID:
                 return (isAvailable) ? QString::fromStdString(rec->vin.prevout.hash.GetHex()) : "No available";
             case COLLATERAL_OUT_INDEX:

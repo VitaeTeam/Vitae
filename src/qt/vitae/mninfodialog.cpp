@@ -1,10 +1,10 @@
-#include "qt/pivx/mninfodialog.h"
-#include "qt/pivx/forms/ui_mninfodialog.h"
+#include "qt/vitae/mninfodialog.h"
+#include "qt/vitae/forms/ui_mninfodialog.h"
 #include "walletmodel.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 #include "guiutil.h"
-#include "qt/pivx/snackbar.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/snackbar.h"
+#include "qt/vitae/qtutils.h"
 #include <QDateTime>
 
 MnInfoDialog::MnInfoDialog(QWidget *parent) :

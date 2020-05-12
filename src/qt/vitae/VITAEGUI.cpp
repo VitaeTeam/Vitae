@@ -477,7 +477,7 @@ int VITAEGUI::getNavWidth(){
     return this->navMenu->width();
 }
 
-void PIVXGUI::openFAQ(){
+void VITAEGUI::openFAQ(){
     showHide(true);
     SettingsFaqWidget* dialog = new SettingsFaqWidget(this);
     openDialogWithOpaqueBackgroundFullScreen(dialog, this);
