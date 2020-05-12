@@ -2,7 +2,7 @@
 #include "qt/vitae/settings/forms/ui_settingsmultisenddialog.h"
 #include "QGraphicsDropShadowEffect"
 #include "QListView"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 SettingsMultisendDialog::SettingsMultisendDialog(QWidget *parent) :
     QDialog(parent),
