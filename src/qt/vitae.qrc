@@ -189,6 +189,7 @@
         <file alias="ic-check-staking">vitae/res/img/ic-check-staking.svg</file>
         <file alias="ic-check-sync-off">vitae/res/img/ic-check-sync-off.svg</file>
         <file alias="ic-check-sync">vitae/res/img/ic-check-sync.svg</file>
+        <file alias="ic-check-faq">vitae/res/img/ic-check-faq.svg</file>
         <file alias="ic-check-theme-dark">vitae/res/img/ic-check-theme-dark.svg</file>
         <file alias="ic-check-theme-light">vitae/res/img/ic-check-theme-light.svg</file>
         <file alias="ic-check-white">vitae/res/img/ic-check-white.svg</file>
