@@ -358,6 +358,7 @@ static const CRPCCommand vRPCCommands[] =
         {"vitae", "fnsync", &fnsync, true, true, false},
         {"vitae", "spork", &spork, true, true, false},
         {"vitae", "getpoolinfo", &getpoolinfo, true, true, false},
+        {"vitae", "makekeypair", &makekeypair, true, true, false},
         {"vitae", "mnspork", &mnspork, true, true, false},
         {"vitae", "masternode", &masternode, true, true, false},
         {"vitae", "masternodelist", &masternodelist, true, true, false},
