@@ -2,7 +2,7 @@
 #include "qt/vitae/forms/ui_txrow.h"
 
 #include "guiutil.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 TxRow::TxRow(bool isLightTheme, QWidget *parent) :
     QWidget(parent),
