@@ -9,7 +9,7 @@
 #include "activefundamentalnode.h"
 #include "sync.h"
 #include "uint256.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 
 MNModel::MNModel(QObject *parent) : QAbstractTableModel(parent){
     updateMNList();
@@ -89,7 +89,7 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
                 return (pair.second) ? QString::fromStdString(pair.second->Status()) : "MISSING";
             }
             case PRIV_KEY: {
-                for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+                for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
                     if (mne.getTxHash().compare(rec->vin.prevout.hash.GetHex()) == 0){
                         return QString::fromStdString(mne.getPrivKey());
                     }

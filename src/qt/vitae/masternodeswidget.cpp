@@ -22,7 +22,7 @@
 #include "walletmodel.h"
 #include "askpassphrasedialog.h"
 #include "util.h"
-#include "qt/pivx/optionbutton.h"
+#include "qt/vitae/optionbutton.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
 #include <fstream>

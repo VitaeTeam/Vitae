@@ -9,7 +9,7 @@
 #include "db.h"
 #include "util.h"
 #include "guiutil.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 #include <QDir>
 
 SettingsInformationWidget::SettingsInformationWidget(VITAEGUI* _window,QWidget *parent) :

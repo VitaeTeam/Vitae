@@ -128,7 +128,7 @@ bool openConfigfile();
 bool openMNConfigfile();
 
 // Open fundamentalnode.conf
-void openFNConfigfile();
+bool openFNConfigfile();
 
 // Browse backup folder
 bool showBackups();

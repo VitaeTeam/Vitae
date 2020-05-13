@@ -316,7 +316,7 @@ bool AskPassphraseDialog::openStandardDialog(QString title, QString body, QStrin
 
 void AskPassphraseDialog::warningMessage() {
     hide();
-    static_cast<PIVXGUI*>(parentWidget())->showHide(true);
+    static_cast<VITAEGUI*>(parentWidget())->showHide(true);
     openStandardDialog(
             tr("Wallet encrypted"),
             "<qt>" +
