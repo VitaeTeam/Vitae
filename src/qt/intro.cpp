@@ -10,7 +10,7 @@
 #include "guiutil.h"
 
 #include "util.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 #include <boost/filesystem.hpp>
 

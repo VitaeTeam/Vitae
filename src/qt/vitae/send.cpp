@@ -15,8 +15,6 @@
 #include "openuridialog.h"
 #include "qt/zVitcontroldialog.h"
 
-#include "zpivcontroldialog.h"
-
 SendWidget::SendWidget(VITAEGUI* parent) :
     PWidget(parent),
     ui(new Ui::send),

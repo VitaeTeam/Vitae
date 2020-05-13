@@ -6,7 +6,7 @@
 #include "base58.h"
 #include "init.h"
 #include "walletmodel.h"
-#include "wallet/wallet.h"
+#include "wallet.h"
 
 
 #define DECORATION_SIZE 65
@@ -306,7 +306,7 @@ void SettingsMultisendWidget::activate(){
         pwalletMain->fMultiSendMasternodeReward = ui->checkBoxRewards->isChecked();
 
         CWalletDB walletdb(pwalletMain->strWalletFile);
-        if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, pwalletMain->fMultiSendMasternodeReward, pwalletMain->nLastMultiSendHeight))
+        if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, pwalletMain->fMultiSendFundamentalnodeReward, pwalletMain->fMultiSendMasternodeReward, pwalletMain->nLastMultiSendHeight))
             strRet = tr("MultiSend activated but writing settings to DB failed");
         else
             strRet = tr("MultiSend activated");
@@ -321,7 +321,7 @@ void SettingsMultisendWidget::deactivate(){
         QString strRet;
         pwalletMain->setMultiSendDisabled();
         CWalletDB walletdb(pwalletMain->strWalletFile);
-        inform(!walletdb.WriteMSettings(false, false, pwalletMain->nLastMultiSendHeight) ?
+        inform(!walletdb.WriteMSettings(false, false, false, pwalletMain->nLastMultiSendHeight) ?
                tr("MultiSend deactivated but writing settings to DB failed") :
                tr("MultiSend deactivated")
         );
