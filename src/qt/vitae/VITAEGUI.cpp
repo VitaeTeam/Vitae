@@ -157,7 +157,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
 
 }
 
-void PIVXGUI::createActions(const NetworkStyle* networkStyle){
+void VITAEGUI::createActions(const NetworkStyle* networkStyle){
     toggleHideAction = new QAction(networkStyle->getAppIcon(), tr("&Show / Hide"), this);
     toggleHideAction->setStatusTip(tr("Show or hide the main Window"));
 
@@ -264,7 +264,7 @@ void VITAEGUI::setClientModel(ClientModel* clientModel) {
     }
 }
 
-void PIVXGUI::createTrayIconMenu() {
+void VITAEGUI::createTrayIconMenu() {
 #ifndef Q_OS_MAC
     // return if trayIcon is unset (only on non-Mac OSes)
     if (!trayIcon)
@@ -314,7 +314,7 @@ void PIVXGUI::createTrayIconMenu() {
 }
 
 #ifndef Q_OS_MAC
-void PIVXGUI::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
+void VITAEGUI::trayIconActivated(QSystemTrayIcon::ActivationReason reason)
 {
     if (reason == QSystemTrayIcon::Trigger) {
         // Click on system tray icon triggers show/hide of the main window
