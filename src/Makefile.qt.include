@@ -765,8 +765,8 @@ RES_IMAGES = \
 
 RES_CSS = \
   qt/res/css/default.css \
-  qt/pivx/res/css/style_dark.css \
-  qt/pivx/res/css/style_light.css
+  qt/vitae/res/css/style_dark.css \
+  qt/vitae/res/css/style_light.css
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
