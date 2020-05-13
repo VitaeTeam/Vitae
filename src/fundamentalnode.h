@@ -122,7 +122,8 @@ public:
         FUNDAMENTALNODE_WATCHDOG_EXPIRED,
         FUNDAMENTALNODE_POSE_BAN,
         FUNDAMENTALNODE_VIN_SPENT,
-        FUNDAMENTALNODE_POS_ERROR
+        FUNDAMENTALNODE_POS_ERROR,
+        FUNDAMENTALNODE_MISSING
     };
 
     CTxIn vin;
@@ -278,6 +279,7 @@ public:
         if (activeState == CFundamentalnode::FUNDAMENTALNODE_VIN_SPENT) strStatus = "VIN_SPENT";
         if (activeState == CFundamentalnode::FUNDAMENTALNODE_REMOVE) strStatus = "REMOVE";
         if (activeState == CFundamentalnode::FUNDAMENTALNODE_POS_ERROR) strStatus = "POS_ERROR";
+        if (activeState == CFundamentalnode::FUNDAMENTALNODE_POS_ERROR) strStatus = "MISSING";
 
         return strStatus;
     }

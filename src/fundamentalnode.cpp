@@ -316,6 +316,8 @@ std::string CFundamentalnode::GetStatus()
         return "WATCHDOG_EXPIRED";
     case CFundamentalnode::FUNDAMENTALNODE_POSE_BAN:
         return "POSE_BAN";
+    case CFundamentalnode::FUNDAMENTALNODE_MISSING:
+        return "MISSING";
     default:
         return "UNKNOWN";
     }

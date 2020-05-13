@@ -72,7 +72,8 @@ public:
         MASTERNODE_EXPIRED = 2,
         MASTERNODE_VIN_SPENT = 3,
         MASTERNODE_REMOVE = 4,
-        MASTERNODE_POS_ERROR = 5
+        MASTERNODE_POS_ERROR = 5,
+        MASTERNODE_MISSING
     };
 
     CTxIn vin;
@@ -262,6 +263,7 @@ public:
         if(activeState == CMasternode::MASTERNODE_VIN_SPENT) strStatus = "VIN_SPENT";
         if(activeState == CMasternode::MASTERNODE_REMOVE) strStatus    = "REMOVE";
         if(activeState == CMasternode::MASTERNODE_POS_ERROR) strStatus = "POS_ERROR";
+        if (activeState == CMasternode::MASTERNODE_MISSING) strStatus = "MISSING";
 
         return strStatus;
     }

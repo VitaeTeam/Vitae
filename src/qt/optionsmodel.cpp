@@ -180,7 +180,7 @@ void OptionsModel::setWindowDefaultOptions(QSettings& settings, bool reset){
 
 void OptionsModel::setDisplayDefaultOptions(QSettings& settings, bool reset){
     if (!settings.contains("nDisplayUnit") || reset)
-        settings.setValue("nDisplayUnit", BitcoinUnits::PIV);
+        settings.setValue("nDisplayUnit", BitcoinUnits::VITAE);
     nDisplayUnit = settings.value("nDisplayUnit").toInt();
     if (!settings.contains("digits") || reset)
         settings.setValue("digits", "2");
