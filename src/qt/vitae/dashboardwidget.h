@@ -18,7 +18,7 @@
 #include <QMap>
 
 #if defined(HAVE_CONFIG_H)
-#include "config/pivx-config.h" /* for USE_QTCHARTS */
+#include "config/vitae-config.h" /* for USE_QTCHARTS */
 #endif
 
 #ifdef USE_QTCHARTS
