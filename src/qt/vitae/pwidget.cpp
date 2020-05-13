@@ -116,3 +116,4 @@ void PWidget::run(int type) {
 }
 void PWidget::onError(int type, QString error) {
     // override
+}
