@@ -362,6 +362,11 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
 
+    if(! fProofOfStake && Params().NetworkID() == CBaseChainParams::TESTNET) { // for testnet
+        txNew.vout[0].nValue = GetBlockValue(pindexPrev->nHeight);
+        return;
+    }
+
     bool hasPayment = true;
     bool hasMnPayment = true;
     CScript payee;
