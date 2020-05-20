@@ -225,7 +225,7 @@ QT_MOC = \
   qt/intro.moc \
   qt/overviewpage.moc \
   qt/rpcconsole.moc \
-  qt/pivx/settings/moc_settingsconsolewidget.cpp
+  qt/vitae/settings/moc_settingsconsolewidget.cpp
 
 QT_QRC_CPP = qt/qrc_vitae.cpp
 QT_QRC = qt/vitae.qrc
