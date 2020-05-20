@@ -9,7 +9,7 @@
 #include <QWidget>
 #include <QString>
 #include <QThread>
-#include "qt/pivx/prunnable.h"
+#include "qt/vitae/prunnable.h"
 
 class VITAEGUI;
 class ClientModel;
