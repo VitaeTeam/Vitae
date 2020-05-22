@@ -8,8 +8,6 @@
 #ifndef SPORK_H
 #define SPORK_H
 
-#include <unordered_map>
-
 #include "base58.h"
 #include "hash.h"
 #include "key.h"
@@ -70,8 +68,8 @@ class CSporkManager
 private:
     mutable CCriticalSection cs;
     std::string strMasterPrivKey;
-    std::unordered_map<SporkId, CSporkDef*> sporkDefsById;
-    std::unordered_map<std::string, CSporkDef*> sporkDefsByName;
+    std::map<SporkId, CSporkDef*> sporkDefsById;
+    std::map<std::string, CSporkDef*> sporkDefsByName;
     std::map<int, CSporkMessage> mapSporksActive;
 
 public:
