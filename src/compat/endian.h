@@ -6,7 +6,7 @@
 #define BITCOIN_COMPAT_ENDIAN_H
 
 #if defined(HAVE_CONFIG_H)
-#include <config/pivx-config.h>
+#include <config/vitae-config.h>
 #endif
 
 #include <compat/byteswap.h>
@@ -19,7 +19,8 @@
 #include <sys/endian.h>
 #endif
 
-#ifndef HAVE_CONFIG_H
+//#ifndef HAVE_CONFIG_H
+#if 1
 // While not technically a supported configuration, defaulting to defining these
 // DECLs when we were compiled without autotools makes it easier for other build
 // systems to build things like libbitcoinconsensus for strange targets.

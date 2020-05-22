@@ -317,7 +317,7 @@
                   <string>Receiving Addresses</string>
                  </property>
                  <property name="icon">
-                  <iconset resource="../pivx.qrc">
+                  <iconset resource="../vitae.qrc">
                    <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
                  </property>
                  <property name="autoDefault">

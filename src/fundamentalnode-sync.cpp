@@ -308,7 +308,7 @@ void CFundamentalnodeSync::Process()
                 // timeout
                 if (lastFundamentalnodeList == 0 &&
                     (RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > FUNDAMENTALNODE_SYNC_TIMEOUT * 5)) {
-                    if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+                    if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
                         LogPrintf("CFundamentalnodeSync::Process - ERROR - Sync has failed, will retry later\n");
                         RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_FAILED;
                         RequestedFundamentalnodeAttempt = 0;
@@ -339,7 +339,7 @@ void CFundamentalnodeSync::Process()
                 // timeout
                 if (lastFundamentalnodeWinner == 0 &&
                     (RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD * 3 || GetTime() - nAssetSyncStarted > FUNDAMENTALNODE_SYNC_TIMEOUT * 5)) {
-                    if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+                    if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
                         LogPrintf("CFundamentalnodeSync::Process - ERROR - Sync has failed, will retry later\n");
                         RequestedFundamentalnodeAssets = FUNDAMENTALNODE_SYNC_FAILED;
                         RequestedFundamentalnodeAttempt = 0;

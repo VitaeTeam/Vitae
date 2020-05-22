@@ -202,7 +202,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
          * AFTER MIGRATION TO V12 IS DONE
          */
 
-        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
+        if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
         // for migration purposes ping our node on old fundamentalnodes network too
         std::string retErrorMessage;
         std::vector<unsigned char> vchFundamentalNodeSignature;
@@ -302,7 +302,7 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
      * AFTER MIGRATION TO V12 IS DONE
      */
 
-    if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
+    if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
     // for migration purposes inject our node in old fundamentalnodes' list too
     std::string retErrorMessage;
     std::vector<unsigned char> vchFundamentalNodeSignature;

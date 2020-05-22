@@ -358,7 +358,7 @@ int CFundamentalnodeMan::stable_size ()
         if (mn.protocolVersion < nMinProtocol) {
             continue; // Skip obsolete versions
         }
-        if (IsSporkActive (SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+        if (sporkManager.IsSporkActive (SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
             nFundamentalnode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nFundamentalnode_Age) < nFundamentalnode_Min_Age) {
                 continue; // Skip fundamentalnodes younger than (default) 8000 sec (MUST be > FUNDAMENTALNODE_REMOVAL_SECONDS)
@@ -607,7 +607,7 @@ int CFundamentalnodeMan::GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlock
             continue;                                                       // Skip obsolete versions
         }
 
-        if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+        if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
             nFundamentalnode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nFundamentalnode_Age) < nFundamentalnode_Min_Age) {
                 if (fDebug) LogPrint("fundamentalnode","Skipping just activated Fundamentalnode. Age: %ld\n", nFundamentalnode_Age);
@@ -858,7 +858,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
     // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "obsee") { //ObfuScation Election Entry
 
-        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
+        if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
         CService addr;
@@ -1068,7 +1068,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
     else if (strCommand == "obseep") { //ObfuScation Election Entry Ping
 
-        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
+        if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
         std::vector<unsigned char> vchSig;
