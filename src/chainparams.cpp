@@ -174,6 +174,8 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
+        vSeeds.push_back(CDNSSeedData("0", "dns0.vitae.phore.io")); // Primary DNS seeder
+        vSeeds.push_back(CDNSSeedData("1", "dns1.vitae.phore.io")); // Secondar DNS seeder
         vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
         vSeeds.push_back(CDNSSeedData("198.13.50.121", "198.13.50.121"));     // rasalghul supernode
         vSeeds.push_back(CDNSSeedData("104.238.183.75", "104.238.183.75"));   // rasalghul masternode
