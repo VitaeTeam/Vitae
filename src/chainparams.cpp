@@ -63,11 +63,13 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (800000,uint256("ef48831e1547b45d90ef5360c606f49e35504f38abe383614486753cb9451515"))    
     (900000,uint256("23614a26ae6b3e457eec08dde3ad04ff15b0ca4e0ec3e8acf0c4c153beb997eb"))    
     (1000000,uint256("3a121397bca5552e637c80f981db080c54e1bae2def44fc06071cb4867df7124"))    
-    (1356300,uint256("b6a142e71ced86ca8ce28991cf2a1a84944f68baaf786d8cd17b24cd27a69cb0"));
+    (1356300,uint256("b6a142e71ced86ca8ce28991cf2a1a84944f68baaf786d8cd17b24cd27a69cb0"))
+    (1402300,uint256("b7681e795c973a8ee5c87444f1a22eedd9ffb8b034f835019fab4fb2db3a6e00"))
+    (1402500,uint256("d9544578aae78d2ae2c68599641f66e90829156bb9157c73e807e570f927d6a0"));
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1588196373, // * UNIX timestamp of last checkpoint block
-    3883710,     // * total number of transactions between genesis and last checkpoint
+    1590267681, // * UNIX timestamp of last checkpoint block
+    4130934,     // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
@@ -174,6 +176,8 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
+        vSeeds.push_back(CDNSSeedData("0", "dns0.vitae.phore.io")); // Primary DNS seeder
+        vSeeds.push_back(CDNSSeedData("1", "dns1.vitae.phore.io")); // Secondar DNS seeder
         vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
         vSeeds.push_back(CDNSSeedData("198.13.50.121", "198.13.50.121"));     // rasalghul supernode
         vSeeds.push_back(CDNSSeedData("104.238.183.75", "104.238.183.75"));   // rasalghul masternode
