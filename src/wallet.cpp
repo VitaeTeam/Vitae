@@ -5256,6 +5256,7 @@ void CWallet::SetNull()
     //MultiSend
     vMultiSend.clear();
     fMultiSendStake = false;
+    fMultiSendFundamentalnodeReward = false;
     fMultiSendMasternodeReward = false;
     fMultiSendNotify = false;
     strMultiSendChangeAddress = "";
@@ -5272,13 +5273,13 @@ int CWallet::getZeromintPercentage()
     return nZeromintPercentage;
 }
 
-void CWallet::setZWallet(CzPIVWallet* zwallet)
+void CWallet::setZWallet(CzVITWallet* zwallet)
 {
     zwalletMain = zwallet;
-    zpivTracker = std::unique_ptr<CzPIVTracker>(new CzPIVTracker(strWalletFile));
+    zvitTracker = std::unique_ptr<CzVITTracker>(new CzVITTracker(strWalletFile));
 }
 
-CzPIVWallet* CWallet::getZWallet()
+CzVITWallet* CWallet::getZWallet()
 {
     return zwalletMain;
 }
@@ -5288,19 +5289,19 @@ bool CWallet::isZeromintEnabled()
     return fEnableZeromint || fEnableAutoConvert;
 }
 
-void CWallet::setZPivAutoBackups(bool fEnabled)
+void CWallet::setZVitAutoBackups(bool fEnabled)
 {
     fBackupMints = fEnabled;
 }
 
 bool CWallet::isMultiSendEnabled()
 {
-    return fMultiSendMasternodeReward || fMultiSendStake;
+    return fMultiSendFundamentalnodeReward || fMultiSendStake;
 }
 
 void CWallet::setMultiSendDisabled()
 {
-    fMultiSendMasternodeReward = false;
+    fMultiSendFundamentalnodeReward = false;
     fMultiSendStake = false;
 }
 

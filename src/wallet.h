@@ -313,10 +313,10 @@ public:
     ~CWallet();
     void SetNull();
     int getZeromintPercentage();
-    void setZWallet(CzPIVWallet* zwallet);
-    CzPIVWallet* getZWallet();
+    void setZWallet(CzVITWallet* zwallet);
+    CzVITWallet* getZWallet();
     bool isZeromintEnabled();
-    void setZPivAutoBackups(bool fEnabled);
+    void setZVitAutoBackups(bool fEnabled);
     bool isMultiSendEnabled();
     void setMultiSendDisabled();
 
