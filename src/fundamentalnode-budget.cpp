@@ -11,6 +11,7 @@
 #include "fundamentalnode-sync.h"
 #include "fundamentalnode.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 #include "obfuscation.h"
 #include "util.h"
 #include <boost/filesystem.hpp>
@@ -1726,20 +1727,20 @@ void CBudgetVote::Relay()
 
 bool CBudgetVote::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundamentalnode)
 {
+    std::string strError;
+    std::string strMessage = vin.prevout.ToStringShort() + nProposalHash.ToString() + std::to_string(nVote) + std::to_string(nTime);
+
     // Choose coins to use
     CPubKey pubKeyCollateralAddress;
     CKey keyCollateralAddress;
 
-    std::string errorMessage;
-    std::string strMessage = vin.prevout.ToStringShort() + nProposalHash.ToString() + std::to_string(nVote) + std::to_string(nTime);
-
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
+    if (!CMessageSigner::SignMessage(strMessage, vchSig, keyFundamentalnode)) {
         LogPrint("fnbudget","CBudgetVote::Sign - Error upon calling SignMessage");
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
-        LogPrint("fnbudget","CBudgetVote::Sign - Error upon calling VerifyMessage");
+    if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, strError)) {
+        LogPrint("fnbudget","CBudgetVote::Sign - Error upon calling VerifyMessage: %s", strError);
         return false;
     }
 
@@ -1762,7 +1763,7 @@ bool CBudgetVote::SignatureValid(bool fSignatureCheck)
 
     if (!fSignatureCheck) return true;
 
-    if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
         LogPrint("fnbudget","CBudgetVote::SignatureValid() - Verify message failed\n");
         return false;
     }
@@ -2169,7 +2170,7 @@ void CFinalizedBudget::SubmitVote()
     CKey keyFundamentalnode;
     std::string errorMessage;
 
-    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
         LogPrint("fnbudget","CFinalizedBudget::SubmitVote - Error upon calling SetKey\n");
         return;
     }
@@ -2262,12 +2263,12 @@ bool CFinalizedBudgetVote::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundame
     std::string errorMessage;
     std::string strMessage = vin.prevout.ToStringShort() + nBudgetHash.ToString() + std::to_string(nTime);
 
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
+    if (!CMessageSigner::SignMessage(strMessage, vchSig, keyFundamentalnode)) {
         LogPrint("fnbudget","CFinalizedBudgetVote::Sign - Error upon calling SignMessage");
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
         LogPrint("fnbudget","CFinalizedBudgetVote::Sign - Error upon calling VerifyMessage");
         return false;
     }
@@ -2290,7 +2291,7 @@ bool CFinalizedBudgetVote::SignatureValid(bool fSignatureCheck)
 
     if (!fSignatureCheck) return true;
 
-    if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
         LogPrint("fnbudget","CFinalizedBudgetVote::SignatureValid() - Verify message failed %s %s\n", strMessage, errorMessage);
         return false;
     }

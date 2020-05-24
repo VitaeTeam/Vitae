@@ -1936,7 +1936,7 @@ bool AppInit2()
             CKey key;
             CPubKey pubkey;
 
-            if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, key, pubkey)) {
+            if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, key, pubkey)) {
                 return InitError(_("Invalid fundamentalnodeprivkey. Please see documenation."));
             }
 
@@ -2023,8 +2023,7 @@ bool AppInit2()
                 CKey key;
                 CPubKey pubkey;
 
-                if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key, pubkey))
-                {
+                if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, key, pubkey)) {
                     return InitError(_("Invalid masternodeprivkey. Please see documenation."));
                 }
 

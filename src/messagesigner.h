@@ -8,6 +8,9 @@
 
 #include "key.h"
 
+class CTxIn;
+class CTransaction;
+
 /** Helper class for signing messages and checking their signatures
  */
 class CMessageSigner
@@ -21,6 +24,11 @@ public:
     static bool VerifyMessage(const CPubKey& pubkey, const std::vector<unsigned char>& vchSig, const std::string& strMessage, std::string& strErrorRet);
     /// Verify the message signature, returns true if succcessful
     static bool VerifyMessage(const CKeyID& keyID, const std::vector<unsigned char>& vchSig, const std::string& strMessage, std::string& strErrorRet);
+
+    /// Is the inputs associated with this public key?
+    static bool IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey);
+	/// Is the mn inputs associated with this public key?
+    static bool IsMnVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, CTransaction& Tx , uint256& hashBlock );
 };
 
 /** Helper class for signing hashes and checking their signatures

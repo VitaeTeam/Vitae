@@ -95,9 +95,8 @@ void CActiveMasternode::ManageStatus()
             CPubKey pubKeyMasternode;
             CKey keyMasternode;
 
-            if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode))
-            {
-                LogPrintf("Register::ManageStatus() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+            if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+                LogPrintf("%s : Invalid masternode key", __func__);
                 return;
             }
 
@@ -146,8 +145,8 @@ bool CActiveMasternode::StopMasterNode(std::string strService, std::string strKe
     CKey keyMasternode;
     CPubKey pubKeyMasternode;
 
-    if(!obfuScationSigner.SetKey(strKeyMasternode, errorMessage, keyMasternode, pubKeyMasternode)) {
-        LogPrintf("CActiveMasternode::StopMasterNode() - Error: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -167,9 +166,8 @@ bool CActiveMasternode::StopMasterNode(std::string& errorMessage) {
     CPubKey pubKeyMasternode;
     CKey keyMasternode;
 
-    if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode))
-    {
-        LogPrintf("Register::ManageStatus() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -192,9 +190,8 @@ bool CActiveMasternode::Dseep(std::string& errorMessage) {
     CPubKey pubKeyMasternode;
     CKey keyMasternode;
 
-    if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode))
-    {
-        LogPrintf("CActiveMasternode::Dseep() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -209,13 +206,13 @@ bool CActiveMasternode::Dseep(CTxIn vin, CService service, CKey keyMasternode, C
 
     std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + std::to_string(stop);
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyMasternode)) {
-        retErrorMessage = "sign message failed: " + errorMessage;
+    if(!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, keyMasternode)) {
+        retErrorMessage = "sign message failed.";
         LogPrintf("CActiveMasternode::Dseep() - Error: %s\n", retErrorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyMasternode, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubKeyMasternode, vchMasterNodeSignature, strMessage, errorMessage)) {
         retErrorMessage = "Verify message failed: " + errorMessage;
         LogPrintf("CActiveMasternode::Dseep() - Error: %s\n", retErrorMessage.c_str());
         return false;
@@ -256,9 +253,8 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
     CScript donationAddress = CScript();
     int donationPercentage = 0;
 
-    if(!obfuScationSigner.SetKey(strKeyMasternode, errorMessage, keyMasternode, pubKeyMasternode))
-    {
-        LogPrintf("CActiveMasternode::Register() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -306,13 +302,13 @@ bool CActiveMasternode::Register(CTxIn vin, CService service, CKey keyCollateral
 
     std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress.ToString() + std::to_string(donationPercentage);
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyCollateralAddress)) {
-        retErrorMessage = "sign message failed: " + errorMessage;
+    if(!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, keyCollateralAddress)) {
+        retErrorMessage = "sign message failed.";
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", retErrorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchMasterNodeSignature, strMessage, errorMessage)) {
         retErrorMessage = "Verify message failed: " + errorMessage;
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", retErrorMessage.c_str());
         return false;

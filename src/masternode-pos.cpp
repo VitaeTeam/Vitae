@@ -18,6 +18,7 @@
 #include "mn-spork.h"
 #include <boost/lexical_cast.hpp>
 #include "masternodeman.h"
+#include "messagesigner.h"
 
 std::map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
 CMasternodeScanning mnscan;
@@ -201,7 +202,7 @@ bool CMasternodeScanningError::SignatureValid()
     ExtractDestination(pubkey, address1);
     CBitcoinAddress address2(address1);
 
-    if(!obfuScationSigner.VerifyMessage(pmn->pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pmn->pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
         LogPrintf("CMasternodeScanningError::SignatureValid() - Verify message failed\n");
         return false;
     }
@@ -218,7 +219,7 @@ bool CMasternodeScanningError::Sign()
     std::string strMessage = vinMasternodeA.ToString() + vinMasternodeB.ToString() +
         boost::lexical_cast<std::string>(nBlockHeight) + boost::lexical_cast<std::string>(nErrorType);
 
-    if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key2, pubkey2))
+    if(!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, key2, pubkey2))
     {
         LogPrintf("CMasternodeScanningError::Sign() - ERROR: Invalid masternodeprivkey: '%s'\n", errorMessage.c_str());
         return false;
@@ -231,12 +232,12 @@ bool CMasternodeScanningError::Sign()
     CBitcoinAddress address2(address1);
     //LogPrintf("signing pubkey2 %s \n", address2.ToString().c_str());
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, key2)) {
+    if(!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, key2)) {
         LogPrintf("CMasternodeScanningError::Sign() - Sign message failed");
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
         LogPrintf("CMasternodeScanningError::Sign() - Verify message failed");
         return false;
     }

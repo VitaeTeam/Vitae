@@ -8,6 +8,7 @@
 #include "masternodeman.h"
 #include "masternode.h"
 #include "activemasternode.h"
+#include "messagesigner.h"
 #include "obfuscation.h"
 #include "spork.h"
 //#include "core.h"
@@ -685,7 +686,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         }
 
         std::string errorMessage = "";
-        if(!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)){
+        if(!CMessageSigner::VerifyMessage(pubkey, vchSig, strMessage, errorMessage)){
             LogPrintf("dsee - Got bad Masternode address signature\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -729,7 +730,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         //  - this is expensive, so it's only done once per Masternode
         uint256 blockHash;
         CTransaction tx;
-        if(!obfuScationSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
+        if(!CMessageSigner::IsVinAssociatedWithPubkey(vin, pubkey)) {
             LogPrintf("dsee - Got mismatched pubkey and vin Fehler1\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -839,7 +840,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                 std::string strMessage = pmn->addr.ToString() + std::to_string(sigTime) + std::to_string(stop);
 
                 std::string errorMessage = "";
-                if(!obfuScationSigner.VerifyMessage(pmn->pubkey2, vchSig, strMessage, errorMessage))
+                if(!CMessageSigner::VerifyMessage(pmn->pubkey2, vchSig, strMessage, errorMessage))
                 {
                     LogPrintf("dseep - Got bad Masternode address signature %s \n", vin.ToString().c_str());
                     //Misbehaving(pfrom->GetId(), 100);
@@ -895,7 +896,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
                 std::string strMessage = vin.ToString() + std::to_string(nVote);
 
                 std::string errorMessage = "";
-                if(!obfuScationSigner.VerifyMessage(pmn->pubkey2, vchSig, strMessage, errorMessage))
+                if(!CMessageSigner::VerifyMessage(pmn->pubkey2, vchSig, strMessage, errorMessage))
                 {
                     LogPrintf("mvote - Got bad Masternode address signature %s \n", vin.ToString().c_str());
                     return;

@@ -7,6 +7,7 @@
 #include "activefundamentalnode.h"
 #include "addrman.h"
 #include "fundamentalnode.h"
+#include "messagesigner.h"
 #include "obfuscation.h"
 #include "spork.h"
 #include "util.h"
@@ -751,7 +752,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         CTransaction tx;
         // make sure the vout that was signed is related to the transaction that spawned the Fundamentalnode
         //  - this is expensive, so it's only done once per Fundamentalnode
-        if (!obfuScationSigner.IsVinAssociatedWithPubkey(fnb.vin, fnb.pubKeyCollateralAddress)) {
+        if (!CMessageSigner::IsVinAssociatedWithPubkey(fnb.vin, fnb.pubKeyCollateralAddress)) {
             LogPrint("fundamentalnode","fnb - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 33);
             return;
@@ -919,7 +920,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         }
 
         std::string errorMessage = "";
-        if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
+        if (!CMessageSigner::VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
             LogPrint("fundamentalnode","obsee - Got bad Fundamentalnode address signature\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -978,7 +979,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         CTransaction tx;
 
 
-        if (!obfuScationSigner.IsVinAssociatedWithPubkey(vin, pubkey)) {
+        if (!CMessageSigner::IsVinAssociatedWithPubkey(vin, pubkey)) {
             LogPrint("fundamentalnode","obsee - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
@@ -1105,7 +1106,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                 std::string strMessage = pmn->addr.ToString() + std::to_string(sigTime) + std::to_string(stop);
 
                 std::string errorMessage = "";
-                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+                if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
                     LogPrint("fundamentalnode","obseep - Got bad Fundamentalnode address signature %s \n", vin.prevout.hash.ToString());
                     //Misbehaving(pfrom->GetId(), 100);
                     return;

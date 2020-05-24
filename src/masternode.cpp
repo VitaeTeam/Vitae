@@ -6,6 +6,7 @@
 
 #include "masternode.h"
 #include "masternodeman.h"
+#include "messagesigner.h"
 #include "obfuscation.h"
 //#include "core.h"
 #include "util.h"
@@ -283,6 +284,24 @@ void CMasternode::Check()
     activeState = MASTERNODE_ENABLED; // OK
 }
 
+/*
+bool CMasternode::IsInputAssociatedWithPubkey() const
+{
+    CScript payee;
+    payee = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+
+    CTransaction txVin;
+    uint256 hash;
+    if(GetTransaction(vin.prevout.hash, txVin, hash, true)) {
+        for (CTxOut out : txVin.vout) {
+            if (out.nValue == 10000 * COIN && out.scriptPubKey == payee) return true;
+        }
+    }
+
+    return false;
+}
+*/
+
 bool CMasternodePayments::CheckSignature(CMasternodePaymentWinner& winner)
 {
     //note: need to investigate why this is failing
@@ -291,7 +310,7 @@ bool CMasternodePayments::CheckSignature(CMasternodePaymentWinner& winner)
     CPubKey pubkey(ParseHex(strPubKey));
 
     std::string errorMessage = "";
-    if(!obfuScationSigner.VerifyMessage(pubkey, winner.vchSig, strMessage, errorMessage)){
+    if(!CMessageSigner::VerifyMessage(pubkey, winner.vchSig, strMessage, errorMessage)){
         return false;
     }
 
@@ -306,18 +325,17 @@ bool CMasternodePayments::Sign(CMasternodePaymentWinner& winner)
     CPubKey pubkey2;
     std::string errorMessage = "";
 
-    if(!obfuScationSigner.SetKey(strMasterPrivKey, errorMessage, key2, pubkey2))
-    {
+    if (!CMessageSigner::GetKeysFromSecret(strMasterPrivKey, key2, pubkey2)) {
         LogPrintf("CMasternodePayments::Sign - ERROR: Invalid Masternodeprivkey: '%s'\n", errorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, winner.vchSig, key2)) {
+    if(!CMessageSigner::SignMessage(strMessage, winner.vchSig, key2)) {
         LogPrintf("CMasternodePayments::Sign - Sign message failed");
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubkey2, winner.vchSig, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubkey2, winner.vchSig, strMessage, errorMessage)) {
         LogPrintf("CMasternodePayments::Sign - Verify message failed");
         return false;
     }

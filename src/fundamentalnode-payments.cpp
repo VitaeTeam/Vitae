@@ -8,6 +8,7 @@
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 #include "obfuscation.h"
 #include "spork.h"
 #include "sync.h"
@@ -646,20 +647,20 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
 
 bool CFundamentalnodePaymentWinner::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundamentalnode)
 {
-    std::string errorMessage;
+    std::string strError;
     std::string strFundamentalNodeSignMessage;
 
     std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
                              std::to_string(nBlockHeight) +
                              payee.ToString();
 
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::SignMessage(strMessage, vchSig, keyFundamentalnode)) {
+        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", __func__);
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
-        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, strError)) {
+        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", strError.c_str());
         return false;
     }
 
@@ -953,8 +954,8 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
     CPubKey pubKeyFundamentalnode;
     CKey keyFundamentalnode;
 
-    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - Error upon calling SetKey.\n");
         return false;
     }
 
@@ -988,7 +989,7 @@ bool CFundamentalnodePaymentWinner::SignatureValid()
                                  payee.ToString();
 
         std::string errorMessage = "";
-        if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+        if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
             return error("CFundamentalnodePaymentWinner::SignatureValid() - Got bad Fundamentalnode address signature %s\n", vinFundamentalnode.prevout.hash.ToString());
         }
 

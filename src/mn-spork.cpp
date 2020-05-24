@@ -12,6 +12,7 @@
 #include "util.h"
 #include "script/script.h"
 #include "base58.h"
+#include "messagesigner.h"
 #include "protocol.h"
 #include "mn-spork.h"
 #include "main.h"
@@ -130,7 +131,7 @@ bool CMNSporkManager::CheckSignature(CMNSporkMessage& mn_spork)
     CPubKey pubkey(ParseHex(strPubKey));
 
     std::string errorMessage = "";
-    if(!obfuScationSigner.VerifyMessage(pubkey, mn_spork.vchSig, strMessage, errorMessage)){
+    if(!CMessageSigner::VerifyMessage(pubkey, mn_spork.vchSig, strMessage, errorMessage)){
         return false;
     }
 
@@ -145,18 +146,18 @@ bool CMNSporkManager::Sign(CMNSporkMessage& mn_spork)
     CPubKey pubkey2;
     std::string errorMessage = "";
 
-    if(!obfuScationSigner.SetKey(strMasterPrivKey, errorMessage, key2, pubkey2))
+    if(!CMessageSigner::GetKeysFromSecret(strMasterPrivKey, key2, pubkey2))
     {
         LogPrintf("CMasternodePayments::Sign - ERROR: Invalid masternodeprivkey: '%s'\n", errorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, mn_spork.vchSig, key2)) {
+    if(!CMessageSigner::SignMessage(strMessage, mn_spork.vchSig, key2)) {
         LogPrintf("CMasternodePayments::Sign - Sign message failed");
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubkey2, mn_spork.vchSig, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubkey2, mn_spork.vchSig, strMessage, errorMessage)) {
         LogPrintf("CMasternodePayments::Sign - Verify message failed");
         return false;
     }

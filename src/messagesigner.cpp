@@ -10,6 +10,8 @@
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 
+#include <boost/foreach.hpp>
+
 bool CMessageSigner::GetKeysFromSecret(const std::string& strSecret, CKey& keyRet, CPubKey& pubkeyRet)
 {
     CBitcoinSecret vchSecret;
@@ -43,6 +45,42 @@ bool CMessageSigner::VerifyMessage(const CKeyID& keyID, const std::vector<unsign
     ss << strMessage;
 
     return CHashSigner::VerifyHash(ss.GetHash(), keyID, vchSig, strErrorRet);
+}
+
+bool CMessageSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey)
+{
+    CScript payee2;
+    payee2 = GetScriptForDestination(pubkey.GetID());
+
+    CTransaction txVin;
+    uint256 hash;
+    if (GetTransaction(vin.prevout.hash, txVin, hash, true)) {
+        for (CTxOut out : txVin.vout) {
+            if (out.nValue == 10000 * COIN) {
+                if (out.scriptPubKey == payee2) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool CMessageSigner::IsMnVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, CTransaction &Tx, uint256 &hashBlock)
+{
+    CScript payee2;
+    payee2 = GetScriptForDestination(pubkey.GetID());
+
+    //CTransaction txVin;
+    //uint256 hash;
+    if (GetTransaction(vin.prevout.hash, Tx, hashBlock, true)) {
+        BOOST_FOREACH (CTxOut out, Tx.vout) {
+            if (out.nValue == 20000*COIN ) {
+                if (out.scriptPubKey == payee2) return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 bool CHashSigner::SignHash(const uint256& hash, const CKey& key, std::vector<unsigned char>& vchSigRet)

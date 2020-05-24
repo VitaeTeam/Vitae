@@ -9,6 +9,7 @@
 #include "fundamentalnode.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 #include "protocol.h"
 #include "spork.h"
 
@@ -100,9 +101,8 @@ void CActiveFundamentalnode::ManageStatus()
             CPubKey pubKeyFundamentalnode;
             CKey keyFundamentalnode;
 
-            if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-                notCapableReason = "Error upon calling SetKey: " + errorMessage;
-                LogPrintf("Register::ManageStatus() - %s\n", notCapableReason);
+            if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+                LogPrintf("%s : Invalid fundamentalnode key", __func__);
                 return;
             }
 
@@ -166,8 +166,8 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
     CPubKey pubKeyFundamentalnode;
     CKey keyFundamentalnode;
 
-    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-        errorMessage = strprintf("Error upon calling SetKey: %s\n", errorMessage);
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+        LogPrintf("%s : Invalid fundamentalnode key", __func__);
         return false;
     }
 
@@ -210,12 +210,12 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
 
         std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + std::to_string(false);
 
-        if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchFundamentalNodeSignature, keyFundamentalnode)) {
-            errorMessage = "dseep sign message failed: " + retErrorMessage;
+        if (!CMessageSigner::SignMessage(strMessage, vchFundamentalNodeSignature, keyFundamentalnode)) {
+            errorMessage = "dseep sign message failed.";
             return false;
         }
 
-        if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
+        if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
             errorMessage = "dseep verify message failed: " + retErrorMessage;
             return false;
         }
@@ -254,9 +254,8 @@ bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string
         return false;
     }
 
-    if (!obfuScationSigner.SetKey(strKeyFundamentalnode, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-        errorMessage = strprintf("Can't find keys for fundamentalnode %s - %s", strService, errorMessage);
-        LogPrintf("CActiveFundamentalnode::CreateBroadcast() - %s\n", errorMessage);
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+        LogPrintf("%s : Invalid fundamentalnode key", __func__);
         return false;
     }
 
@@ -315,13 +314,13 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
 
     std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress + std::to_string(donationPercantage);
 
-    if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchFundamentalNodeSignature, keyCollateralAddress)) {
-        errorMessage = "dsee sign message failed: " + retErrorMessage;
+    if (!CMessageSigner::SignMessage(strMessage, vchFundamentalNodeSignature, keyCollateralAddress)) {
+        errorMessage = "dsee sign message failed.";
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
         errorMessage = "dsee verify message failed: " + retErrorMessage;
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - Error: %s\n", errorMessage.c_str());
         return false;

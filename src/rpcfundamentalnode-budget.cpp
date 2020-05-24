@@ -15,6 +15,7 @@
 #include "fundamentalnodeman.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
+#include "messagesigner.h"
 
 #include <univalue.h>
 
@@ -385,7 +386,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
 
         while (true) {
-            if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("node", "local"));
                 statusObj.push_back(Pair("result", "failed"));
@@ -452,7 +453,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if (!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
@@ -526,7 +527,7 @@ UniValue fnbudgetvote(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if(!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyFundamentalnode, pubKeyFundamentalnode)){
+            if(!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)){
                 failed++;
                 statusObj.push_back(Pair("node", mne.getAlias()));
                 statusObj.push_back(Pair("result", "failed"));
@@ -880,7 +881,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
 
             UniValue statusObj(UniValue::VOBJ);
 
-            if (!obfuScationSigner.SetKey(mne.getPrivKey(), errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
+            if (!CMessageSigner::GetKeysFromSecret(mne.getPrivKey(), keyFundamentalnode, pubKeyFundamentalnode)) {
                 failed++;
                 statusObj.push_back(Pair("result", "failed"));
                 statusObj.push_back(Pair("errorMessage", "Fundamentalnode signing error, could not set key correctly: " + errorMessage));
@@ -939,7 +940,7 @@ UniValue fnfinalbudget(const UniValue& params, bool fHelp)
         CKey keyFundamentalnode;
         std::string errorMessage;
 
-        if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode))
+        if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode))
             return "Error upon calling SetKey";
 
         CFundamentalnode* pmn = mnodeman.Find(activeFundamentalnode.vin);
