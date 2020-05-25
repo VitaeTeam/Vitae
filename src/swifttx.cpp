@@ -312,7 +312,7 @@ bool ProcessConsensusVote(CNode* pnode, CConsensusVote& ctx)
     if (n == -1) {
         //can be caused by past versions trying to vote with an invalid protocol
         LogPrint("swiftx", "%s : Unknown Fundamentalnode\n", __func__);
-        mnodeman.AskForMN(pnode, ctx.vinMasternode);
+        mnodeman.AskForMN(pnode, ctx.vinFundamentalnode);
         return false;
     }
 
