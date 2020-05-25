@@ -501,7 +501,7 @@ bool CConsensusVote::Sign()
     CKey key2;
     CPubKey pubkey2;
 
-    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, key2, pubkey2)) {
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, key2, pubkey2)) {
         return error("%s : Invalid masternodeprivkey", __func__);
     }
 
@@ -533,7 +533,7 @@ bool CConsensusVote::Sign()
 
 bool CConsensusVote::SignatureValid() const
 {
-    CMasternode* pmn = mnodeman.Find(vinFundamentalnode);
+    CFundamentalnode* pmn = mnodeman.Find(vinFundamentalnode);
     if (pmn == nullptr) {
         return error("%s : vinFundamentalnode not found", __func__);
     }
@@ -542,13 +542,13 @@ bool CConsensusVote::SignatureValid() const
 
     uint256 hash = GetSignatureHash();
 
-    if (CHashSigner::VerifyHash(hash, pmn->pubKeyMasternode, vchSig, strError))
+    if (CHashSigner::VerifyHash(hash, pmn->pubKeyFundamentalnode, vchSig, strError))
         return true;
 
     // if new signature fails, try old format
     std::string strMessage = GetStrMessage();
 
-    if (!CMessageSigner::VerifyMessage(pmn->pubKeyMasternode, vchSig, strMessage, strError)) {
+    if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, strError)) {
         return error("%s - Got bad masternode signature for %s: %s\n", __func__,
                 vinFundamentalnode.prevout.hash.ToString(), strError);
     }

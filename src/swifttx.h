@@ -75,7 +75,7 @@ public:
     std::vector<unsigned char> vchSig;
 
     CConsensusVote() :
-        vinMasternode(),
+        vinFundamentalnode(),
         txHash(),
         nBlockHeight(0),
         vchSig()
