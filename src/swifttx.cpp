@@ -290,7 +290,7 @@ void DoConsensusVote(CTransaction& tx, int64_t nBlockHeight)
         LOCK(cs_main);
         fNewSigs = chainActive.NewSigsActive();
     }
-    if (!ctx.Sign(strMasterNodePrivKey, fNewSigs)) {
+    if (!ctx.Sign(strFundamentalNodePrivKey, fNewSigs)) {
         LogPrintf("%s : Failed to sign consensus vote\n", __func__);
         return;
     }
