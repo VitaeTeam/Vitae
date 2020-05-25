@@ -54,7 +54,7 @@ public:
     // override CSignedMessage functions
     uint256 GetSignatureHash() const override;
     std::string GetStrMessage() const override;
-    const CTxIn GetVin() const override { return vinMasternode; };
+    const CTxIn GetVin() const override { return vinFundamentalnode; };
     bool Sign(std::string strSharedKey);   // use vchSig2
 
     void Relay();
