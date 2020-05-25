@@ -549,13 +549,13 @@ bool CConsensusVote::CheckSignature() const
         uint256 hash = GetSignatureHash();
         if(!CHashSigner::VerifyHash(hash, pmn->pubKeyFundamentalnode, vchSig, strError))
             return error("%s : VerifyHash failed for %s: %s", __func__,
-                    vinMasternode.prevout.hash.ToString(), strError);
+                    vinFundamentalnode.prevout.hash.ToString(), strError);
 
     } else {
         std::string strMessage = GetStrMessage();
         if(!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, strError))
             return error("%s : VerifyMessage failed for %s: %s", __func__,
-                    vinMasternode.prevout.hash.ToString(), strError);
+                    vinFundamentalnode.prevout.hash.ToString(), strError);
     }
 
     return true;

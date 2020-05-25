@@ -11,6 +11,7 @@
 #include "activefundamentalnode.h"
 #include "main.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 
 
 class CObfuScationRelay
