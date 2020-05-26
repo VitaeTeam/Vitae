@@ -294,6 +294,8 @@ libbitcoin_wallet_a_SOURCES = \
   genwit.cpp \
   zvit/zvitmodule.cpp \
   lightzvitthread.cpp \
+  libzerocoin/CoinRandomnessSchnorrSignature.h \
+  libzerocoin/CoinRandomnessSchnorrSignature.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
