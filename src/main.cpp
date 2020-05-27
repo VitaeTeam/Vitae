@@ -1619,7 +1619,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
         int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
-        if (fCLTVIsActivated)
+        if (fCLTVIsActivated) {
             flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
         }
         if (!CheckInputs(tx, state, view, true, flags, true)) {
@@ -1636,7 +1636,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         // invalid blocks, however allowing such transactions into the mempool
         // can be exploited as a DoS attack.
         flags = MANDATORY_SCRIPT_VERIFY_FLAGS;
-        if (fCLTVIsActivated)
+        if (fCLTVIsActivated) {
             flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
         }
         if (!CheckInputs(tx, state, view, true, flags, true)) {
@@ -1834,7 +1834,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
         // Check against previous transactions
         // This is done last to help prevent CPU exhaustion denial-of-service attacks.
         int flags = STANDARD_SCRIPT_VERIFY_FLAGS;
-        if (fCLTVIsActivated)
+        if (fCLTVIsActivated) {
             flags |= SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY;
         }
         if (!CheckInputs(tx, state, view, false, flags, true)) {

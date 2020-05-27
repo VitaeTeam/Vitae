@@ -38,8 +38,8 @@ bool CFundamentalnodeSync::NotCompleted()
 {
     return (!IsSynced() && (
             !IsSporkListSynced() ||
-            sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT) ||
-            sporkManager.IsSporkActive(SPORK_9_MASTERNODE_BUDGET_ENFORCEMENT) ||
+            sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT) ||
+            sporkManager.IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT) ||
             sporkManager.IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)));
 }
 

@@ -422,7 +422,7 @@ int TransactionRecord::getOutputIndex() const
 
 bool TransactionRecord::isCoinStake() const
 {
-    return (type == TransactionRecord::StakeMint || type == TransactionRecord::Generated || type == TransactionRecord::StakeZPIV);
+    return (type == TransactionRecord::StakeMint || type == TransactionRecord::Generated || type == TransactionRecord::StakeZVIT);
 }
 
 bool TransactionRecord::isNull() const
