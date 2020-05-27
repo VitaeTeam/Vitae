@@ -4566,7 +4566,7 @@ bool CheckColdStakeFreeOutput(const CTransaction& tx, const int nHeight)
 
         if (budget.IsBudgetPaymentBlock(nHeight) &
                 sporkManager.IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) &&
-                sporkManager.IsSporkActive(SPORK_9_MASTERNODE_BUDGET_ENFORCEMENT))
+                sporkManager.IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT))
             return true;
 
         return error("%s: Wrong cold staking outputs: vout[%d].scriptPubKey (%s) != vout[%d].scriptPubKey (%s) - value: %s",
@@ -6538,7 +6538,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
         bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
                 !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
                 !pSporkDB->SporkExists(SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3) &&
-                !pSporkDB->SporkExists(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4) &&
+                !pSporkDB->SporkExists(SPORK_17_COLDSTAKING_ENFORCEMENT) &&
                 !pSporkDB->SporkExists(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5) &&
                 !pSporkDB->SporkExists(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
 
