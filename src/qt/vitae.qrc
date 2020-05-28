@@ -318,6 +318,8 @@
         <file alias="ic-transaction-cs-contract-inactive">vitae/res/img/ic-transaction-cs-contract-inactive.svg</file>
         <file alias="ic-nav-cold-staking">vitae/res/img/ic-nav-cold-staking.svg</file>
         <file alias="ic-nav-cold-staking-active">vitae/res/img/ic-nav-cold-staking-active.svg</file>
-
+        <file alias="ic-check-cold-staking">vitae/res/img/ic-check-cold-staking.svg</file>
+        <file alias="ic-check-cold-staking-off">vitae/res/img/ic-check-cold-staking-off.svg</file>
+        <file alias="ic-check-cold-staking-enabled">vitae/res/img/ic-check-cold-staking-enabled.svg</file>
     </qresource>
 </RCC>
