@@ -312,5 +312,7 @@
         <file alias="ani-loading-dark">vitae/res/img/ani-loading-dark.gif</file>
         <file alias="ani-loading">vitae/res/img/ani-loading.gif</file>
         <file alias="ic-pending">vitae/res/img/ic-pending.svg</file>
+        <file alias="ic-transaction-stake-delegated">vitae/res/img/ic-transaction-stake-delegated.svg</file>
+        <file alias="ic-transaction-stake-hot">vitae/res/img/ic-transaction-stake-hot.svg</file>
     </qresource>
 </RCC>
