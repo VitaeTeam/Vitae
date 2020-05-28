@@ -315,6 +315,7 @@
         <file alias="ic-transaction-stake-delegated">vitae/res/img/ic-transaction-stake-delegated.svg</file>
         <file alias="ic-transaction-stake-hot">vitae/res/img/ic-transaction-stake-hot.svg</file>
         <file alias="ic-transaction-cs-contract">vitae/res/img/ic-transaction-cs-contract.svg</file>
+        <file alias="ic-transaction-cs-contract-inactive">vitae/res/img/ic-transaction-cs-contract-inactive.svg</file>
 
     </qresource>
 </RCC>
