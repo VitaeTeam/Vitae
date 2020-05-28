@@ -165,7 +165,7 @@ void SettingsWalletRepairWidget::buildParameterlist(QString arg)
     // Append repair parameter to command line.
     args.append(arg);
 
-    // Send command-line arguments to PIVXGUI::handleRestart()
+    // Send command-line arguments to VITAEGUI::handleRestart()
     emit handleRestart(args);
 }
 
