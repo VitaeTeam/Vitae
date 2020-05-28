@@ -2,7 +2,7 @@
 // Created by furszy on 2019-10-04.
 //
 
-#include "qt/pivx/guitransactionsutils.h"
+#include "qt/vitae/guitransactionsutils.h"
 #include "bitcoinunits.h"
 #include "optionsmodel.h"
 

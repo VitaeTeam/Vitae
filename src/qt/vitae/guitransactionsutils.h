@@ -6,7 +6,7 @@
 #define FURSZY_PIVX_GUITRANSACTIONSUTILS_H
 
 #include "walletmodel.h"
-#include "qt/pivx/pwidget.h"
+#include "qt/vitae/pwidget.h"
 
 
 namespace GuiTransactionsUtils {

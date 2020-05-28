@@ -8,6 +8,7 @@
 #include "guiutil.h"
 #include "qt/vitae/denomgenerationdialog.h"
 #include "qt/vitae/txviewholder.h"
+#include "qt/vitae/sendconfirmdialog.h"
 #include "qt/vitae/guitransactionsutils.h"
 #include "walletmodel.h"
 #include "optionsmodel.h"
