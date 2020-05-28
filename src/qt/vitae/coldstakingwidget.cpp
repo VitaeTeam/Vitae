@@ -2,22 +2,22 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "qt/pivx/coldstakingwidget.h"
-#include "qt/pivx/forms/ui_coldstakingwidget.h"
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/coldstakingwidget.h"
+#include "qt/vitae/forms/ui_coldstakingwidget.h"
+#include "qt/vitae/qtutils.h"
 #include "guiutil.h"
-#include "qt/pivx/denomgenerationdialog.h"
-#include "qt/pivx/txviewholder.h"
+#include "qt/vitae/denomgenerationdialog.h"
+#include "qt/vitae/txviewholder.h"
 #include "walletmodel.h"
 #include "optionsmodel.h"
 #include "coincontroldialog.h"
 #include "coincontrol.h"
-#include "zpiv/accumulators.h"
+#include "zvit/accumulators.h"
 
 #define DECORATION_SIZE 65
 #define NUM_ITEMS 3
 
-ColdStakingWidget::ColdStakingWidget(PIVXGUI* parent) :
+ColdStakingWidget::ColdStakingWidget(VITAEGUI* parent) :
     PWidget(parent),
     ui(new Ui::ColdStakingWidget)
 {

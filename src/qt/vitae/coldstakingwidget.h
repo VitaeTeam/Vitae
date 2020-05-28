@@ -5,10 +5,10 @@
 #ifndef COLDSTAKINGWIDGET_H
 #define COLDSTAKINGWIDGET_H
 
-#include "qt/pivx/pwidget.h"
-#include "qt/pivx/furabstractlistitemdelegate.h"
-#include "qt/pivx/txviewholder.h"
-#include "qt/pivx/sendmultirow.h"
+#include "qt/vitae/pwidget.h"
+#include "qt/vitae/furabstractlistitemdelegate.h"
+#include "qt/vitae/txviewholder.h"
+#include "qt/vitae/sendmultirow.h"
 #include "transactiontablemodel.h"
 #include "transactionfilterproxy.h"
 #include "coincontroldialog.h"
@@ -16,7 +16,7 @@
 #include <QLabel>
 #include <QWidget>
 
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -32,7 +32,7 @@ class ColdStakingWidget : public PWidget
     Q_OBJECT
 
 public:
-    explicit ColdStakingWidget(PIVXGUI* parent);
+    explicit ColdStakingWidget(VITAEGUI* parent);
     ~ColdStakingWidget();
 
     void loadWalletModel() override;
