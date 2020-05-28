@@ -314,5 +314,7 @@
         <file alias="ic-pending">vitae/res/img/ic-pending.svg</file>
         <file alias="ic-transaction-stake-delegated">vitae/res/img/ic-transaction-stake-delegated.svg</file>
         <file alias="ic-transaction-stake-hot">vitae/res/img/ic-transaction-stake-hot.svg</file>
+        <file alias="ic-transaction-cs-contract">vitae/res/img/ic-transaction-cs-contract.svg</file>
+
     </qresource>
 </RCC>
