@@ -8,7 +8,7 @@
 #include <QDialog>
 #include <QPixmap>
 #include "walletmodel.h"
-#include "qt/pivx/snackbar.h"
+#include "qt/vitae/snackbar.h"
 
 class WalletModel;
 class VITAEGUI;
