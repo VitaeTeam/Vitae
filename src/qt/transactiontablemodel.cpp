@@ -448,7 +448,7 @@ QString TransactionTableModel::formatTxType(const TransactionRecord* wtx) const
         return tr("Payment to yourself");
     case TransactionRecord::StakeMint:
         return tr("VIT Stake");
-    case TransactionRecord::StakeZPIV:
+    case TransactionRecord::StakeZVIT:
         return tr("zVIT Stake");
     case TransactionRecord::StakeDelegated:
         return tr("VIT Cold Stake");

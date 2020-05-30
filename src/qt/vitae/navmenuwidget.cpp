@@ -11,9 +11,8 @@
 
 
 NavMenuWidget::NavMenuWidget(VITAEGUI *mainWindow, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::NavMenuWidget),
-    window(mainWindow)
+    PWidget(mainWindow, parent),
+    ui(new Ui::NavMenuWidget)
 {
     ui->setupUi(this);
     this->setFixedWidth(100);

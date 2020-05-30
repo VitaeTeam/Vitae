@@ -7,8 +7,8 @@
 
 #include <QWidget>
 #include <QColor>
-#include "qt/pivx/myaddressrow.h"
-#include "qt/pivx/furlistrow.h"
+#include "qt/vitae/myaddressrow.h"
+#include "qt/vitae/furlistrow.h"
 #include "guiutil.h"
 
 
