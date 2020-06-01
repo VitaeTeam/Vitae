@@ -580,3 +580,4 @@ void TopBar::expandSync() {
         progressBar->setFixedWidth(ui->pushButtonSync->width());
         progressBar->setMinimumWidth(ui->pushButtonSync->width() - 2);
     }
+}

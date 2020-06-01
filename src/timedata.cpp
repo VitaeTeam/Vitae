@@ -5,7 +5,7 @@
 #include "timedata.h"
 
 #include "chainparams.h"
-#include "guiinterface.h"
+#include "ui_interface.h"
 #include "netbase.h"
 #include "sync.h"
 #include "util.h"
