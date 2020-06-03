@@ -714,7 +714,7 @@ border:none;</string>
   <customwidget>
    <class>PFBorderImage</class>
    <extends>QFrame</extends>
-   <header>qt/pivx/pfborderimage.h</header>
+   <header>qt/vitae/pfborderimage.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
