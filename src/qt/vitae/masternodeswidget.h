@@ -63,7 +63,7 @@ private:
 
     void startAlias(QString strAlias);
     bool startAll(QString& failedMN);
-    bool startMN(CMasternodeConfig::CMasternodeEntry mne, std::string& strError);
+    bool startMN(CFundamentalnodeConfig::CFundamentalnodeEntry mne, std::string& strError);
 };
 
 #endif // MASTERNODESWIDGET_H

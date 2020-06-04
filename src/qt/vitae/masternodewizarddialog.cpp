@@ -8,7 +8,7 @@
 #include "optionsmodel.h"
 #include "pairresult.h"
 #include "activemasternode.h"
-#include "qt/pivx/guitransactionsutils.h"
+#include "qt/vitae/guitransactionsutils.h"
 #include <QFile>
 #include <QIntValidator>
 #include <QHostAddress>

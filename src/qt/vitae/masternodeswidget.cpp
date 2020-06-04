@@ -205,15 +205,7 @@ void MasterNodesWidget::startAlias(QString strAlias) {
     for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         if (mne.getAlias() == strAlias.toStdString()) {
             std::string strError;
-            CFundamentalnodeBroadcast mnb;
-            if (CFundamentalnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb)) {
-                strStatusHtml += "successfully started.";
-                mnodeman.UpdateFundamentalnodeList(mnb);
-                mnb.Relay();
-                mnModel->updateMNList();
-            } else {
-                strStatusHtml += "failed to start.\nError: " + QString::fromStdString(strError);
-            }
+            strStatusHtml += (!startMN(mne, strError)) ? ("failed to start.\nError: " + QString::fromStdString(strError)) : "successfully started.";
             break;
         }
     }
@@ -226,13 +218,13 @@ void MasterNodesWidget::updateModelAndInform(QString informText) {
     inform(informText);
 }
 
-bool MasterNodesWidget::startMN(CMasternodeConfig::CMasternodeEntry mne, std::string& strError) {
-    CMasternodeBroadcast mnb;
-    if (!CMasternodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb))
+bool MasterNodesWidget::startMN(CFundamentalnodeConfig::CFundamentalnodeEntry mne, std::string& strError) {
+    CFundamentalnodeBroadcast mnb;
+    if (! CFundamentalnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb))
         return false;
-
-    mnodeman.UpdateMasternodeList(mnb);
+    mnodeman.UpdateFundamentalnodeList(mnb);
     mnb.Relay();
+    mnModel->updateMNList();
     return true;
 }
 
@@ -252,7 +244,7 @@ void MasterNodesWidget::onStartAllClicked() {
 bool MasterNodesWidget::startAll(QString& failText) {
     int amountOfMnFailed = 0;
     int amountOfMnStarted = 0;
-    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         std::string strError;
         if (!startMN(mne, strError)) {
             amountOfMnFailed++;
