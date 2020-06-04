@@ -1039,7 +1039,7 @@ UniValue createrawzerocoinspend(const UniValue& params, bool fHelp)
         address = CBitcoinAddress(address_str);
         if(!address.IsValid())
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
-        addressesTo.push_back(std::make_pair(&address, CAmount(0)));
+        addr_ptr = &address;
     }
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST && !isPublicSpend)
