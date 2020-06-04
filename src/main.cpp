@@ -5122,7 +5122,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                     for (const CTxIn& in: t.vin) {
                         // If this input is a zerocoin spend, and the coinstake has zerocoin inputs
                         // then store the serials for later check
-                        if(hasZPIVInputs && in.IsZerocoinSpend())
+                        if(hasZVITInputs && in.IsZerocoinSpend())
                             vBlockSerials.push_back(TxInToZerocoinSpend(in).getCoinSerialNumber());
 
                         // Loop through every input of the staking tx

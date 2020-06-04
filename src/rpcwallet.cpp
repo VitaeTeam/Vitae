@@ -3525,9 +3525,6 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
     if(sporkManager.IsSporkActive(SPORK_20_ZEROCOIN_MAINTENANCE_MODE))
         throw JSONRPCError(RPC_WALLET_ERROR, "zVIT is currently disabled due to maintenance.");
 
-    if(sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV is currently disabled due to maintenance.");
-
     CAmount nAmount = AmountFromValue(params[0]);        // Spending amount
     const bool fMintChange = params[1].get_bool();       // Mint change to zPIV
     const bool fMinimizeChange = params[2].get_bool();    // Minimize change
@@ -3543,7 +3540,7 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
     }
 
     std::vector<CZerocoinMint> vMintsSelected;
-    return DoZpivSpend(nAmount, fMintChange, fMinimizeChange, vMintsSelected, address_str, isPublicSpend);
+    return DoZvitSpend(nAmount, fMintChange, fMinimizeChange, vMintsSelected, address_str, isPublicSpend);
 }
 
 
