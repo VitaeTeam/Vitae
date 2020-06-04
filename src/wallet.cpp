@@ -4407,14 +4407,14 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
 
     for (auto &it : mapMintsSelected) {
         CZerocoinMint mint = it.second;
-        CMintMeta meta = zpivTracker->Get(GetSerialHash(mint.GetSerialNumber()));
+        CMintMeta meta = zvitTracker->Get(GetSerialHash(mint.GetSerialNumber()));
         CoinWitnessData coinWitness = CoinWitnessData(mint);
         coinWitness.SetHeightMintAdded(mint.GetHeight());
 
         // Generate the witness for each mint being spent
         if (!GenerateAccumulatorWitness(&coinWitness, mapAccumulators, pindexCheckpoint)) {
             receipt.SetStatus(_("Couldn't generate the accumulator witness"),
-                              ZPIV_FAILED_ACCUMULATOR_INITIALIZATION);
+                              ZVIT_FAILED_ACCUMULATOR_INITIALIZATION);
             return error("%s : %s", __func__, receipt.GetStatusMessage());
         }
 
@@ -4454,7 +4454,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
                                          *coinWitness.pWitness, hashTxOut, spendType);
 
             if (!CheckCoinSpend(spend, accumulator, receipt)) {
-                receipt.SetStatus(_("CoinSpend: failed check"), ZPIV_SPEND_ERROR);
+                receipt.SetStatus(_("CoinSpend: failed check"), ZVIT_SPEND_ERROR);
                 return error("%s : %s", __func__, receipt.GetStatusMessage());
             }
 
@@ -4467,7 +4467,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
             int64_t nTime5 = GetTimeMicros();
             LogPrint("bench", "        - CoinSpend verified in %.2fms\n", 0.001 * (nTime5 - nTime4));
         } catch (const std::exception&) {
-            receipt.SetStatus(_("CoinSpend: Accumulator witness does not verify"), ZPIV_INVALID_WITNESS);
+            receipt.SetStatus(_("CoinSpend: Accumulator witness does not verify"), ZVIT_INVALID_WITNESS);
             return error("%s : %s", __func__, receipt.GetStatusMessage());
         }
     }
@@ -4505,11 +4505,11 @@ bool CWallet::MintsToInputVectorPublicSpend(std::map<CBigNum, CZerocoinMint>& ma
         CTransaction txMint;
         uint256 hashBlock;
         if (!GetTransaction(mint.GetTxHash(), txMint, hashBlock)) {
-            receipt.SetStatus(strprintf(_("Unable to find transaction containing mint %s"), mint.GetTxHash().GetHex()), ZPIV_TXMINT_GENERAL);
+            receipt.SetStatus(strprintf(_("Unable to find transaction containing mint %s"), mint.GetTxHash().GetHex()), ZVIT_TXMINT_GENERAL);
             return false;
         } else if (mapBlockIndex.count(hashBlock) < 1) {
             // check that this mint made it into the blockchain
-            receipt.SetStatus(_("Mint did not make it into blockchain"), ZPIV_TXMINT_GENERAL);
+            receipt.SetStatus(_("Mint did not make it into blockchain"), ZVIT_TXMINT_GENERAL);
             return false;
         }
 
@@ -4530,14 +4530,14 @@ bool CWallet::MintsToInputVectorPublicSpend(std::map<CBigNum, CZerocoinMint>& ma
         }
 
         if (outputIndex == -1) {
-            receipt.SetStatus(_("Pubcoin not found in mint tx"), ZPIV_TXMINT_GENERAL);
+            receipt.SetStatus(_("Pubcoin not found in mint tx"), ZVIT_TXMINT_GENERAL);
             return false;
         }
 
         mint.SetOutputIndex(outputIndex);
         CTxIn in;
-        if(!ZPIVModule::createInput(in, mint, hashTxOut, spendVersion)) {
-            receipt.SetStatus(_("Cannot create public spend input"), ZPIV_TXMINT_GENERAL);
+        if(!ZVITModule::createInput(in, mint, hashTxOut, spendVersion)) {
+            receipt.SetStatus(_("Cannot create public spend input"), ZVIT_TXMINT_GENERAL);
             return false;
         }
         vin.emplace_back(in);
