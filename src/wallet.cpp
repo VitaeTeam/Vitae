@@ -2786,7 +2786,7 @@ bool CWallet::CreateCoinStake(
         txNew.vout.insert(txNew.vout.end(), vout.begin(), vout.end());
 
         CAmount nMinFee = 0;
-        if (!stakeInput->IsZPIV()) {
+        if (!stakeInput->IsZVIT()) {
             // Set output amount
             int outputs = txNew.vout.size() - 1;
             CAmount nRemaining = nCredit - nMinFee;
@@ -2809,7 +2809,7 @@ bool CWallet::CreateCoinStake(
             return error("CreateCoinStake : exceeded coinstake size limit");
 
         //Masternode payment
-        FillBlockPayee(txNew, nMinFee, true, stakeInput->IsZPIV());
+        FillBlockPayee(txNew, nMinFee, true, stakeInput->IsZVIT());
 
         uint256 hashTxOut = txNew.GetHash();
         CTxIn in;
@@ -2823,8 +2823,8 @@ bool CWallet::CreateCoinStake(
 
 
         //Mark mints as spent
-        if (stakeInput->IsZPIV()) {
-            CZPivStake* z = (CZPivStake*)stakeInput.get();
+        if (stakeInput->IsZVIT()) {
+            CZVitStake* z = (CZVitStake*)stakeInput.get();
             if (!z->MarkSpent(this, txNew.GetHash()))
                 return error("%s: failed to mark mint as used\n", __func__);
         }
@@ -2856,13 +2856,13 @@ bool CWallet::CreateCoinStake(
                 return error("%s: extracting pubcoin from txout failed", __func__);
 
             uint256 hashPubcoin = GetPubCoinHash(pubcoin.getValue());
-            if (!zpivTracker->HasPubcoinHash(hashPubcoin))
+            if (!zvitTracker->HasPubcoinHash(hashPubcoin))
                 return error("%s: could not find pubcoinhash %s in tracker", __func__, hashPubcoin.GetHex());
 
-            CMintMeta meta = zpivTracker->GetMetaFromPubcoin(hashPubcoin);
+            CMintMeta meta = zvitTracker->GetMetaFromPubcoin(hashPubcoin);
             meta.txid = txNew.GetHash();
             meta.nHeight = chainActive.Height() + 1;
-            if (!zpivTracker->UpdateState(meta))
+            if (!zvitTracker->UpdateState(meta))
                 return error("%s: failed to update metadata in tracker", __func__);
         }
     }
