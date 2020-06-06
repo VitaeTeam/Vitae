@@ -20,7 +20,7 @@
 #include "obfuscation.h"
 #include "wallet.h"
 
-#include "qt/pivx/qtutils.h"
+#include "qt/vitae/qtutils.h"
 
 #include <boost/assign/list_of.hpp> // for 'map_list_of()'
 
