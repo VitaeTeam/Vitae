@@ -121,7 +121,7 @@ SendWidget::SendWidget(VITAEGUI* parent) :
     coinIcon->show();
     coinIcon->raise();
 
-    setCssProperty(coinIcon, "coin-icon-piv");
+    setCssProperty(coinIcon, "coin-icon-vit");
 
     QSize BUTTON_SIZE = QSize(24, 24);
     coinIcon->setMinimumSize(BUTTON_SIZE);
@@ -621,7 +621,7 @@ void SendWidget::onValueChanged() {
 
 void SendWidget::onPIVSelected(bool _isPIV){
     isPIV = _isPIV;
-    setCssProperty(coinIcon, _isPIV ? "coin-icon-piv" : "coin-icon-zpiv");
+    setCssProperty(coinIcon, _isPIV ? "coin-icon-vit" : "coin-icon-zpiv");
     refreshView();
     updateStyle(coinIcon);
 }

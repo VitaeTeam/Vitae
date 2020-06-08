@@ -200,7 +200,7 @@
         <file alias="ic-clear-purple">vitae/res/img/ic-clear-purple.svg</file>
         <file alias="ic-close-white">vitae/res/img/ic-close-white.svg</file>
         <file alias="ic-close">vitae/res/img/ic-close.svg</file>
-        <file alias="ic-coin-piv">vitae/res/img/ic-coin-piv.svg</file>
+        <file alias="ic-coin-vit">vitae/res/img/ic-coin-vit.svg</file>
         <file alias="ic-coin-zpiv">vitae/res/img/ic-coin-zpiv.svg</file>
         <file alias="ic-combo-box">vitae/res/img/ic-combo-box.svg</file>
         <file alias="ic-connect">vitae/res/img/ic-connect.svg</file>
