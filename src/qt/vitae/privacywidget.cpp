@@ -117,9 +117,9 @@ PrivacyWidget::PrivacyWidget(VITAEGUI* parent) :
     ui->containerViewPrivacyChecks->setVisible(false);
     onMintSelected(false);
 
-    ui->btnTotalzPIV->setTitleClassAndText("btn-title-grey", "Total 0 zVIT");
-    ui->btnTotalzPIV->setSubTitleClassAndText("text-subtitle", "Show denominations of zVIT owned.");
-    ui->btnTotalzPIV->setRightIconClass("ic-arrow");
+    ui->btnTotalzVIT->setTitleClassAndText("btn-title-grey", "Total 0 zVIT");
+    ui->btnTotalzVIT->setSubTitleClassAndText("text-subtitle", "Show denominations of zVIT owned.");
+    ui->btnTotalzVIT->setRightIconClass("ic-arrow");
 
     ui->btnCoinControl->setTitleClassAndText("btn-title-grey", "Coin Control");
     ui->btnCoinControl->setSubTitleClassAndText("text-subtitle", "Select VIT outputs to mint into zVIT.");
@@ -134,7 +134,7 @@ PrivacyWidget::PrivacyWidget(VITAEGUI* parent) :
     ui->btnResetZerocoin->setTitleClassAndText("btn-title-grey", "Reset Spent zVIT");
     ui->btnResetZerocoin->setSubTitleClassAndText("text-subtitle", "Reset zerocoin database.");
 
-    connect(ui->btnTotalzPIV, SIGNAL(clicked()), this, SLOT(onTotalZpivClicked()));
+    connect(ui->btnTotalzVIT, SIGNAL(clicked()), this, SLOT(onTotalZpivClicked()));
     connect(ui->btnCoinControl, SIGNAL(clicked()), this, SLOT(onCoinControlClicked()));
     connect(ui->btnDenomGeneration, SIGNAL(clicked()), this, SLOT(onDenomClicked()));
     connect(ui->btnRescanMints, SIGNAL(clicked()), this, SLOT(onRescanMintsClicked()));
@@ -226,10 +226,10 @@ void PrivacyWidget::onTotalZpivClicked(){
     bool isVisible = ui->layoutDenom->isVisible();
     if(!isVisible){
         ui->layoutDenom->setVisible(true);
-        ui->btnTotalzPIV->setRightIconClass("btn-dropdown", true);
+        ui->btnTotalzVIT->setRightIconClass("btn-dropdown", true);
     }else{
         ui->layoutDenom->setVisible(false);
-        ui->btnTotalzPIV->setRightIconClass("ic-arrow", true);
+        ui->btnTotalzVIT->setRightIconClass("ic-arrow", true);
     }
 }
 
@@ -245,7 +245,7 @@ void PrivacyWidget::onSendClicked(){
     // Only convert enabled.
     bool isConvert = true;// ui->pushLeft->isChecked();
 
-    if(!GUIUtil::requestUnlock(walletModel, AskPassphraseDialog::Context::Mint_zPIV, true)){
+    if(!GUIUtil::requestUnlock(walletModel, AskPassphraseDialog::Context::Mint_zVIT, true)){
         inform(tr("You need to unlock the wallet to be able to %1 zVIT").arg(isConvert ? tr("convert") : tr("mint")));
         return;
     }
@@ -436,7 +436,7 @@ void PrivacyWidget::updateDenomsSupply(){
     }
 
     CAmount matureZerocoinBalance = walletModel->getZerocoinBalance() - walletModel->getUnconfirmedZerocoinBalance() - walletModel->getImmatureZerocoinBalance();
-    ui->btnTotalzPIV->setTitleText(tr("Total %1").arg(GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true)));
+    ui->btnTotalzVIT->setTitleText(tr("Total %1").arg(GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true)));
 }
 
 void PrivacyWidget::changeTheme(bool isLightTheme, QString& theme){

@@ -25,7 +25,7 @@ private:
 public:
     CzVITTracker(std::string strWalletFile);
     ~CzVITTracker();
-    void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false, CzVITWallet* zPIVWallet = NULL);
+    void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false, CzVITWallet* zVITWallet = NULL);
     void Add(const CZerocoinMint& mint, bool isNew = false, bool isArchived = false);
     bool Archive(CMintMeta& meta);
     bool HasPubcoin(const CBigNum& bnValue) const;

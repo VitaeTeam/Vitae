@@ -568,7 +568,7 @@
        </widget>
       </item>
       <item>
-       <widget class="OptionButton" name="btnTotalzPIV" native="true">
+       <widget class="OptionButton" name="btnTotalzVIT" native="true">
         <property name="minimumSize">
          <size>
           <width>0</width>

@@ -208,7 +208,7 @@ UniValue getchecksumblock(const UniValue& params, bool fHelp)
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
-            "  \"zPIVsupply\" :\n"
+            "  \"zVITsupply\" :\n"
             "  {\n"
             "     \"1\" : n,            (numeric) supply of 1 zVIT denomination\n"
             "     \"5\" : n,            (numeric) supply of 5 zVIT denomination\n"
