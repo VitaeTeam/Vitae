@@ -987,7 +987,7 @@ UniValue createrawzerocoinstake(const UniValue& params, bool fHelp)
 
     // create the zerocoinspend input
     CTxIn newTxIn;
-    // Use v2 spends for input (with v3 zpiv staking is disabled)
+    // Use v2 spends for input (with v3 zvit staking is disabled)
     if (!pwalletMain->MintToTxIn(input_mint, hashTxOut, newTxIn, receipt, libzerocoin::SpendType::STAKE, nullptr, false))
         throw JSONRPCError(RPC_WALLET_ERROR, "failed to create zc-spend stake input");
 

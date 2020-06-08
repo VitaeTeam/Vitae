@@ -621,7 +621,7 @@ void SendWidget::onValueChanged() {
 
 void SendWidget::onPIVSelected(bool _isPIV){
     isPIV = _isPIV;
-    setCssProperty(coinIcon, _isPIV ? "coin-icon-vit" : "coin-icon-zpiv");
+    setCssProperty(coinIcon, _isPIV ? "coin-icon-vit" : "coin-icon-zvit");
     refreshView();
     updateStyle(coinIcon);
 }

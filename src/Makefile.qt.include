@@ -498,11 +498,11 @@ RES_ICONS = \
   qt/vitae/res/img/ic-receive-off.svg \
   qt/vitae/res/img/img-empty-staking-on.svg \
   qt/vitae/res/img/ic-arrow-drop-up-white.svg \
-  qt/vitae/res/img/ic-coin-zpiv.png \
+  qt/vitae/res/img/ic-coin-zvit.png \
   qt/vitae/res/img/ic-receive-on.svg \
   qt/vitae/res/img/img-empty-transactions.svg \
   qt/vitae/res/img/ic-arrow-drop-up.svg \
-  qt/vitae/res/img/ic-coin-zpiv.svg \
+  qt/vitae/res/img/ic-coin-zvit.svg \
   qt/vitae/res/img/ic-received.svg \
   qt/vitae/res/img/img-logo-vitae.png \
   qt/vitae/res/img/ic-arrow-drop-white-down.svg \
