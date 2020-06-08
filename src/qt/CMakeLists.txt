@@ -211,7 +211,7 @@ QT5_ADD_TRANSLATION(QM ${QT_TRANSLATIONS_FILES})
 add_custom_target(translations_target ALL DEPENDS ${QM})
 
 QT5_ADD_RESOURCES(QRC_RESOURCE vitae.qrc)
-QT5_ADD_RESOURCES(QRC_LOCALE_RESOURCE pivx_locale.qrc)
+QT5_ADD_RESOURCES(QRC_LOCALE_RESOURCE vitae_locale.qrc)
 
 add_executable(vitae-qt vitae.cpp ${QM} ${QRC_RESOURCE} ${QRC_LOCALE_RESOURCE})
 add_dependencies(vitae-qt translations_target libunivalue libsecp256k1 leveldb leveldb_sse42 memenv)

@@ -81,7 +81,7 @@ SettingsBitToolWidget::SettingsBitToolWidget(VITAEGUI* _window, QWidget *parent)
     // Encrypt
 
     // Address
-    ui->labelSubtitleAddress->setText(tr("PIVX address"));
+    ui->labelSubtitleAddress->setText(tr("VITAE address"));
     setCssProperty(ui->labelSubtitleAddress, "text-title");
 
     ui->addressIn_ENC->setPlaceholderText(tr("Enter address"));

@@ -132,7 +132,7 @@ UniValue getnewstakingaddress(const UniValue& params, bool fHelp)
 
 
             "\nResult:\n"
-            "\"pivxaddress\"    (string) The new vitae address\n"
+            "\"vitaeaddress\"    (string) The new vitae address\n"
 
             "\nExamples:\n" +
             HelpExampleCli("getnewstakingaddress", "") + HelpExampleRpc("getnewstakingaddress", ""));

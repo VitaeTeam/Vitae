@@ -837,7 +837,7 @@
                          <enum>Qt::NoFocus</enum>
                         </property>
                         <property name="text">
-                         <string>About PIVX</string>
+                         <string>About VITAE</string>
                         </property>
                         <property name="checkable">
                          <bool>false</bool>

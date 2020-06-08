@@ -63,7 +63,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
     enableWallet = false;
 #endif // ENABLE_WALLET
 
-    QString windowTitle = tr("PIVX Core") + " - ";
+    QString windowTitle = tr("VITAE Core") + " - ";
     windowTitle += ((enableWallet) ? tr("Wallet") : tr("Node"));
     windowTitle += " " + networkStyle->getTitleAddText();
     setWindowTitle(windowTitle);
@@ -215,7 +215,7 @@ void VITAEGUI::createTrayIcon(const NetworkStyle* networkStyle)
 {
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
-    QString toolTip = tr("PIVX Core client") + " " + networkStyle->getTitleAddText();
+    QString toolTip = tr("VITAE Core client") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
     trayIcon->setIcon(networkStyle->getAppIcon());
     trayIcon->hide();
@@ -358,7 +358,7 @@ void VITAEGUI::messageInfo(const QString& text){
 
 
 void VITAEGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret) {
-    QString strTitle =  tr("PIVX Core"); // default title
+    QString strTitle =  tr("VITAE Core"); // default title
     // Default to information icon
     int nNotifyIcon = Notificator::Information;
 
@@ -408,7 +408,7 @@ void VITAEGUI::message(const QString& title, const QString& message, unsigned in
     } else if(style & CClientUIInterface::MSG_INFORMATION_SNACK){
         messageInfo(message);
     }else {
-        // Append title to "PIVX - "
+        // Append title to "VITAE - "
         if (!msgType.isEmpty())
             strTitle += " - " + msgType;
         notificator->notify((Notificator::Class) nNotifyIcon, strTitle, message);
@@ -426,7 +426,7 @@ bool VITAEGUI::openStandardDialog(QString title, QString body, QString okBtn, QS
     } else {
         dialog = new DefaultDialog();
         dialog->setText(title, body, okBtn);
-        dialog->setWindowTitle(tr("PIVX Core"));
+        dialog->setWindowTitle(tr("VITAE Core"));
         dialog->adjustSize();
         dialog->raise();
         dialog->exec();
