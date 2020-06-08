@@ -465,7 +465,7 @@ background:transparent;
                    <item>
                     <widget class="QLabel" name="textAmount">
                      <property name="text">
-                      <string>2 PIV</string>
+                      <string>2 VIT</string>
                      </property>
                     </widget>
                    </item>
@@ -624,7 +624,7 @@ background:transparent;
                    <item>
                     <widget class="QLabel" name="textFee">
                      <property name="text">
-                      <string>0.0001 PIV</string>
+                      <string>0.0001 VIT</string>
                      </property>
                     </widget>
                    </item>

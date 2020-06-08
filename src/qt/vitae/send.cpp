@@ -46,14 +46,14 @@ SendWidget::SendWidget(VITAEGUI* parent) :
     ui->labelTitle->setFont(fontLight);
 
     /* Button Group */
-    ui->pushLeft->setText("PIV");
+    ui->pushLeft->setText("VIT");
     setCssProperty(ui->pushLeft, "btn-check-left");
     ui->pushLeft->setChecked(true);
-    ui->pushRight->setText("zPIV");
+    ui->pushRight->setText("zVIT");
     setCssProperty(ui->pushRight, "btn-check-right");
 
     /* Subtitle */
-    ui->labelSubtitle1->setText(tr("You can transfer public coins (PIV) or private coins (zPIV)"));
+    ui->labelSubtitle1->setText(tr("You can transfer public coins (VIT) or private coins (zVIT)"));
     setCssProperty(ui->labelSubtitle1, "text-subtitle");
 
     ui->labelSubtitle2->setText(tr("Select coin type to spend"));
@@ -108,7 +108,7 @@ SendWidget::SendWidget(VITAEGUI* parent) :
     ui->labelTitleTotalSend->setText(tr("Total to send"));
     setCssProperty(ui->labelTitleTotalSend, "text-title");
 
-    ui->labelAmountSend->setText("0.00 PIV");
+    ui->labelAmountSend->setText("0.00 VIT");
     setCssProperty(ui->labelAmountSend, "text-body1");
 
     // Total Remaining
@@ -145,10 +145,10 @@ SendWidget::SendWidget(VITAEGUI* parent) :
 void SendWidget::refreshView(){
     QString btnText;
     if(ui->pushLeft->isChecked()){
-        btnText = tr("Send PIV");
+        btnText = tr("Send VIT");
         ui->pushButtonAddRecipient->setVisible(true);
     }else{
-        btnText = tr("Send zPIV");
+        btnText = tr("Send zVIT");
         ui->pushButtonAddRecipient->setVisible(false);
     }
     ui->pushButtonSave->setText(btnText);
@@ -407,7 +407,7 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
         outputs.push_back(std::pair<CBitcoinAddress*, CAmount>(new CBitcoinAddress(rec.address.toStdString()),rec.amount));
     }
 
-    // use mints from zPIV selector if applicable
+    // use mints from zVIT selector if applicable
     std::vector<CMintMeta> vMintsToFetch;
     std::vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::setSelectedMints.empty()) {
@@ -459,17 +459,17 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
             changeAddress
     )
             ) {
-        inform(tr("zPIV transaction sent!"));
+        inform(tr("zVIT transaction sent!"));
         ZVitControlDialog::setSelectedMints.clear();
         clearAll();
         return true;
     } else {
         QString body;
         if (receipt.GetStatus() == ZVIT_SPEND_V1_SEC_LEVEL) {
-            body = tr("Version 1 zPIV require a security level of 100 to successfully spend.");
+            body = tr("Version 1 zVIT require a security level of 100 to successfully spend.");
         } else {
             int nNeededSpends = receipt.GetNeededSpends(); // Number of spends we would need for this transaction
-            const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zPIV transaction
+            const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVIT transaction
             if (nNeededSpends > nMaxSpends) {
                 body = tr("Too much inputs (") + QString::number(nNeededSpends, 10) +
                        tr(") needed.\nMaximum allowed: ") + QString::number(nMaxSpends, 10);
@@ -479,7 +479,7 @@ bool SendWidget::sendZpiv(QList<SendCoinsRecipient> recipients){
                 body = QString::fromStdString(receipt.GetStatusMessage());
             }
         }
-        emit message("zPIV transaction failed", body, CClientUIInterface::MSG_ERROR);
+        emit message("zVIT transaction failed", body, CClientUIInterface::MSG_ERROR);
         return false;
     }
 }
@@ -600,7 +600,7 @@ void SendWidget::onCoinControlClicked(){
             ui->btnCoinControl->setActive(CoinControlDialog::coinControl->HasSelected());
             refreshAmounts();
         } else {
-            inform(tr("You don't have any PIV to select."));
+            inform(tr("You don't have any VIT to select."));
         }
     }else{
         if (walletModel->getZerocoinBalance() > 0) {
@@ -610,7 +610,7 @@ void SendWidget::onCoinControlClicked(){
             ui->btnCoinControl->setActive(!ZVitControlDialog::setSelectedMints.empty());
             zVitControl->deleteLater();
         } else {
-            inform(tr("You don't have any zPIV in your balance to select."));
+            inform(tr("You don't have any zVIT in your balance to select."));
         }
     }
 }

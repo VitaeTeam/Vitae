@@ -157,7 +157,7 @@
            <item>
             <widget class="QLabel" name="labelTitleAmount">
              <property name="text">
-              <string>PIV:</string>
+              <string>VIT:</string>
              </property>
             </widget>
            </item>

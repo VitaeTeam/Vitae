@@ -85,7 +85,7 @@ bool CZVitStake::GetModifier(uint64_t& nStakeModifier)
     }
 
     int64_t nTimeBlockFrom = pindex->GetBlockTime();
-    // zPIV staking is disabled long before block v7 (and checkpoint is not included in blocks since v7)
+    // zVIT staking is disabled long before block v7 (and checkpoint is not included in blocks since v7)
     // just return false for now. !TODO: refactor/remove this method
     while (pindex && pindex->nHeight + 1 <= std::min(chainActive.Height(), Params().Zerocoin_Block_Last_Checkpoint()-1)) {
         if (pindex->GetBlockTime() - nTimeBlockFrom > 60 * 60) {

@@ -188,7 +188,7 @@ void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std
 
     nAmount = AmountFromValue(params[5]);
     if (nAmount < 10 * COIN)
-        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %d is less than minimum 10 PIV allowed", FormatMoney(nAmount)));
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %d is less than minimum 10 VIT allowed", FormatMoney(nAmount)));
 
     if (nAmount > budget.GetTotalBudget(nBlockStart))
         throw JSONRPCError(RPC_INVALID_PARAMETER, strprintf("Invalid amount - Payment of %d more than max of %d", FormatMoney(nAmount), FormatMoney(budget.GetTotalBudget(nBlockStart))));

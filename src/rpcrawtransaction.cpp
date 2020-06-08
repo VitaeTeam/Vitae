@@ -1043,7 +1043,7 @@ UniValue createrawzerocoinspend(const UniValue& params, bool fHelp)
     }
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST && !isPublicSpend)
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT old spend only available in regtest for tests purposes");
 
     assert(pwalletMain != NULL);
     EnsureWalletIsUnlocked();

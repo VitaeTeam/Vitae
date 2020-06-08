@@ -108,7 +108,7 @@ ColdStakingWidget::ColdStakingWidget(VITAEGUI* parent) :
     ui->lineEditOwnerAddress->setAttribute(Qt::WA_MacShowFocusRect, 0);
     setShadow(ui->lineEditOwnerAddress);
 
-    ui->labelSubtitle2->setText(tr("Accept PIV delegation / Delegate PIV"));
+    ui->labelSubtitle2->setText(tr("Accept VIT delegation / Delegate VIT"));
     setCssSubtitleScreen(ui->labelSubtitle2);
     ui->labelSubtitle2->setContentsMargins(0,2,0,0);
 
@@ -135,7 +135,7 @@ ColdStakingWidget::ColdStakingWidget(VITAEGUI* parent) :
     setCssProperty(ui->labelEmpty, "text-empty");
 
     ui->btnCoinControl->setTitleClassAndText("btn-title-grey", "Coin Control");
-    ui->btnCoinControl->setSubTitleClassAndText("text-subtitle", "Select PIV outputs to delegate.");
+    ui->btnCoinControl->setSubTitleClassAndText("text-subtitle", "Select VIT outputs to delegate.");
 
     ui->btnColdStaking->setTitleClassAndText("btn-title-grey", "Create Cold Staking Address");
     ui->btnColdStaking->setSubTitleClassAndText("text-subtitle", "Creates an address to receive delegated coins\nand stake them on their owner's behalf.");
@@ -512,7 +512,7 @@ void ColdStakingWidget::onCoinControlClicked(){
             coinControlDialog->exec();
             ui->btnCoinControl->setActive(CoinControlDialog::coinControl->HasSelected());
         } else {
-            inform(tr("You don't have any PIV to select."));
+            inform(tr("You don't have any VIT to select."));
         }
     }
 }
@@ -735,7 +735,7 @@ void ColdStakingWidget::updateStakingTotalLabel()
 {
     const CAmount& total = csModel->getTotalAmount();
     ui->labelStakingTotal->setText(tr("Total Staking: %1").arg(
-            (total == 0) ? "0.00 PIV" : GUIUtil::formatBalance(total, nDisplayUnit))
+            (total == 0) ? "0.00 VIT" : GUIUtil::formatBalance(total, nDisplayUnit))
     );
 }
 

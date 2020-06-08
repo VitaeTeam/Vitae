@@ -2833,7 +2833,7 @@ bool CWallet::CreateCoinStake(
     if (!fKernelFound)
         return false;
 
-    // Sign for PIV
+    // Sign for VIT
     int nIn = 0;
     if (!txNew.vin[0].scriptSig.IsZerocoinSpend()) {
         for (CTxIn txIn : txNew.vin) {
@@ -4356,7 +4356,7 @@ bool CWallet::MintsToInputVector(std::map<CBigNum, CZerocoinMint>& mapMintsSelec
         if (nVersion >= libzerocoin::PrivateCoin::PUBKEY_VERSION) {
             CKey key;
             if (!mint.GetKeyPair(key))
-                return error("%s: failed to set zPIV privkey mint version=%d", __func__, nVersion);
+                return error("%s: failed to set zVIT privkey mint version=%d", __func__, nVersion);
             privateCoin.setPrivKey(key.GetPrivKey());
         }
         int64_t nTime3 = GetTimeMicros();

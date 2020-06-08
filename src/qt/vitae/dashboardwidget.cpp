@@ -55,7 +55,7 @@ DashboardWidget::DashboardWidget(VITAEGUI* parent) :
     setCssSubtitleScreen(ui->labelSubtitle);
 
     // Staking Information
-    ui->labelMessage->setText(tr("Amount of PIV and zPIV staked."));
+    ui->labelMessage->setText(tr("Amount of VIT and zVIT staked."));
     setCssSubtitleScreen(ui->labelMessage);
     setCssProperty(ui->labelSquarePiv, "square-chart-vit");
     setCssProperty(ui->labelSquarezPiv, "square-chart-zvit");
@@ -68,8 +68,8 @@ DashboardWidget::DashboardWidget(VITAEGUI* parent) :
 
     setCssProperty(ui->labelChart, "legend-chart");
 
-    ui->labelAmountZpiv->setText("0 zPIV");
-    ui->labelAmountPiv->setText("0 PIV");
+    ui->labelAmountZpiv->setText("0 zVIT");
+    ui->labelAmountPiv->setText("0 VIT");
     setCssProperty(ui->labelAmountPiv, "text-stake-vit-disable");
     setCssProperty(ui->labelAmountZpiv, "text-stake-zvit-disable");
 
@@ -143,7 +143,7 @@ DashboardWidget::DashboardWidget(VITAEGUI* parent) :
     setCssProperty(ui->chartContainer, "container-chart");
     setCssProperty(ui->pushImgEmptyChart, "img-empty-staking-on");
 
-    ui->btnHowTo->setText(tr("How to get PIV or zPIV"));
+    ui->btnHowTo->setText(tr("How to get VIT or zVIT"));
     setCssBtnSecondary(ui->btnHowTo);
 
 
@@ -237,7 +237,7 @@ void DashboardWidget::loadWalletModel(){
         loadChart();
 #endif
     }
-    // update the display unit, to not use the default ("PIV")
+    // update the display unit, to not use the default ("VIT")
     updateDisplayUnit();
 }
 
@@ -498,7 +498,7 @@ void DashboardWidget::updateStakeFilter() {
     }
 }
 
-// pair PIV, zPIV
+// pair VIT, zVIT
 const QMap<int, std::pair<qint64, qint64>> DashboardWidget::getAmountBy() {
     updateStakeFilter();
     const int size = stakesFilter->rowCount();
@@ -553,7 +553,7 @@ bool DashboardWidget::loadChartData(bool withMonthNames) {
     }
 
     chartData = new ChartData();
-    chartData->amountsByCache = getAmountBy(); // pair PIV, zPIV
+    chartData->amountsByCache = getAmountBy(); // pair VIT, zVIT
 
     std::pair<int,int> range = getChartRange(chartData->amountsByCache);
     if (range.first == 0 && range.second == 0) {
@@ -634,8 +634,8 @@ void DashboardWidget::onChartRefreshed() {
         axisX->clear();
     }
     // init sets
-    set0 = new QBarSet("PIV");
-    set1 = new QBarSet("zPIV");
+    set0 = new QBarSet("VIT");
+    set1 = new QBarSet("zVIT");
     set0->setColor(QColor(92,75,125));
     set1->setColor(QColor(176,136,255));
 

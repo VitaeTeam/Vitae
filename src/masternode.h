@@ -268,7 +268,7 @@ public:
         return strStatus;
     }
 
-    /// Is the input associated with collateral public key? (and there is 10000 PIV - checking if valid masternode)
+    /// Is the input associated with collateral public key? (and there is 10000 VIT - checking if valid masternode)
     //bool IsInputAssociatedWithPubkey() const;
 
 };

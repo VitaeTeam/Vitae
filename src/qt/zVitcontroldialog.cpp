@@ -37,7 +37,7 @@ ZVitControlDialog::ZVitControlDialog(QWidget *parent) :
     ui->frame->setProperty("cssClass", "container-dialog");
 
     // Title
-    ui->labelTitle->setText(tr("Select zPIV Denominations to Spend"));
+    ui->labelTitle->setText(tr("Select zVIT Denominations to Spend"));
     ui->labelTitle->setProperty("cssClass", "text-title-dialog");
 
 

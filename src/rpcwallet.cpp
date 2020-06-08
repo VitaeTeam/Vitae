@@ -667,7 +667,7 @@ UniValue delegatestake(const UniValue& params, bool fHelp)
 
             "\nArguments:\n"
             "1. \"stakingaddress\"      (string, required) The vitae staking address to delegate.\n"
-            "2. \"amount\"              (numeric, required) The amount in PIV to delegate for staking. eg 100\n"
+            "2. \"amount\"              (numeric, required) The amount in VIT to delegate for staking. eg 100\n"
             "3. \"owneraddress\"        (string, optional) The vitae address corresponding to the key that will be able to spend the stake. \n"
             "                               If not provided, or empty string, a new wallet address is generated.\n"
             "4. \"fExternalOwner\"      (boolean, optional, default = false) use the provided 'owneraddress' anyway, even if not present in this wallet.\n"
@@ -711,7 +711,7 @@ UniValue rawdelegatestake(const UniValue& params, bool fHelp)
 
             "\nArguments:\n"
             "1. \"stakingaddress\"      (string, required) The vitae staking address to delegate.\n"
-            "2. \"amount\"              (numeric, required) The amount in PIV to delegate for staking. eg 100\n"
+            "2. \"amount\"              (numeric, required) The amount in VIT to delegate for staking. eg 100\n"
             "3. \"owneraddress\"        (string, optional) The vitae address corresponding to the key that will be able to spend the stake. \n"
             "                               If not provided, or empty string, a new wallet address is generated.\n"
             "4. \"fExternalOwner\"      (boolean, optional, default = false) use the provided 'owneraddress' anyway, even if not present in this wallet.\n"
@@ -1145,7 +1145,7 @@ UniValue getcoldstakingbalance(const UniValue& params, bool fHelp)
             "1. \"account\"      (string, optional) DEPRECATED. The selected account, or \"*\" for entire wallet. It may be the default account using \"\".\n"
 
             "\nResult:\n"
-            "amount              (numeric) The total amount in PIV received for this account in P2CS contracts.\n"
+            "amount              (numeric) The total amount in VIT received for this account in P2CS contracts.\n"
 
             "\nExamples:\n"
             "\nThe total amount in the wallet\n" +
@@ -1177,7 +1177,7 @@ UniValue getdelegatedbalance(const UniValue& params, bool fHelp)
             "1. \"account\"      (string, optional) DEPRECATED. The selected account, or \"*\" for entire wallet. It may be the default account using \"\".\n"
 
             "\nResult:\n"
-            "amount              (numeric) The total amount in PIV received for this account in P2CS contracts.\n"
+            "amount              (numeric) The total amount in VIT received for this account in P2CS contracts.\n"
 
             "\nExamples:\n"
             "\nThe total amount in the wallet\n" +
@@ -3512,17 +3512,17 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "zVIT is currently disabled due to maintenance.");
 
     CAmount nAmount = AmountFromValue(params[0]);        // Spending amount
-    const bool fMintChange = params[1].get_bool();       // Mint change to zPIV
+    const bool fMintChange = params[1].get_bool();       // Mint change to zVIT
     const bool fMinimizeChange = params[2].get_bool();    // Minimize change
     const std::string address_str = (params.size() > 3 ? params[3].get_str() : "");
     const bool isPublicSpend = (params.size() > 4 ? params[4].get_bool() : true);
 
     if (Params().NetworkID() != CBaseChainParams::REGTEST) {
         if (fMintChange)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV minting is DISABLED (except for regtest), cannot mint change");
+            throw JSONRPCError(RPC_WALLET_ERROR, "zVIT minting is DISABLED (except for regtest), cannot mint change");
 
         if (!isPublicSpend)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
+            throw JSONRPCError(RPC_WALLET_ERROR, "zVIT old spend only available in regtest for tests purposes");
     }
 
     std::vector<CZerocoinMint> vMintsSelected;
@@ -3584,7 +3584,7 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "No zerocoin selected");
 
     if (!isPublicSpend && Params().NetworkID() != CBaseChainParams::REGTEST) {
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT old spend only available in regtest for tests purposes");
     }
 
     // check mints supplied and save serial hash (do this here so we don't fetch if any is wrong)
@@ -3618,10 +3618,10 @@ extern UniValue DoZvitSpend(const CAmount nAmount, bool fMintChange, bool fMinim
     // zerocoin mint / v2 spend is disabled. fMintChange/isPublicSpend should be false here. Double check
     if (Params().NetworkID() != CBaseChainParams::REGTEST) {
         if (fMintChange)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV minting is DISABLED (except for regtest), cannot mint change");
+            throw JSONRPCError(RPC_WALLET_ERROR, "zVIT minting is DISABLED (except for regtest), cannot mint change");
 
         if (!isPublicSpend)
-            throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
+            throw JSONRPCError(RPC_WALLET_ERROR, "zVIT old spend only available in regtest for tests purposes");
     }
 
     int64_t nTimeStart = GetTimeMillis();
@@ -4358,7 +4358,7 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
 
     const bool isPublicSpend = (params.size() > 6 ? params[6].get_bool() : true);
     if (Params().NetworkID() != CBaseChainParams::REGTEST && !isPublicSpend)
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV old spend only available in regtest for tests purposes");
+        throw JSONRPCError(RPC_WALLET_ERROR, "zVIT old spend only available in regtest for tests purposes");
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 

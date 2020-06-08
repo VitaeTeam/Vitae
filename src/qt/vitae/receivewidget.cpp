@@ -42,7 +42,7 @@ ReceiveWidget::ReceiveWidget(VITAEGUI* parent) :
 
     // Title
     ui->labelTitle->setText(tr("Receive"));
-    ui->labelSubtitle1->setText(tr("Scan the QR code or copy the address to receive PIV."));
+    ui->labelSubtitle1->setText(tr("Scan the QR code or copy the address to receive VIT."));
     setCssTitleScreen(ui->labelTitle);
     setCssSubtitleScreen(ui->labelSubtitle1);
 

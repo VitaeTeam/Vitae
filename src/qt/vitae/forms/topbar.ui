@@ -119,7 +119,7 @@
                <string notr="true">padding:0px;margin:0px;</string>
               </property>
               <property name="text">
-               <string>480.0685 PIV</string>
+               <string>480.0685 VIT</string>
               </property>
              </widget>
             </item>
@@ -188,7 +188,7 @@ border:none;</string>
                </size>
               </property>
               <property name="text">
-               <string>1,000 zPIV</string>
+               <string>1,000 zVIT</string>
               </property>
              </widget>
             </item>
@@ -398,7 +398,7 @@ border:none;</string>
                <item>
                 <widget class="QLabel" name="labelAmountPiv">
                  <property name="text">
-                  <string>480.0685 PIV</string>
+                  <string>480.0685 VIT</string>
                  </property>
                 </widget>
                </item>
@@ -421,7 +421,7 @@ border:none;</string>
                  <item>
                   <widget class="QLabel" name="labelPendingPiv">
                    <property name="text">
-                    <string>6.943 PIV</string>
+                    <string>6.943 VIT</string>
                    </property>
                   </widget>
                  </item>
@@ -455,7 +455,7 @@ border:none;</string>
                  <item>
                   <widget class="QLabel" name="labelImmaturePiv">
                    <property name="text">
-                    <string>10 PIV</string>
+                    <string>10 VIT</string>
                    </property>
                   </widget>
                  </item>
@@ -509,7 +509,7 @@ border:none;</string>
                <item>
                 <widget class="QLabel" name="labelAmountzPiv">
                  <property name="text">
-                  <string>1,000 zPIV</string>
+                  <string>1,000 zVIT</string>
                  </property>
                 </widget>
                </item>
@@ -532,7 +532,7 @@ border:none;</string>
                  <item>
                   <widget class="QLabel" name="labelPendingzPiv">
                    <property name="text">
-                    <string>60 zPIV</string>
+                    <string>60 zVIT</string>
                    </property>
                   </widget>
                  </item>
@@ -566,7 +566,7 @@ border:none;</string>
                  <item>
                   <widget class="QLabel" name="labelImmaturezPiv">
                    <property name="text">
-                    <string>10 zPIV</string>
+                    <string>10 zVIT</string>
                    </property>
                   </widget>
                  </item>
