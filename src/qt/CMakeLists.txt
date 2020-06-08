@@ -180,7 +180,7 @@ execute_process(
 
 execute_process(
         COMMAND ${MOC_BIN} -o moc_pfborderimage.cpp pfborderimage.h
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/pivx
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/vitae
 )
 list(APPEND QT_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/vitae/moc_pfborderimage.cpp)
 
@@ -213,7 +213,7 @@ add_custom_target(translations_target ALL DEPENDS ${QM})
 QT5_ADD_RESOURCES(QRC_RESOURCE vitae.qrc)
 QT5_ADD_RESOURCES(QRC_LOCALE_RESOURCE pivx_locale.qrc)
 
-add_executable(vitae-qt pivx.cpp ${QM} ${QRC_RESOURCE} ${QRC_LOCALE_RESOURCE})
+add_executable(vitae-qt vitae.cpp ${QM} ${QRC_RESOURCE} ${QRC_LOCALE_RESOURCE})
 add_dependencies(vitae-qt translations_target libunivalue libsecp256k1 leveldb leveldb_sse42 memenv)
 target_include_directories(vitae-qt PUBLIC ${ENDIAN_INCLUDES})
 target_link_libraries(vitae-qt

@@ -848,7 +848,7 @@ bool AppInitBasicSetup()
     return true;
 }
 
-/** Initialize pivx.
+/** Initialize vitae.
  *  @pre Parameters should be parsed and config file should be read.
  */
 bool AppInit2()

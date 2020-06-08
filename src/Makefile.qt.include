@@ -772,7 +772,7 @@ $(qt_libbitcoinqt_a_OBJECTS) $(qt_vitae_qt_OBJECTS) : | $(QT_MOC)
 $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
-# pivx-qt binary #
+# vitae-qt binary #
 qt_vitae_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS) $(SVG_CFLAGS) $(CHARTS_CFLAGS)
 qt_vitae_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)

@@ -636,7 +636,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "\nResult:\n"
             "{\n"
             "  \"staking_status\": true|false,     (boolean) if the wallet is staking or not\n"
-            "  \"staking_enabled\": true|false,    (boolean) if staking is enabled/disabled in pivx.conf\n"
+            "  \"staking_enabled\": true|false,    (boolean) if staking is enabled/disabled in vitae.conf\n"
             "  \"tiptime\": n,                     (integer) chain tip blocktime\n"
             "  \"haveconnections\": true|false,    (boolean) if network connections are present\n"
             "  \"mnsync\": true|false,             (boolean) if masternode data is synced\n"
