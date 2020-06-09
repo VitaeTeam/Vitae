@@ -549,12 +549,12 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     ui->labelTitle1->setText(nLockedBalance > 0 ? tr("Available (Locked included)") : tr("Available"));
 
     // VIT Total
-    CAmount pivAvailableBalance = balance;
+    CAmount vitAvailableBalance = balance;
     // zVIT Balance
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
 
     // Set
-    QString totalVit = GUIUtil::formatBalance(pivAvailableBalance, nDisplayUnit);
+    QString totalVit = GUIUtil::formatBalance(vitAvailableBalance, nDisplayUnit);
     QString totalzVit = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
     // Top
     ui->labelAmountTopVit->setText(totalVit);

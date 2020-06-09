@@ -59,7 +59,7 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private slots:
-    void onPIVSelected(bool _isPIV);
+    void onVITSelected(bool _isVIT);
     void onSendClicked();
     void onContactsClicked(SendMultiRow* entry);
     void onMenuClicked(SendMultiRow* entry);
@@ -87,7 +87,7 @@ private:
     // Current focus entry
     SendMultiRow* focusedEntry = nullptr;
 
-    bool isPIV = true;
+    bool isVIT = true;
     void resizeMenu();
     QString recipientsToString(QList<SendCoinsRecipient> recipients);
     SendMultiRow* createEntry();

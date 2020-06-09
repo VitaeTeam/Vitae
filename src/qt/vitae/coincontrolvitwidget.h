@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef COINCONTROLPIVWIDGET_H
-#define COINCONTROLPIVWIDGET_H
+#ifndef COINCONTROLVITWIDGET_H
+#define COINCONTROLVITWIDGET_H
 
 #include <QDialog>
 
@@ -23,4 +23,4 @@ private:
     Ui::CoinControlVitWidget *ui;
 };
 
-#endif // COINCONTROLPIVWIDGET_H
+#endif // COINCONTROLVITWIDGET_H

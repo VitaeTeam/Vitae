@@ -157,7 +157,7 @@ namespace ZVITModule {
 
             std::vector<unsigned char> vchSig;
             if (!key.Sign(spend.signatureHash(), vchSig))
-                return error("%s: ZPIVModule failed to sign signatureHash.", __func__);
+                return error("%s: ZVITModule failed to sign signatureHash.", __func__);
             spend.setVchSig(vchSig);
 
         }

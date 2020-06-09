@@ -97,7 +97,7 @@ ColdStakingWidget::ColdStakingWidget(VITAEGUI* parent) :
     setCssProperty(ui->pushRight, "btn-check-right");
 
     /* Subtitle */
-    ui->labelSubtitle1->setText(tr("You can delegate your PIVs, letting a hot node (24/7 online node)\nstake on your behalf, while you keep the keys securely offline."));
+    ui->labelSubtitle1->setText(tr("You can delegate your VITs, letting a hot node (24/7 online node)\nstake on your behalf, while you keep the keys securely offline."));
     setCssSubtitleScreen(ui->labelSubtitle1);
     spacerDiv = new QSpacerItem(40, 20, QSizePolicy::Maximum, QSizePolicy::Expanding);
 

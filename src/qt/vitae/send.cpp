@@ -135,8 +135,8 @@ SendWidget::SendWidget(VITAEGUI* parent) :
     addEntry();
 
     // Connect
-    connect(ui->pushLeft, &QPushButton::clicked, [this](){onPIVSelected(true);});
-    connect(ui->pushRight,  &QPushButton::clicked, [this](){onPIVSelected(false);});
+    connect(ui->pushLeft, &QPushButton::clicked, [this](){onVITSelected(true);});
+    connect(ui->pushRight,  &QPushButton::clicked, [this](){onVITSelected(false);});
     connect(ui->pushButtonSave, SIGNAL(clicked()), this, SLOT(onSendClicked()));
     connect(ui->pushButtonAddRecipient, SIGNAL(clicked()), this, SLOT(onAddEntryClicked()));
     connect(ui->pushButtonClear, SIGNAL(clicked()), this, SLOT(clearAll()));
@@ -325,7 +325,7 @@ void SendWidget::onSendClicked(){
     // this way we let users unlock by walletpassphrase or by menu
     // and make many transactions while unlocking through this dialog
     // will call relock
-    if(!GUIUtil::requestUnlock(walletModel, sendVit ? AskPassphraseDialog::Context::Send_PIV : AskPassphraseDialog::Context::Send_zVIT, true)){
+    if(!GUIUtil::requestUnlock(walletModel, sendVit ? AskPassphraseDialog::Context::Send_VIT : AskPassphraseDialog::Context::Send_zVIT, true)){
         // Unlock wallet was cancelled
         inform(tr("Cannot send, wallet locked"));
         return;
@@ -588,7 +588,7 @@ void SendWidget::onChangeCustomFeeClicked(){
 }
 
 void SendWidget::onCoinControlClicked(){
-    if(isPIV){
+    if(isVIT){
         if (walletModel->getBalance() > 0) {
             if (!coinControlDialog) {
                 coinControlDialog = new CoinControlDialog();
@@ -619,9 +619,9 @@ void SendWidget::onValueChanged() {
     refreshAmounts();
 }
 
-void SendWidget::onPIVSelected(bool _isPIV){
-    isPIV = _isPIV;
-    setCssProperty(coinIcon, _isPIV ? "coin-icon-vit" : "coin-icon-zvit");
+void SendWidget::onVITSelected(bool _isVIT){
+    isVIT = _isVIT;
+    setCssProperty(coinIcon, _isVIT ? "coin-icon-vit" : "coin-icon-zvit");
     refreshView();
     updateStyle(coinIcon);
 }
@@ -714,8 +714,8 @@ void SendWidget::onContactMultiClicked(){
             inform(tr("Invalid address"));
             return;
         }
-        CBitcoinAddress pivAdd = CBitcoinAddress(address.toStdString());
-        if (walletModel->isMine(pivAdd)) {
+        CBitcoinAddress vitAdd = CBitcoinAddress(address.toStdString());
+        if (walletModel->isMine(vitAdd)) {
             inform(tr("Cannot store your own address as contact"));
             return;
         }
@@ -735,7 +735,7 @@ void SendWidget::onContactMultiClicked(){
             if (label == dialog->getLabel()) {
                 return;
             }
-            if (walletModel->updateAddressBookLabels(pivAdd.Get(), dialog->getLabel().toStdString(),
+            if (walletModel->updateAddressBookLabels(vitAdd.Get(), dialog->getLabel().toStdString(),
                     AddressBook::AddressBookPurpose::SEND)) {
                 inform(tr("New Contact Stored"));
             } else {

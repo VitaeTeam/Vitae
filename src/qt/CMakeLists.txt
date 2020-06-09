@@ -92,7 +92,7 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/addresstablemodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/askpassphrasedialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/coincontroldialog.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/zpivcontroldialog.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/zvitcontroldialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/coincontroltreewidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/proposalframe.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/editaddressdialog.cpp
@@ -106,7 +106,6 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/transactiontablemodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/walletmodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/walletmodeltransaction.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/zpivcontroldialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/vitaegui.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/loadingdialog.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/pwidget.cpp
