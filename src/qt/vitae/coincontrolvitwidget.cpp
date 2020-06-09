@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "qt/vitae/coincontrolpivwidget.h"
-#include "qt/vitae/forms/ui_coincontrolpivwidget.h"
+#include "qt/vitae/coincontrolvitwidget.h"
+#include "qt/vitae/forms/ui_coincontrolvitwidget.h"
 
 CoinControlPivWidget::CoinControlPivWidget(QWidget *parent) :
     QDialog(parent),
