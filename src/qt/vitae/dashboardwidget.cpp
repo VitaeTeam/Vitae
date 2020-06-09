@@ -57,9 +57,9 @@ DashboardWidget::DashboardWidget(VITAEGUI* parent) :
     // Staking Information
     ui->labelMessage->setText(tr("Amount of VIT and zVIT staked."));
     setCssSubtitleScreen(ui->labelMessage);
-    setCssProperty(ui->labelSquarePiv, "square-chart-vit");
+    setCssProperty(ui->labelSquareVit, "square-chart-vit");
     setCssProperty(ui->labelSquarezVit, "square-chart-zvit");
-    setCssProperty(ui->labelPiv, "text-chart-vit");
+    setCssProperty(ui->labelVit, "text-chart-vit");
     setCssProperty(ui->labelZvit, "text-chart-zvit");
 
     // Staking Amount
@@ -69,8 +69,8 @@ DashboardWidget::DashboardWidget(VITAEGUI* parent) :
     setCssProperty(ui->labelChart, "legend-chart");
 
     ui->labelAmountZvit->setText("0 zVIT");
-    ui->labelAmountPiv->setText("0 VIT");
-    setCssProperty(ui->labelAmountPiv, "text-stake-vit-disable");
+    ui->labelAmountVit->setText("0 VIT");
+    setCssProperty(ui->labelAmountVit, "text-stake-vit-disable");
     setCssProperty(ui->labelAmountZvit, "text-stake-zvit-disable");
 
     setCssProperty({ui->pushButtonAll,  ui->pushButtonMonth, ui->pushButtonYear}, "btn-check-time");
@@ -508,7 +508,7 @@ const QMap<int, std::pair<qint64, qint64>> DashboardWidget::getAmountBy() {
         QModelIndex modelIndex = stakesFilter->index(i, TransactionTableModel::ToAddress);
         qint64 amount = llabs(modelIndex.data(TransactionTableModel::AmountRole).toLongLong());
         QDate date = modelIndex.data(TransactionTableModel::DateRole).toDateTime().date();
-        bool isPiv = modelIndex.data(TransactionTableModel::TypeRole).toInt() != TransactionRecord::StakeZVIT;
+        bool isVit = modelIndex.data(TransactionTableModel::TypeRole).toInt() != TransactionRecord::StakeZVIT;
 
         int time = 0;
         switch (chartShow) {
@@ -529,12 +529,12 @@ const QMap<int, std::pair<qint64, qint64>> DashboardWidget::getAmountBy() {
                 return amountBy;
         }
         if (amountBy.contains(time)) {
-            if (isPiv) {
+            if (isVit) {
                 amountBy[time].first += amount;
             } else
                 amountBy[time].second += amount;
         } else {
-            if (isPiv) {
+            if (isVit) {
                 amountBy[time] = std::make_pair(amount, 0);
             } else {
                 amountBy[time] = std::make_pair(0, amount);
@@ -572,13 +572,13 @@ bool DashboardWidget::loadChartData(bool withMonthNames) {
             std::pair <qint64, qint64> pair = chartData->amountsByCache[num];
             vit = (pair.first != 0) ? pair.first / 100000000 : 0;
             zvit = (pair.second != 0) ? pair.second / 100000000 : 0;
-            chartData->totalPiv += pair.first;
+            chartData->totalVit += pair.first;
             chartData->totalZvit += pair.second;
         }
 
         chartData->xLabels << ((withMonthNames) ? monthsNames[num - 1] : QString::number(num));
 
-        chartData->valuesPiv.append(vit);
+        chartData->valuesVit.append(vit);
         chartData->valueszVit.append(zvit);
 
         int max = std::max(vit, zvit);
@@ -646,20 +646,20 @@ void DashboardWidget::onChartRefreshed() {
     series->attachAxis(axisX);
     series->attachAxis(axisY);
 
-    set0->append(chartData->valuesPiv);
+    set0->append(chartData->valuesVit);
     set1->append(chartData->valueszVit);
 
     // Total
     nDisplayUnit = walletModel->getOptionsModel()->getDisplayUnit();
-    if (chartData->totalPiv > 0 || chartData->totalZvit > 0) {
-        setCssProperty(ui->labelAmountPiv, "text-stake-vit");
+    if (chartData->totalVit > 0 || chartData->totalZvit > 0) {
+        setCssProperty(ui->labelAmountVit, "text-stake-vit");
         setCssProperty(ui->labelAmountZvit, "text-stake-zvit");
     } else {
-        setCssProperty(ui->labelAmountPiv, "text-stake-vit-disable");
+        setCssProperty(ui->labelAmountVit, "text-stake-vit-disable");
         setCssProperty(ui->labelAmountZvit, "text-stake-zvit-disable");
     }
-    forceUpdateStyle({ui->labelAmountPiv, ui->labelAmountZvit});
-    ui->labelAmountPiv->setText(GUIUtil::formatBalance(chartData->totalPiv, nDisplayUnit));
+    forceUpdateStyle({ui->labelAmountVit, ui->labelAmountZvit});
+    ui->labelAmountVit->setText(GUIUtil::formatBalance(chartData->totalVit, nDisplayUnit));
     ui->labelAmountZvit->setText(GUIUtil::formatBalance(chartData->totalZvit, nDisplayUnit, true));
 
     series->append(set0);

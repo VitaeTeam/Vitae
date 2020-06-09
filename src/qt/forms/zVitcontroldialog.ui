@@ -398,7 +398,7 @@
         <connection>
             <sender>buttonBox</sender>
             <signal>accepted()</signal>
-            <receiver>ZPivControlDialog</receiver>
+            <receiver>ZVitControlDialog</receiver>
             <slot>accept()</slot>
             <hints>
                 <hint type="sourcelabel">
@@ -414,7 +414,7 @@
         <connection>
             <sender>buttonBox</sender>
             <signal>rejected()</signal>
-            <receiver>ZPivControlDialog</receiver>
+            <receiver>ZVitControlDialog</receiver>
             <slot>reject()</slot>
             <hints>
                 <hint type="sourcelabel">

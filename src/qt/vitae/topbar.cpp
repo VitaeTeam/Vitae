@@ -49,9 +49,9 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
 
     // Amount information top
     ui->widgetTopAmount->setVisible(false);
-    setCssProperty({ui->labelAmountTopPiv, ui->labelAmountTopzVit}, "amount-small-topbar");
-    setCssProperty({ui->labelAmountPiv, ui->labelAmountzVit}, "amount-topbar");
-    setCssProperty({ui->labelPendingPiv, ui->labelPendingzVit, ui->labelImmaturePiv, ui->labelImmaturezVit}, "amount-small-topbar");
+    setCssProperty({ui->labelAmountTopVit, ui->labelAmountTopzVit}, "amount-small-topbar");
+    setCssProperty({ui->labelAmountVit, ui->labelAmountzVit}, "amount-topbar");
+    setCssProperty({ui->labelPendingVit, ui->labelPendingzVit, ui->labelImmatureVit, ui->labelImmaturezVit}, "amount-small-topbar");
 
     // Progress Sync
     progressBar = new QProgressBar(ui->layoutSync);
@@ -554,20 +554,20 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
 
     // Set
-    QString totalPiv = GUIUtil::formatBalance(pivAvailableBalance, nDisplayUnit);
+    QString totalVit = GUIUtil::formatBalance(pivAvailableBalance, nDisplayUnit);
     QString totalzVit = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
     // Top
-    ui->labelAmountTopPiv->setText(totalPiv);
+    ui->labelAmountTopVit->setText(totalVit);
     ui->labelAmountTopzVit->setText(totalzVit);
 
     // Expanded
-    ui->labelAmountPiv->setText(totalPiv);
+    ui->labelAmountVit->setText(totalVit);
     ui->labelAmountzVit->setText(totalzVit);
 
-    ui->labelPendingPiv->setText(GUIUtil::formatBalance(unconfirmedBalance, nDisplayUnit));
+    ui->labelPendingVit->setText(GUIUtil::formatBalance(unconfirmedBalance, nDisplayUnit));
     ui->labelPendingzVit->setText(GUIUtil::formatBalance(unconfirmedZerocoinBalance, nDisplayUnit, true));
 
-    ui->labelImmaturePiv->setText(GUIUtil::formatBalance(immatureBalance, nDisplayUnit));
+    ui->labelImmatureVit->setText(GUIUtil::formatBalance(immatureBalance, nDisplayUnit));
     ui->labelImmaturezVit->setText(GUIUtil::formatBalance(immatureZerocoinBalance, nDisplayUnit, true));
 }
 

@@ -108,7 +108,7 @@
              <number>0</number>
             </property>
             <item alignment="Qt::AlignTop">
-             <widget class="QLabel" name="labelAmountTopPiv">
+             <widget class="QLabel" name="labelAmountTopVit">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -396,7 +396,7 @@ border:none;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="labelAmountPiv">
+                <widget class="QLabel" name="labelAmountVit">
                  <property name="text">
                   <string>480.0685 VIT</string>
                  </property>
@@ -419,7 +419,7 @@ border:none;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="labelPendingPiv">
+                  <widget class="QLabel" name="labelPendingVit">
                    <property name="text">
                     <string>6.943 VIT</string>
                    </property>
@@ -453,7 +453,7 @@ border:none;</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QLabel" name="labelImmaturePiv">
+                  <widget class="QLabel" name="labelImmatureVit">
                    <property name="text">
                     <string>10 VIT</string>
                    </property>

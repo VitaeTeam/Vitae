@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CoinControlPivWidget</class>
- <widget class="QWidget" name="CoinControlPivWidget">
+ <class>CoinControlVitWidget</class>
+ <widget class="QWidget" name="CoinControlVitWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

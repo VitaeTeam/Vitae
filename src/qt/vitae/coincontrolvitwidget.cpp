@@ -5,9 +5,9 @@
 #include "qt/vitae/coincontrolvitwidget.h"
 #include "qt/vitae/forms/ui_coincontrolvitwidget.h"
 
-CoinControlPivWidget::CoinControlPivWidget(QWidget *parent) :
+CoinControlVitWidget::CoinControlVitWidget(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::CoinControlPivWidget)
+    ui(new Ui::CoinControlVitWidget)
 {
     ui->setupUi(this);
 
@@ -83,7 +83,7 @@ CoinControlPivWidget::CoinControlPivWidget(QWidget *parent) :
 
 }
 
-CoinControlPivWidget::~CoinControlPivWidget()
+CoinControlVitWidget::~CoinControlVitWidget()
 {
     delete ui;
 }
