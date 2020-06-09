@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_PAIRRESULT_H
-#define PIVX_PAIRRESULT_H
+#ifndef VITAE_PAIRRESULT_H
+#define VITAE_PAIRRESULT_H
 
 
 class PairResult {
@@ -17,4 +17,4 @@ public:
 };
 
 
-#endif //PIVX_PAIRRESULT_H
+#endif //VITAE_PAIRRESULT_H
