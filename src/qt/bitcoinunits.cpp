@@ -54,10 +54,10 @@ QString BitcoinUnits::id(int unit)
     }
 }
 
-QString BitcoinUnits::name(int unit, bool isZpiv)
+QString BitcoinUnits::name(int unit, bool isZvit)
 {
     QString z = "";
-    if(isZpiv) z = "z";
+    if(isZvit) z = "z";
     if (Params().NetworkID() == CBaseChainParams::MAIN) {
         switch (unit) {
         case VITAE:

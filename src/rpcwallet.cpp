@@ -746,7 +746,7 @@ UniValue rawdelegatestake(const UniValue& params, bool fHelp)
             "         \"reqSigs\" : n,            (numeric) The required sigs\n"
             "         \"type\" : \"pubkeyhash\",  (string) The type, eg 'pubkeyhash'\n"
             "         \"addresses\" : [           (json array of string)\n"
-            "           \"pivxaddress\"        (string) vitae address\n"
+            "           \"vitaeaddress\"        (string) vitae address\n"
             "           ,...\n"
             "         ]\n"
             "       }\n"
@@ -1281,7 +1281,7 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 3 || params.size() > 7)
         throw std::runtime_error(
-            "sendfrom \"fromaccount\" \"topivxaddress\" amount ( minconf \"comment\" \"comment-to\" includeDelegated)\n"
+            "sendfrom \"fromaccount\" \"tovitaeaddress\" amount ( minconf \"comment\" \"comment-to\" includeDelegated)\n"
             "\nDEPRECATED (use sendtoaddress). Send an amount from an account to a vitae address.\n"
             "The amount is a real and is rounded to the nearest 0.00000001." +
             HelpRequiringPassphrase() + "\n"

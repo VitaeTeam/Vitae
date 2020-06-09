@@ -81,9 +81,9 @@ public:
     QMap<int, std::pair<qint64, qint64>> amountsByCache;
     qreal maxValue = 0;
     qint64 totalPiv = 0;
-    qint64 totalZpiv = 0;
+    qint64 totalZvit = 0;
     QList<qreal> valuesPiv;
-    QList<qreal> valueszPiv;
+    QList<qreal> valueszVit;
     QStringList xLabels;
 };
 
@@ -163,7 +163,7 @@ private:
     int yearFilter = 0;
     int monthFilter = 0;
     int dayStart = 1;
-    bool hasZpivStakes = false;
+    bool hasZvitStakes = false;
 
     ChartData* chartData = nullptr;
     bool hasStakes = false;

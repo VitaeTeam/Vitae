@@ -49,7 +49,7 @@ QFont bitcoinAddressFont();
 CAmount parseValue(const QString& text, int displayUnit, bool* valid_out = 0);
 
 // Format an amount
-QString formatBalance(CAmount amount, int nDisplayUnit = 0, bool isZpiv = false);
+QString formatBalance(CAmount amount, int nDisplayUnit = 0, bool isZvit = false);
 
 // Request wallet unlock
 bool requestUnlock(WalletModel* walletModel, AskPassphraseDialog::Context context, bool relock);

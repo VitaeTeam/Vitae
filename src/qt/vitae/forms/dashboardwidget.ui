@@ -575,7 +575,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLabel" name="labelAmountZpiv">
+           <widget class="QLabel" name="labelAmountZvit">
             <property name="text">
              <string>TextLabel</string>
             </property>
@@ -715,7 +715,7 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelSquarezPiv">
+                 <widget class="QLabel" name="labelSquarezVit">
                   <property name="minimumSize">
                    <size>
                     <width>14</width>
@@ -734,7 +734,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLabel" name="labelZpiv">
+                 <widget class="QLabel" name="labelZvit">
                   <property name="text">
                    <string>zVIT</string>
                   </property>

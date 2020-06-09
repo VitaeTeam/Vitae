@@ -200,7 +200,7 @@ public:
     // Mint zVIT
     bool mintCoins(CAmount value, CCoinControl* coinControl, std::string &strError);
 
-    bool createZpivSpend(
+    bool createZvitSpend(
             CWalletTx &wtxNew,
             std::vector<CZerocoinMint> &vMintsSelected,
             bool fMintChange,
@@ -210,7 +210,7 @@ public:
             std::string changeAddress = ""
     );
 
-    bool sendZpiv(
+    bool sendZvit(
             std::vector<CZerocoinMint> &vMintsSelected,
             bool fMintChange,
             bool fMinimizeChange,
@@ -219,7 +219,7 @@ public:
             std::string changeAddress = ""
     );
 
-    bool convertBackZpiv(
+    bool convertBackZvit(
             CAmount value,
             std::vector<CZerocoinMint> &vMintsSelected,
             bool fMintChange,

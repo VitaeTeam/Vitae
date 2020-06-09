@@ -124,7 +124,7 @@ SET(QT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/txrow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addressfilterproxymodel.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/dashboardwidget.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/coincontrolpivwidget.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/vitae/coincontrolvitwidget.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/addresslabelrow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/contactdropdownrow.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/vitae/contactsdropdown.cpp

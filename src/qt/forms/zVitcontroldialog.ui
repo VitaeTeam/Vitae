@@ -162,7 +162,7 @@
                                             <item>
                                                 <widget class="QLabel" name="labelZVit">
                                                     <property name="text">
-                                                        <string>zPiv</string>
+                                                        <string>zVit</string>
                                                     </property>
                                                 </widget>
                                             </item>
