@@ -434,6 +434,9 @@ public:
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 
+    std::vector<CWalletTx> getWalletTxs();
+    std::string GetUniqueWalletBackupName() const;
+
     //! check whether we are allowed to upgrade (or already support) to the named feature
     bool CanSupportFeature(enum WalletFeature wf)
     {

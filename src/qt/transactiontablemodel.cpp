@@ -1,4 +1,6 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2016 The Dash developers
+// Copyright (c) 2016-2019 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,6 +25,16 @@
 #include <QDebug>
 #include <QIcon>
 #include <QList>
+#include <QtConcurrent/QtConcurrent>
+#include <QFuture>
+
+#define SINGLE_THREAD_MAX_TXES_SIZE 4000
+
+// Maximum amount of loaded records in ram in the first load.
+// If the user has more and want to load them:
+// TODO, add load on demand in pages (not every tx loaded all the time into the records list).
+#define MAX_AMOUNT_LOADED_RECORDS 20000
+
 
 // Amount column is right-aligned it contains numbers
 static int column_alignments[] = {
@@ -67,20 +79,102 @@ public:
      * this is sorted by sha256.
      */
     QList<TransactionRecord> cachedWallet;
+    bool hasZcTxes = false;
 
-    /* Query entire wallet anew from core.
+        /* Query entire wallet anew from core.
      */
     void refreshWallet()
     {
         qDebug() << "TransactionTablePriv::refreshWallet";
         cachedWallet.clear();
-        {
-            LOCK2(cs_main, wallet->cs_wallet);
-            for (std::map<uint256, CWalletTx>::iterator it = wallet->mapWallet.begin(); it != wallet->mapWallet.end(); ++it) {
-                if (TransactionRecord::showTransaction(it->second))
-                    cachedWallet.append(TransactionRecord::decomposeTransaction(wallet, it->second));
+
+        std::vector<CWalletTx> walletTxes = wallet->getWalletTxs();
+
+        // Divide the work between multiple threads to speedup the process if the vector is larger than 4k txes
+        std::size_t txesSize = walletTxes.size();
+        if (txesSize > SINGLE_THREAD_MAX_TXES_SIZE) {
+
+            // First check if the amount of txs exceeds the UI limit
+            if (txesSize > MAX_AMOUNT_LOADED_RECORDS) {
+                // Sort the txs by date just to be really really sure that them are ordered.
+                // (this extra calculation should be removed in the future if can ensure that
+                // txs are stored in order in the db, which is what should be happening)
+                sort(walletTxes.begin(), walletTxes.end(),
+                        [](const CWalletTx & a, const CWalletTx & b) -> bool {
+                         return a.GetComputedTxTime() < b.GetComputedTxTime();
+                     });
+
+                // Only latest ones.
+                walletTxes = std::vector<CWalletTx>(walletTxes.end() - MAX_AMOUNT_LOADED_RECORDS, walletTxes.end());
+                txesSize = walletTxes.size();
+            };
+
+            // Simple way to get the processors count
+            std::size_t threadsCount = (QThreadPool::globalInstance()->maxThreadCount() / 2 ) + 1;
+
+            // Size of the tx subsets
+            std::size_t const subsetSize = txesSize / (threadsCount + 1);
+            std::size_t totalSumSize = 0;
+            QList<QFuture<QList<TransactionRecord>>> tasks;
+
+            // Subsets + run task
+            for (std::size_t i = 0; i < threadsCount; ++i) {
+                tasks.append(
+                        QtConcurrent::run(
+                                convertTxToRecords,
+                                this,
+                                wallet,
+                                std::vector<CWalletTx>(walletTxes.begin() + totalSumSize, walletTxes.begin() + totalSumSize + subsetSize)
+                        )
+                 );
+                totalSumSize += subsetSize;
             }
+
+            // Now take the remaining ones and do the work here
+            std::size_t const remainingSize = txesSize - totalSumSize;
+            auto res = convertTxToRecords(this, wallet,
+                                              std::vector<CWalletTx>(walletTxes.end() - remainingSize, walletTxes.end())
+            );
+            cachedWallet.append(res);
+
+            for (auto &future : tasks) {
+                future.waitForFinished();
+                cachedWallet.append(future.result());
+            }
+        } else {
+            // Single thread flow
+            cachedWallet.append(convertTxToRecords(this, wallet, walletTxes));
         }
+    }
+
+    static QList<TransactionRecord> convertTxToRecords(TransactionTablePriv* tablePriv, const CWallet* wallet, const std::vector<CWalletTx>& walletTxes) {
+        QList<TransactionRecord> cachedWallet;
+
+        bool hasZcTxes = tablePriv->hasZcTxes;
+        for (const auto &tx : walletTxes) {
+            QList<TransactionRecord> records = TransactionRecord::decomposeTransaction(wallet, tx);
+
+            if (!hasZcTxes) {
+                for (const TransactionRecord &record : records) {
+                    hasZcTxes = HasZcTxesIfNeeded(record);
+                    if (hasZcTxes) break;
+                }
+            }
+
+            cachedWallet.append(records);
+        }
+
+        if (hasZcTxes) // Only update it if it's true, multi-thread operation.
+            tablePriv->hasZcTxes = true;
+
+        return cachedWallet;
+    }
+
+    static bool HasZcTxesIfNeeded(const TransactionRecord& record) {
+        return (record.type == TransactionRecord::ZerocoinMint ||
+                record.type == TransactionRecord::ZerocoinSpend ||
+                record.type == TransactionRecord::ZerocoinSpend_Change_zPhr ||
+                record.type == TransactionRecord::ZerocoinSpend_FromMe);
     }
 
     /* Update our model of the wallet incrementally, to synchronize our model of the wallet
