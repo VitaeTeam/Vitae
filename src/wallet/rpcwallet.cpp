@@ -2170,7 +2170,7 @@ UniValue getwalletinfo(const UniValue& params, bool fHelp)
         obj.push_back(Pair("hdchainid", hdChainCurrent.GetID().GetHex()));
         obj.push_back(Pair("hdaccountcount", (int64_t)hdChainCurrent.CountAccounts()));
         UniValue accounts(UniValue::VARR);
-        for (int i = 0; i < hdChainCurrent.CountAccounts(); ++i)
+        for (int i = 0; static_cast<unsigned int>(i) < hdChainCurrent.CountAccounts(); ++i)
         {
             CHDAccount acc;
             UniValue account(UniValue::VOBJ);

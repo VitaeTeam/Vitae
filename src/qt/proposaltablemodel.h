@@ -35,7 +35,7 @@ class ProposalTableModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    explicit ProposalTableModel( QObject *parent = 0);
+    explicit ProposalTableModel(QObject *parent = 0);
     ~ProposalTableModel();
 
     enum ColumnIndex {
