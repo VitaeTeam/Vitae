@@ -150,6 +150,7 @@ void ConfigureMasternodePage::updateAlias(std::string Alias, std::string IP, std
 			masternodeConfig.add(Alias, IP, PrivKey, TxHash, OutputIndex);
 			// write to masternode.conf
 			masternodeConfig.writeToMasternodeConf();
+			return;
 		}
 	}	
 
