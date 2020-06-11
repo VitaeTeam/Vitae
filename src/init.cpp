@@ -1005,6 +1005,9 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
     // Sanity check
     if (!InitSanityCheck())
         return InitError(_("Initialization sanity check failed. Phore Core is shutting down."));
+        
+    std::string sha256_algo = SHA256AutoDetect();
+    LogPrintf("Using the '%s' SHA256 implementation\n", sha256_algo);
 
     std::string strDataDir = GetDataDir().string();
 #ifdef ENABLE_WALLET
