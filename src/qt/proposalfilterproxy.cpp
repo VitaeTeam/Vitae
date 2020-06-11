@@ -42,7 +42,7 @@ bool ProposalFilterProxy::filterAcceptsRow(int sourceRow, const QModelIndex &sou
     int yesVotes = index.data(ProposalTableModel::YesVotesRole).toInt();
     int noVotes = index.data(ProposalTableModel::NoVotesRole).toInt();
     int abstainVotes = index.data(ProposalTableModel::AbstainVotesRole).toInt();
-    int votedNeeded = index.data(ProposalTableModel::VotesNeededRole).toInt();
+    int votesNeeded = index.data(ProposalTableModel::VotesNeededRole).toInt();
 
     if (proposalStartDate < startDate) return false;
     if (proposalEndDate < endDate) return false;
