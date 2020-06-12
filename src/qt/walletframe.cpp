@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "walletframe.h"
+#include "rpcconsole.h"
 
 #include "bitcoingui.h"
 #include "walletview.h"
