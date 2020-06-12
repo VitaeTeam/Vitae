@@ -9,6 +9,7 @@
 
 #include "bantablemodel.h"
 #include "clientmodel.h"
+#include "walletmodel.h"
 #include "guiutil.h"
 #include "peertablemodel.h"
 
@@ -17,6 +18,11 @@
 #include "rpc/client.h"
 #include "rpc/server.h"
 #include "util.h"
+
+#include "init.h"
+#include <startoptionsmain.h>
+#include "askpassphrasedialog.h"
+
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
 #endif // ENABLE_WALLET
@@ -261,6 +267,7 @@ void RPCExecutor::request(const QString& command)
 RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
                                           ui(new Ui::RPCConsole),
                                           clientModel(0),
+                                          walletModel(0),
                                           historyPtr(0),
                                           cachedNodeid(-1),
                                           peersTableContextMenu(0),
@@ -289,6 +296,7 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
     connect(ui->btn_upgradewallet, SIGNAL(clicked()), this, SLOT(walletUpgrade()));
     connect(ui->btn_reindex, SIGNAL(clicked()), this, SLOT(walletReindex()));
     connect(ui->btn_resync, SIGNAL(clicked()), this, SLOT(walletResync()));
+    connect(ui->btn_convert_to_hd_Wallet, SIGNAL(clicked()), this, SLOT(walletUpgradeToHd()));
 
     // set library version labels
     ui->openSSLVersion->setText(SSLeay_version(SSLEAY_VERSION));
@@ -512,6 +520,11 @@ void RPCConsole::setClientModel(ClientModel* model)
     }
 }
 
+void RPCConsole::setWalletModel(WalletModel* walletModel)
+{
+    this->walletModel = walletModel;
+}
+
 static QString categoryClass(int category)
 {
     switch (category) {
@@ -584,6 +597,106 @@ void RPCConsole::walletResync()
 
     // Restart and resync
     buildParameterlist(RESYNC);
+}
+
+/** Restart wallet with "-resync" and upgrade to a HD wallet*/
+void RPCConsole::walletUpgradeToHd()
+{
+    QString upgradeWarning = tr("This will convert you non-HD wallet to a HD wallet<br /><br />");
+    upgradeWarning +=   tr("Make sure to make a backup of your wallet ahead of time<br /><br />");
+    upgradeWarning +=   tr("You shouldn't force close the wallet while this is running<br /><br />");
+    upgradeWarning +=   tr("Do you want to continue?.<br />");
+    QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm upgrade to HD wallet"),
+                                                               upgradeWarning,
+                                                               QMessageBox::Yes | QMessageBox::Cancel,
+                                                               QMessageBox::Cancel);
+
+    if (retval != QMessageBox::Yes) {
+        // Resync canceled
+        return;
+    }
+
+    if (IsInitialBlockDownload()) {
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Cannot set a new HD seed while still in Initial Block Download");
+    }
+
+    LOCK2(cs_main, pwalletMain->cs_wallet);
+
+    // Do not do anything to HD wallets
+    if (pwalletMain->IsHDEnabled()) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Cannot upgrade a wallet to hd if It is already upgraded to hd.");
+    }
+
+    std::vector<std::string> words;
+    SecureString strWalletPass;
+    strWalletPass.reserve(100);
+
+    int prev_version = pwalletMain->GetVersion();
+
+    int nMaxVersion = GetArg("-upgradewallet", 0);
+    if (nMaxVersion == 0) // the -upgradewallet without argument case
+    {
+        LogPrintf("Performing wallet upgrade to %i\n", FEATURE_LATEST);
+        nMaxVersion = CLIENT_VERSION;
+        pwalletMain->SetMinVersion(FEATURE_LATEST); // permanently upgrade the wallet immediately
+    } else
+        LogPrintf("Allowing wallet upgrade up to %i\n", nMaxVersion);
+    if (nMaxVersion < pwalletMain->GetVersion()) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Cannot downgrade wallet");
+    }
+
+    pwalletMain->SetMaxVersion(nMaxVersion);
+
+    // Do not upgrade versions to any version between HD_SPLIT and FEATURE_PRE_SPLIT_KEYPOOL unless already supporting HD_SPLIT
+    int max_version = pwalletMain->GetVersion();
+    if (!pwalletMain->CanSupportFeature(FEATURE_HD) && max_version >=FEATURE_HD && max_version < FEATURE_PRE_SPLIT_KEYPOOL) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Cannot upgrade a non HD split wallet without upgrading to support pre split keypool. Please use -upgradewallet=169900 or -upgradewallet with no version specified.");
+    }
+
+    bool hd_upgrade = false;
+    bool split_upgrade = false;
+    if (pwalletMain->CanSupportFeature(FEATURE_HD) && !pwalletMain->IsHDEnabled()) {
+        LogPrintf("Upgrading wallet to HD\n");
+        pwalletMain->SetMinVersion(FEATURE_HD);
+
+        if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForAnonymizationOnly) {
+            AskPassphraseDialog dlg(AskPassphraseDialog::Unlock, this, walletModel);
+            dlg.exec();
+            strWalletPass = dlg.getPassword();
+        } else {
+            strWalletPass = std::string().c_str();
+        }
+
+        StartOptionsMain dlg(nullptr);
+        dlg.exec();
+        words = dlg.getWords();
+
+        pwalletMain->GenerateNewHDChain(words, strWalletPass);
+
+        hd_upgrade = true;
+    }
+
+    // Upgrade to HD chain split if necessary
+    if (pwalletMain->CanSupportFeature(FEATURE_HD)) {
+        LogPrintf("Upgrading wallet to use HD chain split\n");
+        pwalletMain->SetMinVersion(FEATURE_PRE_SPLIT_KEYPOOL);
+        split_upgrade = FEATURE_HD > prev_version;
+    }
+
+    // Mark all keys currently in the keypool as pre-split
+    if (split_upgrade) {
+        pwalletMain->MarkPreSplitKeys();
+    }
+
+    // Regenerate the keypool if upgraded to HD
+    if (hd_upgrade) {
+        if (!pwalletMain->TopUpKeyPool()) {
+            throw JSONRPCError(RPC_WALLET_ERROR, "Unable to generate keys\n");
+        }
+    }
+
+    buildParameterlist(RESCAN);
+
 }
 
 /** Build command-line parameter list for restart */

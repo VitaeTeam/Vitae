@@ -1606,7 +1606,37 @@
          </property>
         </widget>
        </item>
-       <item row="14" column="0">
+       <item row="14" column="0" colspan="2">
+        <widget class="QPushButton" name="btn_convert_to_hd_Wallet">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>23</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Upgrade non-hd wallet to hd</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="2">
+        <widget class="QLabel" name="label_convert_to_hd_Wallet_command">
+         <property name="text">
+          <string>-rescan:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="14" column="3">
+        <widget class="QLabel" name="label_convert_to_hd_Wallet">
+         <property name="text">
+          <string>Upgrade non-hd wallet to hd</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0">
         <spacer name="verticalSpacer_repair2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
