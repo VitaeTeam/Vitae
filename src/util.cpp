@@ -584,9 +584,10 @@ bool CheckIfWalletDatExists(bool fNetSpecific) {
 
     namespace fs = boost::filesystem;
 
-    boost::filesystem::path path("wallet.dat");
+    std::string walletFile = GetArg("-wallet", "wallet.dat");
+    boost::filesystem::path path(walletFile);
     if (!path.is_complete())
-        path = GetDataDir(false) / path;
+        path = GetDataDir(fNetSpecific) / path;
 
     return fs::exists(path);
 }

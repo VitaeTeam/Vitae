@@ -860,10 +860,18 @@ void CWallet::GenerateNewHDChain(const std::vector<std::string>& words)
         // NOTE: empty mnemonic means "generate a new one for me"
         //std::string strMnemonic = GetArg("-mnemonic", "");
         std::string strMnemonic;
+        std::vector<std::string> vectorWords;
         if (words.size() !=0) {
             strMnemonic = join(words," ");
         } else {
             strMnemonic = GetArg("-mnemonic", "");
+            if(strMnemonic.empty()){
+                vectorWords = CMnemonic::Generate(256);
+                strMnemonic = join(vectorWords," ");
+                std::string notice = "This is your seed phrase, please write it down to recover wallet \n\"" + join(vectorWords," ")+"\"\n" +
+                                     "NEVER SHARE THIS SEQUENCE WITH ANYONE TO PROTECT YOUR FUNDS";
+                ShowSeedPhrase(notice);
+            }
         }
 
         // NOTE: default mnemonic passphrase is an empty string

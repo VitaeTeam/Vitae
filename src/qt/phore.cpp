@@ -386,6 +386,10 @@ bool BitcoinApplication::setupMnemonicWords(std::vector<std::string>& wordlist) 
         LogPrintf("Wallet disabled!\n");
     }
 
+    if (GetBoolArg("-skipmnemonicstartupui", false)) {
+        return true;
+    }
+
     std::string walletFile = GetArg("-wallet", "wallet.dat");
     if (fs::exists(walletFile)) return true;
 

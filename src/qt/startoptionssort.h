@@ -32,6 +32,7 @@ public:
     ~StartOptionsSort();
     std::list<QString> getOrderedStrings();
 
+    void keyPressEvent(QKeyEvent  *);
 
 private:
     Ui::StartOptionsSort *ui;
