@@ -98,7 +98,6 @@ const CWalletTx* CWallet::GetWalletTx(const uint256& hash) const
     return &(it->second);
 }
 
-<<<<<<< HEAD
 std::vector<CWalletTx> CWallet::getWalletTxs()
 {
     LOCK(cs_wallet);
@@ -110,10 +109,7 @@ std::vector<CWalletTx> CWallet::getWalletTxs()
     return result;
 }
 
-CPubKey CWallet::GenerateNewKey(uint32_t nAccountIndex, bool fInternal)
-=======
 CPubKey CWallet::GenerateNewKey(uint32_t nAccountIndex, bool fInternal, CWalletDB * walletDB)
->>>>>>> db0f56047... Batch flushing operations to the walletdb
 {
     AssertLockHeld(cs_wallet);                                 // mapKeyMetadata
     bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
