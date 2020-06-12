@@ -63,7 +63,7 @@ static const bool DEFAULT_DISABLE_WALLET = false;
 //! -custombackupthreshold default
 static const int DEFAULT_CUSTOMBACKUPTHRESHOLD = 1;
 //! if set, all keys will be derived by using BIP32
-static const bool DEFAULT_USE_HD_WALLET = true;
+static const bool DEFAULT_USE_HD_WALLET = false;
 //! if set,will show warning if the wallet is a hd wallet and is unencrypted
 static const bool DEFAULT_ENABLE_WARN_ENCRYPTHD = false;
 
@@ -201,7 +201,22 @@ public:
 class CWallet : public CCryptoKeyStore, public CValidationInterface
 {
 private:
-    bool SelectCoins(const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) const;
+    // ParamForCreateTransaction is introduced to control how CreateTransaction works.
+    struct ParamForCreateTransaction;
+	enum class CoinSelectStrategy;
+    bool CreateTransactionHelper(const std::vector<std::pair<CScript, CAmount> >& vecSend,
+        CWalletTx& wtxNew,
+        CReserveKey& reservekey,
+        CAmount& nFeeRet,
+        std::string& strFailReason,
+        const CCoinControl* coinControl,
+        AvailableCoinsType coin_type,
+        bool useIX,
+        CAmount nFeePay,
+        ParamForCreateTransaction * param);
+    
+
+    bool SelectCoins(const CAmount& nTargetValue, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, CoinSelectStrategy coinSelectStrategy, const CCoinControl* coinControl = NULL, AvailableCoinsType coin_type = ALL_COINS, bool useIX = true) const;
     //it was public bool SelectCoins(int64_t nTargetValue, std::set<std::pair<const CWalletTx*,unsigned int> >& setCoinsRet, int64_t& nValueRet, const CCoinControl *coinControl = NULL, AvailableCoinsType coin_type=ALL_COINS, bool useIX = true) const;
 
     CWalletDB* pwalletdbEncryption;
@@ -227,7 +242,7 @@ private:
 
     void SyncMetaData(std::pair<TxSpends::iterator, TxSpends::iterator>);
     /* HD derive new child key (on internal or external chain) */
-    void DeriveNewChildKey(const CKeyMetadata& metadata, CKey& secretRet, uint32_t nAccountIndex, bool fInternal /*= false*/);
+    void DeriveNewChildKey(const CKeyMetadata& metadata, CKey& secretRet, uint32_t nAccountIndex, bool fInternal /*= false*/, CWalletDB * walletDB);
 
 public:
     bool MintableCoins();
@@ -434,6 +449,9 @@ public:
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
 
+    std::vector<CWalletTx> getWalletTxs();
+    std::string GetUniqueWalletBackupName() const;
+
     //! check whether we are allowed to upgrade (or already support) to the named feature
     bool CanSupportFeature(enum WalletFeature wf)
     {
@@ -443,7 +461,7 @@ public:
 
     void AvailableCoins(std::vector<COutput>& vCoins, bool fOnlyConfirmed = true, const CCoinControl* coinControl = NULL, bool fIncludeZeroValue = false, AvailableCoinsType nCoinType = ALL_COINS, bool fUseIX = false, int nWatchonlyConfig = 1) const;
     std::map<CTxDestination, std::vector<COutput> > AvailableCoinsByAddress(bool fConfirmed = true, CAmount maxCoinValue = 0);
-    bool SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet) const;
+    bool SelectCoinsMinConf(const CAmount& nTargetValue, int nConfMine, int nConfTheirs, std::vector<COutput> vCoins, std::set<std::pair<const CWalletTx*, unsigned int> >& setCoinsRet, CAmount& nValueRet, CoinSelectStrategy coinSelectStrategy) const;
 
     /// Get 1000DASH output and keys which can be used for the Masternode
     bool GetMasternodeVinAndKeys(CTxIn& txinRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
@@ -463,7 +481,7 @@ public:
      * keystore implementation
      * Generate a new key
      */
-    CPubKey GenerateNewKey(uint32_t nAccountIndex, bool fInternal /*= false*/);
+    CPubKey GenerateNewKey(uint32_t nAccountIndex, bool fInternal /*= false*/, CWalletDB * walletDB);
     //! HaveKey implementation that also checks the mapHdPubKeys
     bool HaveKey(const CKeyID &address) const;
     //! GetPubKey implementation that also checks the mapHdPubKeys
@@ -478,6 +496,7 @@ public:
 
     //! Adds a key to the store, and saves it to disk.
     bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
+    bool AddKeyPubKeyWithDB(const CKey& key, const CPubKey &pubkey, CWalletDB * walletDB);
     //! Adds a key to the store, without saving it to disk (used by LoadWallet)
     bool LoadKey(const CKey& key, const CPubKey& pubkey) { return CCryptoKeyStore::AddKeyPubKey(key, pubkey); }
     //! Load metadata (used by LoadWallet)
@@ -654,7 +673,7 @@ public:
     }
     bool IsMine(const CTransaction& tx) const
     {
-        BOOST_FOREACH (const CTxOut& txout, tx.vout)
+        for (const CTxOut& txout : tx.vout)
             if (IsMine(txout))
                 return true;
         return false;
@@ -667,7 +686,7 @@ public:
     CAmount GetDebit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nDebit = 0;
-        BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+        for (const CTxIn& txin : tx.vin) {
             nDebit += GetDebit(txin, filter);
             if (!MoneyRange(nDebit))
                 throw std::runtime_error("CWallet::GetDebit() : value out of range");
@@ -677,7 +696,7 @@ public:
     CAmount GetCredit(const CTransaction& tx, const isminefilter& filter) const
     {
         CAmount nCredit = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nCredit += GetCredit(txout, filter);
             if (!MoneyRange(nCredit))
                 throw std::runtime_error("CWallet::GetCredit() : value out of range");
@@ -687,7 +706,7 @@ public:
     CAmount GetChange(const CTransaction& tx) const
     {
         CAmount nChange = 0;
-        BOOST_FOREACH (const CTxOut& txout, tx.vout) {
+        for (const CTxOut& txout : tx.vout) {
             nChange += GetChange(txout);
             if (!MoneyRange(nChange))
                 throw std::runtime_error("CWallet::GetChange() : value out of range");
@@ -744,7 +763,7 @@ public:
     /* Generates a new HD chain */
     void GenerateNewHDChain(const std::vector<std::string>& words);
     /* Set the HD chain model (chain child index counters) */
-    bool SetHDChain(const CHDChain& chain, bool memonly);
+    bool SetHDChain(const CHDChain& chain, bool memonly, CWalletDB * walletDB = nullptr);
     bool SetCryptedHDChain(const CHDChain& chain, bool memonly);
     bool GetDecryptedHDChain(CHDChain& hdChainRet);
 
@@ -800,7 +819,7 @@ public:
     }
 
     void ReturnKey();
-    bool GetReservedKey(CPubKey &pubkey, bool fInternalIn /*= false*/);
+    bool GetReservedKey(CPubKey &pubkey, bool fInternalIn = false);
     void KeepKey();
 };
 
@@ -1127,7 +1146,7 @@ public:
             return false;
 
         // Trusted if all inputs are from us and are in the mempool:
-        BOOST_FOREACH (const CTxIn& txin, vin) {
+        for (const CTxIn& txin : vin) {
             // Transactions not sent by us: not trusted
             const CWalletTx* parent = pwallet->GetWalletTx(txin.prevout.hash);
             if (parent == NULL)
@@ -1169,7 +1188,7 @@ public:
     //Used with Obfuscation. Will return largest nondenom, then denominations, then very small inputs
     int Priority() const
     {
-        BOOST_FOREACH (CAmount d, obfuScationDenominations)
+        for (CAmount d : obfuScationDenominations)
             if (tx->vout[i].nValue == d) return 10000;
         if (tx->vout[i].nValue < 1 * COIN) return 20000;
 

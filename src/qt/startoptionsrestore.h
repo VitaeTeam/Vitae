@@ -25,9 +25,10 @@ private Q_SLOTS:
             void textChanged(const QString &text);
 
 private:
+    QStringList wordList;
+
     Ui::StartOptionsRestore *ui;
     std::list<QLineEdit*> editList;
 
-    QStringList wordList;
 
 };
