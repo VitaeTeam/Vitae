@@ -22,6 +22,25 @@ CustomRectItem::CustomRectItem(QGraphicsItem *parent):
     setFlags(QGraphicsItem::ItemIsSelectable);
 }
 
+void StartOptionsSort::keyPressEvent(QKeyEvent *event){
+    Q_FOREACH(QGraphicsItem *item, scene->selectedItems())
+    if(event->key() == Qt::Key_Backspace){
+
+        if(CustomRectItem *rItem = qgraphicsitem_cast<CustomRectItem*> (item)){
+            for (auto const& i : labelsList)
+            {
+                if (i->count() < 4) {
+                    i->addItem(rItem->text());
+                    rItem->setText(QString());
+                    break;
+                }
+            }
+        }
+        scene->clearSelection();
+    }
+    QWidget::keyPressEvent(event);
+}
+
 void CustomRectItem::setText(const QString &text){
     this->m_text = text;
     update();
@@ -61,7 +80,11 @@ void CustomRectItem::dropEvent(QGraphicsSceneDragDropEvent *event){
 StartOptionsSort::StartOptionsSort(std::vector<std::string> Words, int rows, QWidget *parent)
         : QWidget(parent), ui(new Ui::StartOptionsSort) {
     ui->setupUi(this);
-
+    ui->dragdropLabel->setText(
+            tr("Please <b>drag</b> and <b>drop</b> your seed words into the "
+               "correct order to confirm your recovery phrase. "));
+    ui->dragdropLabel2->setText(
+            tr("To remove words click the word then hit backspace."));
     scene = new QGraphicsScene(this);
     if(rows == 4) {
         scene->setSceneRect(0,0,620,229);
