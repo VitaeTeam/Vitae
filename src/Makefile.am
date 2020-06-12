@@ -191,18 +191,18 @@ BITCOIN_CORE_H = \
   validationinterface.h \
   utilsplitstring.h \
   version.h \
-  wallet_ismine.h \
   zphrtracker.h \
   zphrwallet.h \
+  wallet/arrayslice.h \
+  wallet/bip39_english.h \
+  wallet/bip39.h \
   wallet/coincontrol.h \
   wallet/crypter.h \
   wallet/db.h \
+  wallet/hdchain.h \
   wallet/wallet.h \
   wallet/walletdb.h \
-  wallet/bip39_english.h \
-  wallet/bip39.h \
-  wallet/arrayslice.h \
-  wallet/hdchain.h \
+  wallet/wallet_ismine.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -234,14 +234,6 @@ libbitcoin_server_a_SOURCES = \
   noui.cpp \
   pow.cpp \
   rest.cpp \
-  rpc/blockchain.cpp \
-  rpc/masternode.cpp \
-  rpc/budget.cpp \
-  rpc/mining.cpp \
-  rpc/misc.cpp \
-  rpc/net.cpp \
-  rpc/rawtransaction.cpp \
-  rpc/server.cpp \
   script/sigcache.cpp \
   sporkdb.cpp \
   timedata.cpp \
@@ -250,6 +242,14 @@ libbitcoin_server_a_SOURCES = \
   txmempool.cpp \
   ui_interface.cpp \
   validationinterface.cpp \
+  rpc/blockchain.cpp \
+  rpc/masternode.cpp \
+  rpc/budget.cpp \
+  rpc/mining.cpp \
+  rpc/misc.cpp \
+  rpc/net.cpp \
+  rpc/rawtransaction.cpp \
+  rpc/server.cpp \
   $(BITCOIN_CORE_H)
 
 if ENABLE_ZMQ
@@ -279,18 +279,18 @@ libbitcoin_wallet_a_SOURCES = \
   masternodeconfig.cpp \
   masternodeman.cpp \
   mintpool.cpp \
-  wallet/rpcdump.cpp \
   primitives/deterministicmint.cpp \
   primitives/zerocoin.cpp \
   kernel.cpp \
-  wallet_ismine.cpp \
   zphrwallet.cpp \
   zphrtracker.cpp \
   wallet/crypter.cpp \
   wallet/db.cpp \
+  wallet/rpcdump.cpp \
   wallet/rpcwallet.cpp \
   wallet/wallet.cpp \
   wallet/walletdb.cpp \
+  wallet/wallet_ismine.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library

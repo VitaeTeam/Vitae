@@ -441,9 +441,9 @@ SOURCES += src/activemasternode.cpp \
            src/utilmoneystr.cpp \
            src/utilstrencodings.cpp \
            src/utiltime.cpp \
-           src/wallet.cpp \
-           src/wallet_ismine.cpp \
-           src/walletdb.cpp \
+           src/wallet/wallet.cpp \
+           src/wallet/wallet_ismine.cpp \
+           src/wallet/walletdb.cpp \
            src/validationinterface.cpp \
            src/consensus/merkle.cpp \
            src/compat/glibc_compat.cpp \
