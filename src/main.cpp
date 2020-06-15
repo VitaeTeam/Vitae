@@ -2279,10 +2279,14 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
     if(nHeight < 209467){
         ret = blockValue * .25;
     }
-    else{
+    // TODO: set proper height to disable seesaw, or remove this "else if" if we want the new release to be hard fork and remove seesaw immediately
+    else if(nHeight < 99999999){
         blockValue = blockValue * 0.6 ;
         ret = GetSeeSaw(nHeight, blockValue);
-     }
+    }
+    else{
+        ret = (blockValue * 4 )/ 10;
+    }
     return ret;
 }
 
