@@ -57,6 +57,9 @@ QT_FORMS_UI = \
   qt/vitae/forms/contactdropdownrow.ui \
   qt/vitae/forms/mninfodialog.ui \
   qt/vitae/forms/optionbutton.ui \
+  qt/vitae/forms/fundamentalnodewizarddialog.ui \
+  qt/vitae/forms/fnrow.ui \
+  qt/vitae/forms/fundamentalnodeswidget.ui \
   qt/vitae/forms/masternodewizarddialog.ui \
   qt/vitae/forms/mnrow.ui \
   qt/vitae/forms/masternodeswidget.ui \
@@ -153,6 +156,10 @@ QT_MOC_CPP = \
   qt/vitae/moc_mninfodialog.cpp \
   qt/vitae/moc_optionbutton.cpp \
   qt/vitae/moc_coldstakingmodel.cpp \
+  qt/vitae/moc_fnmodel.cpp \
+  qt/vitae/moc_fundamentalnodewizarddialog.cpp \
+  qt/vitae/moc_fnrow.cpp \
+  qt/vitae/moc_fundamentalnodeswidget.cpp \
   qt/vitae/moc_mnmodel.cpp \
   qt/vitae/moc_masternodewizarddialog.cpp \
   qt/vitae/moc_mnrow.cpp \
@@ -285,6 +292,10 @@ BITCOIN_QT_H = \
   qt/vitae/mninfodialog.h \
   qt/vitae/optionbutton.h \
   qt/vitae/coldstakingmodel.h \
+  qt/vitae/fnmodel.h \
+  qt/vitae/fundamentalnodewizarddialog.h \
+  qt/vitae/fnrow.h \
+  qt/vitae/fundamentalnodeswidget.h \
   qt/vitae/mnmodel.h \
   qt/vitae/masternodewizarddialog.h \
   qt/vitae/mnrow.h \
@@ -674,6 +685,10 @@ BITCOIN_QT_WALLET_CPP = \
   qt/vitae/optionbutton.cpp \
   qt/vitae/mninfodialog.cpp \
   qt/vitae/coldstakingmodel.cpp \
+  qt/vitae/fnmodel.cpp \
+  qt/vitae/fundamentalnodewizarddialog.cpp \
+  qt/vitae/fnrow.cpp \
+  qt/vitae/fundamentalnodeswidget.cpp \
   qt/vitae/mnmodel.cpp \
   qt/vitae/masternodewizarddialog.cpp \
   qt/vitae/mnrow.cpp \

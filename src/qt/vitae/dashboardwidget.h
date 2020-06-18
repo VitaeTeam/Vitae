@@ -105,17 +105,17 @@ public:
     void run(int type) override;
     void onError(QString error, int type) override;
 
-public slots:
+public Q_SLOTS:
     void walletSynced(bool isSync);
     /**
      * Show incoming transaction notification for new transactions.
      * The new items are those between start and end inclusive, under the given parent item.
     */
     void processNewTransaction(const QModelIndex& parent, int start, int /*end*/);
-signals:
+Q_SIGNALS:
     /** Notify that a new transaction appeared */
     void incomingTransaction(const QString& date, int unit, const CAmount& amount, const QString& type, const QString& address);
-private slots:
+private Q_SLOTS:
     void handleTransactionClicked(const QModelIndex &index);
     void changeTheme(bool isLightTheme, QString &theme) override;
     void onSortChanged(const QString&);

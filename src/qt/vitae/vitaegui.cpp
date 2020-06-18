@@ -129,6 +129,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         receiveWidget = new ReceiveWidget(this);
         addressesWidget = new AddressesWidget(this);
         privacyWidget = new PrivacyWidget(this);
+        fundamentalNodesWidget = new FundamentalNodesWidget(this);
         masterNodesWidget = new MasterNodesWidget(this);
         coldStakingWidget = new ColdStakingWidget(this);
         settingsWidget = new SettingsWidget(this);
@@ -139,6 +140,7 @@ VITAEGUI::VITAEGUI(const NetworkStyle* networkStyle, QWidget* parent) :
         stackedContainer->addWidget(receiveWidget);
         stackedContainer->addWidget(addressesWidget);
         stackedContainer->addWidget(privacyWidget);
+        stackedContainer->addWidget(fundamentalNodesWidget);
         stackedContainer->addWidget(masterNodesWidget);
         stackedContainer->addWidget(coldStakingWidget);
         stackedContainer->addWidget(settingsWidget);
@@ -203,6 +205,8 @@ void VITAEGUI::connectActions() {
     connect(receiveWidget, &ReceiveWidget::showHide, this, &VITAEGUI::showHide);
     connect(addressesWidget, &AddressesWidget::showHide, this, &VITAEGUI::showHide);
     connect(privacyWidget, &PrivacyWidget::showHide, this, &VITAEGUI::showHide);
+    connect(fundamentalNodesWidget, &FundamentalNodesWidget::showHide, this, &VITAEGUI::showHide);
+    connect(fundamentalNodesWidget, &FundamentalNodesWidget::execDialog, this, &VITAEGUI::execDialog);
     connect(masterNodesWidget, &MasterNodesWidget::showHide, this, &VITAEGUI::showHide);
     connect(masterNodesWidget, &MasterNodesWidget::execDialog, this, &VITAEGUI::execDialog);
     connect(coldStakingWidget, &ColdStakingWidget::showHide, this, &VITAEGUI::showHide);
@@ -485,6 +489,10 @@ void VITAEGUI::goToPrivacy(){
     showTop(privacyWidget);
 }
 
+void VITAEGUI::goToFundamentalNodes(){
+    showTop(fundamentalNodesWidget);
+}
+
 void VITAEGUI::goToMasterNodes(){
     showTop(masterNodesWidget);
 }
@@ -588,12 +596,14 @@ bool VITAEGUI::addWallet(const QString& name, WalletModel* walletModel)
     sendWidget->setWalletModel(walletModel);
     addressesWidget->setWalletModel(walletModel);
     privacyWidget->setWalletModel(walletModel);
+    fundamentalNodesWidget->setWalletModel(walletModel);
     masterNodesWidget->setWalletModel(walletModel);
     coldStakingWidget->setWalletModel(walletModel);
     settingsWidget->setWalletModel(walletModel);
 
     // Connect actions..
     connect(privacyWidget, &PrivacyWidget::message, this, &VITAEGUI::message);
+    connect(fundamentalNodesWidget, &FundamentalNodesWidget::message, this, &VITAEGUI::message);
     connect(masterNodesWidget, &MasterNodesWidget::message, this, &VITAEGUI::message);
     connect(coldStakingWidget, &MasterNodesWidget::message, this, &VITAEGUI::message);
     connect(topBar, &TopBar::message, this, &VITAEGUI::message);

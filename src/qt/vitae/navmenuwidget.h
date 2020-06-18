@@ -34,6 +34,7 @@ private slots:
     void onDashboardClicked();
     void onPrivacyClicked();
     void onAddressClicked();
+    void onFundamentalNodesClicked();
     void onMasterNodesClicked();
     void onColdStakingClicked();
     void onSettingsClicked();

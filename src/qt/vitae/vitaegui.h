@@ -22,6 +22,7 @@
 #include "qt/vitae/addresseswidget.h"
 #include "qt/vitae/privacywidget.h"
 #include "qt/vitae/coldstakingwidget.h"
+#include "qt/vitae/fundamentalnodeswidget.h"
 #include "qt/vitae/masternodeswidget.h"
 #include "qt/vitae/snackbar.h"
 #include "qt/vitae/settings/settingswidget.h"
@@ -67,6 +68,7 @@ public slots:
     void goToReceive();
     void goToAddresses();
     void goToPrivacy();
+    void goToFundamentalNodes();
     void goToMasterNodes();
     void goToColdStaking();
     void goToSettings();
@@ -132,6 +134,7 @@ private:
     AddressesWidget *addressesWidget = nullptr;
     PrivacyWidget *privacyWidget = nullptr;
     MasterNodesWidget *masterNodesWidget = nullptr;
+    FundamentalNodesWidget *fundamentalNodesWidget = nullptr;
     ColdStakingWidget *coldStakingWidget = nullptr;
     SettingsWidget* settingsWidget = nullptr;
 
