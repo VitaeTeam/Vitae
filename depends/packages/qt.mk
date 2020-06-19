@@ -18,7 +18,7 @@ $(package)_qttools_file_name=qttools-$($(package)_suffix)
 $(package)_qttools_sha256_hash=22d67de915cb8cd93e16fdd38fa006224ad9170bd217c2be1e53045a8dd02f0f
 
 $(package)_qtsvg_file_name=qtsvg-$($(package)_suffix)
-$(package)_qtsvg_sha256_hash=628f22b8472e96ed8033d5491286ce2ab5b2c7b9fe0fe468acd78b458dc75564
+$(package)_qtsvg_sha256_hash=122d0bcf47aa4e12fee45c244162ddb180aa41e670159b9be7aca5882228f953
 
 $(package)_extra_sources  = $($(package)_qttranslations_file_name)
 $(package)_extra_sources += $($(package)_qttools_file_name)
