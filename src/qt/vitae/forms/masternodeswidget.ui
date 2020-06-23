@@ -379,7 +379,7 @@
   <customwidget>
    <class>OptionButton</class>
    <extends>QWidget</extends>
-   <header>qt/vitae/optionbutton.h</header>
+   <header>qt/pivx/optionbutton.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

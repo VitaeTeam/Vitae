@@ -328,7 +328,7 @@ bool MasterNodeWizardDialog::createMN(){
                 if (!pathNewConfFile.is_complete()) pathNewConfFile = GetDataDir() / pathNewConfFile;
                 rename(pathConfigFile, pathNewConfFile);
 
-                mnEntry = fundamentalnodeConfig.add(alias, ipAddress+":"+port, mnKeyString, txID, indexOutStr);
+                mnEntry = masternodeConfig.add(alias, ipAddress+":"+port, mnKeyString, txID, indexOutStr, "", "");
 
                 returnStr = tr("Master node created!");
                 return true;

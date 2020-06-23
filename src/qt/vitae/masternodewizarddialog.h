@@ -8,7 +8,7 @@
 #include <QDialog>
 #include "walletmodel.h"
 #include "qt/vitae/snackbar.h"
-#include "fundamentalnodeconfig.h"
+#include "masternodeconfig.h"
 #include "qt/vitae/pwidget.h"
 
 class WalletModel;
@@ -30,7 +30,7 @@ public:
 
     QString returnStr = "";
     bool isOk = false;
-    CFundamentalnodeConfig::CFundamentalnodeEntry* mnEntry = nullptr;
+    CMasternodeConfig::CMasternodeEntry* mnEntry = nullptr;
 
 private slots:
     void onNextClicked();

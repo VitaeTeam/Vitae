@@ -10,13 +10,13 @@
 
 #include "qt/vitae/masternodewizarddialog.h"
 
-#include "activefundamentalnode.h"
+#include "activemasternode.h"
 #include "clientmodel.h"
 #include "guiutil.h"
 #include "init.h"
-#include "fundamentalnode-sync.h"
-#include "fundamentalnodeconfig.h"
-#include "fundamentalnodeman.h"
+#include "masternode-sync.h"
+#include "masternodeconfig.h"
+#include "masternodeman.h"
 #include "sync.h"
 #include "wallet.h"
 #include "walletmodel.h"
@@ -216,7 +216,7 @@ void MasterNodesWidget::startAlias(QString strAlias) {
     QString strStatusHtml;
     strStatusHtml += "Alias: " + strAlias + " ";
 
-    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         if (mne.getAlias() == strAlias.toStdString()) {
             std::string strError;
             strStatusHtml += (!startMN(mne, strError)) ? ("failed to start.\nError: " + QString::fromStdString(strError)) : "successfully started.";
@@ -232,14 +232,14 @@ void MasterNodesWidget::updateModelAndInform(QString informText) {
     inform(informText);
 }
 
-bool MasterNodesWidget::startMN(CFundamentalnodeConfig::CFundamentalnodeEntry mne, std::string& strError) {
-    CFundamentalnodeBroadcast mnb;
-    if (! CFundamentalnodeBroadcast::Create(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strError, mnb))
-        return false;
-    mnodeman.UpdateFundamentalnodeList(mnb);
-    mnb.Relay();
-    mnModel->updateMNList();
-    return true;
+bool MasterNodesWidget::startMN(CMasternodeConfig::CMasternodeEntry mne, std::string& strError) {
+    std::string strDonateAddress = mne.getDonationAddress();
+    std::string strDonationPercentage = mne.getDonationPercentage();
+    bool fSuccess = activeMasternode.Register(mne.getIp(), mne.getPrivKey(), mne.getTxHash(), mne.getOutputIndex(), strDonateAddress, strDonationPercentage, strError);
+
+    //updateMyNodeList(true);
+
+    return fSuccess;
 }
 
 void MasterNodesWidget::onStartAllClicked(int type) {
@@ -259,7 +259,7 @@ void MasterNodesWidget::onStartAllClicked(int type) {
 bool MasterNodesWidget::startAll(QString& failText, bool onlyMissing) {
     int amountOfMnFailed = 0;
     int amountOfMnStarted = 0;
-    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         // Check for missing only
         QString mnAlias = QString::fromStdString(mne.getAlias());
         if (onlyMissing && !mnModel->isMNInactive(mnAlias)) {
@@ -415,7 +415,7 @@ void MasterNodesWidget::onDeleteMNClicked(){
             rename(pathConfigFile, pathNewConfFile);
 
             // Remove alias
-            fundamentalnodeConfig.remove(aliasToRemove);
+            masternodeConfig.remove(aliasToRemove);
             // Update list
             mnModel->removeMn(index);
             updateListState();
@@ -428,7 +428,7 @@ void MasterNodesWidget::onDeleteMNClicked(){
 void MasterNodesWidget::onCreateMNClicked(){
     if(verifyWalletUnlocked()) {
         if(walletModel->getBalance() <= (COIN * 10000)){
-            inform(tr("Not enough balance to create a masternode, 10,000 VIT required."));
+            inform(tr("Not enough balance to create a masternode, 10,000 PIV required."));
             return;
         }
         showHideOp(true);

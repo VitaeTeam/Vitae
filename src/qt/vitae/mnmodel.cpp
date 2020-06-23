@@ -3,10 +3,9 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "qt/vitae/mnmodel.h"
-
-#include "fundamentalnode-sync.h"
-#include "fundamentalnodeman.h"
-#include "activefundamentalnode.h"
+#include "masternode-sync.h"
+#include "masternodeman.h"
+#include "activemasternode.h"
 #include "sync.h"
 #include "uint256.h"
 #include "wallet.h"
@@ -19,18 +18,18 @@ void MNModel::updateMNList(){
     int end = nodes.size();
     nodes.clear();
     collateralTxAccepted.clear();
-    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
 
         uint256 txHash(mne.getTxHash());
         CTxIn txIn(txHash, uint32_t(nIndex));
-        CFundamentalnode* pmn = mnodeman.Find(txIn);
+        CMasternode* pmn = m_nodeman.Find(txIn);
         if (!pmn){
-            pmn = new CFundamentalnode();
+            pmn = new CMasternode();
             pmn->vin = txIn;
-            pmn->activeState = CFundamentalnode::FUNDAMENTALNODE_MISSING;
+            pmn->activeState = CMasternode::MASTERNODE_MISSING;
         }
         nodes.insert(QString::fromStdString(mne.getAlias()), std::make_pair(QString::fromStdString(mne.getIp()), pmn));
         if(pwalletMain) {
@@ -69,7 +68,7 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
             return QVariant();
 
     // rec could be null, always verify it.
-    CFundamentalnode* rec = static_cast<CFundamentalnode*>(index.internalPointer());
+    CMasternode* rec = static_cast<CMasternode*>(index.internalPointer());
     bool isAvailable = rec;
     int row = index.row();
     if (role == Qt::DisplayRole || role == Qt::EditRole) {
@@ -79,17 +78,17 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
             case ADDRESS:
                 return nodes.values().value(row).first;
             case PUB_KEY:
-                return (isAvailable) ? QString::fromStdString(nodes.values().value(row).second->pubKeyFundamentalnode.GetHash().GetHex()) : "Not available";
+                return (isAvailable) ? QString::fromStdString(nodes.values().value(row).second->pubkey2.GetHash().GetHex()) : "Not available";
             case COLLATERAL_ID:
                 return (isAvailable) ? QString::fromStdString(rec->vin.prevout.hash.GetHex()) : "Not available";
             case COLLATERAL_OUT_INDEX:
                 return (isAvailable) ? QString::number(rec->vin.prevout.n) : "Not available";
             case STATUS: {
-                std::pair<QString, CFundamentalnode*> pair = nodes.values().value(row);
+                std::pair<QString, CMasternode*> pair = nodes.values().value(row);
                 return (pair.second) ? QString::fromStdString(pair.second->Status()) : "MISSING";
             }
             case PRIV_KEY: {
-                for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
+                for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
                     if (mne.getTxHash().compare(rec->vin.prevout.hash.GetHex()) == 0){
                         return QString::fromStdString(mne.getPrivKey());
                     }
@@ -118,8 +117,8 @@ QVariant MNModel::data(const QModelIndex &index, int role) const
 QModelIndex MNModel::index(int row, int column, const QModelIndex& parent) const
 {
     Q_UNUSED(parent);
-    std::pair<QString, CFundamentalnode*> pair = nodes.values().value(row);
-    CFundamentalnode* data = pair.second;
+    std::pair<QString, CMasternode*> pair = nodes.values().value(row);
+    CMasternode* data = pair.second;
     if (data) {
         return createIndex(row, column, data);
     } else if (!pair.first.isEmpty()){
@@ -140,34 +139,35 @@ bool MNModel::removeMn(const QModelIndex& modelIndex) {
     return true;
 }
 
-bool MNModel::addMn(CFundamentalnodeConfig::CFundamentalnodeEntry* mne){
+bool MNModel::addMn(CMasternodeConfig::CMasternodeEntry* mne){
     beginInsertRows(QModelIndex(), nodes.size(), nodes.size());
     int nIndex;
     if(!mne->castOutputIndex(nIndex))
         return false;
 
-    CFundamentalnode* pmn = mnodeman.Find(CTxIn(uint256S(mne->getTxHash()), uint32_t(nIndex)));
+    CMasternode* pmn = m_nodeman.Find(CTxIn(uint256S(mne->getTxHash()), uint32_t(nIndex)));
     nodes.insert(QString::fromStdString(mne->getAlias()), std::make_pair(QString::fromStdString(mne->getIp()), pmn));
     endInsertRows();
     return true;
 }
 
 int MNModel::getMNState(QString mnAlias) {
-    QMap<QString, std::pair<QString, CFundamentalnode*>>::const_iterator it = nodes.find(mnAlias);
+    QMap<QString, std::pair<QString, CMasternode*>>::const_iterator it = nodes.find(mnAlias);
     if (it != nodes.end()) return it.value().second->activeState;
     throw std::runtime_error(std::string("Masternode alias not found"));
 }
 
 bool MNModel::isMNInactive(QString mnAlias) {
     int activeState = getMNState(mnAlias);
-    return activeState == CFundamentalnode::FUNDAMENTALNODE_MISSING || activeState == CFundamentalnode::FUNDAMENTALNODE_EXPIRED || activeState == CFundamentalnode::FUNDAMENTALNODE_REMOVE;
+    return activeState == CMasternode::MASTERNODE_MISSING || activeState == CMasternode::MASTERNODE_EXPIRED || activeState == CMasternode::MASTERNODE_REMOVE;
 }
 
 bool MNModel::isMNActive(QString mnAlias) {
     int activeState = getMNState(mnAlias);
-    return activeState == CFundamentalnode::FUNDAMENTALNODE_PRE_ENABLED || activeState == CFundamentalnode::FUNDAMENTALNODE_ENABLED;
+    return activeState == CMasternode::MASTERNODE_PRE_ENABLED || activeState == CMasternode::MASTERNODE_ENABLED;
 }
 
 bool MNModel::isMNsNetworkSynced() {
-    return fundamentalnodeSync.IsSynced();
+    return true;
+    //return masternodeSync.IsSynced();
 }

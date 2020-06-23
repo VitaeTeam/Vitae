@@ -6,8 +6,8 @@
 #define MNMODEL_H
 
 #include <QAbstractTableModel>
-#include "fundamentalnode.h"
-#include "fundamentalnodeconfig.h"
+#include "masternode.h"
+#include "masternodeconfig.h"
 
 class MNModel : public QAbstractTableModel
 {
@@ -38,7 +38,7 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QModelIndex index(int row, int column, const QModelIndex& parent) const override;
     bool removeMn(const QModelIndex& index);
-    bool addMn(CFundamentalnodeConfig::CFundamentalnodeEntry* entry);
+    bool addMn(CMasternodeConfig::CMasternodeEntry* entry);
     void updateMNList();
 
 
@@ -53,7 +53,7 @@ public:
 
 private:
     // alias mn node ---> pair <ip, master node>
-    QMap<QString, std::pair<QString, CFundamentalnode*>> nodes;
+    QMap<QString, std::pair<QString, CMasternode*>> nodes;
     QMap<std::string, bool> collateralTxAccepted;
 };
 
