@@ -116,6 +116,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     // Supports CLTV activation
     pblock->nVersion = 6;
 
+    if(! fZerocoinActive) {
+        pblock->nVersion = 3;
+    }
+
     // Create coinbase tx
     CMutableTransaction txNew;
     txNew.vin.resize(1);
@@ -427,6 +431,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         if (!fProofOfStake) {
             pblock->vtx[0] = txNew;
             pblocktemplate->vTxFees[0] = -nFees;
+            
+            if(Params().NetworkID() == CBaseChainParams::TESTNET) {
+                pblock->vtx[0].vin[0].scriptSig = CScript() << nHeight << OP_0;
+            }
         }
 
         // Fill in header
