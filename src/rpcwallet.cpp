@@ -3327,7 +3327,8 @@ UniValue makekeypair(const UniValue& params, bool fHelp)
     result.push_back(Pair("PrivateKey", CBitcoinSecret(key).ToString()));
     result.push_back(Pair("PublicKey", HexStr(key.GetPubKey().Raw())));
     return result;
-    
+}
+
 UniValue sezvitseed(const UniValue& params, bool fHelp)
 {
     if(fHelp || params.size() != 1)
@@ -3455,7 +3456,6 @@ UniValue dzvitstate(const UniValue& params, bool fHelp) {
 
     return obj;
 }
-
 
 void static SearchThread(CzVITWallet* zwallet, int nCountStart, int nCountEnd)
 {
