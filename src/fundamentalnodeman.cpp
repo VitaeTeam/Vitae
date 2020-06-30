@@ -1155,20 +1155,18 @@ void CFundamentalnodeMan::Remove(CTxIn vin)
 
 void CFundamentalnodeMan::UpdateFundamentalnodeList(CFundamentalnodeBroadcast fnb)
 {
-    LOCK(cs);
     mapSeenFundamentalnodePing.insert(std::make_pair(fnb.lastPing.GetHash(), fnb.lastPing));
     mapSeenFundamentalnodeBroadcast.insert(std::make_pair(fnb.GetHash(), fnb));
+	fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
 
-    LogPrint("fundamentalnode","CFundamentalnodeMan::UpdateFundamentalnodeList -- fundamentalnode=%s\n", fnb.vin.prevout.ToStringShort());
+    LogPrint("fundamentalnode","CFundamentalnodeMan::UpdateFundamentalnodeList() -- fundamentalnode=%s\n", fnb.vin.prevout.ToString());
 
     CFundamentalnode* pmn = Find(fnb.vin);
     if (pmn == NULL) {
         CFundamentalnode mn(fnb);
-        if (Add(mn)) {
-            fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
-        }
-    } else if (pmn->UpdateFromNewBroadcast(fnb)) {
-        fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
+        Add(mn);
+    } else {
+        pmn->UpdateFromNewBroadcast(fnb);
     }
 }
 

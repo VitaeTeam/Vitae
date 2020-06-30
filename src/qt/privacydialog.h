@@ -103,6 +103,8 @@ private slots:
     void on_pushButtonZVitControl_clicked();
     void on_pasteButton_clicked();
     void updateDisplayUnit();
+    void updateAutomintStatus();
+    void updateSPORK16Status();
 };
 
 #endif // BITCOIN_QT_PRIVACYDIALOG_H
