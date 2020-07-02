@@ -92,7 +92,8 @@ jobs:
       before_script:
         - git fetch --unshallow
       script:
-        - contrib/devtools/git-subtree-check.sh src/univalue
+        # This has been removed in latest upstream
+        #- contrib/devtools/git-subtree-check.sh src/univalue
         # Remove this comment and the `#` from the following two lines when we merge proper subtree implementations for secp256k1 and leveldb
         #- contrib/devtools/git-subtree-check.sh src/secp256k1
         #- contrib/devtools/git-subtree-check.sh src/leveldb
