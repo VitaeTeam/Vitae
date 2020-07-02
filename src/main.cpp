@@ -2280,7 +2280,7 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         ret = blockValue * .25;
     }
     // TODO: set proper height to disable seesaw, or remove this "else if" if we want the new release to be hard fork and remove seesaw immediately
-    else if(nHeight < 99999999){
+    else if(nHeight < GetSporkValue(SPORK_22_REMOVE_SEESAW_BLOCK)){
         blockValue = blockValue * 0.6 ;
         ret = GetSeeSaw(nHeight, blockValue);
     }
