@@ -189,18 +189,14 @@ public:
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("0", "dns0.vitae.phore.io")); // Primary DNS seeder
-        vSeeds.push_back(CDNSSeedData("1", "dns1.vitae.phore.io")); // Secondar DNS seeder
-        vSeeds.push_back(CDNSSeedData("209.182.216.144", "209.182.216.144")); // vitae fn
-        vSeeds.push_back(CDNSSeedData("198.13.50.121", "198.13.50.121"));     // rasalghul supernode
-        vSeeds.push_back(CDNSSeedData("104.238.183.75", "104.238.183.75"));   // rasalghul masternode
-        vSeeds.push_back(CDNSSeedData("159.89.227.25", "159.89.227.25"));     // squidicuz supernode
-        vSeeds.push_back(CDNSSeedData("217.163.28.214", "217.163.28.214"));   // explorer
-        vSeeds.push_back(CDNSSeedData("185.24.97.11", "185.24.97.11"));       // explorer
-        vSeeds.push_back(CDNSSeedData("140.82.24.121", "140.82.24.121"));     // masternode
-        vSeeds.push_back(CDNSSeedData("144.202.78.55", "144.202.78.55"));     // masternode
-        vSeeds.push_back(CDNSSeedData("45.32.230.157", "45.32.230.157"));     // supernode
-
+        vSeeds.push_back(CDNSSeedData("dns0", "dns0.vitae.phore.io")); // Primary DNS seeder
+        vSeeds.push_back(CDNSSeedData("dns1", "dns1.vitae.phore.io")); // Secondary DNS seeder
+        vSeeds.push_back(CDNSSeedData("seednode1.vitae.co", "seednode1.vitae.co"));
+        vSeeds.push_back(CDNSSeedData("seednode2.vitae.co", "seednode2.vitae.co"));
+        vSeeds.push_back(CDNSSeedData("seednode1.vitaetoken.io", "seednode1.vitaetoken.io"));
+        vSeeds.push_back(CDNSSeedData("seednode2.vitaetoken.io", "seednode2.vitaetoken.io"));
+        vSeeds.push_back(CDNSSeedData("seednode1.vitaeinfo.co", "seednode1.vitaeinfo.co"));
+        vSeeds.push_back(CDNSSeedData("seednode2.vitaeinfo.co", "seednode2.vitaeinfo.co"));
 
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1, 71);
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1, 13);
