@@ -200,7 +200,7 @@ bool CSporkManager::CheckSignature(CSporkMessage& spork, bool fCheckSigner)
 
     bool fValidWithNewKey = obfuScationSigner.VerifyMessage(pubkeynew, spork.vchSig,strMessage, errorMessage);
 
-    if (fCheckSigner && !fValidWithNewKey)
+    if (fCheckSigner && !fValidWithNewKey && GetAdjustedTime() > Params().NewSporkStart())
         return false;
 
     // See if window is open that allows for old spork key to sign messages
