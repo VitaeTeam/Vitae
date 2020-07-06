@@ -244,6 +244,8 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
         if(fDebug) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
     }
 
+    const CTransaction& txNew = (nBlockHeight > Params().LAST_POW_BLOCK() ? block.vtx[1] : block.vtx[0]);
+
     if(MasternodePayments)
     {
         LOCK2(cs_main, mempool.cs);
@@ -271,14 +273,14 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
                     }
                     // todo-- must notice block.vtx[]. to block.vtx[]->
                     // Funtion no Intitial Download
-                    for (unsigned int i = 0; i < block.vtx[1].vout.size(); i++) {
-                        if(block.vtx[1].vout[i].nValue == masternodePaymentAmount ){
+                    for (unsigned int i = 0; i < txNew.vout.size(); i++) {
+                        if(txNew.vout[i].nValue == masternodePaymentAmount ){
                             foundPaymentAmount = true;
                         }
-                        if(block.vtx[1].vout[i].scriptPubKey == payee ){
+                        if(txNew.vout[i].scriptPubKey == payee ){
                             foundPayee = true;
                         }
-                        if(block.vtx[1].vout[i].nValue == masternodePaymentAmount && block.vtx[1].vout[i].scriptPubKey == payee){
+                        if(txNew.vout[i].nValue == masternodePaymentAmount && txNew.vout[i].scriptPubKey == payee){
                             foundPaymentAndPayee = true;
                         }
                     }
@@ -305,8 +307,6 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
     } else {
         LogPrintf("CheckBlock() : skipping masternode payment checks\n");
     }
-
-    const CTransaction& txNew = (nBlockHeight > Params().LAST_POW_BLOCK() ? block.vtx[1] : block.vtx[0]);
 
     //check if it's a budget block
     if (IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS)) {
