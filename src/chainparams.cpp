@@ -155,7 +155,7 @@ public:
         nInvalidAmountFiltered = 268200*COIN; //Amount of invalid coins filtered through exchanges, that should be considered valid
         nBlockZerocoinV2 = 999999999; //The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
-        nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): September 1, 2020 12:00:00 AM
+        nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
