@@ -9,6 +9,7 @@
 #include "obfuscation.h"
 #include "sync.h"
 #include "util.h"
+#include "spork.h"
 
 // keep track of the scanning errors I've seen
 map<uint256, int> mapSeenFundamentalnodeScanningErrors;
@@ -54,6 +55,18 @@ bool GetBlockHash(uint256& hash, int nBlockHeight)
     }
 
     return false;
+}
+
+bool isVinValidFundamentalNode(CTxIn& vin)
+{
+    if(GetSporkValue(SPORK_25_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
+        int blockHeight = GetInputHeight(vin);
+        if(blockHeight < 0 || blockHeight > GetSporkValue(SPORK_25_DISABLE_NEW_FUNDAMENTALNODE)) {
+            return false;
+        }
+    }
+    
+    return true;
 }
 
 CFundamentalnode::CFundamentalnode()
@@ -571,6 +584,14 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
 
     // incorrect ping or its sigTime
     if(lastPing == CFundamentalnodePing() || !lastPing.CheckAndUpdate(nDoS, false, true)) return false;
+
+    if(GetSporkValue(SPORK_25_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
+        int blockHeight = GetInputHeight(vin);
+        if(blockHeight < 0 || blockHeight > GetSporkValue(SPORK_25_DISABLE_NEW_FUNDAMENTALNODE)) {
+            LogPrintf("CheckInputsAndAdd: New fundamentalnode is disabled \n");
+            return false;
+        }
+    }
 
     // search existing Fundamentalnode list
     CFundamentalnode* pmn = mnodeman.Find(vin);

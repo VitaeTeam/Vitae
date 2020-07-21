@@ -33,6 +33,7 @@ class CFundamentalnodePing;
 extern map<int64_t, uint256> mapCacheBlockHashes;
 
 bool GetBlockHash(uint256& hash, int nBlockHeight);
+bool isVinValidFundamentalNode(CTxIn& vin);
 
 
 //
