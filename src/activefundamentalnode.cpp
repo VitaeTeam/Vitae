@@ -447,7 +447,7 @@ std::vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
     }
 
     // Retrieve all possible outputs
-    pwalletMain->AvailableCoins(vCoins);
+    pwalletMain->AvailableCoins(&vCoins);
 
     // Lock MN coins from fundamentalnode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
