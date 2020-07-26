@@ -137,11 +137,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios
     if (Params().MineBlocksOnDemand()) {
-        if (fZerocoinActive)
-            pblock->nVersion = 6;
-        else
-            pblock->nVersion = 3;
-
+        if (nHeight < Params().Zerocoin_StartHeight()) pblock->nVersion = 3;
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
     }
 
@@ -644,7 +640,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
 
             {
                 nMintableLastCheck = GetTime();
-                fMintableCoins = pwallet->StakeableCoins();
+                fStakeableCoins = pwallet->StakeableCoins();
             }
 
             while (vNodes.empty() || pwallet->IsLocked() || !fStakeableCoins ||
