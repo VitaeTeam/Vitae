@@ -6,9 +6,6 @@
 #include "zVitcontroldialog.h"
 #include "ui_zVitcontroldialog.h"
 
-#include "zpivcontroldialog.h"
-#include "ui_zpivcontroldialog.h"
-
 #include "main.h"
 #include "walletmodel.h"
 #include "guiutil.h"
