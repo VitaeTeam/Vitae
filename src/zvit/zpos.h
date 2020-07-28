@@ -19,7 +19,7 @@ private:
 
 public:
     explicit CLegacyZPivStake(const libzerocoin::CoinSpend& spend);
-    bool IsZPIV() const override { return true; }
+    bool IsZVIT() const override { return true; }
     uint32_t GetChecksum() const { return nChecksum; }
     CBlockIndex* GetIndexFrom() override;
     CAmount GetValue() const override;

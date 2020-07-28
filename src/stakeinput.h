@@ -27,41 +27,10 @@ public:
     virtual CAmount GetValue() const = 0;
     virtual bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal) = 0;
     virtual bool GetModifier(uint64_t& nStakeModifier) = 0;
-    virtual bool IsZVIT() = 0;
-    virtual CDataStream GetUniqueness() = 0;
+    virtual bool IsZVIT() const = 0;
+    virtual CDataStream GetUniqueness() const = 0;
 };
 
-
-class CZVitStake : public CStakeInput
-{
-private:
-    uint32_t nChecksum;
-    bool fMint;
-    libzerocoin::CoinDenomination denom;
-    uint256 hashSerial;
-
-public:
-    explicit CZVitStake(libzerocoin::CoinDenomination denom, const uint256& hashSerial)
-    {
-        this->denom = denom;
-        this->hashSerial = hashSerial;
-        fMint = true;
-    }
-
-    explicit CZVitStake(const libzerocoin::CoinSpend& spend);
-
-    CBlockIndex* GetIndexFrom() override;
-    bool GetTxFrom(CTransaction& tx) override;
-    CAmount GetValue() override;
-    bool GetModifier(uint64_t& nStakeModifier) override;
-    CDataStream GetUniqueness() override;
-    bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
-    bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal) override;
-    bool MarkSpent(CWallet* pwallet, const uint256& txid);
-    bool IsZVIT() override { return true; }
-    uint256 GetSerialHash() const override { return hashSerial; }
-    uint32_t GetChecksum();
-};
 
 class CVitStake : public CStakeInput
 {
@@ -85,7 +54,7 @@ public:
     CDataStream GetUniqueness() const override;
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal) override;
-    bool IsZVIT() override { return false; }
+    bool IsZVIT() const override { return false; }
 };
 
 

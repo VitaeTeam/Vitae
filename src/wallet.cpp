@@ -2663,7 +2663,7 @@ bool CWallet::CreateCoinStake(
         if (IsLocked() || ShutdownRequested()) return false;
 
         // This should never happen
-        if (stakeInput->IsZPIV()) {
+        if (stakeInput->IsZVIT()) {
             LogPrintf("%s: ERROR - zPOS is disabled\n");
             continue;
         }

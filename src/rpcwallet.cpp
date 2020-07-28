@@ -3592,7 +3592,7 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
         nAmount += mint.GetDenominationAsAmount();
     }
 
-    return DoZvitSpend(nAmount, false, true, vMintsSelected, address_str, isPublicSpend);
+    return DoZvitSpend(nAmount, false, true, vMintsSelected, address_str);
 }
 
 
