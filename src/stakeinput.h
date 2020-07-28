@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_STAKEINPUT_H
-#define PIVX_STAKEINPUT_H
+#ifndef VITAE_STAKEINPUT_H
+#define VITAE_STAKEINPUT_H
 
 class CKeyStore;
 class CWallet;
@@ -87,4 +87,4 @@ public:
 };
 
 
-#endif //PIVX_STAKEINPUT_H
+#endif //VITAE_STAKEINPUT_H

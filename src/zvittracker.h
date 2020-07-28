@@ -1,5 +1,5 @@
-#ifndef PIVX_ZPIVTRACKER_H
-#define PIVX_ZPIVTRACKER_H
+#ifndef VITAE_ZPIVTRACKER_H
+#define VITAE_ZPIVTRACKER_H
 
 #include "primitives/zerocoin.h"
 #include <list>
@@ -44,4 +44,4 @@ public:
     void Clear();
 };
 
-#endif //PIVX_ZPIVTRACKER_H
+#endif //VITAE_ZPIVTRACKER_H

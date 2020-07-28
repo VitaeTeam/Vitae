@@ -1,5 +1,5 @@
-#ifndef PIVX_DETERMINISTICMINT_H
-#define PIVX_DETERMINISTICMINT_H
+#ifndef VITAE_DETERMINISTICMINT_H
+#define VITAE_DETERMINISTICMINT_H
 
 #include <libzerocoin/Denominations.h>
 #include <uint256.h>
@@ -60,4 +60,4 @@ public:
     };
 };
 
-#endif //PIVX_DETERMINISTICMINT_H
+#endif //VITAE_DETERMINISTICMINT_H

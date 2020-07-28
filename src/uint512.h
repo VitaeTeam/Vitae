@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_UINT512_H
-#define PIVX_UINT512_H
+#ifndef VITAE_UINT512_H
+#define VITAE_UINT512_H
 
 #include "arith_uint256.h"
 #include "uint256.h"
@@ -42,4 +42,4 @@ inline uint512 uint512S(const char* str)
     return rv;
 }
 
-#endif // PIVX_UINT512_H
+#endif // VITAE_UINT512_H
