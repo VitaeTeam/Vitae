@@ -1,13 +1,13 @@
-VITAE Core version *3.1.1* is now available from:  <https://github.com/vitae-project/vitae/releases>
+VITAE Core version *4.5.0* is now available from:  <https://github.com/vitaeteam/vitae/releases>
 
 This is a new minor version release, including various bug fixes and performance improvements, as well as updated translations.
 
-Please report bugs using the issue tracker at github: <https://github.com/vitae-project/vitae/issues>
+Please report bugs using the issue tracker at github: <https://github.com/vitaeteam/vitae/issues>
 
-Non-Mandatory Update
+Mandatory Update
 ==============
 
-VITAE Core v3.1.1 is a non-mandatory update to address bugs and introduce minor enhancements that do not require a network change.
+VITAE Core v4.5.0 is a mandatory update for all wallets, fundamental nodes, and masternodes. It includes changes to consensus rules that require every node to update in order to stay compatible with the rest of the Vitae network.
 
 How to Upgrade
 ==============
@@ -31,17 +31,13 @@ frequently tested on them.
 
 ### :exclamation::exclamation::exclamation: MacOS 10.13 High Sierra :exclamation::exclamation::exclamation:
 
-**Currently there are issues with the 3.0.0+ gitian release on MacOS version 10.13 (High Sierra), no reports of issues on older versions of MacOS.**
+**Currently there are issues with the 4.4.2+ gitian release on MacOS version 10.13 (High Sierra), no reports of issues on older versions of MacOS.**
 
 Notable Changes
 ==============
 
 zVIT Updates
 --------------
-
-### Fix spending for v1 zVIT created before block 1050020
-
-The transition to v2 zVIT and reset of the accumulators caused blocks 1050000 - 1050010 to be accumulated twice. This was causing a number v1 zVIT to not create valid witnesses, and thus were not spendable. This problem is fixed by double accumulating blocks 1050000-1050010 when creating the witness. Any user that had issues spending zVIT v1 will now be able to convert that into VIT and then zVIT v2 (if desired).
 
 ### Adjustment to staking properties to reduce orphaned blocks
 
@@ -74,8 +70,6 @@ VITAE Daemon & Client (RPC Changes)
 
 This addresses an issue where new incoming transactions are not recorded properly, and subsequently, not returned with `listtransactions` in the same session.
 
-This fix was previously included in the `v3.1.0.3` tag, and relayed to affected exchanges/services, which typically use this command for accounting purposes. It is included here for completeness.
-
 Technical Changes
 --------------
 
@@ -95,7 +89,7 @@ Secondary improvement area is in ConnectBlock() when multiple zerocoin transacti
 
 It was found that following a forced closure of the VITAE core wallet (ungraceful), a situation could arise that left partial/incomplete data in the disk cache. This caused the client to fail a basic sanity test and ban any peer which was sending the (complete) data. This, in turn, was causing the wallet to become stuck. This issue has been resolved client side by guarding against this partial/incomplete data in the disk cache.
 
-*3.1.1* Change log
+*4.5.0* Change log
 --------------
 
 Detailed release notes follow. This overview includes changes that affect behavior, code moves, refactoring and string updates. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
