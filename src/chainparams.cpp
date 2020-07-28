@@ -65,11 +65,13 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (1000000,uint256("3a121397bca5552e637c80f981db080c54e1bae2def44fc06071cb4867df7124"))    
     (1356300,uint256("b6a142e71ced86ca8ce28991cf2a1a84944f68baaf786d8cd17b24cd27a69cb0"))
     (1402300,uint256("b7681e795c973a8ee5c87444f1a22eedd9ffb8b034f835019fab4fb2db3a6e00"))
-    (1402500,uint256("d9544578aae78d2ae2c68599641f66e90829156bb9157c73e807e570f927d6a0"));
+    (1402500,uint256("d9544578aae78d2ae2c68599641f66e90829156bb9157c73e807e570f927d6a0"))
+    (1527500,uint256("962401aa296b4a5834bde6f7ce2240bf02358c50eef3121501b6075bb8fe2ecc"));
+    
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1590267681, // * UNIX timestamp of last checkpoint block
-    4130934,     // * total number of transactions between genesis and last checkpoint
+    1595909487, // * UNIX timestamp of last checkpoint block
+    4825163,     // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2000        // * estimated number of transactions per day after checkpoint
 };
@@ -236,7 +238,7 @@ public:
         nRequiredAccumulation = 1;
         nDefaultSecurityLevel = 100; //full security level for accumulators
         nZerocoinHeaderVersion = 5; //Block headers must be this version once zerocoin is active
-        nZerocoinRequiredStakeDepth = 200; //The required confirmations for a zVIT to be stakable
+        nZerocoinRequiredStakeDepth = 200; //The required confirmations for a zVITAE to be stakable
         nBudget_Fee_Confirmations = 6; // Number of confirmations for the finalization fee
     }
 
