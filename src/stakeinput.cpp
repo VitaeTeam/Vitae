@@ -164,7 +164,7 @@ bool CZVitStake::MarkSpent(CWallet *pwallet, const uint256& txid)
     return true;
 }
 
-//!PIV Stake
+//!VITAE Stake
 bool CPivStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
