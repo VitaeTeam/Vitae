@@ -881,6 +881,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         }
         return masternodelist(newParams);
     }*/
+    return NullUniValue;
 }
 
 UniValue masternodelist(const UniValue& params, bool fHelp)
