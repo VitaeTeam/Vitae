@@ -32,7 +32,7 @@ public:
     bool isOk = false;
     CFundamentalnodeConfig::CFundamentalnodeEntry* mnEntry = nullptr;
 
-private slots:
+private Q_SLOTS:
     void onNextClicked();
     void onBackClicked();
 private:
