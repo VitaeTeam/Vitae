@@ -109,7 +109,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     ui->dummyHideWidget->hide(); // Dummy widget with elements to hide
 
     // Set labels/buttons depending on SPORK_16 status
-    updateSPORK16Status();
+    updateSPORK20Status();
 }
 
 PrivacyDialog::~PrivacyDialog()
@@ -707,7 +707,7 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
     updateAutomintStatus();
 
     // Update/enable labels and buttons depending on the current SPORK_16 status
-    updateSPORK16Status();
+    updateSPORK20Status();
 
     // Display global supply
     ui->labelZsupplyAmount->setText(QString::number(chainActive.Tip()->GetZerocoinSupply()/COIN) + QString(" <b>zVITAE </b> "));
@@ -788,11 +788,11 @@ void PrivacyDialog::updateAutomintStatus()
     ui->label_AutoMintStatus->setText(strAutomintStatus);
 }
 
-void PrivacyDialog::updateSPORK16Status()
+void PrivacyDialog::updateSPORK20Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
     bool fButtonsEnabled =  ui->pushButtonMintzVIT->isEnabled();
-    bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE);
+    bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
         // Mint zVIT
         ui->pushButtonMintzVIT->setEnabled(false);
