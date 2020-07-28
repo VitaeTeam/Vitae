@@ -55,7 +55,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             return parts;
 
         if (wtx.IsZerocoinSpend() && (fZSpendFromMe || wallet->zvitTracker->HasMintTx(hash))) {
-            //zVIT stake reward
+            //zVITAE stake reward
             sub.involvesWatchAddress = false;
             sub.type = TransactionRecord::StakeZVIT;
             sub.address = mapValue["zerocoinmint"];

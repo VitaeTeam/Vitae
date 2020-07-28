@@ -2550,11 +2550,11 @@ UniValue getzerocoinbalance(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getzerocoinbalance\n"
-            "\nReturn the wallet's total zVIT balance.\n" +
+            "\nReturn the wallet's total zVITAE balance.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult:\n"
-            "amount         (numeric) Total zVIT balance.\n"
+            "amount         (numeric) Total zVITAE balance.\n"
 
             "\nExamples:\n" +
             HelpExampleCli("getzerocoinbalance", "") + HelpExampleRpc("getzerocoinbalance", ""));
@@ -2578,7 +2578,7 @@ UniValue listmintedzerocoins(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "listmintedzerocoins\n"
-            "\nList all zVIT mints in the wallet.\n" +
+            "\nList all zVITAE mints in the wallet.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult:\n"
@@ -2654,7 +2654,7 @@ UniValue listspentzerocoins(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "listspentzerocoins\n"
-            "\nList all the spent zVIT mints in the wallet.\n" +
+            "\nList all the spent zVITAE mints in the wallet.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult:\n"
@@ -2686,11 +2686,11 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
     if (fHelp || params.size() < 1 || params.size() > 2)
         throw runtime_error(
             "mintzerocoin amount ( utxos )\n"
-            "\nMint the specified zVIT amount\n" +
+            "\nMint the specified zVITAE amount\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
-            "1. amount      (numeric, required) Enter an amount of Vit to convert to zVIT\n"
+            "1. amount      (numeric, required) Enter an amount of Vit to convert to zVITAE\n"
             "2. utxos       (string, optional) A json array of objects.\n"
             "                   Each object needs the txid (string) and vout (numeric)\n"
             "  [\n"
@@ -2797,7 +2797,7 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
     if (fHelp || params.size() > 5 || params.size() < 4)
         throw runtime_error(
             "spendzerocoin amount mintchange minimizechange securitylevel ( \"address\" )\n"
-            "\nSpend zVIT to a VIT address.\n" +
+            "\nSpend zVITAE to a VIT address.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
@@ -2944,7 +2944,7 @@ UniValue resetmintzerocoin(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    CzVITTracker* zvitTracker = pwalletMain->zvitTracker.get();
+    CzVITAETracker* zvitTracker = pwalletMain->zvitTracker.get();
     set<CMintMeta> setMints = zvitTracker->ListMints(false, false, true);
     vector<CMintMeta> vMintsToFind(setMints.begin(), setMints.end());
     vector<CMintMeta> vMintsMissing;
@@ -2997,7 +2997,7 @@ UniValue resetspentzerocoin(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    CzVITTracker* zvitTracker = pwalletMain->zvitTracker.get();
+    CzVITAETracker* zvitTracker = pwalletMain->zvitTracker.get();
     set<CMintMeta> setMints = zvitTracker->ListMints(false, false, false);
     list<CZerocoinSpend> listSpends = walletdb.ListSpentCoins();
     list<CZerocoinSpend> listUnconfirmedSpends;
@@ -3102,7 +3102,7 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
 
             "\nArguments:\n"
             "1. \"include_spent\"        (bool, required) Include mints that have already been spent\n"
-            "2. \"denomination\"         (integer, optional) Export a specific denomination of zVIT\n"
+            "2. \"denomination\"         (integer, optional) Export a specific denomination of zVITAE\n"
 
             "\nResult:\n"
             "[                   (array of json object)\n"
@@ -3114,8 +3114,8 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
             "    \"t\": \"txid\",    (string) The txid that the coin was minted in\n"
             "    \"h\": n,         (numeric) The height the tx was added to the blockchain\n"
             "    \"u\": used,      (boolean) Whether the mint has been spent\n"
-            "    \"v\": version,   (numeric) The version of the zVIT\n"
-            "    \"k\": \"privkey\"  (string) The zVIT private key (V2+ zVIT only)\n"
+            "    \"v\": version,   (numeric) The version of the zVITAE\n"
+            "    \"k\": \"privkey\"  (string) The zVITAE private key (V2+ zVITAE only)\n"
             "  }\n"
             "  ,...\n"
             "]\n"
@@ -3134,7 +3134,7 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
     if (params.size() == 2)
         denomination = libzerocoin::IntToZerocoinDenomination(params[1].get_int());
 
-    CzVITTracker* zvitTracker = pwalletMain->zvitTracker.get();
+    CzVITAETracker* zvitTracker = pwalletMain->zvitTracker.get();
     set<CMintMeta> setMints = zvitTracker->ListMints(!fIncludeSpent, false, false);
 
     UniValue jsonList(UniValue::VARR);
@@ -3181,7 +3181,7 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
             "\nResult:\n"
             "{\n"
             "  \"added\": n,        (numeric) The quantity of zerocoin mints that were added\n"
-            "  \"value\": amount    (numeric) The total zVIT value of zerocoin mints that were added\n"
+            "  \"value\": amount    (numeric) The total zVITAE value of zerocoin mints that were added\n"
             "}\n"
 
             "\nExamples\n" +
@@ -3261,7 +3261,7 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
     if(fHelp || !params.empty())
         throw runtime_error(
             "reconsiderzerocoins\n"
-            "\nCheck archived zVIT list to see if any mints were added to the blockchain.\n" +
+            "\nCheck archived zVITAE list to see if any mints were added to the blockchain.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult:\n"
@@ -3352,7 +3352,7 @@ UniValue sezvitseed(const UniValue& params, bool fHelp)
     uint256 seed;
     seed.SetHex(params[0].get_str());
 
-    CzVITWallet* zwallet = pwalletMain->getZWallet();
+    CzVITAEWallet* zwallet = pwalletMain->getZWallet();
     bool fSuccess = zwallet->SetMasterSeed(seed, true);
     if (fSuccess)
         zwallet->SyncWithChain();
@@ -3368,18 +3368,18 @@ UniValue gezvitseed(const UniValue& params, bool fHelp)
     if(fHelp || !params.empty())
         throw runtime_error(
             "gezvitseed\n"
-            "\nCheck archived zVIT list to see if any mints were added to the blockchain.\n" +
+            "\nCheck archived zVITAE list to see if any mints were added to the blockchain.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nResult\n"
-            "\"seed\" : s,  (string) The deterministic zVIT seed.\n"
+            "\"seed\" : s,  (string) The deterministic zVITAE seed.\n"
 
             "\nExamples\n" +
             HelpExampleCli("gezvitseed", "") + HelpExampleRpc("gezvitseed", ""));
 
     EnsureWalletIsUnlocked();
 
-    CzVITWallet* zwallet = pwalletMain->getZWallet();
+    CzVITAEWallet* zwallet = pwalletMain->getZWallet();
     uint256 seed = zwallet->GetMasterSeed();
 
     UniValue ret(UniValue::VOBJ);
@@ -3393,12 +3393,12 @@ UniValue generatemintlist(const UniValue& params, bool fHelp)
     if(fHelp || params.size() != 2)
         throw runtime_error(
             "generatemintlist\n"
-            "\nShow mints that are derived from the deterministic zVIT seed.\n" +
+            "\nShow mints that are derived from the deterministic zVITAE seed.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments\n"
-            "1. \"count\"  : n,  (numeric) Which sequential zVIT to start with.\n"
-            "2. \"range\"  : n,  (numeric) How many zVIT to generate.\n"
+            "1. \"count\"  : n,  (numeric) Which sequential zVITAE to start with.\n"
+            "2. \"range\"  : n,  (numeric) How many zVITAE to generate.\n"
 
             "\nResult:\n"
             "[\n"
@@ -3418,7 +3418,7 @@ UniValue generatemintlist(const UniValue& params, bool fHelp)
 
     int nCount = params[0].get_int();
     int nRange = params[1].get_int();
-    CzVITWallet* zwallet = pwalletMain->zwalletMain;
+    CzVITAEWallet* zwallet = pwalletMain->zwalletMain;
 
     UniValue arrRet(UniValue::VARR);
     for (int i = nCount; i < nCount + nRange; i++) {
@@ -3441,13 +3441,13 @@ UniValue dzvitstate(const UniValue& params, bool fHelp) {
     if (fHelp || params.size() != 0)
         throw runtime_error(
                 "dzvitstate\n"
-                        "\nThe current state of the mintpool of the deterministic zVIT wallet.\n" +
+                        "\nThe current state of the mintpool of the deterministic zVITAE wallet.\n" +
                 HelpRequiringPassphrase() + "\n"
 
                         "\nExamples\n" +
                 HelpExampleCli("mintpoolstatus", "") + HelpExampleRpc("mintpoolstatus", ""));
 
-    CzVITWallet* zwallet = pwalletMain->zwalletMain;
+    CzVITAEWallet* zwallet = pwalletMain->zwalletMain;
     UniValue obj(UniValue::VOBJ);
     int nCount, nCountLastUsed;
     zwallet->GetState(nCount, nCountLastUsed);
@@ -3457,7 +3457,7 @@ UniValue dzvitstate(const UniValue& params, bool fHelp) {
     return obj;
 }
 
-void static SearchThread(CzVITWallet* zwallet, int nCountStart, int nCountEnd)
+void static SearchThread(CzVITAEWallet* zwallet, int nCountStart, int nCountEnd)
 {
     LogPrintf("%s: start=%d end=%d\n", __func__, nCountStart, nCountEnd);
     CWalletDB walletDB(pwalletMain->strWalletFile);
@@ -3492,12 +3492,12 @@ UniValue searchdzvit(const UniValue& params, bool fHelp)
     if(fHelp || params.size() != 3)
         throw runtime_error(
             "searchdzvit\n"
-            "\nMake an extended search for deterministically generated zVIT that have not yet been recognized by the wallet.\n" +
+            "\nMake an extended search for deterministically generated zVITAE that have not yet been recognized by the wallet.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments\n"
-            "1. \"count\"       (numeric) Which sequential zVIT to start with.\n"
-            "2. \"range\"       (numeric) How many zVIT to generate.\n"
+            "1. \"count\"       (numeric) Which sequential zVITAE to start with.\n"
+            "2. \"range\"       (numeric) How many zVITAE to generate.\n"
             "3. \"threads\"     (numeric) How many threads should this operation consume.\n"
 
             "\nExamples\n" +
@@ -3515,7 +3515,7 @@ UniValue searchdzvit(const UniValue& params, bool fHelp)
 
     int nThreads = params[2].get_int();
 
-    CzVITWallet* zwallet = pwalletMain->zwalletMain;
+    CzVITAEWallet* zwallet = pwalletMain->zwalletMain;
 
     boost::thread_group* dzvitThreads = new boost::thread_group();
     int nRangePerThread = nRange / nThreads;

@@ -2127,9 +2127,9 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
         }
     }
 
-    //zVIT
+    //zVITAE
     if (GetBoolArg("-zvitstake", true) && chainActive.Height() > Params().Zerocoin_Block_V2_Start() && !IsSporkActive(SPORK_20_ZEROCOIN_MAINTENANCE_MODE)) {
-        //Only update zVIT set once per update interval
+        //Only update zVITAE set once per update interval
         bool fUpdate = false;
         static int64_t nTimeLastUpdate = 0;
         if (GetAdjustedTime() - nTimeLastUpdate > nStakeSetUpdateTime) {
@@ -2189,7 +2189,7 @@ bool CWallet::MintableCoins()
         }
     }
 
-    // zVIT
+    // zVITAE
     if (nZpivBalance > 0) {
         set<CMintMeta> setMints = zvitTracker->ListMints(true, true, true);
         for (auto mint : setMints) {
@@ -4711,7 +4711,7 @@ bool CWallet::MintToTxIn(CZerocoinMint zerocoinSelected, int nSecurityLevel, con
     if (nVersion >= libzerocoin::PrivateCoin::PUBKEY_VERSION) {
         CKey key;
         if (!zerocoinSelected.GetKeyPair(key))
-            return error("%s: failed to set zVIT privkey mint version=%d", __func__, nVersion);
+            return error("%s: failed to set zVITAE privkey mint version=%d", __func__, nVersion);
 
         privateCoin.setPrivKey(key.GetPrivKey());
     }
@@ -4909,7 +4909,7 @@ bool CWallet::CreateZerocoinSpendTransaction(CAmount nValue, int nSecurityLevel,
         if (mint.GetVersion() < libzerocoin::PrivateCoin::PUBKEY_VERSION) {
             if (nSecurityLevel < 100) {
                 nStatus = ZVIT_SPEND_V1_SEC_LEVEL;
-                receipt.SetStatus(_("Version 1 zVIT require a security level of 100 to successfully spend."), nStatus);
+                receipt.SetStatus(_("Version 1 zVITAE require a security level of 100 to successfully spend."), nStatus);
                 return false;
             }
         }

@@ -58,7 +58,7 @@ QT_TRANSLATE_NOOP("vitae-core", ""
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Enable SwiftX, show confirmations for locked transactions (bool, default: %s)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
-"Enable automatic wallet backups triggered after each zVIT minting (0-1, "
+"Enable automatic wallet backups triggered after each zVITAE minting (0-1, "
 "default: %u)"),
 QT_TRANSLATE_NOOP("vitae-core", ""
 "Enable spork administration functionality with the appropriate private key."),

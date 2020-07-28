@@ -124,7 +124,7 @@ UniValue blockToJSON(const CBlock& block, const CBlockIndex* blockindex, bool tx
         zVitObj.push_back(Pair(to_string(denom), ValueFromAmount(blockindex->mapZerocoinSupply.at(denom) * (denom*COIN))));
     }
     zVitObj.push_back(Pair("total", ValueFromAmount(blockindex->GetZerocoinSupply())));
-    result.push_back(Pair("zVITsupply", zVitObj));
+    result.push_back(Pair("zVITAEsupply", zVitObj));
 
     return result;
 }
@@ -324,7 +324,7 @@ UniValue getblock(const UniValue& params, bool fHelp)
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
-            "  \"zVITsupply\" :\n"
+            "  \"zVITAEsupply\" :\n"
             "  {\n"
             "     \"1\" : n,            (numeric) supply of 1 zVITAE denomination\n"
             "     \"5\" : n,            (numeric) supply of 5 zVITAE denomination\n"

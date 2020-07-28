@@ -164,7 +164,7 @@ OverviewPage::~OverviewPage()
     delete ui;
 }
 
-void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBalance, QString& sVITPercentage, QString& szVITPercentage)
+void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBalance, QString& sVITPercentage, QString& szVITAEPercentage)
 {
     int nPrecision = 2;
     double dzPercentage = 0.0;
@@ -183,7 +183,7 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBala
 
     double dPercentage = 100.0 - dzPercentage;
     
-    szVITPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
+    szVITAEPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
     sVITPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
     
 }
@@ -214,7 +214,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;    
     CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
 
-    // zVIT Balance
+    // zVITAE Balance
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
     // Percentages
     QString szPercentage = "";
@@ -250,7 +250,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
 
     // Percentage labels
     ui->labelVITPercent->setText(sPercentage);
-    ui->labelzVITPercent->setText(szPercentage);
+    ui->labelzVITAEPercent->setText(szPercentage);
 
     // Adjust bubble-help according to AutoMint settings
     QString automintHelp = tr("Current percentage of zVITAE.\nIf AutoMint is enabled this percentage will settle around the configured AutoMint percentage (default = 10%).\n");
@@ -291,18 +291,18 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
     ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
     ui->labelWatchImmature->setVisible(showImmature && showWatchOnly); // show watch-only immature balance
-    bool showzVITAvailable = settingShowAllBalances || zerocoinBalance != matureZerocoinBalance;
-    bool showzVITUnconfirmed = settingShowAllBalances || unconfirmedZerocoinBalance != 0;
-    bool showzVITImmature = settingShowAllBalances || immatureZerocoinBalance != 0;
-    ui->labelzBalanceMature->setVisible(showzVITAvailable);
-    ui->labelzBalanceMatureText->setVisible(showzVITAvailable);
-    ui->labelzBalanceUnconfirmed->setVisible(showzVITUnconfirmed);
-    ui->labelzBalanceUnconfirmedText->setVisible(showzVITUnconfirmed);
-    ui->labelzBalanceImmature->setVisible(showzVITImmature);
-    ui->labelzBalanceImmatureText->setVisible(showzVITImmature);
+    bool showzVITAEAvailable = settingShowAllBalances || zerocoinBalance != matureZerocoinBalance;
+    bool showzVITAEUnconfirmed = settingShowAllBalances || unconfirmedZerocoinBalance != 0;
+    bool showzVITAEImmature = settingShowAllBalances || immatureZerocoinBalance != 0;
+    ui->labelzBalanceMature->setVisible(showzVITAEAvailable);
+    ui->labelzBalanceMatureText->setVisible(showzVITAEAvailable);
+    ui->labelzBalanceUnconfirmed->setVisible(showzVITAEUnconfirmed);
+    ui->labelzBalanceUnconfirmedText->setVisible(showzVITAEUnconfirmed);
+    ui->labelzBalanceImmature->setVisible(showzVITAEImmature);
+    ui->labelzBalanceImmatureText->setVisible(showzVITAEImmature);
     bool showPercentages = ! (zerocoinBalance == 0 && nTotalBalance == 0);
     ui->labelVITPercent->setVisible(showPercentages);
-    ui->labelzVITPercent->setVisible(showPercentages);
+    ui->labelzVITAEPercent->setVisible(showPercentages);
 
     static int cachedTxLocks = 0;
 

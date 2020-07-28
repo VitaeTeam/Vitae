@@ -172,7 +172,7 @@
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_3">
                         <item>
-                         <widget class="QLabel" name="labelzVITActions">
+                         <widget class="QLabel" name="labelzVITAEActions">
                           <property name="font">
                            <font>
                             <pointsize>12</pointsize>
@@ -189,7 +189,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzVITSyncStatus">
+                         <widget class="QLabel" name="labelzVITAESyncStatus">
                           <property name="toolTip">
                            <string>The displayed information may be out of date. Your wallet automatically synchronizes with the VITAE network after a connection is established, but this process has not completed yet.</string>
                           </property>
@@ -244,7 +244,7 @@
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_4">
                         <item>
-                         <widget class="QPushButton" name="pushButtonMintzVIT">
+                         <widget class="QPushButton" name="pushButtonMintzVITAE">
                           <property name="minimumSize">
                            <size>
                             <width>131</width>
@@ -276,14 +276,14 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzVIT_2">
+                         <widget class="QLabel" name="labelzVITAE_2">
                           <property name="text">
                            <string>zVITAE</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzVITAmountText">
+                         <widget class="QLabel" name="labelzVITAEAmountText">
                           <property name="toolTip">
                            <string>Available for minting are coins which are confirmed and not locked or Fundamentalnode collaterals.</string>
                           </property>
@@ -296,7 +296,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzVITAmountValue">
+                         <widget class="QLabel" name="labelzVITAEAmountValue">
                           <property name="font">
                            <font>
                             <weight>75</weight>
@@ -674,7 +674,7 @@
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_6">
                         <item>
-                         <widget class="QPushButton" name="pushButtonSpendzVIT">
+                         <widget class="QPushButton" name="pushButtonSpendzVITAE">
                           <property name="minimumSize">
                            <size>
                             <width>131</width>
@@ -690,7 +690,7 @@
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzVITBalanceText">
+                         <widget class="QLabel" name="labelzVITAEBalanceText">
                           <property name="toolTip">
                            <string>Available (mature and spendable) zVITAE for spending</string>
                           </property>
@@ -916,15 +916,15 @@ zVITAE are mature when they have more than 20 confirmations AND more than 2 mint
                            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                           </property>
                           <property name="buddy">
-                           <cstring>zVITpayAmount</cstring>
+                           <cstring>zVITAEpayAmount</cstring>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <widget class="QLineEdit" name="zVITpayAmount"/>
+                         <widget class="QLineEdit" name="zVITAEpayAmount"/>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelzVIT">
+                         <widget class="QLabel" name="labelzVITAE">
                           <property name="minimumSize">
                            <size>
                             <width>55</width>
@@ -1011,7 +1011,7 @@ zVITAE are mature when they have more than 20 confirmations AND more than 2 mint
                       <item>
                        <layout class="QHBoxLayout" name="horizontalLayout_21">
                         <item>
-                         <widget class="QLabel" name="labelzVITStats">
+                         <widget class="QLabel" name="labelzVITAEStats">
                           <property name="font">
                            <font>
                             <pointsize>12</pointsize>

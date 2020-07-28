@@ -238,13 +238,13 @@ public:
      */
     mutable CCriticalSection cs_wallet;
 
-    CzVITWallet* zwalletMain;
+    CzVITAEWallet* zwalletMain;
 
     bool fFileBacked;
     bool fWalletUnlockAnonymizeOnly;
     std::string strWalletFile;
     bool fBackupMints;
-    std::unique_ptr<CzVITTracker> zvitTracker;
+    std::unique_ptr<CzVITAETracker> zvitTracker;
 
     std::set<int64_t> setKeyPool;
     std::map<CKeyID, CKeyMetadata> mapKeyMetadata;
@@ -331,13 +331,13 @@ public:
         return nZeromintPercentage;
     }
 
-    void setZWallet(CzVITWallet* zwallet)
+    void setZWallet(CzVITAEWallet* zwallet)
     {
         zwalletMain = zwallet;
-        zvitTracker = std::unique_ptr<CzVITTracker>(new CzVITTracker(strWalletFile));
+        zvitTracker = std::unique_ptr<CzVITAETracker>(new CzVITAETracker(strWalletFile));
     }
 
-    CzVITWallet* getZWallet() { return zwalletMain; }
+    CzVITAEWallet* getZWallet() { return zwalletMain; }
 
     bool isZeromintEnabled()
     {
@@ -674,7 +674,7 @@ public:
     /** MultiSig address added */
     boost::signals2::signal<void(bool fHaveMultiSig)> NotifyMultiSigChanged;
 
-    /** zVIT reset */
+    /** zVITAE reset */
     boost::signals2::signal<void()> NotifyzPIVReset;
 
     /** notify wallet file backed up */

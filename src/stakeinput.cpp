@@ -40,7 +40,7 @@ uint32_t CZVitStake::GetChecksum()
     return nChecksum;
 }
 
-// The zVIT block index is the first appearance of the accumulator checksum that was used in the spend
+// The zVITAE block index is the first appearance of the accumulator checksum that was used in the spend
 // note that this also means when staking that this checksum should be from a block that is beyond 60 minutes old and
 // 100 blocks deep.
 CBlockIndex* CZVitStake::GetIndexFrom()
@@ -93,7 +93,7 @@ bool CZVitStake::GetModifier(uint64_t& nStakeModifier)
 
 CDataStream CZVitStake::GetUniqueness()
 {
-    //The unique identifier for a zVIT is a hash of the serial
+    //The unique identifier for a zVITAE is a hash of the serial
     CDataStream ss(SER_GETHASH, 0);
     ss << hashSerial;
     return ss;
@@ -122,23 +122,23 @@ bool CZVitStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 
 bool CZVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
 {
-    //Create an output returning the zVIT that was staked
+    //Create an output returning the zVITAE that was staked
     CTxOut outReward;
     libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
     CDeterministicMint dMint;
     if (!pwallet->CreateZPIVOutPut(denomStaked, outReward, dMint))
-        return error("%s: failed to create zVIT output", __func__);
+        return error("%s: failed to create zVITAE output", __func__);
     vout.emplace_back(outReward);
 
     //Add new staked denom to our wallet
     if (!pwallet->DatabaseMint(dMint))
-        return error("%s: failed to database the staked zVIT", __func__);
+        return error("%s: failed to database the staked zVITAE", __func__);
 
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
         if (!pwallet->CreateZPIVOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
-            return error("%s: failed to create zVIT output", __func__);
+            return error("%s: failed to create zVITAE output", __func__);
         vout.emplace_back(out);
 
         if (!pwallet->DatabaseMint(dMintReward))
@@ -155,7 +155,7 @@ bool CZVitStake::GetTxFrom(CTransaction& tx)
 
 bool CZVitStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 {
-    CzVITTracker* zvitTracker = pwallet->zvitTracker.get();
+    CzVITAETracker* zvitTracker = pwallet->zvitTracker.get();
     CMintMeta meta;
     if (!zvitTracker->GetMetaFromStakeHash(hashSerial, meta))
         return error("%s: tracker does not have serialhash", __func__);

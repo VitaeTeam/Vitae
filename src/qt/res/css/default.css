@@ -738,7 +738,7 @@ QWidget#PrivacyDialog QLabel {
 border:0px solid #000;
 }
 
-QWidget#PrivacyDialog QLabel#zVITLabel {
+QWidget#PrivacyDialog QLabel#zVITAELabel {
 font-size:14px;
 color:#ffffff;
 background-color: #387336;

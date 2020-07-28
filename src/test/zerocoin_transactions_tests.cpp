@@ -28,7 +28,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
 
     bool fFirstRun;
     cWallet.LoadWallet(fFirstRun);
-    cWallet.zvitTracker = unique_ptr<CzVITTracker>(new CzVITTracker(cWallet.strWalletFile));
+    cWallet.zvitTracker = unique_ptr<CzVITAETracker>(new CzVITAETracker(cWallet.strWalletFile));
     CMutableTransaction tx;
     CWalletTx* wtx = new CWalletTx(&cWallet, tx);
     bool fMintChange=true;
