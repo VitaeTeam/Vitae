@@ -345,19 +345,19 @@ set(WALLET_SOURCES
         ./src/masternodeconfig.cpp
         ./src/masternodeman.cpp
         ./src/messagesigner.cpp
-        ./src/zpiv/mintpool.cpp
+        ./src/zvit/mintpool.cpp
         ./src/wallet/rpcdump.cpp
-        ./src/zpiv/deterministicmint.cpp
-        ./src/zpiv/zerocoin.cpp
+        ./src/zvit/deterministicmint.cpp
+        ./src/zvit/zerocoin.cpp
         ./src/wallet/rpcwallet.cpp
         ./src/kernel.cpp
         ./src/wallet/wallet.cpp
         ./src/wallet/wallet_ismine.cpp
         ./src/wallet/walletdb.cpp
-        ./src/zpiv/zpivwallet.cpp
-        ./src/zpiv/zpivtracker.cpp
-        ./src/zpiv/zpivmodule.cpp
-        ./src/zpiv/zpos.cpp
+        ./src/zvit/zpivwallet.cpp
+        ./src/zvit/zpivtracker.cpp
+        ./src/zvit/zpivmodule.cpp
+        ./src/zvit/zpos.cpp
         ./src/stakeinput.cpp
         )
 add_library(WALLET_A STATIC ${BitcoinHeaders} ${WALLET_SOURCES})
@@ -444,7 +444,7 @@ target_include_directories(ZEROCOIN_A PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src
         )
 
 set(COMMON_SOURCES
-        ./src/zpiv/witness.cpp
+        ./src/zvit/witness.cpp
         ./src/allocators.cpp
         ./src/amount.cpp
         ./src/base58.cpp
@@ -454,9 +454,9 @@ set(COMMON_SOURCES
         ./src/compressor.cpp
         ./src/consensus/merkle.cpp
         ./src/primitives/block.cpp
-        ./src/zpiv/deterministicmint.cpp
+        ./src/zvit/deterministicmint.cpp
         ./src/primitives/transaction.cpp
-        ./src/zpiv/zerocoin.cpp
+        ./src/zvit/zerocoin.cpp
         ./src/core_read.cpp
         ./src/core_write.cpp
         ./src/hash.cpp
