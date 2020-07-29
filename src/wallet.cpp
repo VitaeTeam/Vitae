@@ -19,8 +19,6 @@
 
 #include "masternode.h"
 
-#include "zpivchain.h"
-
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/thread.hpp>
 
