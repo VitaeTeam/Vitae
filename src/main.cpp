@@ -4269,7 +4269,7 @@ bool CheckColdStakeFreeOutput(const CTransaction& tx, const int nHeight)
 
         if (budget.IsBudgetPaymentBlock(nHeight)) {
             // if this is a budget payment, check that SPORK_9 and SPORK_13 are active (if spork list synced)
-            return (!masternodeSync.IsSporkListSynced() ||
+            return (!fundamentalnodeSync.IsSporkListSynced() ||
                     (sporkManager.IsSporkActive(SPORK_13_ENABLE_SUPERBLOCKS) &&
                     sporkManager.IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT)));
         }
