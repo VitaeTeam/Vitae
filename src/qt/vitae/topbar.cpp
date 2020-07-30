@@ -41,7 +41,7 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
     ui->containerTop->setProperty("cssClass", "container-top");
 #endif
 
-    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitleAvailablezPiv, ui->labelTitle3, ui->labelTitle4, ui->labelTitlePendingzPiv, ui->labelTitleImmaturezPiv};
+    std::initializer_list<QWidget*> lblTitles = {ui->labelTitle1, ui->labelTitleAvailablezVit, ui->labelTitle3, ui->labelTitle4, ui->labelTitlePendingzVit, ui->labelTitleImmaturezVit};
     setCssProperty(lblTitles, "text-title-topbar");
     QFont font;
     font.setWeight(QFont::Light);
@@ -50,7 +50,7 @@ TopBar::TopBar(VITAEGUI* _mainWindow, QWidget *parent) :
     // Amount information top
     ui->widgetTopAmount->setVisible(false);
     setCssProperty({ui->labelAmountTopVit, ui->labelAmountTopzVit}, "amount-small-topbar");
-    setCssProperty({ui->labelAmountVit, ui->labelAvailablezPiv}, "amount-topbar");
+    setCssProperty({ui->labelAmountVit, ui->labelAvailablezVit}, "amount-topbar");
     setCssProperty({ui->labelPendingVit, ui->labelPendingzVit, ui->labelImmatureVit, ui->labelImmaturezVit}, "amount-small-topbar");
 
     // Progress Sync
@@ -570,7 +570,7 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
 
     // Set
-    QString totalVit = GUIUtil::formatBalance(pivAvailableBalance, nDisplayUnit);
+    QString totalVit = GUIUtil::formatBalance(vitAvailableBalance, nDisplayUnit);
     QString totalzVit = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
 
     // PIV
