@@ -4681,7 +4681,10 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             // while that block is not on the main chain
             while (!chainActive.Contains(last) && last != NULL) {
                 CBlock bl;
-                ReadBlockFromDisk(bl, last);
+                if(! ReadBlockFromDisk(bl, last)) {
+                    // Previous block not on disk
+                    return error("%s: previous block %s not on disk", __func__, last->GetBlockHash().GetHex());
+                }
                 // loop through every spent input from said block
                 for (CTransaction t : bl.vtx) {
                     for (CTxIn in: t.vin) {
