@@ -433,7 +433,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
 
     std::string strMode = "template";
     UniValue lpval = NullUniValue;
-    if((int)chainActive.Height() >= Params().LAST_POW_BLOCK())
+    if((int)chainActive.Height() >= Params().GetConsensus().height_last_PoW)
        throw JSONRPCError(RPC_INTERNAL_ERROR, "Proof of work phase is complete");
     
     if (params.size() > 0) {
