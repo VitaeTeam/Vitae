@@ -599,9 +599,9 @@ static int CommandLineRawTx(int argc, char* argv[])
         OutputTx(tx);
     }
 
-    catch (boost::thread_interrupted) {
+    catch (const boost::thread_interrupted) {
         throw;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         strPrint = string("error: ") + e.what();
         nRet = EXIT_FAILURE;
     } catch (...) {
@@ -622,7 +622,7 @@ int main(int argc, char* argv[])
     try {
         if (!AppInitRawTx(argc, argv))
             return EXIT_FAILURE;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, "AppInitRawTx()");
         return EXIT_FAILURE;
     } catch (...) {
@@ -633,7 +633,7 @@ int main(int argc, char* argv[])
     int ret = EXIT_FAILURE;
     try {
         ret = CommandLineRawTx(argc, argv);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, "CommandLineRawTx()");
     } catch (...) {
         PrintExceptionContinue(NULL, "CommandLineRawTx()");

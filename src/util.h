@@ -115,7 +115,7 @@ static inline bool error(const char* format)
 
 double double_safe_addition(double fValue, double fIncrement);
 double double_safe_multiplication(double fValue, double fmultiplicator);
-void PrintExceptionContinue(std::exception* pex, const char* pszThread);
+void PrintExceptionContinue(const std::exception* pex, const char* pszThread);
 void ParseParameters(int argc, const char* const argv[]);
 void FileCommit(FILE* fileout);
 bool TruncateFile(FILE* file, unsigned int length);
@@ -226,10 +226,10 @@ void TraceThread(const char* name, Callable func)
         LogPrintf("%s thread start\n", name);
         func();
         LogPrintf("%s thread exit\n", name);
-    } catch (boost::thread_interrupted) {
+    } catch (const boost::thread_interrupted) {
         LogPrintf("%s thread interrupt\n", name);
         throw;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, name);
         throw;
     } catch (...) {

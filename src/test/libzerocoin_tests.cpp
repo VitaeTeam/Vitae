@@ -140,7 +140,7 @@ Test_CalcParamSizes()
 		if (pLen < 3072 || qLen < 320) {
 			result = false;
 		}
-	} catch (exception &e) {
+	} catch (const exception &e) {
 		result = false;
 	}
 #endif
@@ -158,7 +158,7 @@ Test_GenerateGroupParams()
 
 		try {
 			group = deriveIntegerGroupParams(calculateSeed(GetTestModulus(), "test", ZEROCOIN_DEFAULT_SECURITYLEVEL, "TEST GROUP"), pLen, qLen);
-		} catch (std::runtime_error e) {
+		} catch (const std::runtime_error e) {
 			cout << "Caught exception " << e.what() << endl;
 			return false;
 		}
@@ -188,7 +188,7 @@ Test_ParamGen()
 	try {
 		// Instantiating testParams runs the parameter generation code
 		ZerocoinParams testParams(GetTestModulus(),ZEROCOIN_DEFAULT_SECURITYLEVEL);
-	} catch (runtime_error e) {
+	} catch (const runtime_error e) {
 		cout << e.what() << endl;
 		result = false;
 	}
@@ -251,7 +251,7 @@ Test_Accumulator()
 			return false;
 		}
 
-	} catch (runtime_error e) {
+	} catch (const runtime_error e) {
 		return false;
 	}
 
@@ -308,7 +308,7 @@ return true; // need to be fixed
 				return false;
 			}
 
-		} catch (runtime_error &e) {
+		} catch (const runtime_error &e) {
 			return false;
 		}
 	}
@@ -334,7 +334,7 @@ Test_MintCoin()
 
 		gCoinSize /= TESTS_COINS_TO_ACCUMULATE;
 
-	} catch (exception &e) {
+	} catch (const exception &e) {
 		return false;
 	}
 
@@ -380,7 +380,7 @@ bool Test_InvalidCoin()
 			return false;
 		}
 		
-	} catch (runtime_error &e) {
+	} catch (const runtime_error &e) {
 		cout << "Caught exception: " << e.what() << endl;
 		return false;
 	}
@@ -436,7 +436,7 @@ Test_MintAndSpend()
 		gSerialNumberSize = ceil((double)serialNumber.bitSize() / 8.0);
 		
 		return ret;
-	} catch (runtime_error &e) {
+	} catch (const runtime_error &e) {
 		cout << e.what() << endl;
 		return false;
 	}

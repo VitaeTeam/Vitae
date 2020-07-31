@@ -59,7 +59,7 @@ bool CFundamentalnodePaymentDB::Write(const CFundamentalnodePayments& objToSave)
     // Write and commit header, data
     try {
         fileout << ssObj;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s : Serialize or I/O error - %s", __func__, e.what());
     }
     fileout.fclose();
@@ -94,7 +94,7 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
     try {
         filein.read((char*)&vchData[0], dataSize);
         filein >> hashIn;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         error("%s : Deserialize or I/O error - %s", __func__, e.what());
         return HashReadError;
     }
@@ -133,7 +133,7 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
 
         // de-serialize data into CFundamentalnodePayments object
         ssObj >> objToLoad;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         objToLoad.Clear();
         error("%s : Deserialize or I/O error - %s", __func__, e.what());
         return IncorrectFormat;
