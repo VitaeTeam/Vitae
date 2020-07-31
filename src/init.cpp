@@ -1110,7 +1110,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                     try {
                         boost::filesystem::copy_file(sourceFile, backupFile);
                         LogPrintf("Creating backup of %s -> %s\n", sourceFile, backupFile);
-                    } catch (boost::filesystem::filesystem_error& error) {
+                    } catch (const boost::filesystem::filesystem_error& error) {
                         LogPrintf("Failed to create backup %s\n", error.what());
                     }
 #else
@@ -1146,7 +1146,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                         try {
                             boost::filesystem::remove(file.second);
                             LogPrintf("Old backup deleted: %s\n", file.second);
-                        } catch (boost::filesystem::filesystem_error& error) {
+                        } catch (const boost::filesystem::filesystem_error& error) {
                             LogPrintf("Failed to delete backup %s\n", error.what());
                         }
                     }
@@ -1184,7 +1184,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                     boost::filesystem::remove_all(zerocoinDir);
                     LogPrintf("-resync: folder deleted: %s\n", zerocoinDir.string().c_str());
                 }
-            } catch (boost::filesystem::filesystem_error& error) {
+            } catch (const boost::filesystem::filesystem_error& error) {
                 LogPrintf("Failed to delete blockchain folders %s\n", error.what());
             }
         }
@@ -1199,7 +1199,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
             try {
                 boost::filesystem::rename(pathDatabase, pathDatabaseBak);
                 LogPrintf("Moved old %s to %s. Retrying.\n", pathDatabase.string(), pathDatabaseBak.string());
-            } catch (boost::filesystem::filesystem_error& error) {
+            } catch (const boost::filesystem::filesystem_error& error) {
                 // failure is ok (well, not really, but it's not worse than what we started with)
             }
 
@@ -1377,7 +1377,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                 filesystem::create_hard_link(source, dest);
                 LogPrintf("Hardlinked %s -> %s\n", source.string(), dest.string());
                 linked = true;
-            } catch (filesystem::filesystem_error& e) {
+            } catch (const filesystem::filesystem_error& e) {
                 // Note: hardlink creation failing is not a disaster, it just means
                 // blocks will get re-downloaded from peers.
                 LogPrintf("Error hardlinking blk%04u.dat : %s\n", i, e.what());
@@ -1520,7 +1520,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler)
                     fVerifyingBlocks = false;
                     break;
                 }
-            } catch (std::exception& e) {
+            } catch (const std::exception& e) {
                 if (fDebug) LogPrintf("%s\n", e.what());
                 strLoadError = _("Error opening block database");
                 fVerifyingBlocks = false;

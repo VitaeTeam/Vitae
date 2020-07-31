@@ -730,7 +730,7 @@ DBErrors CWalletDB::LoadWallet(CWallet* pwallet)
                 LogPrintf("%s\n", strErr);
         }
         pcursor->close();
-    } catch (boost::thread_interrupted) {
+    } catch (const boost::thread_interrupted) {
         throw;
     } catch (...) {
         result = DB_CORRUPT;
@@ -823,7 +823,7 @@ DBErrors CWalletDB::FindWalletTx(CWallet* pwallet, vector<uint256>& vTxHash, vec
             }
         }
         pcursor->close();
-    } catch (boost::thread_interrupted) {
+    } catch (const boost::thread_interrupted) {
         throw;
     } catch (...) {
         result = DB_CORRUPT;
@@ -1000,7 +1000,7 @@ bool BackupWallet(const CWallet& wallet, const filesystem::path& strDest, bool f
                                     filesystem::remove(entry->second);
                                     LogPrintf("Old backup deleted: %s\n", (*entry).second);
                                 }
-                            } catch (filesystem::filesystem_error& error) {
+                            } catch (const filesystem::filesystem_error& error) {
                                 string strMessage = strprintf("Failed to delete backup %s\n", error.what());
                                 LogPrint(nullptr, strMessage.data());
                                 NotifyBacked(wallet, false, strMessage);

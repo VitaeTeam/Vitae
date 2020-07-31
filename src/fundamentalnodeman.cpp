@@ -73,7 +73,7 @@ bool CFundamentalnodeDB::Write(const CFundamentalnodeMan& mnodemanToSave)
     // Write and commit header, data
     try {
         fileout << ssFundamentalnodes;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s : Serialize or I/O error - %s", __func__, e.what());
     }
     //    FileCommit(fileout);
@@ -110,7 +110,7 @@ CFundamentalnodeDB::ReadResult CFundamentalnodeDB::Read(CFundamentalnodeMan& mno
     try {
         filein.read((char*)&vchData[0], dataSize);
         filein >> hashIn;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         error("%s : Deserialize or I/O error - %s", __func__, e.what());
         return HashReadError;
     }
@@ -148,7 +148,7 @@ CFundamentalnodeDB::ReadResult CFundamentalnodeDB::Read(CFundamentalnodeMan& mno
         }
         // de-serialize data into CFundamentalnodeMan object
         ssFundamentalnodes >> mnodemanToLoad;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         mnodemanToLoad.Clear();
         error("%s : Deserialize or I/O error - %s", __func__, e.what());
         return IncorrectFormat;
