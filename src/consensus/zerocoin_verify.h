@@ -8,7 +8,7 @@
 #include "consensus/consensus.h"
 #include "main.h"
 #include "script/interpreter.h"
-#include "zpivchain.h"
+#include "zvitchain.h"
 
 /** Context-independent validity checks */
 bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidationState& state, bool fFakeSerialAttack = false);
@@ -21,8 +21,8 @@ bool CheckPublicCoinSpendVersion(int version);
 bool ContextualCheckZerocoinSpend(const CTransaction& tx, const libzerocoin::CoinSpend* spend, int nHeight, const uint256& hashBlock);
 bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const libzerocoin::CoinSpend* spend, int nHeight, const uint256& hashBlock);
 void AddWrappedSerialsInflation();
-bool RecalculatePIVSupply(int nHeightStart);
-bool UpdateZPIVSupply(const CBlock& block, CBlockIndex* pindex, bool fJustCheck);
+bool RecalculateVITSupply(int nHeightStart);
+bool UpdateZVITAESupply(const CBlock& block, CBlockIndex* pindex, bool fJustCheck);
 CAmount GetInvalidUTXOValue();
 
 #endif //PIVX_CONSENSUS_ZEROCOIN_VERIFY_H
