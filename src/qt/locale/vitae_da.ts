@@ -4167,7 +4167,7 @@ For eksempel: alertnotify=Echo %% | mail - s "VITAE ALARM!" e-mail@administrator
         <translation>Copyright (C) 2015-%i The PIVX Core Udviklere </translation>
     </message>
     <message>
-        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <source>Copyright (C) 2018-%i The VITAE Core Developers</source>
         <translation>Copyright (C) 2018 The VITAE Core Udviklere </translation>
     </message>
     <message>

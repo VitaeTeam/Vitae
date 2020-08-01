@@ -3562,7 +3562,7 @@ https://www.transifex.com/vitae-project/vitae-project-translations</translation>
         <translation>Todos os direitos reservados (C) 2015-%i aos Desenvolvedores do PIVX Core</translation>
     </message>
     <message>
-        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <source>Copyright (C) 2018-%i The VITAE Core Developers</source>
         <translation>Todos os direitos reservados (C) 2018 aos Desenvolvedores do VITAE Core</translation>
     </message>
     <message>
