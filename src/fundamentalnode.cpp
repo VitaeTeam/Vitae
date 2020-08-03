@@ -702,7 +702,7 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
     sigTime = GetAdjustedTime();
 
     std::string strMessage;
-    if(chainActive.Height() < Params().Zerocoin_Block_V2_Start())
+    if(chainActive.Height() < Params().GetConsensus().height_start_ZC_SerialsV2)
     	strMessage = GetOldStrMessage();
     else
     	strMessage = GetNewStrMessage();

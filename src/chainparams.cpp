@@ -214,19 +214,6 @@ public:
         nEnforceNewSporkKey = 1525158000; //!> Sporks signed after (GMT): Tuesday, May 1, 2018 7:00:00 AM GMT must use the new spork key
         nRejectOldSporkKey = 1527811200; //!> Fully reject old spork key after (GMT): Friday, June 1, 2018 12:00:00 AM
 
-        // Public coin spend enforcement
-        nPublicZCSpends = 1880000;
-
-        // New P2P messages signatures
-        nBlockEnforceNewMessageSignatures = consensus.height_start_TimeProtoV2;
-
-        // Blocks v7
-        nBlockLastAccumulatorCheckpoint = 1686240;
-        nBlockV7StartHeight = consensus.height_start_TimeProtoV2;
-
-        // Fake Serial Attack
-        nSupplyBeforeFakeSerial = 4131563 * COIN;   // zerocoin supply at height_last_ZC_WrappedSerials
-
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
          * be spent as it did not originally exist in the database.
