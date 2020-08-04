@@ -7,7 +7,7 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/vitae-project/vitae-detached-sigs.git"
+- "url": "https://github.com/vitaeteam/vitae-detached-sigs.git"
   "dir": "signature"
 files:
 - "vitae-osx-unsigned.tar.gz"

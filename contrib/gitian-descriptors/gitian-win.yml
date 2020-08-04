@@ -22,7 +22,7 @@ packages:
 - "ca-certificates"
 - "python"
 remotes:
-- "url": "https://github.com/vitae-project/vitae.git"
+- "url": "https://github.com/vitaeteam/vitae.git"
   "dir": "vitae"
 files: []
 script: |
