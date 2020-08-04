@@ -214,7 +214,6 @@ public:
         vAlertPubKey = ParseHex("0000098d3ba6ba6e7423fa5cbd6a89e0a9a5348f88d332b44a5cb1a8b7ed2c1eaa335fc8dc4f012cb8241cc0bdafd6ca70c5f5448916e4e6f511bcd746ed57dc50");
         nDefaultPort = 8765;
 
-        nMinerThreads = 0;
         nFundamentalnodeCountDrift = 20;
 
         /**
