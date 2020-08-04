@@ -407,10 +407,6 @@ public:
 
         convertSeed6(vFixedSeeds, pnSeed6_test, ARRAYLEN(pnSeed6_test));
 
-        fMiningRequiresPeers = true;
-        fDefaultConsistencyChecks = false;
-        fRequireStandard = true;
-        fTestnetToBeDeprecatedFieldRPC = true;
         nStartFundamentalnodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
     }
 

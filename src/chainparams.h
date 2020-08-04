@@ -65,7 +65,7 @@ public:
     /** Headers first syncing is disabled */
     bool HeadersFirstSyncingActive() const { return false; };
     /** Default value for -checkmempool and -checkblockindex argument */
-    bool DefaultConsistencyChecks() const { return fDefaultConsistencyChecks; }
+    bool DefaultConsistencyChecks() const { return IsRegTestNet(); }
 
     /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
     int FundamentalnodeCountDrift() const { return nFundamentalnodeCountDrift; }
