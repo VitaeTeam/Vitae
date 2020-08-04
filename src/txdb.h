@@ -71,6 +71,7 @@ public:
     bool LoadBlockIndexGuts();
 };
 
+/** Zerocoin database (zerocoin/) */
 class CZerocoinDB : public CLevelDBWrapper
 {
 public:
@@ -81,12 +82,17 @@ private:
     void operator=(const CZerocoinDB&);
 
 public:
-    bool WriteCoinMint(const libzerocoin::PublicCoin& pubCoin, const uint256& txHash);
+    /** Write zVITAE mints to the zerocoinDB in a batch */
+    bool WriteCoinMintBatch(const std::vector<std::pair<libzerocoin::PublicCoin, uint256> >& mintInfo);
     bool ReadCoinMint(const CBigNum& bnPubcoin, uint256& txHash);
-    bool WriteCoinSpend(const CBigNum& bnSerial, const uint256& txHash);
+    bool ReadCoinMint(const uint256& hashPubcoin, uint256& hashTx);
+    /** Write zVITAE spends to the zerocoinDB in a batch */
+    bool WriteCoinSpendBatch(const std::vector<std::pair<libzerocoin::CoinSpend, uint256> >& spendInfo);
     bool ReadCoinSpend(const CBigNum& bnSerial, uint256& txHash);
+    bool ReadCoinSpend(const uint256& hashSerial, uint256 &txHash);
     bool EraseCoinMint(const CBigNum& bnPubcoin);
     bool EraseCoinSpend(const CBigNum& bnSerial);
+    bool WipeCoins(std::string strType);
     bool WriteAccumulatorValue(const uint32_t& nChecksum, const CBigNum& bnValue);
     bool ReadAccumulatorValue(const uint32_t& nChecksum, CBigNum& bnValue);
     bool EraseAccumulatorValue(const uint32_t& nChecksum);

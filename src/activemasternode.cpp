@@ -46,21 +46,11 @@ void CActiveMasternode::ManageStatus()
             service = CService(strMasterNodeAddr);
         }
 
-        LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString().c_str());
-
-        if(Params().NetworkID() == CBaseChainParams::MAIN){
-            if(service.GetPort() != 8765) {
-                notCapableReason = "Invalid port: " + boost::lexical_cast<string>(service.GetPort()) + " - only 8765 is supported on mainnet.";
-                status = MASTERNODE_NOT_CAPABLE;
-                LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
-                return;
-            }
-        } else if(service.GetPort() == 8765) {
-            notCapableReason = "Invalid port: " + boost::lexical_cast<string>(service.GetPort()) + " - 8765 is only supported on mainnet.";
-            status = MASTERNODE_NOT_CAPABLE;
-            LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
+        // The service needs the correct default port to work properly
+        if(!CMasternodeBroadcast::CheckDefaultPort(strMasterNodeAddr, errorMessage, "CActiveMasternode::ManageStatus()"))
             return;
-        }
+
+        LogPrintf("CActiveMasternode::ManageStatus() - Checking inbound connection to '%s'\n", service.ToString().c_str());
 
         if(!ConnectNode((CAddress)service, service.ToString().c_str())){
             notCapableReason = "Could not connect to " + service.ToString();

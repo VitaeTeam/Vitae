@@ -78,17 +78,25 @@ void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
         uint256 hash = spork.GetHash();
         if (mapSporksActive.count(spork.nSporkID)) {
             if (mapSporksActive[spork.nSporkID].nTimeSigned >= spork.nTimeSigned) {
-                if (fDebug) LogPrintf("spork - seen %s block %d \n", hash.ToString(), chainActive.Tip()->nHeight);
+                if (fDebug) LogPrintf("%s : seen %s block %d \n", __func__, hash.ToString(), chainActive.Tip()->nHeight);
                 return;
             } else {
-                if (fDebug) LogPrintf("spork - got updated spork %s block %d \n", hash.ToString(), chainActive.Tip()->nHeight);
+                if (fDebug) LogPrintf("%s : got updated spork %s block %d \n", __func__, hash.ToString(), chainActive.Tip()->nHeight);
             }
         }
 
-        LogPrintf("spork - new %s ID %d Time %d bestHeight %d\n", hash.ToString(), spork.nSporkID, spork.nValue, chainActive.Tip()->nHeight);
+        LogPrintf("%s : new %s ID %d Time %d bestHeight %d\n", __func__, hash.ToString(), spork.nSporkID, spork.nValue, chainActive.Tip()->nHeight);
+
+        if (spork.nTimeSigned >= Params().NewSporkStart()) {
+            if (!sporkManager.CheckSignature(spork, true)) {
+                LogPrintf("%s : Invalid Signature\n", __func__);
+                Misbehaving(pfrom->GetId(), 100);
+                return;
+            }
+        }
 
         if (!sporkManager.CheckSignature(spork)) {
-            LogPrintf("spork - invalid signature\n");
+            LogPrintf("%s : Invalid Signature\n", __func__);
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
@@ -135,8 +143,9 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES) r = SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES_DEFAULT;
         if (nSporkID == SPORK_20_ZEROCOIN_MAINTENANCE_MODE) r = SPORK_20_ZEROCOIN_MAINTENANCE_MODE_DEFAULT;
         if (nSporkID == SPORK_21_MASTERNODE_PAY_UPDATED_NODES) r = SPORK_21_MASTERNODE_PAY_UPDATED_NODES_DEFAULT;
+        if (nSporkID == SPORK_22_REMOVE_SEESAW_BLOCK) r = SPORK_22_REMOVE_SEESAW_BLOCK_DEFAULT;
 
-        if (r == -1) LogPrintf("GetSpork::Unknown Spork %d\n", nSporkID);
+        if (r == -1) LogPrintf("%s : Unknown Spork %d\n", __func__, nSporkID);
     }
 
     return r;
@@ -182,17 +191,25 @@ void ReprocessBlocks(int nBlocks)
     }
 }
 
-bool CSporkManager::CheckSignature(CSporkMessage& spork)
+bool CSporkManager::CheckSignature(CSporkMessage& spork, bool fCheckSigner)
 {
     //note: need to investigate why this is failing
     std::string strMessage = boost::lexical_cast<std::string>(spork.nSporkID) + boost::lexical_cast<std::string>(spork.nValue) + boost::lexical_cast<std::string>(spork.nTimeSigned);
     CPubKey pubkeynew(ParseHex(Params().SporkKey()));
     std::string errorMessage = "";
-    if (obfuScationSigner.VerifyMessage(pubkeynew, spork.vchSig, strMessage, errorMessage)) {
-        return true;
+
+    bool fValidWithNewKey = obfuScationSigner.VerifyMessage(pubkeynew, spork.vchSig,strMessage, errorMessage);
+
+    if (fCheckSigner && !fValidWithNewKey && GetAdjustedTime() > Params().NewSporkStart())
+        return false;
+
+    // See if window is open that allows for old spork key to sign messages
+    if (!fValidWithNewKey && GetAdjustedTime() < Params().RejectOldSporkKey()) {
+        CPubKey pubkeyold(ParseHex(Params().SporkKeyOld()));
+        return obfuScationSigner.VerifyMessage(pubkeyold, spork.vchSig, strMessage, errorMessage);
     }
 
-    return false;
+    return fValidWithNewKey;
 }
 
 bool CSporkManager::Sign(CSporkMessage& spork)
@@ -253,7 +270,7 @@ bool CSporkManager::SetPrivKey(std::string strPrivKey)
 
     Sign(msg);
 
-    if (CheckSignature(msg)) {
+    if (CheckSignature(msg, true)) {
         LogPrintf("CSporkManager::SetPrivKey - Successfully initialized as spork signer\n");
         return true;
     } else {
@@ -279,6 +296,7 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES") return SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES;
     if (strName == "SPORK_20_ZEROCOIN_MAINTENANCE_MODE") return SPORK_20_ZEROCOIN_MAINTENANCE_MODE;
     if (strName == "SPORK_21_MASTERNODE_PAY_UPDATED_NODES") return SPORK_21_MASTERNODE_PAY_UPDATED_NODES;
+    if (strName == "SPORK_22_REMOVE_SEESAW_BLOCK") return SPORK_22_REMOVE_SEESAW_BLOCK;
 
     return -1;
 }
@@ -301,6 +319,7 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES) return "SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES";
     if (id == SPORK_20_ZEROCOIN_MAINTENANCE_MODE) return "SPORK_20_ZEROCOIN_MAINTENANCE_MODE";
     if (id == SPORK_21_MASTERNODE_PAY_UPDATED_NODES) return "SPORK_21_MASTERNODE_PAY_UPDATED_NODES";
+    if (id == SPORK_22_REMOVE_SEESAW_BLOCK) return "SPORK_22_REMOVE_SEESAW_BLOCK";
 
     return "Unknown";
 }

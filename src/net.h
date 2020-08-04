@@ -121,7 +121,6 @@ bool IsLocal(const CService& addr);
 bool GetLocal(CService& addr, const CNetAddr* paddrPeer = NULL);
 bool IsReachable(enum Network net);
 bool IsReachable(const CNetAddr& addr);
-void SetReachable(enum Network net, bool fFlag = true);
 CAddress GetLocalAddress(const CNetAddr* paddrPeer = NULL);
 
 
@@ -267,7 +266,7 @@ public:
     {
         switch (banReason) {
         case BanReasonNodeMisbehaving:
-            return "node misbehabing";
+            return "node misbehaving";
         case BanReasonManuallyAdded:
             return "manually added";
         default:

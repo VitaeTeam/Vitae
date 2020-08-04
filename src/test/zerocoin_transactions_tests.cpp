@@ -23,11 +23,12 @@ static CWallet cWallet("unlocked.dat");
 BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
 {
     SelectParams(CBaseChainParams::MAIN);
-    ZerocoinParams *ZCParams = Params().Zerocoin_Params();
+    ZerocoinParams *ZCParams = Params().Zerocoin_Params(false);
     (void)ZCParams;
 
     bool fFirstRun;
     cWallet.LoadWallet(fFirstRun);
+    cWallet.zvitTracker = unique_ptr<CzVITAETracker>(new CzVITAETracker(cWallet.strWalletFile));
     CMutableTransaction tx;
     CWalletTx* wtx = new CWalletTx(&cWallet, tx);
     bool fMintChange=true;

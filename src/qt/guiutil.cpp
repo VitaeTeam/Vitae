@@ -739,6 +739,8 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 #include <CoreFoundation/CoreFoundation.h>
 #include <CoreServices/CoreServices.h>
 
+void ForceActivation();
+
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {

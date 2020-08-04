@@ -1,5 +1,5 @@
 ---
-name: "vitae-win-3.1"
+name: "vitae-win-4.5"
 enable_cache: true
 suites:
 - "trusty"

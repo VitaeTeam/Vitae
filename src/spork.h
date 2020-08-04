@@ -29,7 +29,7 @@ using namespace boost;
     Sporks 11,12, and 16 to be removed with 1st zerocoin release
 */
 #define SPORK_START 10001
-#define SPORK_END 10020
+#define SPORK_END 10021
 
 #define SPORK_2_SWIFTTX 10001
 #define SPORK_3_SWIFTTX_BLOCK_FILTERING 10002
@@ -49,6 +49,7 @@ using namespace boost;
 #define SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES 10018
 #define SPORK_20_ZEROCOIN_MAINTENANCE_MODE 10019
 #define SPORK_21_MASTERNODE_PAY_UPDATED_NODES 10020
+#define SPORK_22_REMOVE_SEESAW_BLOCK 10021
 
 #define SPORK_2_SWIFTTX_DEFAULT 978307200                         //2001-1-1
 #define SPORK_3_SWIFTTX_BLOCK_FILTERING_DEFAULT 1424217600        //2015-2-18
@@ -67,6 +68,7 @@ using namespace boost;
 #define SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES_DEFAULT 4070908800  //OFF
 #define SPORK_20_ZEROCOIN_MAINTENANCE_MODE_DEFAULT 4070908800     //OFF
 #define SPORK_21_MASTERNODE_PAY_UPDATED_NODES_DEFAULT 4070908800  //OFF
+#define SPORK_22_REMOVE_SEESAW_BLOCK_DEFAULT 9999999999  //OFF
 
 class CSporkMessage;
 class CSporkManager;
@@ -128,7 +130,7 @@ public:
     int GetSporkIDByName(std::string strName);
     bool UpdateSpork(int nSporkID, int64_t nValue);
     bool SetPrivKey(std::string strPrivKey);
-    bool CheckSignature(CSporkMessage& spork);
+    bool CheckSignature(CSporkMessage& spork, bool fCheckSigner = false);
     bool Sign(CSporkMessage& spork);
     void Relay(CSporkMessage& msg);
 };

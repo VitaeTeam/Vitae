@@ -274,12 +274,6 @@ void BitcoinCore::initialize()
     try {
         qDebug() << __func__ << ": Running AppInit2 in thread";
         int rv = AppInit2(threadGroup, scheduler);
-        if (rv) {
-            /* Start a dummy RPC thread if no RPC thread is active yet
-             * to handle timeouts.
-             */
-            StartDummyRPCThread();
-        }
         emit initializeResult(rv);
     } catch (std::exception& e) {
         handleRunawayException(&e);
@@ -294,7 +288,7 @@ void BitcoinCore::restart(QStringList args)
         execute_restart = false;
         try {
             qDebug() << __func__ << ": Running Restart in thread";
-            threadGroup.interrupt_all();
+            Interrupt(threadGroup);
             threadGroup.join_all();
             PrepareShutdown();
             qDebug() << __func__ << ": Shutdown finished";
@@ -315,7 +309,7 @@ void BitcoinCore::shutdown()
 {
     try {
         qDebug() << __func__ << ": Running Shutdown in thread";
-        threadGroup.interrupt_all();
+        Interrupt(threadGroup);
         threadGroup.join_all();
         Shutdown();
         qDebug() << __func__ << ": Shutdown finished";
@@ -541,17 +535,17 @@ int main(int argc, char* argv[])
     Q_INIT_RESOURCE(vitae_locale);
     Q_INIT_RESOURCE(vitae);
 
-    BitcoinApplication app(argc, argv);
 #if QT_VERSION > 0x050100
     // Generate high-dpi pixmaps
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 #if QT_VERSION >= 0x050600
-    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 #ifdef Q_OS_MAC
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
 #endif
+    BitcoinApplication app(argc, argv);
 
     // Register meta types used for QMetaObject::invokeMethod
     qRegisterMetaType<bool*>();
@@ -573,18 +567,6 @@ int main(int argc, char* argv[])
     initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
     uiInterface.Translate.connect(Translate);
 
-#ifdef Q_OS_MAC
-#if __clang_major__ < 4
-    QString s = QSysInfo::kernelVersion();
-    std::string ver_info = s.toStdString();
-    // ver_info will be like 17.2.0 for High Sierra. Check if true and exit if build via cross-compile
-    if (ver_info[0] == '1' && ver_info[1] == '7') {
-        QMessageBox::critical(0, "Unsupported", BitcoinGUI::tr("High Sierra not supported with this build") + QString("\n\n"));
-        ::exit(1);
-    }
-#endif
-#endif
-    
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
     // but before showing splash screen.
     if (mapArgs.count("-?") || mapArgs.count("-help") || mapArgs.count("-version")) {
@@ -607,7 +589,7 @@ int main(int argc, char* argv[])
     }
     try {
         ReadConfigFile(mapArgs, mapMultiArgs);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         QMessageBox::critical(0, QObject::tr("VITAE Core"),
             QObject::tr("Error: Cannot parse configuration file: %1. Only use key=value syntax.").arg(e.what()));
         return 0;

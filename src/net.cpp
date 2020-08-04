@@ -79,7 +79,6 @@ bool fListen = true;
 uint64_t nLocalServices = NODE_NETWORK;
 CCriticalSection cs_mapLocalHost;
 map<CNetAddr, LocalServiceInfo> mapLocalHost;
-static bool vfReachable[NET_MAX] = {};
 static bool vfLimited[NET_MAX] = {};
 static CNode* pnodeLocalHost = NULL;
 uint64_t nLocalHostNonce = 0;
@@ -239,14 +238,6 @@ void AdvertizeLocal(CNode* pnode)
     }
 }
 
-void SetReachable(enum Network net, bool fFlag)
-{
-    LOCK(cs_mapLocalHost);
-    vfReachable[net] = fFlag;
-    if (net == NET_IPV6 && fFlag)
-        vfReachable[NET_IPV4] = true;
-}
-
 // learn a new local address
 bool AddLocal(const CService& addr, int nScore)
 {
@@ -269,7 +260,6 @@ bool AddLocal(const CService& addr, int nScore)
             info.nScore = nScore + (fAlready ? 1 : 0);
             info.nPort = addr.GetPort();
         }
-        SetReachable(addr.GetNetwork());
     }
 
     return true;
@@ -332,7 +322,7 @@ bool IsLocal(const CService& addr)
 bool IsReachable(enum Network net)
 {
     LOCK(cs_mapLocalHost);
-    return vfReachable[net] && !vfLimited[net];
+    return !vfLimited[net];
 }
 
 /** check whether a given address is in a network we can probably connect to */
@@ -1191,7 +1181,7 @@ void ThreadMapPort()
 
                 MilliSleep(20 * 60 * 1000); // Refresh every 20 minutes
             }
-        } catch (boost::thread_interrupted) {
+        } catch (const boost::thread_interrupted) {
             r = UPNP_DeletePortMapping(urls.controlURL, data.first.servicetype, port.c_str(), "TCP", 0);
             LogPrintf("UPNP_DeletePortMapping() returned : %d\n", r);
             freeUPNPDevlist(devlist);
@@ -1575,7 +1565,7 @@ void static ThreadStakeMinter()
     try {
         BitcoinMiner(pwallet, true);
         boost::this_thread::interruption_point();
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         LogPrintf("ThreadStakeMinter() exception \n");
     } catch (...) {
         LogPrintf("ThreadStakeMinter() error \n");
@@ -1734,6 +1724,10 @@ void StartNode(boost::thread_group& threadGroup, CScheduler& scheduler)
     CNode::SetBanned(banmap); //thread save setter
     CNode::SetBannedSetDirty(false); //no need to write down just read or nonexistent data
     CNode::SweepBanned(); //sweap out unused entries
+
+    // Initialize random numbers. Even when rand() is only usable for trivial use-cases most nodes should have a different 
+    // seed after all the file-IO done at this point. Should be good enough even when nodes are started via scripts.
+    srand(time(NULL));
 
     LogPrintf("Loaded %i addresses from peers.dat  %dms\n",
         addrman.size(), GetTimeMillis() - nStart);
@@ -1993,7 +1987,7 @@ bool CAddrDB::Write(const CAddrMan& addr)
     // Write and commit header, data
     try {
         fileout << ssPeers;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s : Serialize or I/O error - %s", __func__, e.what());
     }
     FileCommit(fileout.Get());
@@ -2024,7 +2018,7 @@ bool CAddrDB::Read(CAddrMan& addr)
     try {
         filein.read((char*)&vchData[0], dataSize);
         filein >> hashIn;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s : Deserialize or I/O error - %s", __func__, e.what());
     }
     filein.fclose();
@@ -2047,7 +2041,7 @@ bool CAddrDB::Read(CAddrMan& addr)
 
         // de-serialize address data into one CAddrMan object
         ssPeers >> addr;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         return error("%s : Deserialize or I/O error - %s", __func__, e.what());
     }
 
@@ -2181,8 +2175,10 @@ void CNode::EndMessage() UNLOCK_FUNCTION(cs_vSend)
     if (mapArgs.count("-fuzzmessagestest"))
         Fuzz(GetArg("-fuzzmessagestest", 10));
 
-    if (ssSend.size() == 0)
+    if (ssSend.size() == 0) {
+	    LEAVE_CRITICAL_SECTION(cs_vSend);
         return;
+    }
 
     // Set the size
     unsigned int nSize = ssSend.size() - CMessageHeader::HEADER_SIZE;

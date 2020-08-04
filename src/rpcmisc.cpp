@@ -51,7 +51,8 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getinfo\n"
-            "Returns an object containing various state info.\n"
+            "\nReturns an object containing various state info.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"version\": xxxxx,           (numeric) the server version\n"
@@ -66,7 +67,7 @@ UniValue getinfo(const UniValue& params, bool fHelp)
             "  \"difficulty\": xxxxxx,       (numeric) the current difficulty\n"
             "  \"testnet\": true|false,      (boolean) if the server is using testnet or not\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
-            "  \"zVITsupply\" :\n"
+            "  \"zVITAEsupply\" :\n"
             "  {\n"
             "     \"1\" : n,            (numeric) supply of 1 zVITAE denomination\n"
             "     \"5\" : n,            (numeric) supply of 5 zVITAE denomination\n"
@@ -86,8 +87,15 @@ UniValue getinfo(const UniValue& params, bool fHelp)
             "  \"staking status\": true|false,  (boolean) if the wallet is staking or not\n"
             "  \"errors\": \"...\"           (string) any error messages\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getinfo", "") + HelpExampleRpc("getinfo", ""));
+
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
 
     proxyType proxy;
     GetProxy(NET_IPV4, proxy);
@@ -108,13 +116,20 @@ UniValue getinfo(const UniValue& params, bool fHelp)
     obj.push_back(Pair("proxy", (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : string())));
     obj.push_back(Pair("difficulty", (double)GetDifficulty()));
     obj.push_back(Pair("testnet", Params().TestnetToBeDeprecatedFieldRPC()));
+
+    // During inital block verification chainActive.Tip() might be not yet initialized
+    if (chainActive.Tip() == NULL) {
+        obj.push_back(Pair("status", "Blockchain information not yet available"));
+        return obj;
+    }
+
     obj.push_back(Pair("moneysupply",ValueFromAmount(chainActive.Tip()->nMoneySupply)));
     UniValue zVitObj(UniValue::VOBJ);
     for (auto denom : libzerocoin::zerocoinDenomList) {
         zVitObj.push_back(Pair(to_string(denom), ValueFromAmount(chainActive.Tip()->mapZerocoinSupply.at(denom) * (denom*COIN))));
     }
     zVitObj.push_back(Pair("total", ValueFromAmount(chainActive.Tip()->GetZerocoinSupply())));
-    obj.push_back(Pair("zVITsupply", zVitObj));
+    obj.push_back(Pair("zVITAEsupply", zVitObj));
 
 #ifdef ENABLE_WALLET
     if (pwalletMain) {
@@ -172,6 +187,7 @@ UniValue fnsync(const UniValue& params, bool fHelp)
 
             "\nResult ('reset' mode):\n"
             "\"status\"     (string) 'success'\n"
+
             "\nExamples:\n" +
             HelpExampleCli("fnsync", "\"status\"") + HelpExampleRpc("fnsync", "\"status\""));
     }
@@ -279,7 +295,7 @@ UniValue spork(const UniValue& params, bool fHelp)
         }
 
         // SPORK VALUE
-        int64_t nValue = params[1].get_int();
+        int64_t nValue = params[1].get_int64();
 
         //broadcast new spork
         if (sporkManager.UpdateSpork(nSporkID, nValue)) {
@@ -290,10 +306,31 @@ UniValue spork(const UniValue& params, bool fHelp)
     }
 
     throw runtime_error(
-        "spork <name> [<value>]\n"
-        "<name> is the corresponding spork name, or 'show' to show all current spork settings, active to show which sporks are active"
-        "<value> is a epoch datetime to enable or disable spork" +
-        HelpRequiringPassphrase());
+        "spork \"name\" ( value )\n"
+        "\nReturn spork values or their active state.\n"
+
+        "\nArguments:\n"
+        "1. \"name\"        (string, required)  \"show\" to show values, \"active\" to show active state.\n"
+        "                       When set up as a spork signer, the name of the spork can be used to update it's value.\n"
+        "2. value           (numeric, required when updating a spork) The new value for the spork.\n"
+
+        "\nResult (show):\n"
+        "{\n"
+        "  \"spork_name\": nnn      (key/value) Key is the spork name, value is it's current value.\n"
+        "  ,...\n"
+        "}\n"
+
+        "\nResult (active):\n"
+        "{\n"
+        "  \"spork_name\": true|false      (key/value) Key is the spork name, value is a boolean for it's active state.\n"
+        "  ,...\n"
+        "}\n"
+
+        "\nResult (name):\n"
+        " \"success|failure\"       (string) Wither or not the update succeeded.\n"
+
+        "\nExamples:\n" +
+        HelpExampleCli("spork", "show") + HelpExampleRpc("spork", "show"));
 }
 
 UniValue mnspork(const UniValue& params, bool fHelp)
@@ -341,8 +378,10 @@ UniValue validateaddress(const UniValue& params, bool fHelp)
         throw runtime_error(
             "validateaddress \"vitaeaddress\"\n"
             "\nReturn information about the given vitae address.\n"
+
             "\nArguments:\n"
             "1. \"vitaeaddress\"     (string, required) The vitae address to validate\n"
+
             "\nResult:\n"
             "{\n"
             "  \"isvalid\" : true|false,         (boolean) If the address is valid or not. If not, this is the only property returned.\n"
@@ -353,8 +392,15 @@ UniValue validateaddress(const UniValue& params, bool fHelp)
             "  \"iscompressed\" : true|false,    (boolean) If the address is compressed\n"
             "  \"account\" : \"account\"         (string) The account associated with the address, \"\" is the default account\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("validateaddress", "\"1PSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\"") + HelpExampleRpc("validateaddress", "\"1PSSGeFHDnKNxiEyFrD1wcEaHr9hrQDDWc\""));
+
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
 
     CBitcoinAddress address(params[0].get_str());
     bool isValid = address.IsValid();
@@ -442,31 +488,31 @@ CScript _createmultisig_redeemScript(const UniValue& params)
 
 UniValue createmultisig(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() < 2 || params.size() > 2) {
-        string msg = "createmultisig nrequired [\"key\",...]\n"
-                     "\nCreates a multi-signature address with n signature of m keys required.\n"
-                     "It returns a json object with the address and redeemScript.\n"
+    if (fHelp || params.size() < 2 || params.size() > 2)
+        throw runtime_error(
+            "createmultisig nrequired [\"key\",...]\n"
+            "\nCreates a multi-signature address with n signature of m keys required.\n"
+            "It returns a json object with the address and redeemScript.\n"
 
-                     "\nArguments:\n"
-                     "1. nrequired      (numeric, required) The number of required signatures out of the n keys or addresses.\n"
-                     "2. \"keys\"       (string, required) A json array of keys which are vitae addresses or hex-encoded public keys\n"
-                     "     [\n"
-                     "       \"key\"    (string) vitae address or hex-encoded public key\n"
-                     "       ,...\n"
-                     "     ]\n"
+            "\nArguments:\n"
+            "1. nrequired      (numeric, required) The number of required signatures out of the n keys or addresses.\n"
+            "2. \"keys\"       (string, required) A json array of keys which are vitae addresses or hex-encoded public keys\n"
+            "     [\n"
+            "       \"key\"    (string) vitae address or hex-encoded public key\n"
+            "       ,...\n"
+            "     ]\n"
 
-                     "\nResult:\n"
-                     "{\n"
-                     "  \"address\":\"multisigaddress\",  (string) The value of the new multisig address.\n"
-                     "  \"redeemScript\":\"script\"       (string) The string value of the hex-encoded redemption script.\n"
-                     "}\n"
+            "\nResult:\n"
+            "{\n"
+            "  \"address\":\"multisigaddress\",  (string) The value of the new multisig address.\n"
+            "  \"redeemScript\":\"script\"       (string) The string value of the hex-encoded redemption script.\n"
+            "}\n"
 
-                     "\nExamples:\n"
-                     "\nCreate a multisig address from 2 addresses\n" +
-                     HelpExampleCli("createmultisig", "2 \"[\\\"16sSauSf5pF2UkUwvKGq4qjNRzBZYqgEL5\\\",\\\"171sgjn4YtPu27adkKGrdDwzRTxnRkBfKV\\\"]\"") +
-                     "\nAs a json rpc call\n" + HelpExampleRpc("createmultisig", "2, \"[\\\"16sSauSf5pF2UkUwvKGq4qjNRzBZYqgEL5\\\",\\\"171sgjn4YtPu27adkKGrdDwzRTxnRkBfKV\\\"]\"");
-        throw runtime_error(msg);
-    }
+            "\nExamples:\n"
+            "\nCreate a multisig address from 2 addresses\n" +
+            HelpExampleCli("createmultisig", "2 \"[\\\"16sSauSf5pF2UkUwvKGq4qjNRzBZYqgEL5\\\",\\\"171sgjn4YtPu27adkKGrdDwzRTxnRkBfKV\\\"]\"") +
+            "\nAs a json rpc call\n" +
+            HelpExampleRpc("createmultisig", "2, \"[\\\"16sSauSf5pF2UkUwvKGq4qjNRzBZYqgEL5\\\",\\\"171sgjn4YtPu27adkKGrdDwzRTxnRkBfKV\\\"]\""));
 
     // Construct using pay-to-script-hash:
     CScript inner = _createmultisig_redeemScript(params);
@@ -486,18 +532,26 @@ UniValue verifymessage(const UniValue& params, bool fHelp)
         throw runtime_error(
             "verifymessage \"vitaeaddress\" \"signature\" \"message\"\n"
             "\nVerify a signed message\n"
+
             "\nArguments:\n"
             "1. \"vitaeaddress\"  (string, required) The vitae address to use for the signature.\n"
             "2. \"signature\"       (string, required) The signature provided by the signer in base 64 encoding (see signmessage).\n"
             "3. \"message\"         (string, required) The message that was signed.\n"
+
             "\nResult:\n"
             "true|false   (boolean) If the signature is verified or not.\n"
+
             "\nExamples:\n"
             "\nUnlock the wallet for 30 seconds\n" +
             HelpExampleCli("walletpassphrase", "\"mypassphrase\" 30") +
-            "\nCreate the signature\n" + HelpExampleCli("signmessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"my message\"") +
-            "\nVerify the signature\n" + HelpExampleCli("verifymessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"signature\" \"my message\"") +
-            "\nAs json rpc\n" + HelpExampleRpc("verifymessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"signature\", \"my message\""));
+            "\nCreate the signature\n" +
+            HelpExampleCli("signmessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"my message\"") +
+            "\nVerify the signature\n" +
+            HelpExampleCli("verifymessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\" \"signature\" \"my message\"") +
+            "\nAs json rpc\n" +
+            HelpExampleRpc("verifymessage", "\"1D1ZrZNe3JUo7ZycKEYQQiQAWd9y54F4XZ\", \"signature\", \"my message\""));
+
+    LOCK(cs_main);
 
     string strAddress = params[0].get_str();
     string strSign = params[1].get_str();
@@ -534,12 +588,15 @@ UniValue setmocktime(const UniValue& params, bool fHelp)
         throw runtime_error(
             "setmocktime timestamp\n"
             "\nSet the local time to given timestamp (-regtest only)\n"
+
             "\nArguments:\n"
             "1. timestamp  (integer, required) Unix seconds-since-epoch timestamp\n"
             "   Pass 0 to go back to using the system time.");
 
     if (!Params().MineBlocksOnDemand())
         throw runtime_error("setmocktime for regression testing (-regtest mode) only");
+
+    LOCK(cs_main);
 
     RPCTypeCheck(params, boost::assign::list_of(UniValue::VNUM));
     SetMockTime(params[0].get_int64());
@@ -553,7 +610,8 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
     if (fHelp || params.size() != 0)
         throw runtime_error(
             "getstakingstatus\n"
-            "Returns an object containing various staking information.\n"
+            "\nReturns an object containing various staking information.\n"
+
             "\nResult:\n"
             "{\n"
             "  \"validtime\": true|false,          (boolean) if the chain tip is within staking phases\n"
@@ -564,8 +622,15 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"fnsync\": true|false,             (boolean) if fundamentalnode data is synced\n"
             "  \"staking status\": true|false,     (boolean) if the wallet is staking or not\n"
             "}\n"
+
             "\nExamples:\n" +
             HelpExampleCli("getstakingstatus", "") + HelpExampleRpc("getstakingstatus", ""));
+
+#ifdef ENABLE_WALLET
+    LOCK2(cs_main, pwalletMain ? &pwalletMain->cs_wallet : NULL);
+#else
+    LOCK(cs_main);
+#endif
 
     UniValue obj(UniValue::VOBJ);
     obj.push_back(Pair("validtime", chainActive.Tip()->nTime > 1471482000));

@@ -1,5 +1,5 @@
 ---
-name: "vitae-osx-3.1"
+name: "vitae-osx-4.5"
 enable_cache: true
 suites:
 - "trusty"
