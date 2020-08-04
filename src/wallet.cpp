@@ -5209,8 +5209,8 @@ void CWallet::ZVitBackupWallet()
 
     BackupWallet(*this, backupPath.string());
 
-    if(!GetArg("-zvitbackuppath", "").empty()) {
-        filesystem::path customPath(GetArg("-zvitbackuppath", ""));
+    if(!GetArg("-zvitaebackuppath", "").empty()) {
+        filesystem::path customPath(GetArg("-zvitaebackuppath", ""));
         filesystem::create_directories(customPath);
 
         if(!customPath.has_extension()) {
