@@ -10,9 +10,9 @@
 #include "main.h"
 #include "fundamentalnode.h"
 
-extern CCriticalSection cs_vecPayments;
-extern CCriticalSection cs_mapFundamentalnodeBlocks;
-extern CCriticalSection cs_mapFundamentalnodePayeeVotes;
+extern RecursiveMutex cs_vecPayments;
+extern RecursiveMutex cs_mapFundamentalnodeBlocks;
+extern RecursiveMutex cs_mapFundamentalnodePayeeVotes;
 
 class CFundamentalnodePayments;
 class CFundamentalnodePaymentWinner;

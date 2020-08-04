@@ -398,7 +398,7 @@ void CFundamentalnodeMan::CountNetworks(int protocolVersion, int& ipv4, int& ipv
         std::string strHost;
         int port;
         SplitHostPort(mn.addr.ToString(), port, strHost);
-        CNetAddr node = CNetAddr(strHost, false);
+        CNetAddr node = CNetAddr(strHost);
         int nNetwork = node.GetNetwork();
         switch (nNetwork) {
             case 1 :

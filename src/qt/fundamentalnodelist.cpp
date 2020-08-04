@@ -16,7 +16,7 @@
 #include <QMessageBox>
 #include <QTimer>
 
-CCriticalSection cs_fundamentalnodes;
+RecursiveMutex cs_fundamentalnodes;
 
 FundamentalnodeList::FundamentalnodeList(QWidget* parent) : QWidget(parent),
                                                   ui(new Ui::FundamentalnodeList),

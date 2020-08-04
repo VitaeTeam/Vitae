@@ -15,7 +15,7 @@
 
 #include <boost/foreach.hpp>
 
-CCriticalSection cs_masternodepayments;
+RecursiveMutex cs_masternodepayments;
 
 /** Object for who's going to get paid on which blocks */
 CMasternodePayments masternodePayments;

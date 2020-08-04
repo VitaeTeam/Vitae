@@ -24,9 +24,9 @@
 /** Object for who's going to get paid on which blocks */
 CFundamentalnodePayments fundamentalnodePayments;
 
-CCriticalSection cs_vecPayments;
-CCriticalSection cs_mapFundamentalnodeBlocks;
-CCriticalSection cs_mapFundamentalnodePayeeVotes;
+RecursiveMutex cs_vecPayments;
+RecursiveMutex cs_mapFundamentalnodeBlocks;
+RecursiveMutex cs_mapFundamentalnodePayeeVotes;
 
 //
 // CFundamentalnodePaymentDB

@@ -26,7 +26,7 @@ class CActiveFundamentalnode
 {
 private:
     // critical section to protect the inner data structures
-    mutable CCriticalSection cs;
+    mutable RecursiveMutex cs;
 
     /// Ping Fundamentalnode
     bool SendFundamentalnodePing(std::string& errorMessage);
