@@ -42,7 +42,7 @@ The following are developer notes on how to build VITAE on your native platform.
 
 Development
 ---------------------
-The Vitae repo's [root README](https://github.com/VITAE-Project/VITAE/blob/master/README.md) contains relevant information on the development process and automated testing.
+The Vitae repo's [root README](https://github.com/vitaeteam/VITAE/blob/master/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Multiwallet Qt Development](multiwallet-qt.md)

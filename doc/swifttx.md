@@ -12,8 +12,8 @@ When a "Transaction Lock" occurs the hash of the related transaction is broadcas
 * `zmqpubhashtxlock`: publishes the transaction hash when locked via SwiftX
 
 This mechanism has been integrated into Bitcore-Node-VITAE which allows for notification to be broadcast through Insight API in one of two ways:
-* WebSocket: [https://github.com/VITAE-Project/insight-api-vitae#web-socket-api](https://github.com/VITAE-Project/insight-api-vitae#web-socket-api) 
-* API: [https://github.com/VITAE-Project/insight-api-vitae#swifttx-transactions](https://github.com/VITAE-Project/insight-api-vitae#swifttx-transactions) 
+* WebSocket: [https://github.com/vitaeteam/insight-api-vitae#web-socket-api](https://github.com/vitaeteam/insight-api-vitae#web-socket-api) 
+* API: [https://github.com/vitaeteam/insight-api-vitae#swifttx-transactions](https://github.com/vitaeteam/insight-api-vitae#swifttx-transactions) 
 
 ####Command line option
 
