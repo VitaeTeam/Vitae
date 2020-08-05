@@ -285,7 +285,7 @@ libbitcoin_wallet_a_SOURCES = \
   rpcdump.cpp \
   zvit/deterministicmint.cpp \
   zvit/zerocoin.cpp \
-  rpcwallet.cpp \
+  wallet/rpcwallet.cpp \
   kernel.cpp \
   wallet.cpp \
   wallet_ismine.cpp \
