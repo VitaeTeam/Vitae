@@ -28,7 +28,7 @@
 #include "validationinterface.h"
 #include "wallet_ismine.h"
 #include "wallet/scriptpubkeyman.h"
-#include "walletdb.h"
+#include "wallet/walletdb.h"
 #include "zvit/zvitmodule.h"
 #include "zvit/zvitwallet.h"
 #include "zvit/zvittracker.h"

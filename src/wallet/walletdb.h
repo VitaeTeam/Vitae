@@ -9,10 +9,11 @@
 #define BITCOIN_WALLETDB_H
 
 #include "amount.h"
-#include "db.h"
+#include "wallet/db.h"
 #include "wallet/hdchain.h"
 #include "key.h"
 #include "keystore.h"
+#include "script/keyorigin.h"
 #include "zvit/zerocoin.h"
 #include "libzerocoin/Accumulator.h"
 #include "libzerocoin/Denominations.h"

@@ -16,7 +16,7 @@
 #include "txdb.h"
 #include "util.h"
 #include "utilmoneystr.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "zvit/zvitmodule.h"
 #include "zvitchain.h"
 #include <stdint.h>

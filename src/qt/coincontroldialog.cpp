@@ -18,7 +18,7 @@
 #include "coincontrol.h"
 #include "main.h"
 #include "obfuscation.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include "qt/vitae/qtutils.h"
 

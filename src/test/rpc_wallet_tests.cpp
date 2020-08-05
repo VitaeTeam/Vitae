@@ -8,7 +8,7 @@
 #include "rpcclient.h"
 
 #include "base58.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 #include "test/test_vitae.h"
 

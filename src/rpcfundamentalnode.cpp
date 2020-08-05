@@ -6,7 +6,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "activefundamentalnode.h"
-#include "db.h"
+#include "wallet/db.h"
 #include "init.h"
 #include "main.h"
 #include "fundamentalnode-budget.h"

@@ -8,7 +8,7 @@
 #include "main.h"
 #include "txdb.h"
 #include "zvit/deterministicmint.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 
 bool CVitStake::SetInput(CTransaction txPrev, unsigned int n)

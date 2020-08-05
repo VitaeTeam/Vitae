@@ -6,7 +6,7 @@
 #include "qt/vitae/settings/forms/ui_settingsinformationwidget.h"
 #include "clientmodel.h"
 #include "chainparams.h"
-#include "db.h"
+#include "wallet/db.h"
 #include "util.h"
 #include "guiutil.h"
 #include "qt/vitae/qtutils.h"

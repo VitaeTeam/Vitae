@@ -105,7 +105,7 @@ BITCOIN_CORE_H = \
   denomination_functions.h \
   obfuscation.h \
   obfuscation-relay.h \
-  db.h \
+  wallet/db.h \
   hash.h \
   httprpc.h \
   httpserver.h \
@@ -187,9 +187,9 @@ BITCOIN_CORE_H = \
   version.h \
   wallet/hdchain.h \
   wallet/scriptpubkeyman.h \
-  wallet.h \
-  wallet_ismine.h \
-  walletdb.h \
+  wallet/wallet.h \
+  wallet/wallet_ismine.h \
+  wallet/walletdb.h \
   zvitchain.h \
   zvit/deterministicmint.h \
   zvit/mintpool.h \
@@ -275,7 +275,7 @@ libbitcoin_wallet_a_SOURCES = \
   obfuscation.cpp \
   bitpool.cpp \
   obfuscation-relay.cpp \
-  db.cpp \
+  wallet/db.cpp \
   addressbook.cpp \
   crypter.cpp \
   swifttx.cpp \
@@ -286,17 +286,17 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
   messagesigner.cpp \
-  rpcdump.cpp \
+  wallet/rpcdump.cpp \
   zvit/deterministicmint.cpp \
   zvit/zerocoin.cpp \
   wallet/rpcwallet.cpp \
   kernel.cpp \
   wallet/hdchain.cpp \
   wallet/scriptpubkeyman.cpp \
-  wallet.cpp \
-  wallet_ismine.cpp \
-  wallet_zerocoin.cpp \
-  walletdb.cpp \
+  wallet/wallet.cpp \
+  wallet/wallet_ismine.cpp \
+  wallet/wallet_zerocoin.cpp \
+  wallet/walletdb.cpp \
   zvit/mintpool.cpp \
   zvit/zvitwallet.cpp \
   zvit/zvittracker.cpp \

@@ -5,7 +5,7 @@
 #include "qt/vitae/mninfodialog.h"
 #include "qt/vitae/forms/ui_mninfodialog.h"
 #include "walletmodel.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "guiutil.h"
 #include "qt/vitae/qtutils.h"
 #include <QDateTime>

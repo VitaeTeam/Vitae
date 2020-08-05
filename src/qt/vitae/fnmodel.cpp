@@ -9,7 +9,7 @@
 #include "activefundamentalnode.h"
 #include "sync.h"
 #include "uint256.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 FNModel::FNModel(QObject *parent) : QAbstractTableModel(parent){
     updateMNList();

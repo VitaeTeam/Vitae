@@ -8,7 +8,7 @@
 #include "activemasternode.h"
 #include "sync.h"
 #include "uint256.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 
 MNModel::MNModel(QObject *parent) : QAbstractTableModel(parent)
 {

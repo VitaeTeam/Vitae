@@ -6,7 +6,7 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "walletdb.h"
+#include "wallet/walletdb.h"
 
 #include "base58.h"
 #include "protocol.h"
@@ -15,7 +15,7 @@
 #include "txdb.h"
 #include "util.h"
 #include "utiltime.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include <zvit/deterministicmint.h>
 
 #include <boost/filesystem.hpp>
