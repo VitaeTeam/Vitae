@@ -3015,6 +3015,18 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
     if (GetAdjustedTime() - chainActive.Tip()->GetBlockTime() < 60)
         MilliSleep(10000);
 
+    bool bMasterNodePayment = false;
+
+    if ( Params().NetworkID() == CBaseChainParams::TESTNET ){
+        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS_TESTNET ){
+            bMasterNodePayment = true;
+        }
+    }else{
+        if (GetTimeMicros() > START_MASTERNODE_PAYMENTS){
+            bMasterNodePayment = true;
+        }
+    }
+
     CAmount nCredit = 0;
     CScript scriptPubKeyKernel;
     bool fKernelFound = false;
@@ -3077,7 +3089,7 @@ bool CWallet::CreateCoinStake(const CKeyStore& keystore, unsigned int nBits, int
                 return error("CreateCoinStake : exceeded coinstake size limit");
 
             //Masternode payment
-            FillBlockPayee(txNew, nMinFee, true, stakeInput->IsZPIV());
+            FillBlockPayee(txNew, nMinFee, true, bMasterNodePayment);
 
             uint256 hashTxOut = txNew.GetHash();
             CTxIn in;
