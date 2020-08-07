@@ -2824,8 +2824,7 @@ If AutoMint is enabled this percentage will settle around the configured AutoMin
     </message>
     <message>
         <location line="+3"/>
-        <source>AutoMint is currently disabled.
-To enable AutoMint change &apos;enablezeromint=0&apos; to &apos;enablezeromint=1&apos; in vitae.conf</source>
+        <source>AutoMint is currently disabled.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

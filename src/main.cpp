@@ -3495,10 +3495,6 @@ void static UpdateTip(CBlockIndex* pindexNew)
 {
     chainActive.SetTip(pindexNew);
 
-    // If turned on AutoZeromint will automatically convert VITAE to zVITAE
-    if (pwalletMain->isZeromintEnabled ())
-        pwalletMain->AutoZeromint ();
-
     // New best block
     nTimeBestReceived = GetTime();
     mempool.AddTransactionsUpdated(1);
