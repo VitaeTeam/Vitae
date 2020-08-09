@@ -165,31 +165,31 @@ bool CZVitStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 }
 
 //!VITAE Stake
-bool CPivStake::SetInput(CTransaction txPrev, unsigned int n)
+bool CVitStake::SetInput(CTransaction txPrev, unsigned int n)
 {
     this->txFrom = txPrev;
     this->nPosition = n;
     return true;
 }
 
-bool CPivStake::GetTxFrom(CTransaction& tx)
+bool CVitStake::GetTxFrom(CTransaction& tx)
 {
     tx = txFrom;
     return true;
 }
 
-bool CPivStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
+bool CVitStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
 {
     txIn = CTxIn(txFrom.GetHash(), nPosition);
     return true;
 }
 
-CAmount CPivStake::GetValue()
+CAmount CVitStake::GetValue()
 {
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CPivStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
+bool CVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal)
 {
     vector<valtype> vSolutions;
     txnouttype whichType;
@@ -224,7 +224,7 @@ bool CPivStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTo
     return true;
 }
 
-bool CPivStake::GetModifier(uint64_t& nStakeModifier)
+bool CVitStake::GetModifier(uint64_t& nStakeModifier)
 {
     int nStakeModifierHeight = 0;
     int64_t nStakeModifierTime = 0;
@@ -238,7 +238,7 @@ bool CPivStake::GetModifier(uint64_t& nStakeModifier)
     return true;
 }
 
-CDataStream CPivStake::GetUniqueness()
+CDataStream CVitStake::GetUniqueness()
 {
     //The unique identifier for a PIV stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
@@ -247,7 +247,7 @@ CDataStream CPivStake::GetUniqueness()
 }
 
 //The block that the UTXO was added to the chain
-CBlockIndex* CPivStake::GetIndexFrom()
+CBlockIndex* CVitStake::GetIndexFrom()
 {
     uint256 hashBlock = 0;
     CTransaction tx;
