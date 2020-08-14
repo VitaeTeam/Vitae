@@ -2,16 +2,16 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "qt/pivx/settings/settingsexportcsv.h"
-#include "qt/pivx/settings/forms/ui_settingsexportcsv.h"
+#include "qt/vitae/settings/settingsexportcsv.h"
+#include "qt/vitae/settings/forms/ui_settingsexportcsv.h"
 #include <QFile>
 #include "csvmodelwriter.h"
 #include "guiutil.h"
 #include "optionsmodel.h"
-#include "qt/pivx/qtutils.h"
-#include "guiinterface.h"
+#include "qt/vitae/qtutils.h"
+#include "ui_interface.h"
 
-SettingsExportCSV::SettingsExportCSV(PIVXGUI* _window, QWidget *parent) :
+SettingsExportCSV::SettingsExportCSV(VITAEGUI* _window, QWidget *parent) :
     PWidget(_window, parent),
     ui(new Ui::SettingsExportCSV)
 {
