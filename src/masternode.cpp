@@ -232,12 +232,6 @@ uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
         return UINT256_ZERO;
     }
 
-    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
-    ss << hash;
-    uint256 hash2 = ss.GetHash();
-
-    CHashWriter ss2(SER_GETHASH, PROTOCOL_VERSION);
-
     uint256 hash2 = Hash(BEGIN(hash), END(hash));
     uint256 hash3 = Hash(BEGIN(hash), END(hash), BEGIN(aux), END(aux));
 
