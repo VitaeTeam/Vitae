@@ -104,7 +104,7 @@ bool LoadStakeInput(const CBlock& block, const CBlockIndex* pindexPrev, std::uni
     const CTxIn& txin = block.vtx[1].vin[0];
     stake = txin.IsZerocoinSpend() ?
             std::unique_ptr<CStakeInput>(new CLegacyZPivStake()) :
-            std::unique_ptr<CStakeInput>(new CPivStake());
+            std::unique_ptr<CStakeInput>(new CVitStake());
 
     return stake->InitFromTxIn(txin);
 }
@@ -160,7 +160,7 @@ bool CheckProofOfStake(const CBlock& block, std::string& strError, const CBlockI
     }
 
     // Verify signature
-    if (!stakeInput->IsZPIV()) {
+    if (!stakeInput->IsZVIT()) {
         CTransaction txPrev;
         if (!stakeInput->GetTxFrom(txPrev)) {
             strError = "unable to get txPrev for coinstake";
