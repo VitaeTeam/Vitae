@@ -1155,23 +1155,24 @@ UniValue fundamentalnodecurrent (const UniValue& params, bool fHelp)
     if (fHelp || (params.size() != 0))
         throw std::runtime_error(
             "fundamentalnodecurrent\n"
-            "\nGet current fundamentalnode winner\n"
+            "\nGet current fundamentalnode winner (scheduled to be paid next).\n"
 
             "\nResult:\n"
             "{\n"
             "  \"protocol\": xxxx,        (numeric) Protocol version\n"
             "  \"txhash\": \"xxxx\",      (string) Collateral transaction hash\n"
             "  \"pubkey\": \"xxxx\",      (string) FN Public key\n"
-            "  \"lastseen\": xxx,       (numeric) Time since epoch of last seen\n"
-            "  \"activeseconds\": xxx,  (numeric) Seconds FN has been active\n"
+            "  \"lastseen\": xxx,         (numeric) Time since epoch of last seen\n"
+            "  \"activeseconds\": xxx,    (numeric) Seconds FN has been active\n"
             "}\n"
             "\nExamples:\n" +
             HelpExampleCli("fundamentalnodecurrent", "") + HelpExampleRpc("fundamentalnodecurrent", ""));
 
-    CFundamentalnode* winner = mnodeman.GetCurrentFundamentalNode(1);
+    const int nHeight = WITH_LOCK(cs_main, return chainActive.Height() + 1);
+    int nCount = 0;
+    CFundamentalnode* winner = mnodeman.GetNextFundamentalnodeInQueueForPayment(nHeight, true, nCount);
     if (winner) {
         UniValue obj(UniValue::VOBJ);
-
         obj.push_back(Pair("protocol", (int64_t)winner->protocolVersion));
         obj.push_back(Pair("txhash", winner->vin.prevout.hash.ToString()));
         obj.push_back(Pair("pubkey", CBitcoinAddress(winner->pubKeyCollateralAddress.GetID()).ToString()));
