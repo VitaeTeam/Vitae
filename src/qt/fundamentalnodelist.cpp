@@ -242,8 +242,8 @@ void FundamentalnodeList::on_startButton_clicked()
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
-    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Unlock_Full));
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForStaking) {
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock());
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
 
@@ -266,8 +266,8 @@ void FundamentalnodeList::on_startAllButton_clicked()
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
-    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Unlock_Full));
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForStaking) {
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock());
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
 
@@ -297,8 +297,8 @@ void FundamentalnodeList::on_startMissingButton_clicked()
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
-    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Unlock_Full));
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForStaking) {
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock());
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
 

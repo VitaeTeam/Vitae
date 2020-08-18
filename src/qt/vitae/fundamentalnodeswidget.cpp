@@ -203,7 +203,12 @@ void FundamentalNodesWidget::onEditMNClicked(){
             // Start MN
             QString strAlias = this->index.data(Qt::DisplayRole).toString();
             if (ask(tr("Start Fundamentalnode"), tr("Are you sure you want to start fundamentalnode %1?\n").arg(strAlias))) {
-                if (!verifyWalletUnlocked()) return;
+                WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+                if (!ctx.isValid()) {
+                    // Unlock wallet was cancelled
+                    inform(tr("Cannot edit fundamentalnode, wallet locked"));
+                    return;
+                }
                 startAlias(strAlias);
             }
         }else {
@@ -243,7 +248,12 @@ bool FundamentalNodesWidget::startMN(CFundamentalnodeConfig::CFundamentalnodeEnt
 }
 
 void FundamentalNodesWidget::onStartAllClicked(int type) {
-    if (!verifyWalletUnlocked()) return;
+    WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+    if (!ctx.isValid()) {
+        // Unlock wallet was cancelled
+        inform(tr("Cannot edit fundamentalnode, wallet locked"));
+        return;
+    }
     if (!checkMNsNetwork()) return;
     if (isLoading) {
         inform(tr("Background task is being executed, please wait"));
@@ -302,7 +312,12 @@ void FundamentalNodesWidget::onError(QString error, int type) {
 }
 
 void FundamentalNodesWidget::onInfoMNClicked() {
-    if(!verifyWalletUnlocked()) return;
+    WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+    if (!ctx.isValid()) {
+        // Unlock wallet was cancelled
+        inform(tr("Cannot edit fundamentalnode, wallet locked"));
+        return;
+    }
     showHideOp(true);
     MnInfoDialog* dialog = new MnInfoDialog(window);
     QString label = index.data(Qt::DisplayRole).toString();
@@ -426,26 +441,30 @@ void FundamentalNodesWidget::onDeleteMNClicked(){
 }
 
 void FundamentalNodesWidget::onCreateMNClicked(){
-    if(verifyWalletUnlocked()) {
-        if(walletModel->getBalance() <= (COIN * 10000)){
-            inform(tr("Not enough balance to create a fundamentalnode, 10,000 VIT required."));
-            return;
-        }
-        showHideOp(true);
-        FundamentalNodeWizardDialog *dialog = new FundamentalNodeWizardDialog(walletModel, window);
-        if(openDialogWithOpaqueBackgroundY(dialog, window, 5, 7)) {
-            if (dialog->isOk) {
-                // Update list
-                fnModel->addMn(dialog->mnEntry);
-                updateListState();
-                // add mn
-                inform(dialog->returnStr);
-            } else {
-                warn(tr("Error creating fundamentalnode"), dialog->returnStr);
-            }
-        }
-        dialog->deleteLater();
+    WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+    if (!ctx.isValid()) {
+        // Unlock wallet was cancelled
+        inform(tr("Cannot edit fundamentalnode, wallet locked"));
+        return;
     }
+    if(walletModel->getBalance() <= (COIN * 10000)){
+        inform(tr("Not enough balance to create a fundamentalnode, 10,000 VIT required."));
+        return;
+    }
+    showHideOp(true);
+    FundamentalNodeWizardDialog *dialog = new FundamentalNodeWizardDialog(walletModel, window);
+    if(openDialogWithOpaqueBackgroundY(dialog, window, 5, 7)) {
+        if (dialog->isOk) {
+            // Update list
+            fnModel->addMn(dialog->mnEntry);
+            updateListState();
+            // add mn
+            inform(dialog->returnStr);
+        } else {
+            warn(tr("Error creating fundamentalnode"), dialog->returnStr);
+        }
+    }
+    dialog->deleteLater();
 }
 
 void FundamentalNodesWidget::changeTheme(bool isLightTheme, QString& theme){
