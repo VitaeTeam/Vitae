@@ -14,7 +14,7 @@ PWidget::PWidget(PWidget* parent) : QWidget(parent), window(parent->getWindow())
 void PWidget::init()
 {
     if (window)
-        connect(window, &PIVXGUI::themeChanged, this, &PWidget::onChangeTheme);
+        connect(window, &VITAEGUI::themeChanged, this, &PWidget::onChangeTheme);
 }
 
 void PWidget::setClientModel(ClientModel* model)

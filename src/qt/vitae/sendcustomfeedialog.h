@@ -8,7 +8,7 @@
 #include <QDialog>
 #include "amount.h"
 
-class PIVXGUI;
+class VITAEGUI;
 class WalletModel;
 
 namespace Ui {
@@ -20,7 +20,7 @@ class SendCustomFeeDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit SendCustomFeeDialog(PIVXGUI *parent = nullptr);
+    explicit SendCustomFeeDialog(VITAEGUI *parent = nullptr);
     ~SendCustomFeeDialog();
 
     void setWalletModel(WalletModel* model);

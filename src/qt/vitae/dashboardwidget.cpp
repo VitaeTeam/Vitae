@@ -154,7 +154,7 @@ bool hasCharts = false;
     connect(ui->pushButtonMonth, &QPushButton::clicked, [this](){setChartShow(MONTH);});
     connect(ui->pushButtonAll, &QPushButton::clicked, [this](){setChartShow(ALL);});
     if (window)
-        connect(window, &PIVXGUI::windowResizeEvent, this, &DashboardWidget::windowResizeEvent);
+        connect(window, &VITAEGUI::windowResizeEvent, this, &DashboardWidget::windowResizeEvent);
 #endif
 
     if (hasCharts) {
@@ -203,8 +203,8 @@ void DashboardWidget::loadWalletModel(){
             ui->comboBoxSort->setVisible(false);
         }
 
-        connect(ui->pushImgEmpty, &QPushButton::clicked, window, &PIVXGUI::openFAQ);
-        connect(ui->btnHowTo, &QPushButton::clicked, window, &PIVXGUI::openFAQ);
+        connect(ui->pushImgEmpty, &QPushButton::clicked, window, &VITAEGUI::openFAQ);
+        connect(ui->btnHowTo, &QPushButton::clicked, window, &VITAEGUI::openFAQ);
         connect(txModel, &TransactionTableModel::txArrived, this, &DashboardWidget::onTxArrived);
 
         // Notification pop-up for new transaction

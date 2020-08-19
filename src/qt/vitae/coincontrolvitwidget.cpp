@@ -78,8 +78,8 @@ CoinControlVitWidget::CoinControlVitWidget(QWidget *parent) :
     ui->btnSave->setText("SAVE");
     ui->btnSave->setProperty("cssClass", "btn-primary");
 
-    connect(ui->btnEsc, &QPushButton::clicked, this, &CoinControlPivWidget::close);
-    connect(ui->btnCancel, &QPushButton::clicked, this, &CoinControlPivWidget::close);
+    connect(ui->btnEsc, &QPushButton::clicked, this, &CoinControlVitWidget::close);
+    connect(ui->btnCancel, &QPushButton::clicked, this, &CoinControlVitWidget::close);
 
 }
 

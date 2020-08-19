@@ -359,7 +359,7 @@ void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
     window = new VITAEGUI(networkStyle, 0);
 
     pollShutdownTimer = new QTimer(window);
-    connect(pollShutdownTimer, &QTimer::timeout, window, &PIVXGUI::detectShutdown);
+    connect(pollShutdownTimer, &QTimer::timeout, window, &VITAEGUI::detectShutdown);
     pollShutdownTimer->start(200);
 }
 
@@ -407,7 +407,7 @@ void BitcoinApplication::startThread()
     connect(executor, &BitcoinCore::runawayException, this, &BitcoinApplication::handleRunawayException);
     connect(this, &BitcoinApplication::requestedInitialize, executor, &BitcoinCore::initialize);
     connect(this, &BitcoinApplication::requestedShutdown, executor, &BitcoinCore::shutdown);
-    connect(window, &PIVXGUI::requestedRestart, executor, &BitcoinCore::restart);
+    connect(window, &VITAEGUI::requestedRestart, executor, &BitcoinCore::restart);
     /*  make sure executor object is deleted in its own thread */
     connect(this, &BitcoinApplication::stopThread, executor, &QObject::deleteLater);
     connect(this, &BitcoinApplication::stopThread, coreThread, &QThread::quit);
@@ -488,8 +488,7 @@ void BitcoinApplication::initializeResult(int retval)
 #ifdef ENABLE_WALLET
         // Now that initialization/startup is done, process any command-line
         // VITAE: URIs or payment requests:
-        connect(paymentServer, &PaymentServer::receivedPaymentRequest,
-            window, &VITAEGUI::handlePaymentRequest);
+        //connect(paymentServer, &PaymentServer::receivedPaymentRequest, window, &VITAEGUI::handlePaymentRequest);
         connect(window, &VITAEGUI::receivedURI, paymentServer, &PaymentServer::handleURIOrFile);
         connect(paymentServer, &PaymentServer::message, [this](const QString& title, const QString& message, unsigned int style) {
           window->message(title, message, style);

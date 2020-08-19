@@ -22,7 +22,7 @@ SnackBar::SnackBar(VITAEGUI* _window, QWidget *parent) :
 
     connect(ui->pushButton, &QPushButton::clicked, this, &SnackBar::close);
     if (window)
-        connect(window, &PIVXGUI::windowResizeEvent, this, &SnackBar::windowResizeEvent);
+        connect(window, &VITAEGUI::windowResizeEvent, this, &SnackBar::windowResizeEvent);
     else {
         ui->horizontalLayout->setContentsMargins(0,0,0,0);
         ui->label->setStyleSheet("font-size: 15px; color:white;");

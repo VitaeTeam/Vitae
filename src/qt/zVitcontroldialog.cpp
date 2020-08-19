@@ -56,9 +56,9 @@ ZVitControlDialog::ZVitControlDialog(QWidget *parent) :
     ui->pushButtonAll->setProperty("cssClass", "btn-check");
 
     // click on checkbox
-    connect(ui->treeWidget, &QTreeWidget::itemChanged, this, &ZPivControlDialog::updateSelection);
+    connect(ui->treeWidget, &QTreeWidget::itemChanged, this, &ZVitControlDialog::updateSelection);
     // push select/deselect all button
-    connect(ui->pushButtonAll, &QPushButton::clicked, this, &ZPivControlDialog::ButtonAllClicked);
+    connect(ui->pushButtonAll, &QPushButton::clicked, this, &ZVitControlDialog::ButtonAllClicked);
 }
 
 ZVitControlDialog::~ZVitControlDialog()
