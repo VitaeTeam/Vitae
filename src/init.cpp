@@ -1090,7 +1090,7 @@ bool AppInit2()
     if (mapArgs.count("-masternodepaymentkey")) // masternode payment priv key
     {
         if (!sporkManager.SetPrivKey(GetArg("-masternodepaymentkey", "")))
-            return InitError(_("Unable to sign masternodepaymentkey message, wrong key?"));
+            return UIError(_("Unable to sign masternodepaymentkey message, wrong key?"));
     }
 
     // Start the lightweight task scheduler thread
@@ -1898,7 +1898,7 @@ bool AppInit2()
     fFundamentalNode = GetBoolArg("-fundamentalnode", false);
 
     if ((fFundamentalNode || fundamentalnodeConfig.getCount() > -1) && fTxIndex == false) {
-        return InitError("Enabling Fundamentalnode support requires turning on transaction indexing."
+        return UIError("Enabling Fundamentalnode support requires turning on transaction indexing."
                          "Please add txindex=1 to your configuration and start with -reindex");
     }
 
@@ -1911,7 +1911,7 @@ bool AppInit2()
         if (!strFundamentalNodeAddr.empty()) {
             CService addrTest = CService(strFundamentalNodeAddr);
             if (!addrTest.IsValid()) {
-                return InitError("Invalid -fundamentalnodeaddr address: " + strFundamentalNodeAddr);
+                return UIError("Invalid -fundamentalnodeaddr address: " + strFundamentalNodeAddr);
             }
         }
 
@@ -1923,13 +1923,13 @@ bool AppInit2()
             CPubKey pubkey;
 
             if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, key, pubkey)) {
-                return InitError(_("Invalid fundamentalnodeprivkey. Please see documenation."));
+                return UIError(_("Invalid fundamentalnodeprivkey. Please see documenation."));
             }
 
             activeFundamentalnode.pubKeyFundamentalnode = pubkey;
 
         } else {
-            return InitError(_("You must specify a fundamentalnodeprivkey in the configuration. Please see documentation for help."));
+            return UIError(_("You must specify a fundamentalnodeprivkey in the configuration. Please see documentation for help."));
         }
     }
 
@@ -1998,7 +1998,7 @@ bool AppInit2()
             if(!strMasterNodeAddr.empty()){
                 CService addrTest = CService(strMasterNodeAddr);
                 if (!addrTest.IsValid()) {
-                    return InitError("Invalid -fundamentalnodeaddr address: " + strMasterNodeAddr);
+                    return UIError("Invalid -fundamentalnodeaddr address: " + strMasterNodeAddr);
                 }
             }
 
@@ -2010,13 +2010,13 @@ bool AppInit2()
                 CPubKey pubkey;
 
                 if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, key, pubkey)) {
-                    return InitError(_("Invalid masternodeprivkey. Please see documenation."));
+                    return UIError(_("Invalid masternodeprivkey. Please see documenation."));
                 }
 
                 activeMasternode.pubKeyMasternode = pubkey;
 
             } else {
-                return InitError(_("You must specify a masternodeprivkey in the configuration. Please see documentation for help."));
+                return UIError(_("You must specify a masternodeprivkey in the configuration. Please see documentation for help."));
             }
         }
         if(GetBoolArg("-mnconflock", true)) {
@@ -2033,7 +2033,7 @@ bool AppInit2()
 
             fMNLiteMode = GetBoolArg("-fmnlitemode", false);
         if(fMasterNode && fMNLiteMode){
-            return InitError("You can not start a masternode in -promode=0 or -fpromode=1");
+            return UIError("You can not start a masternode in -promode=0 or -fpromode=1");
         }
 
         //fnSigner.InitCollateralAddress();
