@@ -843,7 +843,7 @@ bool CFundamentalnodePing::CheckAndUpdate(int& nDos, bool fRequireEnabled, bool 
                     return false;
                 }
             } else {
-                if (fDebug) LogPrint("fundamentalnode","CFundamentalnodePing::CheckAndUpdate - Fundamentalnode %s block hash %s is unknown\n", vin.prevout.hash.ToString(), blockHash.ToString());
+                if (logCategories != BCLog::NONE) LogPrint("fundamentalnode","CFundamentalnodePing::CheckAndUpdate - Fundamentalnode %s block hash %s is unknown\n", vin.prevout.hash.ToString(), blockHash.ToString());
                 // maybe we stuck so we shouldn't ban this node, just fail to accept it
                 // TODO: or should we also request this block?
 

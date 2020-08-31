@@ -243,7 +243,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
 
     if(!IsMNSporkActive(MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT)){
         MasternodePayments = false; //
-        if(fDebug) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
+        if(logCategories != BCLog::NONE) LogPrintf("CheckBlock() : Masternode payment enforcement is off\n");
     }
 
     if(MasternodePayments)

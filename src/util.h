@@ -93,6 +93,8 @@ namespace BCLog {
         MASTERNODE  = (1 << 22),
         MNBUDGET    = (1 << 23),
         LEGACYZC    = (1 << 24),
+        FUNDAMENTALNODE  = (1 << 25),
+        FNBUDGET    = (1 << 26),
         ALL         = ~(uint32_t)0,
     };
 }

@@ -113,7 +113,7 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
         CMasternode* pmnB = m_nodeman.Find(mnse.vinMasternodeB);
         if(pmnB == NULL) return;
 
-        if(fDebug) LogPrintf("ProcessMessageMasternodePOS::mnse - nHeight %d MasternodeA %s MasternodeB %s\n", mnse.nBlockHeight, pmnA->addr.ToString().c_str(), pmnB->addr.ToString().c_str());
+        if(logCategories != BCLog::NONE) LogPrintf("ProcessMessageMasternodePOS::mnse - nHeight %d MasternodeA %s MasternodeB %s\n", mnse.nBlockHeight, pmnA->addr.ToString().c_str(), pmnB->addr.ToString().c_str());
 
         pmnB->ApplyScanningError(mnse);
         mnse.Relay();

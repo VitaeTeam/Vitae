@@ -1755,7 +1755,7 @@ bool CBudgetVote::SignatureValid(bool fSignatureCheck)
     CFundamentalnode* pmn = mnodeman.Find(vin);
 
     if (pmn == NULL) {
-        if (fDebug){
+        if (logCategories != BCLog::NONE){
             LogPrint("fnbudget","CBudgetVote::SignatureValid() - Unknown Fundamentalnode - %s\n", vin.prevout.hash.ToString());
         }
         return false;

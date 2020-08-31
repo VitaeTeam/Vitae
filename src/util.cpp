@@ -218,32 +218,6 @@ static void DebugPrintInit()
     mutexDebugLog = new boost::mutex();
 }
 
-<<<<<<< HEAD
-bool LogAcceptCategory(const char* category)
-{
-    if (category != NULL) {
-        if (!fDebug)
-            return false;
-
-        // Give each thread quick access to -debug settings.
-        // This helps prevent issues debugging global destructors,
-        // where mapMultiArgs might be deleted before another
-        // global destructor calls LogPrint()
-        static boost::thread_specific_ptr<std::set<std::string> > ptrCategory;
-        if (ptrCategory.get() == NULL) {
-            const std::vector<std::string>& categories = mapMultiArgs["-debug"];
-            ptrCategory.reset(new std::set<std::string>(categories.begin(), categories.end()));
-            // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "vitae" is a composite category enabling all VITAE-related debug output
-            if (ptrCategory->count(std::string("vitae"))) {
-                ptrCategory->insert(std::string("obfuscation"));
-                ptrCategory->insert(std::string("swiftx"));
-                ptrCategory->insert(std::string("fundamentalnode"));
-                ptrCategory->insert(std::string("fnpayments"));
-                ptrCategory->insert(std::string("zero"));
-                ptrCategory->insert(std::string("fnbudget"));
-                ptrCategory->insert(std::string("staking"));
-=======
 struct CLogCategoryDesc
 {
     uint32_t flag;
@@ -277,6 +251,8 @@ const CLogCategoryDesc LogCategories[] = {
         {BCLog::MASTERNODE,     "masternode"},
         {BCLog::MNBUDGET,       "mnbudget"},
         {BCLog::LEGACYZC,       "zero"},
+        {BCLog::FUNDAMENTALNODE,     "fundamentalnode"},
+        {BCLog::FNBUDGET,       "fnbudget"},
         {BCLog::ALL,            "1"},
         {BCLog::ALL,            "all"},
 };
@@ -292,7 +268,6 @@ bool GetLogCategory(uint32_t *f, const std::string *str)
             if (LogCategories[i].category == *str) {
                 *f = LogCategories[i].flag;
                 return true;
->>>>>>> 8a6f5147c... Merge #1437: [Util] LogAcceptCategory: use uint32_t rather than sets of strings
             }
         }
     }
