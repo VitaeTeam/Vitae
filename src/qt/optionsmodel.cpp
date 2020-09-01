@@ -77,14 +77,6 @@ void OptionsModel::Init()
     if (!settings.contains("fCoinControlFeatures"))
         settings.setValue("fCoinControlFeatures", false);
     fCoinControlFeatures = settings.value("fCoinControlFeatures", false).toBool();
-
-    if (!settings.contains("fZeromintEnable"))
-        settings.setValue("fZeromintEnable", false);
-    fEnableZeromint = settings.value("fZeromintEnable").toBool();
-
-    if (!settings.contains("nZeromintPercentage"))
-        settings.setValue("nZeromintPercentage", 10);
-    nZeromintPercentage = settings.value("nZeromintPercentage").toLongLong();
     
     if (!settings.contains("nPreferredDenom"))
         settings.setValue("nPreferredDenom", 0);
@@ -164,10 +156,6 @@ void OptionsModel::Init()
     if (!SoftSetArg("-lang", settings.value("language").toString().toStdString()))
         addOverriddenOption("-lang");
 
-    if (settings.contains("fZeromintEnable"))
-        SoftSetBoolArg("-enablezeromint", settings.value("fZeromintEnable").toBool());
-    if (settings.contains("nZeromintPercentage"))
-        SoftSetArg("-zeromintpercentage", settings.value("nZeromintPercentage").toString().toStdString());
     if (settings.contains("nPreferredDenom"))
         SoftSetArg("-preferredDenom", settings.value("nPreferredDenom").toString().toStdString());
     if (settings.contains("nAnonymizeVitaeAmount"))
@@ -259,11 +247,7 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("nThreadsScriptVerif");
         case HideZeroBalances:
             return settings.value("fHideZeroBalances");
-        case ZeromintEnable:
-            return QVariant(fEnableZeromint);
-        case ZeromintPercentage:
-            return QVariant(nZeromintPercentage);
-        case ZeromintPrefDenom:
+       case ZeromintPrefDenom:
             return QVariant(nPreferredDenom);
         case AnonymizeVitaeAmount:
             return QVariant(nAnonymizeVitaeAmount);
@@ -380,17 +364,7 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
                 setRestartRequired(true);
             }
             break;
-        case ZeromintEnable:
-            fEnableZeromint = value.toBool();
-            settings.setValue("fZeromintEnable", fEnableZeromint);
-            emit zeromintEnableChanged(fEnableZeromint);
-            break;
-        case ZeromintPercentage:
-            nZeromintPercentage = value.toInt();
-            settings.setValue("nZeromintPercentage", nZeromintPercentage);
-            emit zeromintPercentageChanged(nZeromintPercentage);
-            break;
-        case ZeromintPrefDenom:
+       case ZeromintPrefDenom:
             nPreferredDenom = value.toInt();
             settings.setValue("nPreferredDenom", nPreferredDenom);
             emit preferredDenomChanged(nPreferredDenom);

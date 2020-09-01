@@ -1589,16 +1589,7 @@ Immature: confirmed, but less than 2 mints of the same denomination after it was
                         <item>
                          <widget class="QLabel" name="label_AutoMintStatus">
                           <property name="toolTip">
-                           <string>Show the current status of automatic zVITAE minting.
-
-To change the status (restart required):
-- enable: add 'enablezeromint=1' to vitae.conf
-- disable: add 'enablezeromint=0' to vitae.conf
-
-To change the percentage (no restart required):
-- menu Settings-&gt;Options-&gt;Percentage of autominted zVITAE
-
-</string>
+                           <string>Show the current status of automatic zVITAE minting.</string>
                           </property>
                           <property name="text">
                            <string>AutoMint Status</string>

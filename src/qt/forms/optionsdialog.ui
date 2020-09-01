@@ -131,43 +131,6 @@
         </spacer>
        </item>
        <item>
-        <widget class="QCheckBox" name="checkBoxZeromintEnable">
-         <property name="toolTip">
-          <string>Enable automatic minting of VITAE units to zVITAE</string>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Enable zVITAE Automint</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="percentage_label">
-           <property name="toolTip">
-            <string>Percentage of incoming VITAE which get automatically converted to zVITAE via Zerocoin Protocol (min: 10%)</string>
-           </property>
-           <property name="text">
-            <string>Percentage of autominted zVITAE</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSpinBox" name="zeromintPercentage">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0">
          <property name="sizeConstraint">
           <enum>QLayout::SetFixedSize</enum>

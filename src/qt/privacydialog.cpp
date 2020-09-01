@@ -129,8 +129,8 @@ void PrivacyDialog::setModel(WalletModel* walletModel)
 
         connect(walletModel, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
                                SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
-        connect(walletModel->getOptionsModel(), SIGNAL(zeromintEnableChanged(bool)), this, SLOT(updateAutomintStatus()));
-        connect(walletModel->getOptionsModel(), SIGNAL(zeromintPercentageChanged(int)), this, SLOT(updateAutomintStatus()));
+        //connect(walletModel->getOptionsModel(), SIGNAL(zeromintEnableChanged(bool)), this, SLOT(updateAutomintStatus()));
+        //connect(walletModel->getOptionsModel(), SIGNAL(zeromintPercentageChanged(int)), this, SLOT(updateAutomintStatus()));
         ui->securityLevel->setValue(nSecurityLevel);
     }
 }
@@ -776,15 +776,8 @@ void PrivacyDialog::keyPressEvent(QKeyEvent* event)
 void PrivacyDialog::updateAutomintStatus()
 {
     QString strAutomintStatus = tr("AutoMint Status:");
-
-    if (pwalletMain->isZeromintEnabled ()) {
-       strAutomintStatus += tr(" <b>enabled</b>.");
-    }
-    else {
-       strAutomintStatus += tr(" <b>disabled</b>.");
-    }
-
-    strAutomintStatus += tr(" Configured target percentage: <b>") + QString::number(pwalletMain->getZeromintPercentage()) + "%</b>";
+    strAutomintStatus += tr(" <b>disabled</b>.");
+    strAutomintStatus += tr(" Configured target percentage: <b>") + QString::number(0) + "%</b>";
     ui->label_AutoMintStatus->setText(strAutomintStatus);
 }
 
