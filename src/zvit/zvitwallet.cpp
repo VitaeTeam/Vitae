@@ -12,9 +12,6 @@
 #include "zvitchain.h"
 
 
-#include "zpivchain.h"
-
-
 CzVITWallet::CzVITWallet(CWallet* parent)
 {
     this->wallet = parent;

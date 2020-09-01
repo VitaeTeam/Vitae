@@ -227,7 +227,7 @@ void CFundamentalnodeSync::ProcessMessage(CNode* pfrom, std::string& strCommand,
             break;
         }
 
-        LogPrint("fundamentalnode", "CFundamentalnodeSync:ProcessMessage - ssc - got inventory count %d %d\n", nItemID, nCount);
+        LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeSync:ProcessMessage - ssc - got inventory count %d %d\n", nItemID, nCount);
     }
 }
 
@@ -267,7 +267,7 @@ void CFundamentalnodeSync::Process()
         return;
     }
 
-    LogPrint("fundamentalnode", "CFundamentalnodeSync::Process() - tick %d RequestedFundamentalnodeAssets %d\n", tick, RequestedFundamentalnodeAssets);
+    LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeSync::Process() - tick %d RequestedFundamentalnodeAssets %d\n", tick, RequestedFundamentalnodeAssets);
 
     if (RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_INITIAL) GetNextAsset();
 
@@ -310,7 +310,7 @@ void CFundamentalnodeSync::Process()
 
         if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto()) {
             if (RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_LIST) {
-                LogPrint("fundamentalnode", "CFundamentalnodeSync::Process() - lastFundamentalnodeList %lld (GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT) %lld\n", lastFundamentalnodeList, GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT);
+                LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeSync::Process() - lastFundamentalnodeList %lld (GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT) %lld\n", lastFundamentalnodeList, GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT);
                 if (lastFundamentalnodeList > 0 && lastFundamentalnodeList < GetTime() - FUNDAMENTALNODE_SYNC_TIMEOUT * 2 && RequestedFundamentalnodeAttempt >= FUNDAMENTALNODE_SYNC_THRESHOLD) { //hasn't received a new item in the last five seconds, so we'll move to the
                     GetNextAsset();
                     return;

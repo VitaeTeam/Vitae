@@ -220,7 +220,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
             return false;
         }
 
-        LogPrint("fundamentalnode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
+        LogPrint(BCLog::FUNDAMENTALNODE, "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
         for (CNode* pnode : vNodes)
             pnode->PushMessage("obseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);

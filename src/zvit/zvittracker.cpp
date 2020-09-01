@@ -14,9 +14,6 @@
 #include "zvit/zvitwallet.h"
 
 
-#include "zpiv/zpivwallet.h"
-
-
 CzVITTracker::CzVITTracker(CWallet* parent)
 {
     this->wallet = parent;

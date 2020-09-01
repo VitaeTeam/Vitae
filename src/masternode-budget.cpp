@@ -464,7 +464,7 @@ bool CBudgetManager::AddProposal(CBudgetProposal& budgetProposal)
 
 void CBudgetManager::CheckAndRemove()
 {
-    LogPrint("mnbudget", "CBudgetManager::CheckAndRemove\n");
+    LogPrint(BCLog::MNBUDGET, "CBudgetManager::CheckAndRemove\n");
 
         }
     }

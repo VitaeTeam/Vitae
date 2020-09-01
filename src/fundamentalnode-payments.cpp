@@ -64,7 +64,7 @@ bool CFundamentalnodePaymentDB::Write(const CFundamentalnodePayments& objToSave)
     }
     fileout.fclose();
 
-    LogPrint("fundamentalnode","Written info to mnpayments.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint(BCLog::FUNDAMENTALNODE,"Written info to mnpayments.dat  %dms\n", GetTimeMillis() - nStart);
 
     return true;
 }
@@ -139,13 +139,13 @@ CFundamentalnodePaymentDB::ReadResult CFundamentalnodePaymentDB::Read(CFundament
         return IncorrectFormat;
     }
 
-    LogPrint("fundamentalnode","Loaded info from mnpayments.dat  %dms\n", GetTimeMillis() - nStart);
-    LogPrint("fundamentalnode","  %s\n", objToLoad.ToString());
+    LogPrint(BCLog::FUNDAMENTALNODE,"Loaded info from mnpayments.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint(BCLog::FUNDAMENTALNODE,"  %s\n", objToLoad.ToString());
     if (!fDryRun) {
-        LogPrint("fundamentalnode","Fundamentalnode payments manager - cleaning....\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode payments manager - cleaning....\n");
         objToLoad.CleanPaymentList();
-        LogPrint("fundamentalnode","Fundamentalnode payments manager - result:\n");
-        LogPrint("fundamentalnode","  %s\n", objToLoad.ToString());
+        LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode payments manager - result:\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"  %s\n", objToLoad.ToString());
     }
 
     return Ok;
@@ -158,24 +158,24 @@ void DumpFundamentalnodePayments()
     CFundamentalnodePaymentDB paymentdb;
     CFundamentalnodePayments tempPayments;
 
-    LogPrint("fundamentalnode","Verifying mnpayments.dat format...\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"Verifying mnpayments.dat format...\n");
     CFundamentalnodePaymentDB::ReadResult readResult = paymentdb.Read(tempPayments, true);
     // there was an error and it was not an error on file opening => do not proceed
     if (readResult == CFundamentalnodePaymentDB::FileError)
-        LogPrint("fundamentalnode","Missing budgets file - mnpayments.dat, will try to recreate\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"Missing budgets file - mnpayments.dat, will try to recreate\n");
     else if (readResult != CFundamentalnodePaymentDB::Ok) {
-        LogPrint("fundamentalnode","Error reading mnpayments.dat: ");
+        LogPrint(BCLog::FUNDAMENTALNODE,"Error reading mnpayments.dat: ");
         if (readResult == CFundamentalnodePaymentDB::IncorrectFormat)
-            LogPrint("fundamentalnode","magic is ok but data has invalid format, will try to recreate\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"magic is ok but data has invalid format, will try to recreate\n");
         else {
-            LogPrint("fundamentalnode","file format is unknown or invalid, please fix it manually\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"file format is unknown or invalid, please fix it manually\n");
             return;
         }
     }
-    LogPrint("fundamentalnode","Writting info to mnpayments.dat...\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"Writting info to mnpayments.dat...\n");
     paymentdb.Write(fundamentalnodePayments);
 
-    LogPrint("fundamentalnode","Budget dump finished  %dms\n", GetTimeMillis() - nStart);
+    LogPrint(BCLog::FUNDAMENTALNODE,"Budget dump finished  %dms\n", GetTimeMillis() - nStart);
 }
 
 bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMinted)
@@ -193,7 +193,7 @@ bool IsBlockValueValid(const CBlock& block, CAmount nExpectedValue, CAmount nMin
     }
 
     if (nHeight == 0) {
-        LogPrint("fundamentalnode","IsBlockValueValid() : WARNING: Couldn't find previous block\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"IsBlockValueValid() : WARNING: Couldn't find previous block\n");
     }
 
     //LogPrintf("XX69----------> IsBlockValueValid(): nMinted: %d, nExpectedValue: %d\n", FormatMoney(nMinted), FormatMoney(nExpectedValue));
@@ -232,7 +232,7 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
     TrxValidationStatus transactionStatus = TrxValidationStatus::InValid;
 
     if (!fundamentalnodeSync.IsSynced()) { //there is no budget data to use to check anything -- find the longest chain
-        LogPrint("mnpayments", "Client not synced, skipping block payee checks\n");
+        LogPrint(BCLog::FUNDAMENTALNODE, "Client not synced, skipping block payee checks\n");
         return true;
     }
 
@@ -319,11 +319,11 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
             }
 
             if (transactionStatus == TrxValidationStatus::InValid) {
-                LogPrint("fundamentalnode","Invalid budget payment detected %s\n", txNew.ToString().c_str());
+                LogPrint(BCLog::FUNDAMENTALNODE,"Invalid budget payment detected %s\n", txNew.ToString().c_str());
                 if (sporkManager.IsSporkActive(SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT))
                     return false;
 
-                LogPrint("fundamentalnode","Budget enforcement is disabled, accepting block\n");
+                LogPrint(BCLog::FUNDAMENTALNODE,"Budget enforcement is disabled, accepting block\n");
             }
         }
     }
@@ -336,11 +336,11 @@ bool IsBlockPayeeValid(const CBlock& block, int nBlockHeight)
     //check for fundamentalnode payee
     if (fundamentalnodePayments.IsTransactionValid(txNew, nBlockHeight))
         return true;
-    LogPrint("fundamentalnode","Invalid mn payment detected %s\n", txNew.ToString().c_str());
+    LogPrint(BCLog::FUNDAMENTALNODE,"Invalid mn payment detected %s\n", txNew.ToString().c_str());
 
     if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT))
         return false;
-    LogPrint("fundamentalnode","Fundamentalnode payment enforcement is disabled, accepting block\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode payment enforcement is disabled, accepting block\n");
 
     return true;
 }
@@ -384,7 +384,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
         if (winningNode) {
             payee = GetScriptForDestination(winningNode->pubKeyCollateralAddress.GetID());
         } else {
-            LogPrint("fundamentalnode","CreateNewBlock: Failed to detect fundamentalnode to pay\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"CreateNewBlock: Failed to detect fundamentalnode to pay\n");
             hasPayment = false;
         }
     }
@@ -449,14 +449,14 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
             ExtractDestination(payee, address1);
             CBitcoinAddress address2(address1);
 
-            LogPrint("fundamentalnode","Fundamentalnode payment of %s to %s\n", FormatMoney(fundamentalnodePayment).c_str(), address2.ToString().c_str());
+            LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode payment of %s to %s\n", FormatMoney(fundamentalnodePayment).c_str(), address2.ToString().c_str());
 
 
             CTxDestination address3;
             ExtractDestination(mn_payee, address3);
             CBitcoinAddress address4(address3);
 
-            LogPrint("masternode","Masternode payment of %s to %s\n", FormatMoney(masternodepayment).c_str(), address4.ToString().c_str());
+            LogPrint(BCLog::MASTERNODE,"Masternode payment of %s to %s\n", FormatMoney(masternodepayment).c_str(), address4.ToString().c_str());
 
         } else {
 
@@ -500,7 +500,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
             ExtractDestination(payee, address1);
             CBitcoinAddress address2(address1);
 
-            LogPrint("fundamentalnode","Fundamentalnode payment of %s to %s\n", FormatMoney(fundamentalnodePayment).c_str(), address2.ToString().c_str());
+            LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode payment of %s to %s\n", FormatMoney(fundamentalnodePayment).c_str(), address2.ToString().c_str());
         }
     } else {
 
@@ -531,7 +531,7 @@ void CFundamentalnodePayments::FillBlockPayee(CMutableTransaction& txNew, int64_
             ExtractDestination(mn_payee, address3);
             CBitcoinAddress address4(address3);
 
-            LogPrint("masternode","Masternode payment of %s to %s\n", FormatMoney(masternodepayment).c_str(), address4.ToString().c_str());
+            LogPrint(BCLog::MASTERNODE,"Masternode payment of %s to %s\n", FormatMoney(masternodepayment).c_str(), address4.ToString().c_str());
 
 
 
@@ -578,7 +578,7 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
 
         if (Params().NetworkID() == CBaseChainParams::MAIN) {
             if (pfrom->HasFulfilledRequest("fnget")) {
-                LogPrint("fundamentalnode","fnget - peer already asked me for the list\n");
+                LogPrint(BCLog::FUNDAMENTALNODE,"fnget - peer already asked me for the list\n");
                 Misbehaving(pfrom->GetId(), 20);
                 return;
             }
@@ -586,7 +586,7 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
 
         pfrom->FulfilledRequest("fnget");
         fundamentalnodePayments.Sync(pfrom, nCountNeeded);
-        LogPrint("mnpayments", "fnget - Sent Fundamentalnode winners to peer %i\n", pfrom->GetId());
+        LogPrint(BCLog::FUNDAMENTALNODE, "fnget - Sent Fundamentalnode winners to peer %i\n", pfrom->GetId());
     } else if (strCommand == "fnw") { //Fundamentalnode Payments Declare Winner
         //this is required in litemodef
         CFundamentalnodePaymentWinner winner;
@@ -602,30 +602,30 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
         }
 
         if (fundamentalnodePayments.mapFundamentalnodePayeeVotes.count(winner.GetHash())) {
-            LogPrint("mnpayments", "fnw - Already seen - %s bestHeight %d\n", winner.GetHash().ToString().c_str(), nHeight);
+            LogPrint(BCLog::FUNDAMENTALNODE, "fnw - Already seen - %s bestHeight %d\n", winner.GetHash().ToString().c_str(), nHeight);
             fundamentalnodeSync.AddedFundamentalnodeWinner(winner.GetHash());
             return;
         }
 
         int nFirstBlock = nHeight - (mnodeman.CountEnabled() * 1.25);
         if (winner.nBlockHeight < nFirstBlock || winner.nBlockHeight > nHeight + 20) {
-            LogPrint("mnpayments", "fnw - winner out of range - FirstBlock %d Height %d bestHeight %d\n", nFirstBlock, winner.nBlockHeight, nHeight);
+            LogPrint(BCLog::FUNDAMENTALNODE, "fnw - winner out of range - FirstBlock %d Height %d bestHeight %d\n", nFirstBlock, winner.nBlockHeight, nHeight);
             return;
         }
 
         std::string strError = "";
         if (!winner.IsValid(pfrom, strError)) {
-            // if(strError != "") LogPrint("fundamentalnode","fnw - invalid message - %s\n", strError);
+            // if(strError != "") LogPrint(BCLog::FUNDAMENTALNODE,"fnw - invalid message - %s\n", strError);
             return;
         }
 
         if (!fundamentalnodePayments.CanVote(winner.vinFundamentalnode.prevout, winner.nBlockHeight)) {
-            //  LogPrint("fundamentalnode","fnw - fundamentalnode already voted - %s\n", winner.vinFundamentalnode.prevout.ToStringShort());
+            //  LogPrint(BCLog::FUNDAMENTALNODE,"fnw - fundamentalnode already voted - %s\n", winner.vinFundamentalnode.prevout.ToStringShort());
             return;
         }
 
         if (!winner.SignatureValid()) {
-            // LogPrint("fundamentalnode","fnw - invalid signature\n");
+            // LogPrint(BCLog::FUNDAMENTALNODE,"fnw - invalid signature\n");
             if (fundamentalnodeSync.IsSynced()) Misbehaving(pfrom->GetId(), 20);
             // it could just be a non-synced fundamentalnode
             mnodeman.AskForMN(pfrom, winner.vinFundamentalnode);
@@ -636,7 +636,7 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
         ExtractDestination(winner.payee, address1);
         CBitcoinAddress address2(address1);
 
-        //   LogPrint("mnpayments", "fnw - winning vote - Addr %s Height %d bestHeight %d - %s\n", address2.ToString().c_str(), winner.nBlockHeight, nHeight, winner.vinFundamentalnode.prevout.ToStringShort());
+        //   LogPrint(BCLog::FUNDAMENTALNODE, "fnw - winning vote - Addr %s Height %d bestHeight %d - %s\n", address2.ToString().c_str(), winner.nBlockHeight, nHeight, winner.vinFundamentalnode.prevout.ToStringShort());
 
         if (fundamentalnodePayments.AddWinningFundamentalnode(winner)) {
             winner.Relay();
@@ -655,12 +655,12 @@ bool CFundamentalnodePaymentWinner::Sign(CKey& keyFundamentalnode, CPubKey& pubK
                              payee.ToString();
 
     if (!CMessageSigner::SignMessage(strMessage, vchSig, keyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", __func__);
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePing::Sign() - Error: %s\n", __func__);
         return false;
     }
 
     if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, strError)) {
-        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", strError.c_str());
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePing::Sign() - Error: %s\n", strError.c_str());
         return false;
     }
 
@@ -773,7 +773,7 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
                 if(out.nValue >= requiredFundamentalnodePayment)
                     found = true;
                 else
-                    LogPrint("fundamentalnode","Fundamentalnode payment is out of drift range. Paid=%s Min=%s\n", FormatMoney(out.nValue).c_str(), FormatMoney(requiredFundamentalnodePayment).c_str());
+                    LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode payment is out of drift range. Paid=%s Min=%s\n", FormatMoney(out.nValue).c_str(), FormatMoney(requiredFundamentalnodePayment).c_str());
             }
         }
 
@@ -792,7 +792,7 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         }
     }
 
-    LogPrint("fundamentalnode","CFundamentalnodePayments::IsTransactionValid - Missing required payment of %s to %s\n", FormatMoney(requiredFundamentalnodePayment).c_str(), strPayeesPossible.c_str());
+    LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::IsTransactionValid - Missing required payment of %s to %s\n", FormatMoney(requiredFundamentalnodePayment).c_str(), strPayeesPossible.c_str());
     return false;
 }
 
@@ -858,7 +858,7 @@ void CFundamentalnodePayments::CleanPaymentList()
         CFundamentalnodePaymentWinner winner = (*it).second;
 
         if (nHeight - winner.nBlockHeight > nLimit) {
-            LogPrint("mnpayments", "CFundamentalnodePayments::CleanPaymentList - Removing old Fundamentalnode payment - block %d\n", winner.nBlockHeight);
+            LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodePayments::CleanPaymentList - Removing old Fundamentalnode payment - block %d\n", winner.nBlockHeight);
             fundamentalnodeSync.mapSeenSyncMNW.erase((*it).first);
             mapFundamentalnodePayeeVotes.erase(it++);
             mapFundamentalnodeBlocks.erase(winner.nBlockHeight);
@@ -874,14 +874,14 @@ bool CFundamentalnodePaymentWinner::IsValid(CNode* pnode, std::string& strError)
 
     if (!pmn) {
         strError = strprintf("Unknown Fundamentalnode %s", vinFundamentalnode.prevout.hash.ToString());
-        LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
         mnodeman.AskForMN(pnode, vinFundamentalnode);
         return false;
     }
 
     if (pmn->protocolVersion < ActiveProtocol()) {
         strError = strprintf("Fundamentalnode protocol too old %d - req %d", pmn->protocolVersion, ActiveProtocol());
-        LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
         return false;
     }
 
@@ -892,7 +892,7 @@ bool CFundamentalnodePaymentWinner::IsValid(CNode* pnode, std::string& strError)
         // We don't want to print all of these messages, or punish them unless they're way off
         if (n > MNPAYMENTS_SIGNATURES_TOTAL * 2) {
             strError = strprintf("Fundamentalnode not in the top %d (%d)", MNPAYMENTS_SIGNATURES_TOTAL * 2, n);
-            LogPrint("fundamentalnode","CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
+            LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePaymentWinner::IsValid - %s\n", strError);
             //if (fundamentalnodeSync.IsSynced()) Misbehaving(pnode->GetId(), 20);
         }
         return false;
@@ -910,12 +910,12 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
     int n = mnodeman.GetFundamentalnodeRank(activeFundamentalnode.vin, nBlockHeight - 100, ActiveProtocol());
 
     if (n == -1) {
-        LogPrint("mnpayments", "CFundamentalnodePayments::ProcessBlock - Unknown Fundamentalnode\n");
+        LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodePayments::ProcessBlock - Unknown Fundamentalnode\n");
         return false;
     }
 
     if (n > MNPAYMENTS_SIGNATURES_TOTAL) {
-        LogPrint("mnpayments", "CFundamentalnodePayments::ProcessBlock - Fundamentalnode not in the top %d (%d)\n", MNPAYMENTS_SIGNATURES_TOTAL, n);
+        LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodePayments::ProcessBlock - Fundamentalnode not in the top %d (%d)\n", MNPAYMENTS_SIGNATURES_TOTAL, n);
         return false;
     }
 
@@ -926,14 +926,14 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
     if (budget.IsBudgetPaymentBlock(nBlockHeight)) {
         //is budget payment block -- handled by the budgeting software
     } else {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin.prevout.hash.ToString());
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() Start nHeight %d - vin %s. \n", nBlockHeight, activeFundamentalnode.vin.prevout.hash.ToString());
 
         // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
         int nCount = 0;
         CFundamentalnode* pmn = mnodeman.GetNextFundamentalnodeInQueueForPayment(nBlockHeight, true, nCount);
 
         if (pmn != NULL) {
-            LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Found by FindOldestNotInVec \n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() Found by FindOldestNotInVec \n");
 
             newWinner.nBlockHeight = nBlockHeight;
 
@@ -944,9 +944,9 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
             ExtractDestination(payee, address1);
             CBitcoinAddress address2(address1);
 
-            LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Winner payee %s nHeight %d. \n", address2.ToString().c_str(), newWinner.nBlockHeight);
+            LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() Winner payee %s nHeight %d. \n", address2.ToString().c_str(), newWinner.nBlockHeight);
         } else {
-            LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() Failed to find fundamentalnode to pay\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() Failed to find fundamentalnode to pay\n");
         }
     }
 
@@ -955,13 +955,13 @@ bool CFundamentalnodePayments::ProcessBlock(int nBlockHeight)
     CKey keyFundamentalnode;
 
     if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - Error upon calling SetKey.\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() - Error upon calling SetKey.\n");
         return false;
     }
 
-    LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - Signing Winner\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() - Signing Winner\n");
     if (newWinner.Sign(keyFundamentalnode, pubKeyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePayments::ProcessBlock() - AddWinningFundamentalnode\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodePayments::ProcessBlock() - AddWinningFundamentalnode\n");
 
         if (AddWinningFundamentalnode(newWinner)) {
             newWinner.Relay();
