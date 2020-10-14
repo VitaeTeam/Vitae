@@ -194,13 +194,6 @@ public:
         }
     }
 
-    inline uint64_t SliceHash(uint256& hash, int slice)
-    {
-        uint64_t n = 0;
-        memcpy(&n, &hash+slice*64, 64);
-        return n;
-    }
-
     void Check();
 
     bool UpdatedWithin(int seconds)
@@ -363,6 +356,14 @@ public:
 
     //slow
     bool GetBlockPayee(int nBlockHeight, CScript& payee);
+};
+
+// This class was removed by original Vitae.
+// Now put it back partially to try to keep align with the upstream
+class CMasternodeBroadcast
+{
+public:
+    static bool CheckDefaultPort(std::string strService, std::string& strErrorRet, std::string strContext);
 };
 
 #endif

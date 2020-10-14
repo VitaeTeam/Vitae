@@ -1,5 +1,5 @@
 ---
-name: "vitae-linux-3.1"
+name: "vitae-linux-4.5"
 enable_cache: true
 suites:
 - "trusty"
@@ -29,7 +29,7 @@ packages:
 - "python"
 reference_datetime: "2015-06-01 00:00:00"
 remotes:
-- "url": "https://github.com/vitae-project/vitae.git"
+- "url": "https://github.com/vitaeteam/vitae.git"
   "dir": "vitae"
 files: []
 script: |

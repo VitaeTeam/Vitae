@@ -4459,7 +4459,7 @@ Bitte haben Sie Geduld...</translation>
         <translation>Copyright (C) 2015-%i The PIVX Core Entwickler</translation>
     </message>
     <message>
-        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <source>Copyright (C) 2018-%i The VITAE Core Developers</source>
         <translation>Copyright (C) 2018 The VITAE Core Entwickler</translation>
     </message>
     <message>

@@ -6,8 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_SERIALIZE_H
-#define BITCOIN_SERIALIZE_H
+#ifndef VITAE_SERIALIZE_H
+#define VITAE_SERIALIZE_H
 
 #include <algorithm>
 #include <assert.h>
@@ -21,6 +21,7 @@
 #include <utility>
 #include <vector>
 #include "libzerocoin/Denominations.h"
+#include "libzerocoin/SpendType.h"
 
 class CScript;
 
@@ -303,6 +304,22 @@ inline void Unserialize(Stream& s, libzerocoin::CoinDenomination& a, int, int = 
     a = libzerocoin::IntToZerocoinDenomination(f);
 }
 
+// Serialization for libzerocoin::SpendType
+inline unsigned int GetSerializedSize(libzerocoin::SpendType a, int, int = 0) { return sizeof(libzerocoin::SpendType); }
+template <typename Stream>
+inline void Serialize(Stream& s, libzerocoin::SpendType a, int, int = 0)
+{
+    uint8_t f = static_cast<uint8_t>(a);
+    WRITEDATA(s, f);
+}
+
+template <typename Stream>
+inline void Unserialize(Stream& s, libzerocoin::SpendType & a, int, int = 0)
+{
+    uint8_t f=0;
+    READDATA(s, f);
+    a = static_cast<libzerocoin::SpendType>(f);
+}
 
 
 /**
@@ -931,6 +948,12 @@ public:
         return *this;
     }
 
+    /** Pretend _nSize bytes are written, without specifying them. */
+    void seek(size_t _nSize)
+    {
+        this->nSize += _nSize;
+    }
+
     template <typename T>
     CSizeComputer& operator<<(const T& obj)
     {
@@ -944,4 +967,4 @@ public:
     }
 };
 
-#endif // BITCOIN_SERIALIZE_H
+#endif // VITAE_SERIALIZE_H

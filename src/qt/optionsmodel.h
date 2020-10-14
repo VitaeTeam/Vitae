@@ -43,8 +43,8 @@ public:
         ThreadsScriptVerif,  // int
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
-        ZeromintEnable,      // bool
-        ZeromintPercentage,  // int
+        //ZeromintEnable,      // bool
+        //ZeromintPercentage,  // int
         ZeromintPrefDenom,   // int
         HideZeroBalances,    // bool
         AnonymizeVitaeAmount, //int
@@ -97,8 +97,8 @@ private:
 
 signals:
     void displayUnitChanged(int unit);
-    void zeromintEnableChanged(bool);
-    void zeromintPercentageChanged(int);
+    //void zeromintEnableChanged(bool);
+    //void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
     void anonymizeVitaeAmountChanged(int);
     void coinControlFeaturesChanged(bool);

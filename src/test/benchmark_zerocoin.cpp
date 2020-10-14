@@ -169,7 +169,7 @@ Testb_CalcParamSizes()
 		if (pLen < 3072 || qLen < 320) {
 			result = false;
 		}
-	} catch (exception &e) {
+	} catch (const exception &e) {
 		result = false;
 	}
 #endif
@@ -187,7 +187,7 @@ Testb_GenerateGroupParams()
 
 		try {
 			group = deriveIntegerGroupParams(calculateSeed(gGetTestModulus(), "test", ZEROCOIN_DEFAULT_SECURITYLEVEL, "TEST GROUP"), pLen, qLen);
-		} catch (std::runtime_error e) {
+		} catch (const std::runtime_error e) {
 			cout << "Caught exception " << e.what() << endl;
 			return false;
 		}
@@ -221,7 +221,7 @@ Testb_ParamGen()
 		timer.stop();
 
 		cout << "\tPARAMGEN ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
-	} catch (runtime_error e) {
+	} catch (const runtime_error e) {
 		cout << e.what() << endl;
 		result = false;
 	}
@@ -272,7 +272,7 @@ Testb_Accumulator()
 			return false;
 		}
 
-	} catch (runtime_error e) {
+	} catch (const runtime_error e) {
 		cout << e.what() << endl;
         return false;
 	}
@@ -290,7 +290,7 @@ Testb_MintCoin()
             ggCoins[i] = new PrivateCoin(gg_Params,CoinDenomination::ZQ_ONE);
 		}
 		timer.stop();
-	} catch (exception &e) {
+	} catch (const exception &e) {
 		return false;
 	}
 
@@ -337,7 +337,7 @@ Testb_MintAndSpend()
 
 		// Now spend the coin
 		timer.start();
-		CoinSpend spend(gg_Params, *(ggCoins[0]), acc, 0, wAcc, 0); //(0) presstab
+		CoinSpend spend(gg_Params, gg_Params, *(ggCoins[0]), acc, 0, wAcc, 0, SpendType::SPEND); //(0) presstab
 		timer.stop();
 
 		cout << "\tSPEND ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
@@ -349,7 +349,7 @@ Testb_MintAndSpend()
 		ss << spend;
 		timer.stop();
 
-		CoinSpend newSpend(gg_Params, ss);
+		CoinSpend newSpend(gg_Params, gg_Params, ss);
 
 		cout << "\tSERIALIZE ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
 
@@ -361,7 +361,7 @@ Testb_MintAndSpend()
 		cout << "\tSPEND VERIFY ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
 
 		return ret;
-	} catch (runtime_error &e) {
+	} catch (const runtime_error &e) {
 		cout << e.what() << endl;
 		return false;
 	}

@@ -804,25 +804,7 @@ void CObfuscationPool::ChargeRandomFees()
 //
 void CObfuscationPool::CheckTimeout()
 {
-    if (!fEnableZeromint && !fFundamentalNode) return;
-
-    // catching hanging sessions
-    if (!fFundamentalNode) {
-        switch (state) {
-        case POOL_STATUS_TRANSMISSION:
-            LogPrint("obfuscation", "CObfuscationPool::CheckTimeout() -- Session complete -- Running Check()\n");
-            Check();
-            break;
-        case POOL_STATUS_ERROR:
-            LogPrint("obfuscation", "CObfuscationPool::CheckTimeout() -- Pool error -- Running Check()\n");
-            Check();
-            break;
-        case POOL_STATUS_SUCCESS:
-            LogPrint("obfuscation", "CObfuscationPool::CheckTimeout() -- Pool success -- Running Check()\n");
-            Check();
-            break;
-        }
-    }
+    if (!fFundamentalNode) return;
 
     // check Obfuscation queue objects for timeouts
     int c = 0;
@@ -837,7 +819,6 @@ void CObfuscationPool::CheckTimeout()
     }
 
     int addLagTime = 0;
-    if (!fFundamentalNode) addLagTime = 10000; //if we're the client, give the server a few extra seconds before resetting.
 
     if (state == POOL_STATUS_ACCEPTING_ENTRIES || state == POOL_STATUS_QUEUE) {
         c = 0;
@@ -889,7 +870,7 @@ void CObfuscationPool::CheckTimeout()
 //
 void CObfuscationPool::CheckForCompleteQueue()
 {
-    if (!fEnableZeromint && !fFundamentalNode) return;
+    if (!fFundamentalNode) return;
 
     /* Check to see if we're ready for submissions from clients */
     //
@@ -1148,8 +1129,7 @@ void CObfuscationPool::SendObfuscationDenominate(std::vector<CTxIn>& vin, std::v
     if (!CheckDiskSpace()) {
         UnlockCoins();
         SetNull();
-        fEnableZeromint = false;
-        LogPrintf("CObfuscationPool::SendObfuscationDenominate() - Not enough disk space, disabling Obfuscation.\n");
+        LogPrintf("CObfuscationPool::SendObfuscationDenominate() - Not enough disk space.\n");
         return;
     }
 
@@ -1384,7 +1364,6 @@ bool CObfuscationPool::DoAutomaticDenominating(bool fDryRun)
 {
     return false;  // Disabled until Obfuscation is completely removed
 
-    if (!fEnableZeromint) return false;
     if (fFundamentalNode) return false;
     if (state == POOL_STATUS_ERROR || state == POOL_STATUS_SUCCESS) return false;
     if (GetEntriesCount() > 0) {

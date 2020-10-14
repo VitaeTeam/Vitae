@@ -4206,7 +4206,7 @@ por ejemplo: alertnotify=echo %%s | mail -s "VITAE Alert" admin@foo.com
         <translation>Copyright (C) 2015-%i The PIVX Core Desarrolladores</translation>
     </message>
     <message>
-        <source>Copyright (C) 2018 The VITAE Core Developers</source>
+        <source>Copyright (C) 2018-%i The VITAE Core Developers</source>
         <translation>Copyright (C) 2018 The VITAE Core Desarrolladores</translation>
     </message>
     <message>

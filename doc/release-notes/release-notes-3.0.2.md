@@ -1,13 +1,13 @@
 VITAE Core version 3.0.2 is now available from:
 
-  <https://github.com/vitae-project/vitae/releases>
+  <https://github.com/vitaeteam/vitae/releases>
 
 This is a new minor-revision version release, including various bug fixes and
 performance improvements, as well as updated translations.
 
 Please report bugs using the issue tracker at github:
 
-  <https://github.com/vitae-project/vitae/issues>
+  <https://github.com/vitaeteam/vitae/issues>
 
 Recommended Update
 ==============
