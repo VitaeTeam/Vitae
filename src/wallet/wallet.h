@@ -21,7 +21,7 @@
 #include "ui_interface.h"
 #include "util.h"
 #include "validationinterface.h"
-#include "wallet_ismine.h"
+#include "wallet/wallet_ismine.h"
 #include "wallet/walletdb.h"
 #include "zphrtracker.h"
 #include "zphrwallet.h"

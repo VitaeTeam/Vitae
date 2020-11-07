@@ -284,7 +284,7 @@ libbitcoin_wallet_a_SOURCES = \
   primitives/deterministicmint.cpp \
   primitives/zerocoin.cpp \
   kernel.cpp \
-  wallet_ismine.cpp \
+  wallet/wallet_ismine.cpp \
   stakeinput.cpp \
   zphrwallet.cpp \
   zphrtracker.cpp \
