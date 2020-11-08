@@ -240,6 +240,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         std::map<uint256, std::vector<COrphan*> > mapDependers;
         bool fPrintPriority = GetBoolArg("-printpriority", false);
 
+        int64_t nBlockSigOpsCost = 400;
+
         // This vector will be sorted into a priority queue:
         std::vector<TxPriority> vecPriority;
         vecPriority.reserve(mempool.mapTx.size());
@@ -356,7 +358,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         uint64_t nBlockSize = 1000;
         int64_t nBlockCost = nBlockSize * WITNESS_SCALE_FACTOR;
         int64_t nBlockTx = 0;
-        int64_t nBlockSigOpsCost = 400;
         bool fSortedByFee = (nBlockPrioritySize <= 0);
 
         TxPriorityCompare comparer(fSortedByFee);

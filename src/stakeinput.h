@@ -5,6 +5,10 @@
 #ifndef PHORE_STAKEINPUT_H
 #define PHORE_STAKEINPUT_H
 
+#include "chain.h"
+#include "streams.h"
+#include "uint256.h"
+
 class CKeyStore;
 class CWallet;
 class CWalletTx;

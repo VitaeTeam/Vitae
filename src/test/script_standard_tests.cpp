@@ -4,7 +4,7 @@
 
 #include "key.h"
 #include "keystore.h"
-#include "wallet_ismine.h"
+#include "wallet/wallet_ismine.h"
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/standard.h"
