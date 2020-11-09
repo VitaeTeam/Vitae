@@ -290,7 +290,7 @@ public:
         nModifierUpdateBlock = 1; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
         nLastPOWBlock = 500;
-        nZerocoinStartHeight = 500;
+        nZerocoinStartHeight = 600;
 
         nZerocoinLastOldParams = 500000;
 
