@@ -8,7 +8,7 @@
 #include "invalid.h"
 #include "main.h"
 #include "txdb.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "zvit/zvitmodule.h"
 
 // 6 comes from OPCODE (1) + vch.size() (1) + BIGNUM size (4)
