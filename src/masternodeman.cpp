@@ -1014,10 +1014,10 @@ int CMasternodeMan::GetMinMasternodePaymentsProto()
 }
 void ThreadCheckObfuScationPool()
 {
-    if (fLiteMode) return; //disable all Obfuscation/Masternode related functionality
+    if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality
 
     // Make this thread recognisable as the wallet flushing thread
-    util::ThreadRename("pivx-obfuscation");
+    util::ThreadRename("vitae-obfuscation");
     LogPrintf("Masternodes thread started\n");
 
     unsigned int c = 0;
@@ -1027,25 +1027,26 @@ void ThreadCheckObfuScationPool()
         //LogPrintf("ThreadCheckObfuScationPool::check timeout\n");
 
         // try to sync from all available nodes, one step at a time
-        masternodeSync.Process();
+        fundamentalnodeSync.Process();
 
-        if (masternodeSync.IsBlockchainSynced()) {
+        if (fundamentalnodeSync.IsBlockchainSynced()) {
             c++;
 
             // check if we should activate or ping every few minutes,
             // start right after sync is considered to be done
-            if (c % MASTERNODE_PING_SECONDS == 1) activeMasternode.ManageStatus();
+            if (c % FUNDAMENTALNODE_PING_SECONDS == 1) activeFundamentalnode.ManageStatus();
 
             if (c % 60 == 0) {
                 mnodeman.CheckAndRemove();
-                mnodeman.ProcessMasternodeConnections();
-                masternodePayments.CleanPaymentList();
+                mnodeman.ProcessFundamentalnodeConnections();
+                fundamentalnodePayments.CleanPaymentList();
                 CleanTransactionLocksList();
             }
 
-            //if(c % MASTERNODES_DUMP_SECONDS == 0) DumpMasternodes();
+            //if(c % FUNDAMENTALNODES_DUMP_SECONDS == 0) DumpFundamentalnodes();
 
             obfuScationPool.CheckTimeout();
             obfuScationPool.CheckForCompleteQueue();
         }
     }
+}

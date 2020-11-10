@@ -240,7 +240,7 @@ uint256 CMasternode::CalculateScore(int mod, int64_t nBlockHeight)
     return r;
 }
 
-void CMasternode::Check()
+void CMasternode::Check(bool forceCheck)
 {
     //TODO: Random segfault with this line removed
     TRY_LOCK(cs_main, lockRecv);
