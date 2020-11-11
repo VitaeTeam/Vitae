@@ -106,9 +106,11 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         return NULL;
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
+    CBlockIndex* pindexPrev = chainActive.Tip();
+
     // Make sure to create the correct block version after zerocoin is enabled
     bool fZerocoinActive = chainActive.Height() >= Params().Zerocoin_StartHeight();
-    if(Params().IsStakeModifierV2(chainActive.Height())) {
+    if(Params().IsStakeModifierV2(pindexPrev->nHeight + 1)) {
         pblock->nVersion = 5;       //!> Supports V2 Stake Modifiers.
     } else if (fZerocoinActive) {
         pblock->nVersion = 4;
@@ -153,7 +155,6 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     if (fProofOfStake) {
         boost::this_thread::interruption_point();
         pblock->nTime = GetAdjustedTime();
-        CBlockIndex* pindexPrev = chainActive.Tip();
         pblock->nBits = GetNextWorkRequired(pindexPrev, pblock);
         CMutableTransaction txCoinStake;
         int64_t nSearchTime = pblock->nTime; // search to current time
