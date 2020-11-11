@@ -106,6 +106,20 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
         return NULL;
     CBlock* pblock = &pblocktemplate->block; // pointer for convenience
 
+    // Tip
+    CBlockIndex* pindexPrev;
+    {   // Don't keep cs_main locked
+        LOCK(cs_main);
+        pindexPrev = chainActive.Tip();
+        if (!pindexPrev)
+            return nullptr;
+        // Do not pass in the chain tip, because it can change.
+        // Instead pass the blockindex directly from mapblockindex, which is const
+        pindexPrev = mapBlockIndex.at(pindexPrev->GetBlockHash());
+    }
+
+    const int nHeight = pindexPrev->nHeight + 1;
+
     // Make sure to create the correct block version after zerocoin is enabled
     bool fZerocoinActive = chainActive.Height() >= Params().Zerocoin_StartHeight();
     if(Params().IsStakeModifierV2(nHeight)) {
