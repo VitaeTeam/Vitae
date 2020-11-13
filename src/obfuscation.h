@@ -52,6 +52,7 @@ class CActiveFundamentalnode;
 static const CAmount OBFUSCATION_COLLATERAL = (10 * COIN);
 static const CAmount OBFUSCATION_POOL_MAX = (99999.99 * COIN);
 
+extern CObfuscationPool obfuScationPool;
 extern std::vector<CObfuscationQueue> vecObfuscationQueue;
 extern std::string strFundamentalNodePrivKey;
 extern std::map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;

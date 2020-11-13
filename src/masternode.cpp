@@ -277,12 +277,8 @@ void CMasternode::Check(bool forceCheck)
             TRY_LOCK(cs_main, lockMain);
             if (!lockMain) return;
 
-            CCoins coins;
-            if (!pcoinsTip->GetCoins(vin.prevout.hash, coins) ||
-               (unsigned int)vin.prevout.n>=coins.vout.size() ||
-               coins.vout[vin.prevout.n].IsNull()) {
-                nActiveState = MASTERNODE_OUTPOINT_SPENT;
-                LogPrint(BCLog::MASTERNODE, "CMasternode::Check -- Failed to find Masternode UTXO, masternode=%s\n", vin.prevout.ToStringShort());
+            if (!AcceptableInputs(mempool, state, CTransaction(tx), false, NULL)) {
+                activeState = MASTERNODE_VIN_SPENT;
                 return;
             }
         }

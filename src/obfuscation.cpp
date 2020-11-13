@@ -25,6 +25,8 @@
 #include <openssl/rand.h>
 
 
+// The main object for accessing Obfuscation
+CObfuscationPool obfuScationPool;
 // The current Obfuscations in progress on the network
 std::vector<CObfuscationQueue> vecObfuscationQueue;
 // Keep track of the used Fundamentalnodes
@@ -520,6 +522,8 @@ void CObfuscationPool::NewBlock()
     //we we're processing lots of blocks, we'll just leave
     if (GetTime() - lastNewBlock < 10) return;
     lastNewBlock = GetTime();
+
+    obfuScationPool.CheckTimeout();
 }
 
 bool CObfuscationQueue::Sign()
