@@ -743,11 +743,10 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         //  - this is checked later by .check() in many places and by ThreadCheckDarkSendPool()
 
         CValidationState state;
-        CMutableTransaction tx2 = CMutableTransaction();
-        CTxOut vout = CTxOut(9999.99 * COIN, obfuScationPool.collateralPubKey);
-        tx2.vin.push_back(vin);
-        tx2.vout.push_back(vout);
-        if(AcceptableInputs(mempool, state, CTransaction(tx2), false, NULL)){
+        CCoins coins;
+        if (pcoinsTip->GetCoins(vin.prevout.hash, coins) &&
+           (unsigned int)vin.prevout.n < coins.vout.size() &&
+           ! coins.vout[vin.prevout.n].IsNull()) {
             if(logCategories != BCLog::NONE) LogPrintf("dsee - Accepted Masternode entry %i %i\n", count, current);
 
             if(GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS){
@@ -802,7 +801,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             int nDoS = 0;
             if (state.IsInvalid(nDoS))
             {
-                LogPrintf("dsee - %s from %s %s was not accepted into the memory pool\n", tx2.GetHash().ToString().c_str(),
+                LogPrintf("dsee - transaction from %s %s was not accepted into the memory pool\n", 
                     pfrom->addr.ToString().c_str(), pfrom->cleanSubVer.c_str());
                 if (nDoS > 0)
                     Misbehaving(pfrom->GetId(), nDoS);

@@ -52,7 +52,6 @@ class CActiveFundamentalnode;
 static const CAmount OBFUSCATION_COLLATERAL = (10 * COIN);
 static const CAmount OBFUSCATION_POOL_MAX = (99999.99 * COIN);
 
-extern CObfuscationPool obfuScationPool;
 extern std::vector<CObfuscationQueue> vecObfuscationQueue;
 extern std::string strFundamentalNodePrivKey;
 extern std::map<uint256, CObfuscationBroadcastTx> mapObfuscationBroadcastTxes;
@@ -322,9 +321,7 @@ public:
         // LogPrintf("CObfuscationPool::UpdateState() == %d | %d \n", state, newState);
         if (state != newState) {
             lastTimeChanged = GetTimeMillis();
-            if (fFundamentalNode) {
-                RelayStatus(obfuScationPool.sessionID, obfuScationPool.GetState(), obfuScationPool.GetEntriesCount(), FUNDAMENTALNODE_RESET);
-            }
+            if (fFundamentalNode) {}
         }
         state = newState;
     }

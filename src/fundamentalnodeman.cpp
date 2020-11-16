@@ -714,9 +714,6 @@ void CFundamentalnodeMan::ProcessFundamentalnodeConnections()
     LOCK(cs_vNodes);
     for (CNode* pnode : vNodes) {
         if (pnode->fObfuScationMaster) {
-            if (obfuScationPool.pSubmittedToFundamentalnode != NULL && pnode->addr == obfuScationPool.pSubmittedToFundamentalnode->addr) continue;
-            LogPrint(BCLog::FUNDAMENTALNODE,"Closing Fundamentalnode connection peer=%i \n", pnode->GetId());
-            pnode->fObfuScationMaster = false;
             pnode->Release();
         }
     }
@@ -992,10 +989,6 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         //  - this is checked later by .check() in many places and by ThreadCheckObfuScationPool()
 
         CValidationState state;
-        /*CMutableTransaction tx = CMutableTransaction();
-        CTxOut vout = CTxOut(9999.99 * COIN, obfuScationPool.collateralPubKey);
-        tx.vin.push_back(vin);
-        tx.vout.push_back(vout);*/
 
         bool fAcceptable = false;
         {
