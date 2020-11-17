@@ -664,7 +664,7 @@ public:
     boost::signals2::signal<void(bool fHaveMultiSig)> NotifyMultiSigChanged;
 
     /** zVITAE reset */
-    boost::signals2::signal<void()> NotifyzPIVReset;
+    boost::signals2::signal<void()> NotifyzVITReset;
 
     /** notify wallet file backed up */
     boost::signals2::signal<void (const bool& fSuccess, const std::string& filename)> NotifyWalletBacked;
