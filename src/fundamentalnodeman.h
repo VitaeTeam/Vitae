@@ -137,8 +137,6 @@ public:
     int GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol = 0, bool fOnlyActive = true);
     CFundamentalnode* GetFundamentalnodeByRank(int nRank, int64_t nBlockHeight, int minProtocol = 0, bool fOnlyActive = true);
 
-    void ProcessFundamentalnodeConnections();
-
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
     /// Return the number of (unique) Fundamentalnodes

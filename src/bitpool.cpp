@@ -43,7 +43,6 @@ void ThreadBitPool()
                 segfaults from this code without the cs_main lock.
             */
             m_nodeman.CheckAndRemove();
-            m_nodeman.ProcessMasternodeConnections();
             masternodePayments.CleanPaymentList();
             //CleanTransactionLocksList();
         }

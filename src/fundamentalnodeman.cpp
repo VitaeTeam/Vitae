@@ -706,19 +706,6 @@ CFundamentalnode* CFundamentalnodeMan::GetFundamentalnodeByRank(int nRank, int64
     return NULL;
 }
 
-void CFundamentalnodeMan::ProcessFundamentalnodeConnections()
-{
-    //we don't care about this for regtest
-    if (Params().NetworkID() == CBaseChainParams::REGTEST) return;
-
-    LOCK(cs_vNodes);
-    for (CNode* pnode : vNodes) {
-        if (pnode->fObfuScationMaster) {
-            pnode->Release();
-        }
-    }
-}
-
 void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
     if (fLiteMode) return; //disable all Obfuscation/Fundamentalnode related functionality

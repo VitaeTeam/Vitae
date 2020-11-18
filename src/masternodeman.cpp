@@ -1018,7 +1018,6 @@ void ThreadCheckObfuScationPool()
 
             if (c % 60 == 0) {
                 mnodeman.CheckAndRemove();
-                mnodeman.ProcessFundamentalnodeConnections();
                 fundamentalnodePayments.CleanPaymentList();
                 CleanTransactionLocksList();
             }
