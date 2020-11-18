@@ -8,6 +8,7 @@
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-sync.h"
 #include "fundamentalnodeman.h"
+#include "activefundamentalnode.h"
 #include "messagesigner.h"
 #include "obfuscation.h"
 #include "spork.h"

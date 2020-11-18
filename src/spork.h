@@ -10,6 +10,7 @@
 #include "base58.h"
 #include "hash.h"
 #include "key.h"
+#include "messagesigner.h"
 #include "main.h"
 #include "net.h"
 #include "sporkid.h"

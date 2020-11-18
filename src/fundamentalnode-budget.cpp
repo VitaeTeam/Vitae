@@ -11,6 +11,7 @@
 #include "fundamentalnode-sync.h"
 #include "fundamentalnode.h"
 #include "fundamentalnodeman.h"
+#include "activefundamentalnode.h"
 #include "messagesigner.h"
 #include "obfuscation.h"
 #include "util.h"

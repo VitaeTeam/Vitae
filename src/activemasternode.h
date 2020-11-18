@@ -11,11 +11,11 @@
 #include "sync.h"
 #include "net.h"
 #include "key.h"
+#include "masternode.h"
 //#include "core.h"
 #include "init.h"
 #include "wallet/wallet.h"
 #include "obfuscation.h"
-#include "masternode.h"
 
 #define ACTIVE_MASTERNODE_INITIAL 0 // initial state
 #define ACTIVE_MASTERNODE_SYNC_IN_PROCESS 1
@@ -38,10 +38,7 @@ public:
     int status;
     std::string notCapableReason;
 
-    CActiveMasternode()
-    {
-        status = MASTERNODE_NOT_PROCESSED;
-    }
+    CActiveMasternode();
 
     /// Manage status of main Masternode
     void ManageStatus();

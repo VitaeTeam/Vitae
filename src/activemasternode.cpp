@@ -11,6 +11,11 @@
 #include "protocol.h"
 #include "mn-spork.h"
 
+CActiveMasternode::CActiveMasternode()
+{
+    status = MASTERNODE_NOT_PROCESSED;
+}
+
 //
 // Bootup the Masternode, look for a 5000 BSD input and register on the network
 //
