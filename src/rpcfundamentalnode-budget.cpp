@@ -11,6 +11,7 @@
 #include "main.h"
 #include "fundamentalnode-budget.h"
 #include "fundamentalnode-payments.h"
+#include "fundamentalnode-sync.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
 #include "rpcserver.h"

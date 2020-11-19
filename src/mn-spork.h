@@ -42,7 +42,6 @@ class CMNSporkManager;
 #include "key.h"
 #include "util.h"
 #include "protocol.h"
-#include "obfuscation.h"
 #include <boost/lexical_cast.hpp>
 
 extern std::map<uint256, CMNSporkMessage> mapMNSporks;

@@ -10,7 +10,6 @@
 #include "fundamentalnodeman.h"
 #include "activefundamentalnode.h"
 #include "messagesigner.h"
-#include "obfuscation.h"
 #include "spork.h"
 #include "sync.h"
 #include "util.h"

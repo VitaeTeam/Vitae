@@ -7,8 +7,9 @@
 #include "activefundamentalnode.h"
 #include "addrman.h"
 #include "fundamentalnode.h"
+#include "fundamentalnode-payments.h"
+#include "fundamentalnode-sync.h"
 #include "messagesigner.h"
-#include "obfuscation.h"
 #include "spork.h"
 #include "util.h"
 #include <boost/filesystem.hpp>

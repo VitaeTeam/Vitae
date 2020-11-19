@@ -11,9 +11,12 @@
 #include "key.h"
 #include "fundamentalnode.h"
 #include "net.h"
-#include "obfuscation.h"
 #include "sync.h"
 #include "wallet/wallet.h"
+
+class CActiveFundamentalnode;
+
+extern CActiveFundamentalnode activeFundamentalnode;
 
 #define ACTIVE_FUNDAMENTALNODE_INITIAL 0 // initial state
 #define ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS 1

@@ -8,8 +8,6 @@
 
 #include "addrman.h"
 #include "init.h"
-#include "masternode-payments.h"
-#include "masternode-sync.h"
 #include "masternodeman.h"
 #include "messagesigner.h"
 //#include "core.h"

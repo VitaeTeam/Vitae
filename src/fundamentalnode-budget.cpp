@@ -13,7 +13,6 @@
 #include "fundamentalnodeman.h"
 #include "activefundamentalnode.h"
 #include "messagesigner.h"
-#include "obfuscation.h"
 #include "util.h"
 #include <boost/filesystem.hpp>
 

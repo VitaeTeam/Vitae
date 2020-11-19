@@ -78,6 +78,7 @@
 #include "zmq/zmqnotificationinterface.h"
 #endif
 
+void ThreadBitPool();
 
 #ifdef ENABLE_WALLET
 CzVITWallet* zwalletMain = NULL;

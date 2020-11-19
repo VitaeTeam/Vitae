@@ -9,9 +9,12 @@
 #include "fundamentalnode.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
+#include "fundamentalnode-sync.h"
 #include "messagesigner.h"
 #include "protocol.h"
 #include "spork.h"
+
+CActiveFundamentalnode activeFundamentalnode; 
 
 //
 // Bootup the Fundamentalnode, look for a 10000 VITAE input and register on the network

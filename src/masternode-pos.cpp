@@ -22,7 +22,6 @@
 
 std::map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
 CMasternodeScanning mnscan;
-CActiveMasternode activeMasternode;
 
 /*
     Masternode - Proof of Service

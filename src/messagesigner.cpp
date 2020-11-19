@@ -10,6 +10,8 @@
 #include "masternodeman.h"  // For GetPublicKey (of MN from its vin)
 #include "tinyformat.h"
 #include "utilstrencodings.h"
+#include "fundamentalnode.h"
+#include "fundamentalnodeman.h"
 
 #include <boost/foreach.hpp>
 

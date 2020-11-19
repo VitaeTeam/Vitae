@@ -18,8 +18,11 @@
 #define FUNDAMENTALNODES_DSEG_SECONDS (3 * 60 * 60)
 
 class CFundamentalnodeMan;
+class CActiveFundamentalnode;
 
 extern CFundamentalnodeMan mnodeman;
+extern std::string strFundamentalNodePrivKey;
+
 void DumpFundamentalnodes();
 
 /** Access to the MN database (mncache.dat)

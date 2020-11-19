@@ -6,9 +6,10 @@
 #include "fundamentalnode.h"
 #include "addrman.h"
 #include "fundamentalnodeman.h"
+#include "fundamentalnode-payments.h"
+#include "fundamentalnode-sync.h"
 #include "activefundamentalnode.h"
 #include "messagesigner.h"
-#include "obfuscation.h"
 #include "sync.h"
 #include "util.h"
 
