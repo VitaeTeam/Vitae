@@ -33,8 +33,6 @@
 #include <boost/thread/exceptions.hpp>
 #include <boost/thread/condition_variable.hpp> // for boost::thread_interrupted
 
-extern const char * const DEFAULT_DEBUGLOGFILE;
-
 //VITAE only features
 
 extern bool fFundamentalNode;

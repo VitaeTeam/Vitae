@@ -123,7 +123,6 @@ bool fMNLiteMode = false;
 int64_t enforceMasternodePaymentsTime = 4085657524;
 bool fMNSucessfullyLoaded = false;
 
-const char * const DEFAULT_DEBUGLOGFILE = "debug.log";
 namespace fs = boost::filesystem;
 
 std::map<std::string, std::string> mapArgs;
