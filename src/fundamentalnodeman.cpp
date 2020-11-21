@@ -612,7 +612,7 @@ int CFundamentalnodeMan::GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlock
         if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
             nFundamentalnode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nFundamentalnode_Age) < nFundamentalnode_Min_Age) {
-                if (logCategories != BCLog::NONE) LogPrint(BCLog::FUNDAMENTALNODE,"Skipping just activated Fundamentalnode. Age: %ld\n", nFundamentalnode_Age);
+                LogPrint(BCLog::FUNDAMENTALNODE,"Skipping just activated Fundamentalnode. Age: %ld\n", nFundamentalnode_Age);
                 continue;                                                   // Skip fundamentalnodes younger than (default) 1 hour
             }
         }

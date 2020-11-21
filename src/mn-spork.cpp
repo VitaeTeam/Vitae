@@ -43,10 +43,10 @@ void ProcessMNSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
         uint256 hash = mn_spork.GetHash();
         if(mapMNSporksActive.count(mn_spork.nMNSporkID)) {
             if(mapMNSporksActive[mn_spork.nMNSporkID].nTimeSigned >= mn_spork.nTimeSigned){
-                if(logCategories != BCLog::NONE) LogPrintf("mn_spork - seen %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
+                LogPrint(BCLog::MASTERNODE, "mn_spork - seen %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
                 return;
             } else {
-                if(logCategories != BCLog::NONE) LogPrintf("mn_spork - got updated mn_spork %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
+                LogPrint(BCLog::MASTERNODE, "mn_spork - got updated mn_spork %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
             }
         }
 

@@ -60,7 +60,7 @@ void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDa
 
         uint256 hash = winner.GetHash();
         if(mapSeenMasternodeVotes.count(hash)) {
-            if(logCategories != BCLog::NONE) LogPrintf("mnw - seen vote %s Addr %s Height %d bestHeight %d\n", hash.ToString().c_str(), address2.ToString().c_str(), winner.nBlockHeight, chainActive.Tip()->nHeight);
+            LogPrint(BCLog::MASTERNODE,"mnw - seen vote %s Addr %s Height %d bestHeight %d\n", hash.ToString().c_str(), address2.ToString().c_str(), winner.nBlockHeight, chainActive.Tip()->nHeight);
             return;
         }
 
@@ -437,7 +437,7 @@ void CMasternodePayments::CleanPaymentList()
     std::vector<CMasternodePaymentWinner>::iterator it;
     for(it=vWinning.begin();it<vWinning.end();it++){
         if(chainActive.Tip()->nHeight - (*it).nBlockHeight > nLimit){
-            if(logCategories != BCLog::NONE) LogPrintf("CMasternodePayments::CleanPaymentList - Removing old Masternode payment - block %d\n", (*it).nBlockHeight);
+            LogPrint(BCLog::MASTERNODE,"CMasternodePayments::CleanPaymentList - Removing old Masternode payment - block %d\n", (*it).nBlockHeight);
             vWinning.erase(it);
             break;
         }

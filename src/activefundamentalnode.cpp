@@ -25,7 +25,7 @@ void CActiveFundamentalnode::ManageStatus()
 
     if (!fFundamentalNode) return;
 
-    if (logCategories != BCLog::NONE) LogPrintf("CActiveFundamentalnode::ManageStatus() - Begin\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"CActiveFundamentalnode::ManageStatus() - Begin\n");
 
     //need correct blocks to send ping
     if (Params().NetworkID() != CBaseChainParams::REGTEST && !fundamentalnodeSync.IsBlockchainSynced()) {

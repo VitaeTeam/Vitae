@@ -245,7 +245,7 @@ void CMasternodeMan::CheckAndRemove()
     std::vector<CMasternode>::iterator it = vMasternodes.begin();
     while(it != vMasternodes.end()){
         if((*it).activeState == CMasternode::MASTERNODE_REMOVE || (*it).activeState == CMasternode::MASTERNODE_VIN_SPENT){
-            if(logCategories != BCLog::NONE) LogPrintf("CMasternodeMan: Removing inactive Masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
+            LogPrint(BCLog::MASTERNODE,"CMasternodeMan: Removing inactive Masternode %s - %i now\n", (*it).addr.ToString().c_str(), size() - 1);
             it = vMasternodes.erase(it);
         } else {
             ++it;
@@ -724,7 +724,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        if(logCategories != BCLog::NONE) LogPrintf("dsee - Got NEW Masternode entry %s\n", addr.ToString().c_str());
+        LogPrint(BCLog::MASTERNODE,"dsee - Got NEW Masternode entry %s\n", addr.ToString().c_str());
 
         // make sure it's still unspent
         //  - this is checked later by .check() in many places and by ThreadCheckDarkSendPool()
@@ -734,7 +734,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
         if (pcoinsTip->GetCoins(vin.prevout.hash, coins) &&
            (unsigned int)vin.prevout.n < coins.vout.size() &&
            ! coins.vout[vin.prevout.n].IsNull()) {
-            if(logCategories != BCLog::NONE) LogPrintf("dsee - Accepted Masternode entry %i %i\n", count, current);
+            LogPrint(BCLog::MASTERNODE,"dsee - Accepted Masternode entry %i %i\n", count, current);
 
             if(GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS){
                 LogPrintf("dsee - Input must have least %d confirmations\n", MASTERNODE_MIN_CONFIRMATIONS);
@@ -851,7 +851,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CData
             return;
         }
 
-        if(logCategories != BCLog::NONE) LogPrintf("dseep - Couldn't find Masternode entry %s\n", vin.ToString().c_str());
+        LogPrint(BCLog::MASTERNODE,"dseep - Couldn't find Masternode entry %s\n", vin.ToString().c_str());
 
         std::map<COutPoint, int64_t>::iterator i = mWeAskedForMasternodeListEntry.find(vin.prevout);
         if (i != mWeAskedForMasternodeListEntry.end())

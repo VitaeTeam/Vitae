@@ -52,7 +52,6 @@ extern int64_t enforceMasternodePaymentsTime;
 extern std::string strMasterNodeAddr;
 extern bool fMNSucessfullyLoaded;
 
-extern std::atomic<uint32_t> logCategories;
 extern std::map<std::string, std::string> mapArgs;
 extern std::map<std::string, std::vector<std::string> > mapMultiArgs;
 
