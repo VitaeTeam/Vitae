@@ -4,8 +4,6 @@
 
 #include "qt/vitae/qtutils.h"
 
-#include "qt/pivx/qtutils.h"
-
 #include "guiconstants.h"
 #include "qrencode.h"
 #include "qt/vitae/snackbar.h"
