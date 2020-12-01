@@ -267,19 +267,15 @@ void CMasternode::Check(bool forceCheck)
         return;
     }
 
-    if(lastPing.sigTime - sigTime < MASTERNODE_MIN_MNP_SECONDS){
-        activeState = MASTERNODE_PRE_ENABLED;
-        return;
-    }
-
-    if (!unitTest) {
+    if(!unitTest){
         CValidationState state;
         CMutableTransaction tx = CMutableTransaction();
         CScript dummyScript;
-        dummyScript << ToByteVector(pubKeyCollateralAddress) << OP_CHECKSIG;
-        CTxOut vout = CTxOut(9999.99 * COIN, dummyScript);
+        dummyScript << ToByteVector(pubkey) << OP_CHECKSIG;
+        CTxOut vout = CTxOut(19999.99 * COIN, dummyScript);
         tx.vin.push_back(vin);
         tx.vout.push_back(vout);
+
         {
             TRY_LOCK(cs_main, lockMain);
             if (!lockMain) return;
@@ -469,37 +465,12 @@ bool CMasternodePayments::ProcessBlock(int nBlockHeight)
 
     LogPrintf(" ProcessBlock Start nHeight %d. \n", nBlockHeight);
 
-    CMutableTransaction tx = CMutableTransaction();
-    CScript dummyScript;
-    dummyScript << ToByteVector(pubKeyCollateralAddress) << OP_CHECKSIG;
-    CTxOut vout = CTxOut(9999.99 * COIN, dummyScript);
-    tx.vin.push_back(vin);
-    tx.vout.push_back(vout);
-
+    std::vector<CTxIn> vecLastPayments;
+    BOOST_REVERSE_FOREACH(CMasternodePaymentWinner& winner, vWinning)
     {
-        TRY_LOCK(cs_main, lockMain);
-        if (!lockMain) {
-            // not mnb fault, let it to be checked again later
-            mnodeman.mapSeenMasternodeBroadcast.erase(GetHash());
-            masternodeSync.mapSeenSyncMNB.erase(GetHash());
-            return false;
-        }
-
-        if (!AcceptableInputs(mempool, state, CTransaction(tx), false, NULL)) {
-            //set nDos
-            state.IsInvalid(nDoS);
-            return false;
-        }
-    }
-
-    LogPrint(BCLog::MASTERNODE, "mnb - Accepted Masternode entry\n");
-
-    if (GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS) {
-        LogPrint(BCLog::MASTERNODE,"mnb - Input must have at least %d confirmations\n", MASTERNODE_MIN_CONFIRMATIONS);
-        // maybe we miss few blocks, let this mnb to be checked again later
-        mnodeman.mapSeenMasternodeBroadcast.erase(GetHash());
-        masternodeSync.mapSeenSyncMNB.erase(GetHash());
-        return false;
+        //if we already have the same vin - we have one full payment cycle, break
+       if(vecLastPayments.size() > nMinimumAge) break;
+        vecLastPayments.push_back(winner.vin);
     }
 
     // pay to the oldest MN that still had no payment but its input is old enough and it was active long enough
