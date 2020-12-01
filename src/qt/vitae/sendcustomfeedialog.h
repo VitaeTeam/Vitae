@@ -7,7 +7,7 @@
 
 #include <QDialog>
 #include "amount.h"
-#include "qt/pivx/snackbar.h"
+#include "qt/vitae/snackbar.h"
 
 class VITAEGUI;
 class WalletModel;
