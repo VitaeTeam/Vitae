@@ -189,7 +189,7 @@ bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const lib
     return true;
 }
 
-bool RecalculateVITSupply(int nHeightStart, bool fSkipZpiv)
+bool RecalculateVITSupply(int nHeightStart, bool fSkipZvit)
 {
     AssertLockHeld(cs_main);
 
@@ -202,7 +202,7 @@ bool RecalculateVITSupply(int nHeightStart, bool fSkipZpiv)
     if (nHeightStart == consensus.height_start_ZC)
         nMoneySupply = CAmount(649916627717750);
 
-    if (!fSkipZpiv) {
+    if (!fSkipZvit) {
         // initialize supply to 0
         mapZerocoinSupply.clear();
         for (auto& denom : libzerocoin::zerocoinDenomList) mapZerocoinSupply.insert(std::make_pair(denom, 0));
@@ -249,9 +249,9 @@ bool RecalculateVITSupply(int nHeightStart, bool fSkipZpiv)
         // Rewrite money supply
         nMoneySupply += (nValueOut - nValueIn);
 
-        // Rewrite zpiv supply too
-        if (!fSkipZpiv && pindex->nHeight >= consensus.height_start_ZC) {
-            UpdateZPIVSupplyConnect(block, pindex, true);
+        // Rewrite zvit supply too
+        if (!fSkipZvit && pindex->nHeight >= consensus.height_start_ZC) {
+            UpdateZVITSupplyConnect(block, pindex, true);
         }
 
         // Add fraudulent funds to the supply and remove any recovered funds.

@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PIVX_CONSENSUS_ZEROCOIN_VERIFY_H
-#define PIVX_CONSENSUS_ZEROCOIN_VERIFY_H
+#ifndef VITAE_CONSENSUS_ZEROCOIN_VERIFY_H
+#define VITAE_CONSENSUS_ZEROCOIN_VERIFY_H
 
 #include "consensus/consensus.h"
 #include "main.h"
@@ -20,7 +20,7 @@ int CurrentPublicCoinSpendVersion();
 bool CheckPublicCoinSpendVersion(int version);
 bool ContextualCheckZerocoinSpend(const CTransaction& tx, const libzerocoin::CoinSpend* spend, int nHeight, const uint256& hashBlock);
 bool ContextualCheckZerocoinSpendNoSerialCheck(const CTransaction& tx, const libzerocoin::CoinSpend* spend, int nHeight, const uint256& hashBlock);
-bool RecalculateVITSupply(int nHeightStart, bool fSkipZpiv = true);
+bool RecalculateVITSupply(int nHeightStart, bool fSkipZvit = true);
 CAmount GetInvalidUTXOValue();
 
-#endif //PIVX_CONSENSUS_ZEROCOIN_VERIFY_H
+#endif //VITAE_CONSENSUS_ZEROCOIN_VERIFY_H
