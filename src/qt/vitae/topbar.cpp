@@ -653,10 +653,10 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     ui->labelPendingVit->setText(GUIUtil::formatBalance(unconfirmedBalance, nDisplayUnit));
     ui->labelImmatureVit->setText(GUIUtil::formatBalance(immatureBalance, nDisplayUnit));
 
-    // Update display state and/or values for zPIV balances as necessary
+    // Update display state and/or values for zVIT balances as necessary
     bool fHaveZerocoins = zerocoinBalance > 0;
 
-    // Set visibility of zPIV label titles/values
+    // Set visibility of zVIT label titles/values
     ui->typeSpacerTop->setVisible(fHaveZerocoins);
     ui->typeSpacerExpanded->setVisible(fHaveZerocoins);
     ui->labelAmountTopzVit->setVisible(fHaveZerocoins);

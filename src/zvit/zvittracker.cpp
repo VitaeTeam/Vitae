@@ -452,7 +452,7 @@ std::set<CMintMeta> CzVITTracker::ListMints(bool fUnusedOnly, bool fMatureOnly, 
                 continue;
             Add(dMint, false, false, wallet->zwalletMain);
         }
-        LogPrint(BCLog::LEGACYZC, "%s: added %d dzpiv from DB\n", __func__, listDeterministicDB.size());
+        LogPrint(BCLog::LEGACYZC, "%s: added %d dzvit from DB\n", __func__, listDeterministicDB.size());
     }
 
     std::vector<CMintMeta> vOverWrite;

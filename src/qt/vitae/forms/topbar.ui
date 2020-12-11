@@ -529,7 +529,7 @@ border:none;</string>
                 <item>
                  <widget class="QLabel" name="labelAvailablezVit">
                   <property name="text">
-                   <string notr="true">1,000 zPIV</string>
+                   <string notr="true">1,000 zVIT</string>
                   </property>
                  </widget>
                 </item>
@@ -552,7 +552,7 @@ border:none;</string>
                   <item>
                    <widget class="QLabel" name="labelPendingzVit">
                     <property name="text">
-                     <string notr="true">60 zPIV</string>
+                     <string notr="true">60 zVIT</string>
                     </property>
                    </widget>
                   </item>
@@ -586,7 +586,7 @@ border:none;</string>
                   <item>
                    <widget class="QLabel" name="labelImmaturezVit">
                     <property name="text">
-                     <string notr="true">10 zPIV</string>
+                     <string notr="true">10 zVIT</string>
                     </property>
                    </widget>
                   </item>

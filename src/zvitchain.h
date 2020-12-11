@@ -42,8 +42,8 @@ std::list<libzerocoin::CoinDenomination> ZerocoinSpendListFromBlock(const CBlock
 /** Global variable for the zerocoin supply */
 extern std::map<libzerocoin::CoinDenomination, int64_t> mapZerocoinSupply;
 int64_t GetZerocoinSupply();
-bool UpdateZPIVSupplyConnect(const CBlock& block, CBlockIndex* pindex, bool fJustCheck);
-bool UpdateZPIVSupplyDisconnect(const CBlock& block, CBlockIndex* pindex);
+bool UpdateZVITSupplyConnect(const CBlock& block, CBlockIndex* pindex, bool fJustCheck);
+bool UpdateZVITSupplyDisconnect(const CBlock& block, CBlockIndex* pindex);
 
 
 #endif //VITAE_ZVITCHAIN_H

@@ -20,28 +20,28 @@ uint32_t ParseAccChecksum(uint256 nCheckpoint, const libzerocoin::CoinDenominati
     return nCheckpoint.Get32();
 }
 
-bool CLegacyZPivStake::InitFromTxIn(const CTxIn& txin)
+bool CLegacyZVitStake::InitFromTxIn(const CTxIn& txin)
 {
     // Construct the stakeinput object
     if (!txin.IsZerocoinSpend())
-        return error("%s: unable to initialize CLegacyZPivStake from non zc-spend");
+        return error("%s: unable to initialize CLegacyZVitStake from non zc-spend");
 
     // Check spend type
     libzerocoin::CoinSpend spend = TxInToZerocoinSpend(txin);
     if (spend.getSpendType() != libzerocoin::SpendType::STAKE)
         return error("%s : spend is using the wrong SpendType (%d)", __func__, (int)spend.getSpendType());
 
-    *this = CLegacyZPivStake(spend);
+    *this = CLegacyZVitStake(spend);
 
     // Find the pindex with the accumulator checksum
     if (!GetIndexFrom())
-        return error("%s : Failed to find the block index for zpiv stake origin", __func__);
+        return error("%s : Failed to find the block index for zvit stake origin", __func__);
 
     // All good
     return true;
 }
 
-CLegacyZPivStake::CLegacyZPivStake(const libzerocoin::CoinSpend& spend)
+CLegacyZVitStake::CLegacyZVitStake(const libzerocoin::CoinSpend& spend)
 {
     this->nChecksum = spend.getAccumulatorChecksum();
     this->denom = spend.getDenomination();
@@ -49,7 +49,7 @@ CLegacyZPivStake::CLegacyZPivStake(const libzerocoin::CoinSpend& spend)
     this->hashSerial = Hash(nSerial.begin(), nSerial.end());
 }
 
-CBlockIndex* CLegacyZPivStake::GetIndexFrom()
+CBlockIndex* CLegacyZVitStake::GetIndexFrom()
 {
     // First look in the legacy database
     int nHeightChecksum = 0;
@@ -77,12 +77,12 @@ CBlockIndex* CLegacyZPivStake::GetIndexFrom()
     return nullptr;
 }
 
-CAmount CLegacyZPivStake::GetValue() const
+CAmount CLegacyZVitStake::GetValue() const
 {
     return denom * COIN;
 }
 
-CDataStream CLegacyZPivStake::GetUniqueness() const
+CDataStream CLegacyZVitStake::GetUniqueness() const
 {
     CDataStream ss(SER_GETHASH, 0);
     ss << hashSerial;
@@ -90,11 +90,11 @@ CDataStream CLegacyZPivStake::GetUniqueness() const
 }
 
 // Verify stake contextual checks
-bool CLegacyZPivStake::ContextCheck(int nHeight, uint32_t nTime)
+bool CLegacyZVitStake::ContextCheck(int nHeight, uint32_t nTime)
 {
     const Consensus::Params& consensus = Params().GetConsensus();
     if (nHeight < consensus.height_start_ZC_SerialsV2 || nHeight >= consensus.height_last_ZC_AccumCheckpoint)
-        return error("%s : zPIV stake block: height %d outside range", __func__, nHeight);
+        return error("%s : zVIT stake block: height %d outside range", __func__, nHeight);
 
     // The checkpoint needs to be from 200 blocks ago
     const int cpHeight = nHeight - 1 - consensus.ZC_MinStakeDepth;
