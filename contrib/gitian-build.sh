@@ -6,7 +6,7 @@
 sign=false
 verify=false
 build=false
-setupenv=false
+#etupenv=false
 
 # Systems to build
 linux=true
@@ -28,7 +28,7 @@ signProg="gpg --detach-sign"
 commitFiles=true
 
 # Help Message
-read -d '' usage <<- EOF
+read -r -d '' usage <<- EOF
 Usage: $scriptName [-c|u|v|b|s|B|o|h|j|m|] signer version
 
 Run this script from the directory containing the vitae, gitian-builder, gitian.sigs, and vitae-detached-sigs.
@@ -231,7 +231,7 @@ if [[ $commit = false ]]
 then
 	COMMIT="v${VERSION}"
 fi
-echo ${COMMIT}
+echo "${COMMIT}"
 
 # Setup build environment
 if [[ $setup = true ]]
@@ -240,38 +240,38 @@ then
     git clone https://github.com/vitaeteam/gitian.sigs.git
     git clone https://github.com/vitaeteam/vitae-detached-sigs.git
     git clone https://github.com/devrandom/gitian-builder.git
-    pushd ./gitian-builder
+    pushd ./gitian-builder || exit
     if [[ -n "$USE_LXC" ]]
     then
         sudo apt-get install lxc
-        bin/make-base-vm --suite trusty --arch amd64 --lxc
+        bin/make-base-vm --suite bionic --arch amd64 --lxc
     else
-        bin/make-base-vm --suite trusty --arch amd64
+        bin/make-base-vm --suite bionic --arch amd64
     fi
-    popd
+    popd || exit
 fi
 
 # Set up build
-pushd ./vitae
+pushd ./vitae || exit
 git fetch
-git checkout ${COMMIT}
-popd
+git checkout "${COMMIT}"
+popd || exit
 
 # Build
 if [[ $build = true ]]
 then
 	# Make output folder
-	mkdir -p ./vitae-binaries/${VERSION}
+	mkdir -p "./vitae-binaries/${VERSION}"
 
 	# Build Dependencies
 	echo ""
 	echo "Building Dependencies"
 	echo ""
-	pushd ./gitian-builder
+	pushd ./gitian-builder || exit
 	mkdir -p inputs
 	wget -N -P inputs $osslPatchUrl
 	wget -N -P inputs $osslTarUrl
-	make -C ../vitae/depends download SOURCES_PATH=`pwd`/cache/common
+	make -C ../vitae/depends download SOURCES_PATH="$(pwd)"/cache/common
 
 	# Linux
 	if [[ $linux = true ]]
@@ -280,7 +280,7 @@ then
 	    echo "Compiling ${VERSION} Linux"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit vitae=${COMMIT} --url vitae=${url} ../vitae/contrib/gitian-descriptors/gitian-linux.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-linux.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-linux --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-linux.yml
 	    mv build/out/vitae-*.tar.gz build/out/src/vitae-*.tar.gz ../vitae-binaries/${VERSION}
 	fi
 	# Windows
@@ -290,7 +290,7 @@ then
 	    echo "Compiling ${VERSION} Windows"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit vitae=${COMMIT} --url vitae=${url} ../vitae/contrib/gitian-descriptors/gitian-win.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win.yml
 	    mv build/out/vitae-*-win-unsigned.tar.gz inputs/vitae-win-unsigned.tar.gz
 	    mv build/out/vitae-*.zip build/out/vitae-*.exe ../vitae-binaries/${VERSION}
 	fi
@@ -301,7 +301,7 @@ then
 	    echo "Compiling ${VERSION} Mac OSX"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit vitae=${COMMIT} --url vitae=${url} ../vitae/contrib/gitian-descriptors/gitian-osx.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-osx.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-unsigned --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-osx.yml
 	    mv build/out/vitae-*-osx-unsigned.tar.gz inputs/vitae-osx-unsigned.tar.gz
 	    mv build/out/vitae-*.tar.gz build/out/vitae-*.dmg ../vitae-binaries/${VERSION}
 	fi
@@ -312,9 +312,9 @@ then
 	    echo "Compiling ${VERSION} AArch64"
 	    echo ""
 	    ./bin/gbuild -j ${proc} -m ${mem} --commit vitae=${COMMIT} --url vitae=${url} ../vitae/contrib/gitian-descriptors/gitian-aarch64.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-aarch64.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-aarch64 --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-aarch64.yml
 	    mv build/out/vitae-*.tar.gz build/out/src/vitae-*.tar.gz ../vitae-binaries/${VERSION}
-	popd
+	popd || exit
 
         if [[ $commitFiles = true ]]
         then
@@ -322,13 +322,13 @@ then
             echo ""
             echo "Committing ${VERSION} Unsigned Sigs"
             echo ""
-            pushd gitian.sigs
+            pushd gitian.sigs || exit
             git add ${VERSION}-linux/${SIGNER}
             git add ${VERSION}-aarch64/${SIGNER}
             git add ${VERSION}-win-unsigned/${SIGNER}
             git add ${VERSION}-osx-unsigned/${SIGNER}
             git commit -a -m "Add ${VERSION} unsigned sigs for ${SIGNER}"
-            popd
+            popd || exit
         fi
 fi
 
@@ -336,7 +336,7 @@ fi
 if [[ $verify = true ]]
 then
 	# Linux
-	pushd ./gitian-builder
+	pushd ./gitian-builder || exit
 	echo ""
 	echo "Verifying v${VERSION} Linux"
 	echo ""
@@ -366,14 +366,14 @@ then
 	echo "Verifying v${VERSION} Signed Mac OSX"
 	echo ""
 	./bin/gverify -v -d ../gitian.sigs/ -r ${VERSION}-osx-signed ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
-	popd
+	popd || exit
 fi
 
 # Sign binaries
 if [[ $sign = true ]]
 then
 
-        pushd ./gitian-builder
+        pushd ./gitian-builder || exit
 	# Sign Windows
 	if [[ $windows = true ]]
 	then
@@ -381,7 +381,7 @@ then
 	    echo "Signing ${VERSION} Windows"
 	    echo ""
 	    ./bin/gbuild -i --commit signature=${COMMIT} ../vitae/contrib/gitian-descriptors/gitian-win-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win-signer.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-win-signed --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-win-signer.yml
 	    mv build/out/vitae-*win64-setup.exe ../vitae-binaries/${VERSION}
 	    mv build/out/vitae-*win32-setup.exe ../vitae-binaries/${VERSION}
 	fi
@@ -392,21 +392,21 @@ then
 	    echo "Signing ${VERSION} Mac OSX"
 	    echo ""
 	    ./bin/gbuild -i --commit signature=${COMMIT} ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
-	    ./bin/gsign -p $signProg --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
+	    ./bin/gsign --signer $SIGNER --release ${VERSION}-osx-signed --destination ../gitian.sigs/ ../vitae/contrib/gitian-descriptors/gitian-osx-signer.yml
 	    mv build/out/vitae-osx-signed.dmg ../vitae-binaries/${VERSION}/vitae-${VERSION}-osx.dmg
 	fi
-	popd
+	popd || exit
 
         if [[ $commitFiles = true ]]
         then
             # Commit Sigs
-            pushd gitian.sigs
+            pushd gitian.sigs || exit
             echo ""
             echo "Committing ${VERSION} Signed Sigs"
             echo ""
             git add ${VERSION}-win-signed/${SIGNER}
             git add ${VERSION}-osx-signed/${SIGNER}
             git commit -a -m "Add ${VERSION} signed binary sigs for ${SIGNER}"
-            popd
+            popd || exit
         fi
 fi
