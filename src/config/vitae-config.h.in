@@ -291,6 +291,9 @@
 /* Define this symbol if the qt platform is cocoa */
 #undef QT_QPA_PLATFORM_COCOA
 
+/* Define this symbol if the minimal qt platform exists */
+#undef QT_QPA_PLATFORM_MINIMAL
+
 /* Define this symbol if the qt platform is windows */
 #undef QT_QPA_PLATFORM_WINDOWS
 
