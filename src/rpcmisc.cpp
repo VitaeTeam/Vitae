@@ -716,7 +716,7 @@ UniValue getstakingstatus(const UniValue& params, bool fHelp)
             "  \"walletunlocked\": true|false,     (boolean) if the wallet is unlocked\n"
             "  \"stakeablecoins\": true|false,      (boolean) if the wallet has mintable balance (greater than reserve balance)\n"
             "  \"fnsync\": true|false,             (boolean) if fundamentalnode data is synced\n"
-            "  \"stakingbalance\": d               (numeric) PIV value of the stakeable coins (minus reserve balance, if any)\n"
+            "  \"stakingbalance\": d               (numeric) VIT value of the stakeable coins (minus reserve balance, if any)\n"
             "  \"stakesplitthreshold\": d           (numeric) value of the current threshold for stake split\n"
             "  \"lastattempt_age\": xxx            (numeric) seconds since last stake attempt\n"
             "  \"lastattempt_depth\": xxx          (numeric) depth of the block on top of which the last stake attempt was made\n"

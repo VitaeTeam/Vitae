@@ -2473,8 +2473,8 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
     if (blockUndo.vtxundo.size() + 1 != block.vtx.size())
         return error("DisconnectBlock() : block and undo data inconsistent");
 
-    //Track zPIV money supply
-    if (!UpdateZPIVSupplyDisconnect(block, pindex))
+    //Track zVIT money supply
+    if (!UpdateZVITSupplyDisconnect(block, pindex))
         return error("%s: Failed to calculate new zPIV supply", __func__);
 
     // undo transactions in reverse order
@@ -2946,8 +2946,8 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
     // add this block to the view's block chain
     view.SetBestBlock(pindex->GetBlockHash());
 
-    // Update zPIV money supply map
-    if (!UpdateZPIVSupplyConnect(block, pindex, fJustCheck)) {
+    // Update zVIT money supply map
+    if (!UpdateZVITSupplyConnect(block, pindex, fJustCheck)) {
         return state.DoS(100, error("%s: Failed to calculate new zPIV supply for block=%s height=%d", __func__,
                                     block.GetHash().GetHex(), pindex->nHeight), REJECT_INVALID);
     }
@@ -2967,7 +2967,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
         nMoneySupply -= nLocked;
     }
 
-    // Update PIV money supply
+    // Update VIT money supply
     nMoneySupply += (nValueOut - nValueIn);
 
     int64_t nTime3 = GetTimeMicros();

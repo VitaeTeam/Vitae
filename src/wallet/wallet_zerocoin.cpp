@@ -264,7 +264,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue,
 
 
     //any change that is less than 0.0100000 will be ignored and given as an extra fee
-    //also assume that a zerocoinspend that is minting the change will not have any change that goes to Piv
+    //also assume that a zerocoinspend that is minting the change will not have any change that goes to VIT
     CAmount nChange = nValueIn - nTotalValue; // Fee already accounted for in nTotalValue
     if (nChange > 1 * CENT) {
         // Fill a vout to ourself using the largest contributing address

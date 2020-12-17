@@ -283,7 +283,7 @@
            <item alignment="Qt::AlignHCenter">
             <widget class="QLabel" name="labelCustomFee">
              <property name="text">
-              <string>PIV/kilobyte</string>
+              <string>VIT/kilobyte</string>
              </property>
             </widget>
            </item>

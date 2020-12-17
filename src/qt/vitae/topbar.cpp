@@ -645,7 +645,7 @@ void TopBar::updateBalances(const CAmount& balance, const CAmount& unconfirmedBa
     QString totalVit = GUIUtil::formatBalance(vitAvailableBalance, nDisplayUnit);
     QString totalzVit = GUIUtil::formatBalance(matureZerocoinBalance, nDisplayUnit, true);
 
-    // PIV
+    // VIT
     // Top
     ui->labelAmountTopVit->setText(totalVit);
     // Expanded

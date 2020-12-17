@@ -121,7 +121,7 @@ bool CVitStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmoun
 
 CDataStream CVitStake::GetUniqueness() const
 {
-    //The unique identifier for a PIV stake is the outpoint
+    //The unique identifier for a VIT stake is the outpoint
     CDataStream ss(SER_NETWORK, 0);
     ss << nPosition << txFrom.GetHash();
     return ss;

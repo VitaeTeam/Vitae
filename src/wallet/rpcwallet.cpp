@@ -3024,11 +3024,11 @@ UniValue setstakesplitthreshold(const UniValue& params, bool fHelp)
             "Whenever a successful stake is found, the stake amount is split across as many outputs (each with a value\n"
             "higher than the threshold) as possible.\n"
             "E.g. If the coinstake input + the block reward is 2000, and the split threshold is 499, the corresponding\n"
-            "coinstake transaction will have 4 outputs (of 500 PIV each)."
+            "coinstake transaction will have 4 outputs (of 500 VIT each)."
             + HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
-            "1. value                   (numeric, required) Threshold value (in PIV).\n"
+            "1. value                   (numeric, required) Threshold value (in VIT).\n"
             "                                               Set to 0 to disable stake-splitting\n"
 
             "\nResult:\n"

@@ -1556,7 +1556,7 @@ bool AppInit2()
                             }
                         }
 
-                        // Load PIV supply amount
+                        // Load VIT supply amount
                         if (!fReindexMoneySupply && !pblocktree->ReadMoneySupply(nMoneySupply)) {
                             // try first reading legacy block index from DB
                             if (pblocktree->ReadLegacyBlockIndex(tipHash, bi)) {

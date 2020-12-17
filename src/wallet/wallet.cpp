@@ -3808,7 +3808,7 @@ void CWallet::SetNull()
     // Stake split threshold
     nStakeSplitThreshold = DEFAULT_STAKE_SPLIT_THRESHOLD;
 
-    // User-defined fee PIV/kb
+    // User-defined fee VIT/kb
     fUseCustomFee = false;
     nCustomFee = CWallet::minTxFee.GetFeePerK();
 

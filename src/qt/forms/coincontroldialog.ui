@@ -98,7 +98,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Select PIV Outputs to Spend</string>
+           <string>Select VIT Outputs to Spend</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
