@@ -14,7 +14,7 @@
 #include "test_vitae.h"
 
 #ifdef ENABLE_WALLET
-#include "wallet_ismine.h"
+#include "wallet/wallet_ismine.h"
 #endif
 
 #include <boost/test/unit_test.hpp>

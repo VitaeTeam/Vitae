@@ -5,7 +5,7 @@
 
 #include "wallet/test/wallet_test_fixture.h"
 
-#include "rpc/server.h"
+#include "rpcserver.h"
 #include "wallet/db.h"
 #include "wallet/wallet.h"
 
