@@ -382,8 +382,6 @@ void SendWidget::onSendClicked()
 
     bool sendVit = ui->pushLeft->isChecked();
 
-    bool sendPiv = ui->pushLeft->isChecked();
-
     WalletModel::UnlockContext ctx(walletModel->requestUnlock());
     if (!ctx.isValid()) {
         // Unlock wallet was cancelled

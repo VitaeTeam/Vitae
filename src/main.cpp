@@ -114,7 +114,7 @@ unsigned int nCoinCacheSize = 5000;
 /* If the tip is older than this (in seconds), the node is considered to be in initial block download. */
 int64_t nMaxTipAge = DEFAULT_MAX_TIP_AGE;
 
-/** Fees smaller than this (in upiv) are considered zero fee (for relaying and mining)
+/** Fees smaller than this (in uvit) are considered zero fee (for relaying and mining)
  * We are ~100 times smaller then bitcoin now (2015-06-23), set minRelayTxFee only 10 times higher
  * so it's still 10 times lower comparing to bitcoin.
  */
@@ -1061,7 +1061,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 // Only allow for public zc spends inputs
                 if (!txIn.IsZerocoinPublicSpend())
                     return state.Invalid(error("%s: failed for tx %s, every input must be a zcpublicspend",
-                            __func__, tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zpiv");
+                            __func__, tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvit");
 
                 libzerocoin::ZerocoinParams* params = consensus.Zerocoin_Params(false);
                 PublicCoinSpend publicSpend(params);
@@ -1070,12 +1070,12 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 }
                 if (!ContextualCheckZerocoinSpend(tx, &publicSpend, chainHeight, UINT256_ZERO))
                     return state.Invalid(error("%s: ContextualCheckZerocoinSpend failed for tx %s",
-                            __func__, tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zpiv");
+                            __func__, tx.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvit");
 
                 // Check that the version matches the one enforced with SPORK_18
                 if (!CheckPublicCoinSpendVersion(publicSpend.getVersion())) {
                     return state.Invalid(error("%s : Public Zerocoin spend version %d not accepted. must be version %d.",
-                            __func__, publicSpend.getVersion(), CurrentPublicCoinSpendVersion()), REJECT_INVALID, "bad-txns-invalid-zpiv");
+                            __func__, publicSpend.getVersion(), CurrentPublicCoinSpendVersion()), REJECT_INVALID, "bad-txns-invalid-zvit");
                 }
 
             }
@@ -4109,10 +4109,10 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
     }
 
     if (block.nBits != nBitsRequired) {
-        // Pivx Specific reference to the block with the wrong threshold was used.
+        // Vitae Specific reference to the block with the wrong threshold was used.
         const Consensus::Params& consensus = Params().GetConsensus();
-        if ((block.nTime == (uint32_t) consensus.nPivxBadBlockTime) &&
-                (block.nBits == (uint32_t) consensus.nPivxBadBlockBits)) {
+        if ((block.nTime == (uint32_t) consensus.nVitaeBadBlockTime) &&
+                (block.nBits == (uint32_t) consensus.nVitaeBadBlockBits)) {
             // accept VITAE block minted with incorrect proof of work threshold
             return true;
         }

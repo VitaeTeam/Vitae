@@ -63,8 +63,8 @@ struct Params {
     int height_ZC_RecalcAccumulators;
 
     // validation by-pass
-    int64_t nPivxBadBlockTime;
-    unsigned int nPivxBadBlockBits;
+    int64_t nVitaeBadBlockTime;
+    unsigned int nVitaeBadBlockBits;
 
 
     int64_t TargetTimespan(const bool fV2 = true) const { return fV2 ? nTargetTimespanV2 : nTargetTimespan; }
