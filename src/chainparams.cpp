@@ -371,7 +371,7 @@ public:
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
         nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 40 * 45;  // VITAE: 1 minute
+        nTargetSpacing = 1 * 45;  // VITAE: 45 seconds
         nLastPOWBlock = 200;
         nMaturity = 15;
         nFundamentalnodeCountDrift = 4;
@@ -379,8 +379,8 @@ public:
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
-        nZerocoinStartHeight = 201576;
-        nZerocoinStartTime = 2004318070; // disabled
+        nZerocoinStartHeight = 130000;
+        nZerocoinStartTime = 1608861600; // Friday, December 25, 2020 2:00:00 AM  
         nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 9908000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 9891737; //First block that bad serials emerged
