@@ -379,8 +379,8 @@ public:
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
-        nZerocoinStartHeight = 130200;
-        nZerocoinStartTime = 1608866724; // Friday, December 25, 2020 3:25:24 AM GMT  
+        nZerocoinStartHeight = 130400;
+        nZerocoinStartTime = 1608878580; // Friday, December 25, 2020 6:43:00 AM GMT  
         nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 9908000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 9891737; //First block that bad serials emerged
