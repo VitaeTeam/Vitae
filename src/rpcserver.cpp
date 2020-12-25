@@ -18,6 +18,7 @@
 #include "utilstrencodings.h"
 
 #include <boost/bind.hpp>
+#include <boost/bind/placeholders.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/iostreams/concepts.hpp>

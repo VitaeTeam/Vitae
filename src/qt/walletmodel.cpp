@@ -22,6 +22,8 @@
 #include "walletdb.h" // for BackupWallet
 #include <stdint.h>
 
+#include <boost/bind/placeholders.hpp>
+
 #include <QDebug>
 #include <QSet>
 #include <QTimer>
