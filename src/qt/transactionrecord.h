@@ -1,4 +1,7 @@
-// Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2011-2014 The Bitcoin developers
+// Copyright (c) 2014-2016 The Dash developers
+// Copyright (c) 2016-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -75,6 +78,7 @@ public:
         Other,
         Generated,
         StakeMint,
+        StakeZVIT,
         SendToAddress,
         SendToOther,
         RecvWithAddress,
@@ -87,35 +91,41 @@ public:
         RecvFromZerocoinSpend,
         ZerocoinSpend_Change_zVit,
         ZerocoinSpend_FromMe,
-        RecvWithObfuscation,
-        ObfuscationDenominate,
-        ObfuscationCollateralPayment,
-        ObfuscationMakeCollaterals,
-        ObfuscationCreateDenominations,
-        Obfuscated
+        StakeDelegated, // Received cold stake (owner)
+        StakeHot, // Staked via a delegated P2CS.
+        P2CSDelegation, // Non-spendable P2CS, staker side.
+        P2CSDelegationSent, // Non-spendable P2CS delegated utxo. (coin-owner transferred ownership to external wallet)
+        P2CSDelegationSentOwner, // Spendable P2CS delegated utxo. (coin-owner)
+        P2CSUnlockOwner, // Coin-owner spent the delegated utxo
+        P2CSUnlockStaker // Staker watching the owner spent the delegated utxo
     };
 
     /** Number of confirmation recommended for accepting a transaction */
     static const int RecommendedNumConfirmations = 6;
 
-    TransactionRecord() : hash(), time(0), type(Other), address(""), debit(0), credit(0), idx(0)
+    TransactionRecord(unsigned int size) : hash(), time(0), type(Other), address(""), debit(0), credit(0), size(size), idx(0)
     {
     }
 
-    TransactionRecord(uint256 hash, qint64 time) : hash(hash), time(time), type(Other), address(""), debit(0),
-                                                   credit(0), idx(0)
+    TransactionRecord(uint256 hash, qint64 time, unsigned int size) : hash(hash), time(time), type(Other), address(""), debit(0),
+                                                   credit(0), size(size), idx(0)
     {
     }
 
-    TransactionRecord(uint256 hash, qint64 time, Type type, const std::string& address, const CAmount& debit, const CAmount& credit) : hash(hash), time(time), type(type), address(address), debit(debit), credit(credit),
-                                                                                                                                       idx(0)
+    TransactionRecord(uint256 hash, qint64 time, unsigned int size, Type type, const std::string& address, const CAmount& debit, const CAmount& credit) : hash(hash), time(time), type(type), address(address), debit(debit), credit(credit),
+                                                                                                                                       size(size), idx(0)
     {
     }
 
     /** Decompose CWallet transaction to model transaction records.
      */
-    static bool showTransaction(const CWalletTx& wtx);
     static QList<TransactionRecord> decomposeTransaction(const CWallet* wallet, const CWalletTx& wtx);
+
+    /// Helpers
+    static bool ExtractAddress(const CScript& scriptPubKey, bool fColdStake, std::string& addressStr);
+    static void loadHotOrColdStakeOrContract(const CWallet* wallet, const CWalletTx& wtx,
+                                            TransactionRecord& record, bool isContract = false);
+    static void loadUnlockColdStake(const CWallet* wallet, const CWalletTx& wtx, TransactionRecord& record);
 
     /** @name Immutable transaction attributes
       @{*/
@@ -125,6 +135,7 @@ public:
     std::string address;
     CAmount debit;
     CAmount credit;
+    unsigned int size;
     /**@}*/
 
     /** Subtransaction index, for sort key */
@@ -149,6 +160,23 @@ public:
     /** Return whether a status update is needed.
      */
     bool statusUpdateNeeded();
+
+    /** Return transaction status
+     */
+    std::string statusToString();
+
+    /** Return true if the tx is a coinstake
+     */
+    bool isCoinStake() const;
+
+    /** Return true if the tx is a any cold staking type tx.
+     */
+    bool isAnyColdStakingType() const;
+
+    /** Return true if the tx hash is null and/or if the size is 0
+     */
+    bool isNull() const;
+
 };
 
 #endif // BITCOIN_QT_TRANSACTIONRECORD_H

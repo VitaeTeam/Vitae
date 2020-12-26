@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -41,7 +41,7 @@ bool CheckBlock(int nHeight, const uint256& hash, bool fMatchesCheckpoint)
 }
 
 //! Guess how far we are in the verification process at the given block index
-double GuessVerificationProgress(CBlockIndex* pindex, bool fSigchecks)
+double GuessVerificationProgress(const CBlockIndex* pindex, bool fSigchecks)
 {
     if (pindex == NULL)
         return 0.0;

@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +13,6 @@
 #include "sync.h"
 
 #include <boost/signals2/signal.hpp>
-#include <boost/variant.hpp>
 
 class CScript;
 class CScriptID;
@@ -20,10 +20,11 @@ class CScriptID;
 /** A virtual base class for key stores */
 class CKeyStore
 {
-protected:
-    mutable CCriticalSection cs_KeyStore;
 
 public:
+    // todo: Make it protected again once we are more advanced in the wallet/spkm decoupling.
+    mutable RecursiveMutex cs_KeyStore;
+
     virtual ~CKeyStore() {}
 
     //! Add a key to the store.
@@ -70,39 +71,10 @@ protected:
 
 public:
     bool AddKeyPubKey(const CKey& key, const CPubKey& pubkey);
-    bool HaveKey(const CKeyID& address) const
-    {
-        bool result;
-        {
-            LOCK(cs_KeyStore);
-            result = (mapKeys.count(address) > 0);
-        }
-        return result;
-    }
-    void GetKeys(std::set<CKeyID>& setAddress) const
-    {
-        setAddress.clear();
-        {
-            LOCK(cs_KeyStore);
-            KeyMap::const_iterator mi = mapKeys.begin();
-            while (mi != mapKeys.end()) {
-                setAddress.insert((*mi).first);
-                mi++;
-            }
-        }
-    }
-    bool GetKey(const CKeyID& address, CKey& keyOut) const
-    {
-        {
-            LOCK(cs_KeyStore);
-            KeyMap::const_iterator mi = mapKeys.find(address);
-            if (mi != mapKeys.end()) {
-                keyOut = mi->second;
-                return true;
-            }
-        }
-        return false;
-    }
+    bool HaveKey(const CKeyID& address) const;
+    void GetKeys(std::set<CKeyID>& setAddress) const;
+    bool GetKey(const CKeyID& address, CKey& keyOut) const;
+
     virtual bool AddCScript(const CScript& redeemScript);
     virtual bool HaveCScript(const CScriptID& hash) const;
     virtual bool GetCScript(const CScriptID& hash, CScript& redeemScriptOut) const;

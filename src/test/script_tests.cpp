@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2014 The Bitcoin Core developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2020 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,6 +14,7 @@
 #include "script/script_error.h"
 #include "script/sign.h"
 #include "util.h"
+#include "test_vitae.h"
 
 #if defined(HAVE_CONSENSUS_LIB)
 #include "script/bitcoinconsensus.h"
@@ -30,21 +31,18 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/foreach.hpp>
 #include <boost/test/unit_test.hpp>
 
 #include <univalue.h>
 
-using namespace std;
-using namespace boost::algorithm;
 
 // Uncomment if you want to output updated JSON tests.
 // #define UPDATE_JSON_TESTS
 
 static const unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_STRICTENC;
 
-unsigned int ParseScriptFlags(string strFlags);
-string FormatScriptFlags(unsigned int flags);
+unsigned int ParseScriptFlags(std::string strFlags);
+std::string FormatScriptFlags(unsigned int flags);
 
 UniValue
 read_json(const std::string& jsondata)
@@ -59,7 +57,7 @@ read_json(const std::string& jsondata)
     return v.get_array();
 }
 
-BOOST_AUTO_TEST_SUITE(script_tests)
+BOOST_FIXTURE_TEST_SUITE(script_tests, TestingSetup)
 
 CMutableTransaction BuildCreditingTransaction(const CScript& scriptPubKey)
 {
@@ -583,7 +581,7 @@ BOOST_AUTO_TEST_CASE(script_build)
     std::string strGood;
     std::string strBad;
 
-    BOOST_FOREACH(TestBuilder& test, good) {
+    for (TestBuilder& test : good) {
         test.Test(true);
         std::string str = test.GetJSON().write();
 #ifndef UPDATE_JSON_TESTS
@@ -593,7 +591,7 @@ BOOST_AUTO_TEST_CASE(script_build)
 #endif
         strGood += str + ",\n";
     }
-    BOOST_FOREACH(TestBuilder& test, bad) {
+    for (TestBuilder& test : bad) {
         test.Test(false);
         std::string str = test.GetJSON().write();
 #ifndef UPDATE_JSON_TESTS
@@ -625,7 +623,7 @@ BOOST_AUTO_TEST_CASE(script_valid)
 
     for (unsigned int idx = 0; idx < tests.size(); idx++) {
         UniValue test = tests[idx];
-        string strTest = test.write();
+        std::string strTest = test.write();
         if (test.size() < 3) // Allow size > 3; extra stuff ignored (useful for comments)
         {
             if (test.size() != 1) {
@@ -633,9 +631,9 @@ BOOST_AUTO_TEST_CASE(script_valid)
             }
             continue;
         }
-        string scriptSigString = test[0].get_str();
+        std::string scriptSigString = test[0].get_str();
         CScript scriptSig = ParseScript(scriptSigString);
-        string scriptPubKeyString = test[1].get_str();
+        std::string scriptPubKeyString = test[1].get_str();
         CScript scriptPubKey = ParseScript(scriptPubKeyString);
         unsigned int scriptflags = ParseScriptFlags(test[2].get_str());
 
@@ -650,7 +648,7 @@ BOOST_AUTO_TEST_CASE(script_invalid)
 
     for (unsigned int idx = 0; idx < tests.size(); idx++) {
         UniValue test = tests[idx];
-        string strTest = test.write();
+        std::string strTest = test.write();
         if (test.size() < 3) // Allow size > 3; extra stuff ignored (useful for comments)
         {
             if (test.size() != 1) {
@@ -658,9 +656,9 @@ BOOST_AUTO_TEST_CASE(script_invalid)
             }
             continue;
         }
-        string scriptSigString = test[0].get_str();
+        std::string scriptSigString = test[0].get_str();
         CScript scriptSig = ParseScript(scriptSigString);
-        string scriptPubKeyString = test[1].get_str();
+        std::string scriptPubKeyString = test[1].get_str();
         CScript scriptPubKey = ParseScript(scriptPubKeyString);
         unsigned int scriptflags = ParseScriptFlags(test[2].get_str());
 
@@ -678,21 +676,21 @@ BOOST_AUTO_TEST_CASE(script_PushData)
     static const unsigned char pushdata4[] = { OP_PUSHDATA4, 1, 0, 0, 0, 0x5a };
 
     ScriptError err;
-    vector<vector<unsigned char> > directStack;
+    std::vector<std::vector<unsigned char> > directStack;
     BOOST_CHECK(EvalScript(directStack, CScript(&direct[0], &direct[sizeof(direct)]), true, BaseSignatureChecker(), &err));
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
-    vector<vector<unsigned char> > pushdata1Stack;
+    std::vector<std::vector<unsigned char> > pushdata1Stack;
     BOOST_CHECK(EvalScript(pushdata1Stack, CScript(&pushdata1[0], &pushdata1[sizeof(pushdata1)]), true, BaseSignatureChecker(), &err));
     BOOST_CHECK(pushdata1Stack == directStack);
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
-    vector<vector<unsigned char> > pushdata2Stack;
+    std::vector<std::vector<unsigned char> > pushdata2Stack;
     BOOST_CHECK(EvalScript(pushdata2Stack, CScript(&pushdata2[0], &pushdata2[sizeof(pushdata2)]), true, BaseSignatureChecker(), &err));
     BOOST_CHECK(pushdata2Stack == directStack);
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
-    vector<vector<unsigned char> > pushdata4Stack;
+    std::vector<std::vector<unsigned char> > pushdata4Stack;
     BOOST_CHECK(EvalScript(pushdata4Stack, CScript(&pushdata4[0], &pushdata4[sizeof(pushdata4)]), true, BaseSignatureChecker(), &err));
     BOOST_CHECK(pushdata4Stack == directStack);
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
@@ -713,9 +711,9 @@ sign_multisig(CScript scriptPubKey, std::vector<CKey> keys, CTransaction transac
     // and vice-versa)
     //
     result << OP_0;
-    BOOST_FOREACH(const CKey &key, keys)
+    for (const CKey &key : keys)
     {
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         BOOST_CHECK(key.Sign(hash, vchSig));
         vchSig.push_back((unsigned char)SIGHASH_ALL);
         result << vchSig;
@@ -827,14 +825,14 @@ BOOST_AUTO_TEST_CASE(script_CHECKMULTISIG23)
     CScript badsig6 = sign_multisig(scriptPubKey23, keys, txTo23);
     BOOST_CHECK(!VerifyScript(badsig6, scriptPubKey23, flags, MutableTransactionSignatureChecker(&txTo23, 0), &err));
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_INVALID_STACK_OPERATION, ScriptErrorString(err));
-}    
+}
 
 BOOST_AUTO_TEST_CASE(script_combineSigs)
 {
     // Test the CombineSignatures function
     CBasicKeyStore keystore;
-    vector<CKey> keys;
-    vector<CPubKey> pubkeys;
+    std::vector<CKey> keys;
+    std::vector<CPubKey> pubkeys;
     for (int i = 0; i < 3; i++)
     {
         CKey key;
@@ -879,7 +877,7 @@ BOOST_AUTO_TEST_CASE(script_combineSigs)
     combined = CombineSignatures(scriptPubKey, txTo, 0, scriptSigCopy, scriptSig);
     BOOST_CHECK(combined == scriptSigCopy || combined == scriptSig);
     // dummy scriptSigCopy with placeholder, should always choose non-placeholder:
-    scriptSigCopy = CScript() << OP_0 << static_cast<vector<unsigned char> >(pkSingle);
+    scriptSigCopy = CScript() << OP_0 << static_cast<std::vector<unsigned char> >(pkSingle);
     combined = CombineSignatures(scriptPubKey, txTo, 0, scriptSigCopy, scriptSig);
     BOOST_CHECK(combined == scriptSig);
     combined = CombineSignatures(scriptPubKey, txTo, 0, scriptSig, scriptSigCopy);
@@ -895,15 +893,15 @@ BOOST_AUTO_TEST_CASE(script_combineSigs)
     BOOST_CHECK(combined == scriptSig);
 
     // A couple of partially-signed versions:
-    vector<unsigned char> sig1;
+    std::vector<unsigned char> sig1;
     uint256 hash1 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_ALL);
     BOOST_CHECK(keys[0].Sign(hash1, sig1));
     sig1.push_back(SIGHASH_ALL);
-    vector<unsigned char> sig2;
+    std::vector<unsigned char> sig2;
     uint256 hash2 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_NONE);
     BOOST_CHECK(keys[1].Sign(hash2, sig2));
     sig2.push_back(SIGHASH_NONE);
-    vector<unsigned char> sig3;
+    std::vector<unsigned char> sig3;
     uint256 hash3 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_SINGLE);
     BOOST_CHECK(keys[2].Sign(hash3, sig3));
     sig3.push_back(SIGHASH_SINGLE);
@@ -968,6 +966,124 @@ BOOST_AUTO_TEST_CASE(script_IsPushOnly_on_invalid_scripts)
     // the invalid push. Still, it doesn't hurt to test it explicitly.
     static const unsigned char direct[] = { 1 };
     BOOST_CHECK(!CScript(direct, direct+sizeof(direct)).IsPushOnly());
+}
+
+
+static CScript
+ScriptFromHex(const char* hex)
+{
+    std::vector<unsigned char> data = ParseHex(hex);
+    return CScript(data.begin(), data.end());
+}
+
+
+BOOST_AUTO_TEST_CASE(script_FindAndDelete)
+{
+    // Exercise the FindAndDelete functionality
+    CScript s;
+    CScript d;
+    CScript expect;
+
+    s = CScript() << OP_1 << OP_2;
+    d = CScript(); // delete nothing should be a no-op
+    expect = s;
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 0);
+    BOOST_CHECK(s == expect);
+
+    s = CScript() << OP_1 << OP_2 << OP_3;
+    d = CScript() << OP_2;
+    expect = CScript() << OP_1 << OP_3;
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
+
+    s = CScript() << OP_3 << OP_1 << OP_3 << OP_3 << OP_4 << OP_3;
+    d = CScript() << OP_3;
+    expect = CScript() << OP_1 << OP_4;
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 4);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("0302ff03"); // PUSH 0x02ff03 onto stack
+    d = ScriptFromHex("0302ff03");
+    expect = CScript();
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("0302ff030302ff03"); // PUSH 0x2ff03 PUSH 0x2ff03
+    d = ScriptFromHex("0302ff03");
+    expect = CScript();
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 2);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("0302ff030302ff03");
+    d = ScriptFromHex("02");
+    expect = s; // FindAndDelete matches entire opcodes
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 0);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("0302ff030302ff03");
+    d = ScriptFromHex("ff");
+    expect = s;
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 0);
+    BOOST_CHECK(s == expect);
+
+    // This is an odd edge case: strip of the push-three-bytes
+    // prefix, leaving 02ff03 which is push-two-bytes:
+    s = ScriptFromHex("0302ff030302ff03");
+    d = ScriptFromHex("03");
+    expect = CScript() << ParseHex("ff03") << ParseHex("ff03");
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 2);
+    BOOST_CHECK(s == expect);
+
+    // Byte sequence that spans multiple opcodes:
+    s = ScriptFromHex("02feed5169"); // PUSH(0xfeed) OP_1 OP_VERIFY
+    d = ScriptFromHex("feed51");
+    expect = s;
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 0); // doesn't match 'inside' opcodes
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("02feed5169"); // PUSH(0xfeed) OP_1 OP_VERIFY
+    d = ScriptFromHex("02feed51");
+    expect = ScriptFromHex("69");
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("516902feed5169");
+    d = ScriptFromHex("feed51");
+    expect = s;
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 0);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("516902feed5169");
+    d = ScriptFromHex("02feed51");
+    expect = ScriptFromHex("516969");
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
+
+    s = CScript() << OP_0 << OP_0 << OP_1 << OP_1;
+    d = CScript() << OP_0 << OP_1;
+    expect = CScript() << OP_0 << OP_1; // FindAndDelete is single-pass
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
+
+    s = CScript() << OP_0 << OP_0 << OP_1 << OP_0 << OP_1 << OP_1;
+    d = CScript() << OP_0 << OP_1;
+    expect = CScript() << OP_0 << OP_1; // FindAndDelete is single-pass
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 2);
+    BOOST_CHECK(s == expect);
+
+    // Another weird edge case:
+    // End with invalid push (not enough data)...
+    s = ScriptFromHex("0003feed");
+    d = ScriptFromHex("03feed"); // ... can remove the invalid push
+    expect = ScriptFromHex("00");
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
+
+    s = ScriptFromHex("0003feed");
+    d = ScriptFromHex("00");
+    expect = ScriptFromHex("03feed");
+    BOOST_CHECK_EQUAL(s.FindAndDelete(d), 1);
+    BOOST_CHECK(s == expect);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

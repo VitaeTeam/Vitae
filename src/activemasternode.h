@@ -1,6 +1,5 @@
-// Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2012 The Bitcoin developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2014-2016 The Dash developers
+// Copyright (c) 2015-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,11 +10,10 @@
 #include "sync.h"
 #include "net.h"
 #include "key.h"
-//#include "core.h"
-#include "init.h"
-#include "wallet.h"
-#include "obfuscation.h"
 #include "masternode.h"
+#include "net.h"
+#include "sync.h"
+#include "wallet/wallet.h"
 
 #define ACTIVE_MASTERNODE_INITIAL 0 // initial state
 #define ACTIVE_MASTERNODE_SYNC_IN_PROCESS 1
@@ -38,10 +36,7 @@ public:
     int status;
     std::string notCapableReason;
 
-    CActiveMasternode()
-    {
-        status = MASTERNODE_NOT_PROCESSED;
-    }
+    CActiveMasternode();
 
     /// Manage status of main Masternode
     void ManageStatus();
@@ -67,7 +62,7 @@ public:
     /// Get 5000DRK input that can be used for the Masternode
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex);
-    vector<COutput> SelectCoinsMasternode();
+    std::vector<COutput> SelectCoinsMasternode();
     bool GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
 
     /// Enable hot wallet mode (run a Masternode with no funds)

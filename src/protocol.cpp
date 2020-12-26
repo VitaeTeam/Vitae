@@ -1,8 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -34,12 +34,12 @@ static const char* ppszTypeName[] =
         "fn quorum",
         "fn announce",
         "fn ping",
-        "dstx",
-    "mn spork",
-    "mn winner",
-    "mn scan error",
-    "mn announce",
-    "mn ping"
+        "mn spork",
+        "mn winner",
+        "mn scan error",
+        "mn announce",
+        "mn ping",
+        "pubcoins",
 };
 
 CMessageHeader::CMessageHeader()
@@ -106,13 +106,12 @@ void CAddress::Init()
 {
     nServices = NODE_NETWORK;
     nTime = 100000000;
-    nLastTry = 0;
 }
 
 CInv::CInv()
 {
     type = 0;
-    hash = 0;
+    hash.SetNull();
 }
 
 CInv::CInv(int typeIn, const uint256& hashIn)
@@ -131,7 +130,7 @@ CInv::CInv(const std::string& strType, const uint256& hashIn)
         }
     }
     if (i == ARRAYLEN(ppszTypeName))
-        LogPrint("net", "CInv::CInv(string, uint256) : unknown type '%s'", strType);
+        LogPrint(BCLog::NET, "CInv::CInv(string, uint256) : unknown type '%s'", strType);
     hash = hashIn;
 }
 
@@ -151,8 +150,10 @@ bool CInv::IsFundamentalNodeType() const{
 
 const char* CInv::GetCommand() const
 {
-    if (!IsKnownType())
-        LogPrint("net", "CInv::GetCommand() : type=%d unknown type", type);
+    if (!IsKnownType()) {
+        LogPrint(BCLog::NET, "CInv::GetCommand() : type=%d unknown type", type);
+        return "UNKNOWN";
+    }
 
     return ppszTypeName[type];
 }

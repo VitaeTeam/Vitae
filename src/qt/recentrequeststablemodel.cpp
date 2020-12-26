@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2014 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,7 +11,8 @@
 #include "optionsmodel.h"
 #include "streams.h"
 
-#include <boost/foreach.hpp>
+#include <algorithm>
+
 
 RecentRequestsTableModel::RecentRequestsTableModel(CWallet* wallet, WalletModel* parent) : walletModel(parent)
 {
@@ -21,13 +22,13 @@ RecentRequestsTableModel::RecentRequestsTableModel(CWallet* wallet, WalletModel*
     // Load entries from wallet
     std::vector<std::string> vReceiveRequests;
     parent->loadReceiveRequests(vReceiveRequests);
-    BOOST_FOREACH (const std::string& request, vReceiveRequests)
+    for (const std::string& request : vReceiveRequests)
         addNewRequest(request);
 
     /* These columns must match the indices in the ColumnIndex enumeration */
-    columns << tr("Date") << tr("Label") << tr("Message") << getAmountTitle();
+    columns << tr("Date") << tr("Label") << tr("Address") << tr("Message") << getAmountTitle();
 
-    connect(walletModel->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
+    connect(walletModel->getOptionsModel(), &OptionsModel::displayUnitChanged, this, &RecentRequestsTableModel::updateDisplayUnit);
 }
 
 RecentRequestsTableModel::~RecentRequestsTableModel()
@@ -66,6 +67,8 @@ QVariant RecentRequestsTableModel::data(const QModelIndex& index, int role) cons
             } else {
                 return rec->recipient.label;
             }
+        case Address:
+            return rec->recipient.address;
         case Message:
             if (rec->recipient.message.isEmpty() && role == Qt::DisplayRole) {
                 return tr("(no message)");
@@ -106,7 +109,7 @@ QVariant RecentRequestsTableModel::headerData(int section, Qt::Orientation orien
 void RecentRequestsTableModel::updateAmountColumnTitle()
 {
     columns[Amount] = getAmountTitle();
-    emit headerDataChanged(Qt::Horizontal, Amount, Amount);
+    Q_EMIT headerDataChanged(Qt::Horizontal, Amount, Amount);
 }
 
 /** Gets title for amount column including current display unit if optionsModel reference available. */
@@ -197,8 +200,8 @@ void RecentRequestsTableModel::addNewRequest(RecentRequestEntry& recipient)
 
 void RecentRequestsTableModel::sort(int column, Qt::SortOrder order)
 {
-    qSort(list.begin(), list.end(), RecentRequestEntryLessThan(column, order));
-    emit dataChanged(index(0, 0, QModelIndex()), index(list.size() - 1, NUMBER_OF_COLUMNS - 1, QModelIndex()));
+    std::sort(list.begin(), list.end(), RecentRequestEntryLessThan(column, order));
+    Q_EMIT dataChanged(index(0, 0, QModelIndex()), index(list.size() - 1, NUMBER_OF_COLUMNS - 1, QModelIndex()));
 }
 
 void RecentRequestsTableModel::updateDisplayUnit()
@@ -218,6 +221,8 @@ bool RecentRequestEntryLessThan::operator()(RecentRequestEntry& left, RecentRequ
         return pLeft->date.toTime_t() < pRight->date.toTime_t();
     case RecentRequestsTableModel::Label:
         return pLeft->recipient.label < pRight->recipient.label;
+    case RecentRequestsTableModel::Address:
+        return pLeft->recipient.address < pRight->recipient.address;
     case RecentRequestsTableModel::Message:
         return pLeft->recipient.message < pRight->recipient.message;
     case RecentRequestsTableModel::Amount:

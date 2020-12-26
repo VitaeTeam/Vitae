@@ -1,4 +1,5 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
+// Copyright (c) 2017-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,12 +9,13 @@
 #include "amount.h"
 
 #include <QAbstractListModel>
+#include <QSettings>
 
 QT_BEGIN_NAMESPACE
 class QNetworkProxy;
 QT_END_NAMESPACE
 
-/** Interface from Qt to configuration data structure for Bitcoin client.
+/** Interface from Qt to configuration data structure for PIVX client.
    To Qt, the options are presented as a list with the different options
    laid out vertically.
    This can be changed to a tree once the settings become sufficiently
@@ -44,14 +46,20 @@ public:
         DatabaseCache,       // int
         SpendZeroConfChange, // bool
         ZeromintEnable,      // bool
+        ZeromintAddresses,   // bool
         ZeromintPercentage,  // int
         ZeromintPrefDenom,   // int
+        HideCharts,          // bool
         HideZeroBalances,    // bool
+        HideOrphans,    // bool
         AnonymizeVitaeAmount, //int
         ShowFundamentalnodesTab,  // bool
 		ShowMasternodesTab,  // bool
         Listen,              // bool
-        StakeSplitThreshold, // int
+        StakeSplitThreshold,    // CAmount (LongLong)
+        ShowColdStakingScreen,  // bool
+        fUseCustomFee,          // bool
+        nCustomFee,             // CAmount (LongLong)
         OptionIDRowCount,
     };
 
@@ -61,12 +69,17 @@ public:
     int rowCount(const QModelIndex& parent = QModelIndex()) const;
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    void refreshDataView();
     /** Updates current unit in memory, settings and emits displayUnitChanged(newUnit) signal */
     void setDisplayUnit(const QVariant& value);
     /* Update StakeSplitThreshold's value in wallet */
-    void setStakeSplitThreshold(int value);
+    void setStakeSplitThreshold(const CAmount value);
+    /* Update Custom Fee value in wallet */
+    void setUseCustomFee(bool fUse);
+    void setCustomFeeValue(const CAmount& value);
 
     /* Explicit getters */
+    bool isHideCharts() { return fHideCharts; }
     bool getMinimizeToTray() { return fMinimizeToTray; }
     bool getMinimizeOnClose() { return fMinimizeOnClose; }
     int getDisplayUnit() { return nDisplayUnit; }
@@ -80,6 +93,23 @@ public:
     bool isRestartRequired();
     bool resetSettings;
 
+    bool isColdStakingScreenEnabled() { return showColdStakingScreen; }
+    bool invertColdStakingScreenStatus() {
+        setData(
+                createIndex(ShowColdStakingScreen, 0),
+                !isColdStakingScreenEnabled(),
+                Qt::EditRole
+        );
+        return showColdStakingScreen;
+    }
+
+    // Reset
+    void setMainDefaultOptions(QSettings& settings, bool reset = false);
+    void setWalletDefaultOptions(QSettings& settings, bool reset = false);
+    void setNetworkDefaultOptions(QSettings& settings, bool reset = false);
+    void setWindowDefaultOptions(QSettings& settings, bool reset = false);
+    void setDisplayDefaultOptions(QSettings& settings, bool reset = false);
+
 private:
     /* Qt-only settings */
     bool fMinimizeToTray;
@@ -88,21 +118,28 @@ private:
     int nDisplayUnit;
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
+    bool showColdStakingScreen;
+    bool fHideCharts;
     bool fHideZeroBalances;
+    bool fHideOrphans;
     /* settings that were overriden by command-line */
     QString strOverriddenByCommandLine;
 
     /// Add option to list of GUI options overridden through command line/config file
     void addOverriddenOption(const std::string& option);
 
-signals:
+Q_SIGNALS:
     void displayUnitChanged(int unit);
     void zeromintEnableChanged(bool);
+    void zeromintAddressesChanged(bool);
     void zeromintPercentageChanged(int);
     void preferredDenomChanged(int);
     void anonymizeVitaeAmountChanged(int);
     void coinControlFeaturesChanged(bool);
+    void showHideColdStakingScreen(bool);
+    void hideChartsChanged(bool);
     void hideZeroBalancesChanged(bool);
+    void hideOrphansChanged(bool);
 };
 
 #endif // BITCOIN_QT_OPTIONSMODEL_H

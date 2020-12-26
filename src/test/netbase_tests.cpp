@@ -1,18 +1,19 @@
 // Copyright (c) 2012-2014 The Bitcoin Core developers
 // Copyright (c) 2014-2015 The Dash Core developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "netbase.h"
+#include "test/test_vitae.h"
 
 #include <string>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace std;
 
-BOOST_AUTO_TEST_SUITE(netbase_tests)
+BOOST_FIXTURE_TEST_SUITE(netbase_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(netbase_networks)
 {
@@ -47,9 +48,9 @@ BOOST_AUTO_TEST_CASE(netbase_properties)
     BOOST_CHECK(CNetAddr("127.0.0.1").IsValid());
 }
 
-bool static TestSplitHost(string test, string host, int port)
+bool static TestSplitHost(std::string test, std::string host, int port)
 {
-    string hostOut;
+    std::string hostOut;
     int portOut = -1;
     SplitHostPort(test, portOut, hostOut);
     return hostOut == host && port == portOut;
@@ -74,7 +75,7 @@ BOOST_AUTO_TEST_CASE(netbase_splithost)
     BOOST_CHECK(TestSplitHost("", "", -1));
 }
 
-bool static TestParse(string src, string canon)
+bool static TestParse(std::string src, std::string canon)
 {
     CService addr;
     if (!LookupNumeric(src.c_str(), addr, 65535))
@@ -233,6 +234,31 @@ BOOST_AUTO_TEST_CASE(subnet_test)
     BOOST_CHECK_EQUAL(subnet.ToString(), "1.2.0.0/255.255.232.0");
     subnet = CSubNet("1:2:3:4:5:6:7:8/ffff:ffff:ffff:fffe:ffff:ffff:ffff:ff0f");
     BOOST_CHECK_EQUAL(subnet.ToString(), "1:2:3:4:5:6:7:8/ffff:ffff:ffff:fffe:ffff:ffff:ffff:ff0f");
+}
+
+BOOST_AUTO_TEST_CASE(validate_test)
+{
+    std::list<std::string> validIPv4 = {"11.12.13.14", "50.168.168.150", "72.31.250.250"};
+    std::list<std::string> validIPv6 = {"1111:2222:3333:4444:5555:6666::8888", "2001:0002:6c::430", "2002:cb0a:3cdd:1::1"};
+    std::list<std::string> validTor = {"5wyqrzbvrdsumnok.onion", "FD87:D87E:EB43:edb1:8e4:3588:e546:35ca"};
+
+    for (const std::string& ipStr : validIPv4)
+        BOOST_CHECK_MESSAGE(validateMasternodeIP(ipStr), ipStr);
+    for (const std::string& ipStr : validIPv6)
+        BOOST_CHECK_MESSAGE(validateMasternodeIP(ipStr), ipStr);
+    for (const std::string& ipStr : validTor)
+        BOOST_CHECK_MESSAGE(validateMasternodeIP(ipStr), ipStr);
+
+    std::list<std::string> invalidIPv4 = {"11.12.13.14.15", "11.12.13.330", "30.168.1.255.1", "192.168.1.1", "255.255.255.255"};
+    std::list<std::string> invalidIPv6 = {"1111:2222:3333:4444:5555:6666:7777:8888:9999", "2002:cb0a:3cdd::1::1", "1111:2222:3333:::5555:6666:7777:8888"};
+    std::list<std::string> invalidTor = {"5wyqrzbvrdsumnok.noonion"};
+
+    for (const std::string& ipStr : invalidIPv4)
+        BOOST_CHECK_MESSAGE(!validateMasternodeIP(ipStr), ipStr);
+    for (const std::string& ipStr : invalidIPv6)
+        BOOST_CHECK_MESSAGE(!validateMasternodeIP(ipStr), ipStr);
+    for (const std::string& ipStr : invalidTor)
+        BOOST_CHECK_MESSAGE(!validateMasternodeIP(ipStr), ipStr);
 }
 
 BOOST_AUTO_TEST_SUITE_END()

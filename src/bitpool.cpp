@@ -3,7 +3,6 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "obfuscation.h"
 #include "masternodeman.h"
 #include "masternode.h"
 #include "activemasternode.h"
@@ -19,7 +18,7 @@ void ThreadBitPool()
     if(fMNLiteMode) return; //disable all Darksend/Masternode related functionality
 
     // Make this thread recognisable as the wallet flushing thread
-    RenameThread("vitae-bitpool");
+    util::ThreadRename("vitae-bitpool");
 
     unsigned int c = 0;
     std::string errorMessage;
@@ -43,7 +42,6 @@ void ThreadBitPool()
                 segfaults from this code without the cs_main lock.
             */
             m_nodeman.CheckAndRemove();
-            m_nodeman.ProcessMasternodeConnections();
             masternodePayments.CleanPaymentList();
             //CleanTransactionLocksList();
         }
@@ -57,7 +55,7 @@ void ThreadBitPool()
             bool fIsInitialDownload = IsInitialBlockDownload();
             if(!fIsInitialDownload) {
                 LOCK(cs_vNodes);
-                BOOST_FOREACH(CNode* pnode, vNodes)
+                for(CNode* pnode : vNodes)
                 {
                     if (true/* pnode->nVersion >= MIN_POOL_PEER_PROTO_VERSION */) {
 

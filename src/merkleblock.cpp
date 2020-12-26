@@ -1,24 +1,24 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "merkleblock.h"
 
+#include "consensus/consensus.h"
 #include "hash.h"
 #include "primitives/block.h" // for MAX_BLOCK_SIZE
 #include "utilstrencodings.h"
 
-using namespace std;
 
 CMerkleBlock::CMerkleBlock(const CBlock& block, CBloomFilter& filter)
 {
     header = block.GetBlockHeader();
 
-    vector<bool> vMatch;
-    vector<uint256> vHashes;
+    std::vector<bool> vMatch;
+    std::vector<uint256> vHashes;
 
     vMatch.reserve(block.vtx.size());
     vHashes.reserve(block.vtx.size());
@@ -27,7 +27,7 @@ CMerkleBlock::CMerkleBlock(const CBlock& block, CBloomFilter& filter)
         const uint256& hash = block.vtx[i].GetHash();
         if (filter.IsRelevantAndUpdate(block.vtx[i])) {
             vMatch.push_back(true);
-            vMatchedTxn.push_back(make_pair(i, hash));
+            vMatchedTxn.push_back(std::make_pair(i, hash));
         } else
             vMatch.push_back(false);
         vHashes.push_back(hash);
@@ -78,7 +78,7 @@ uint256 CPartialMerkleTree::TraverseAndExtract(int height, unsigned int pos, uns
     if (nBitsUsed >= vBits.size()) {
         // overflowed the bits array - failure
         fBad = true;
-        return 0;
+        return UINT256_ZERO;
     }
     bool fParentOfMatch = vBits[nBitsUsed++];
     if (height == 0 || !fParentOfMatch) {
@@ -86,7 +86,7 @@ uint256 CPartialMerkleTree::TraverseAndExtract(int height, unsigned int pos, uns
         if (nHashUsed >= vHash.size()) {
             // overflowed the hash array - failure
             fBad = true;
-            return 0;
+            return UINT256_ZERO;
         }
         const uint256& hash = vHash[nHashUsed++];
         if (height == 0 && fParentOfMatch) // in case of height 0, we have a matched txid
@@ -126,16 +126,16 @@ uint256 CPartialMerkleTree::ExtractMatches(std::vector<uint256>& vMatch)
     vMatch.clear();
     // An empty set will not work
     if (nTransactions == 0)
-        return 0;
+        return UINT256_ZERO;
     // check for excessively high numbers of transactions
     if (nTransactions > MAX_BLOCK_SIZE_CURRENT / 60) // 60 is the lower bound for the size of a serialized CTransaction
-        return 0;
+        return UINT256_ZERO;
     // there can never be more hashes provided than one for every txid
     if (vHash.size() > nTransactions)
-        return 0;
+        return UINT256_ZERO;
     // there must be at least one bit per node in the partial tree, and at least one node per hash
     if (vBits.size() < vHash.size())
-        return 0;
+        return UINT256_ZERO;
     // calculate height of tree
     int nHeight = 0;
     while (CalcTreeWidth(nHeight) > 1)
@@ -145,12 +145,12 @@ uint256 CPartialMerkleTree::ExtractMatches(std::vector<uint256>& vMatch)
     uint256 hashMerkleRoot = TraverseAndExtract(nHeight, 0, nBitsUsed, nHashUsed, vMatch);
     // verify that no problems occured during the tree traversal
     if (fBad)
-        return 0;
+        return UINT256_ZERO;
     // verify that all bits were consumed (except for the padding caused by serializing it as a byte sequence)
     if ((nBitsUsed + 7) / 8 != (vBits.size() + 7) / 8)
-        return 0;
+        return UINT256_ZERO;
     // verify that all hashes were consumed
     if (nHashUsed != vHash.size())
-        return 0;
+        return UINT256_ZERO;
     return hashMerkleRoot;
 }

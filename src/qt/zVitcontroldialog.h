@@ -1,4 +1,5 @@
-// Copyright (c) 2017 The VITAE developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -7,8 +8,7 @@
 
 #include <QDialog>
 #include <QTreeWidgetItem>
-#include "primitives/zerocoin.h"
-#include "privacydialog.h"
+#include "zvit/zerocoin.h"
 
 class CZerocoinMint;
 class WalletModel;
@@ -16,6 +16,16 @@ class WalletModel;
 namespace Ui {
 class ZVitControlDialog;
 }
+
+class CZVitControlWidgetItem : public QTreeWidgetItem
+{
+public:
+    explicit CZVitControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CZVitControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
+    explicit CZVitControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+
+    bool operator<(const QTreeWidgetItem &other) const;
+};
 
 class ZVitControlDialog : public QDialog
 {
@@ -27,14 +37,13 @@ public:
 
     void setModel(WalletModel* model);
 
-    static std::list<std::string> listSelectedMints;
-    static std::list<CZerocoinMint> listMints;
-    static std::vector<CZerocoinMint> GetSelectedMints();
+    static std::set<std::string> setSelectedMints;
+    static std::set<CMintMeta> setMints;
+    static std::vector<CMintMeta> GetSelectedMints();
 
 private:
     Ui::ZVitControlDialog *ui;
     WalletModel* model;
-    PrivacyDialog* privacyDialog;
 
     void updateList();
     void updateLabels();
@@ -43,11 +52,13 @@ private:
         COLUMN_CHECKBOX,
         COLUMN_DENOMINATION,
         COLUMN_PUBCOIN,
+        COLUMN_VERSION,
         COLUMN_CONFIRMATIONS,
         COLUMN_ISSPENDABLE
     };
+    friend class CZVitControlWidgetItem;
 
-private slots:
+private Q_SLOTS:
     void updateSelection(QTreeWidgetItem* item, int column);
     void ButtonAllClicked();
 };

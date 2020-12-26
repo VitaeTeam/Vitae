@@ -1,8 +1,11 @@
-// Copyright (c) 2017 The VITAE Core developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2017-2020 The VITAE Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#pragma once
+#ifndef VITAE_UINT512_H
+#define VITAE_UINT512_H
+
 #include "arith_uint256.h"
 #include "uint256.h"
 
@@ -31,7 +34,7 @@ public:
 
 /* uint256 from const char *.
  * This is a separate function because the constructor uint256(const char*) can result
- * in dangerously catching uint256(0).
+ * in dangerously catching UINT256_ZERO.
  */
 inline uint512 uint512S(const char* str)
 {
@@ -39,3 +42,5 @@ inline uint512 uint512S(const char* str)
     rv.SetHex(str);
     return rv;
 }
+
+#endif // VITAE_UINT512_H

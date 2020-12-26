@@ -9,13 +9,10 @@
 #include "key.h"
 #include "main.h"
 #include "fundamentalnode.h"
-#include <boost/lexical_cast.hpp>
 
-using namespace std;
-
-extern CCriticalSection cs_vecPayments;
-extern CCriticalSection cs_mapFundamentalnodeBlocks;
-extern CCriticalSection cs_mapFundamentalnodePayeeVotes;
+extern RecursiveMutex cs_vecPayments;
+extern RecursiveMutex cs_mapFundamentalnodeBlocks;
+extern RecursiveMutex cs_mapFundamentalnodePayeeVotes;
 
 class CFundamentalnodePayments;
 class CFundamentalnodePaymentWinner;
@@ -108,7 +105,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
+        for (CFundamentalnodePayee& payee : vecPayments) {
             if (payee.scriptPubKey == payeeIn) {
                 payee.nVotes += nIncrement;
                 return;
@@ -124,7 +121,7 @@ public:
         LOCK(cs_vecPayments);
 
         int nVotes = -1;
-        BOOST_FOREACH (CFundamentalnodePayee& p, vecPayments) {
+        for (CFundamentalnodePayee& p : vecPayments) {
             if (p.nVotes > nVotes) {
                 payee = p.scriptPubKey;
                 nVotes = p.nVotes;
@@ -138,7 +135,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CFundamentalnodePayee& p, vecPayments) {
+        for (CFundamentalnodePayee& p : vecPayments) {
             if (p.nVotes >= nVotesReq && p.scriptPubKey == payee) return true;
         }
 
@@ -218,9 +215,9 @@ public:
     {
         std::string ret = "";
         ret += vinFundamentalnode.ToString();
-        ret += ", " + boost::lexical_cast<std::string>(nBlockHeight);
+        ret += ", " + std::to_string(nBlockHeight);
         ret += ", " + payee.ToString();
-        ret += ", " + boost::lexical_cast<std::string>((int)vchSig.size());
+        ret += ", " + std::to_string((int)vchSig.size());
         return ret;
     }
 };

@@ -2,114 +2,168 @@ bin_PROGRAMS += qt/vitae-qt
 EXTRA_LIBRARIES += qt/libbitcoinqt.a
 
 # vitae qt core #
-QT_TS = \
-  qt/locale/vitae_bg.ts \
-  qt/locale/vitae_ca.ts \
-  qt/locale/vitae_cs.ts \
-  qt/locale/vitae_da.ts \
-  qt/locale/vitae_de.ts \
-  qt/locale/vitae_en.ts \
-  qt/locale/vitae_en_US.ts \
-  qt/locale/vitae_es.ts \
-  qt/locale/vitae_fi.ts \
-  qt/locale/vitae_fr_FR.ts \
-  qt/locale/vitae_it.ts \
-  qt/locale/vitae_ja.ts \
-  qt/locale/vitae_ko_KR.ts \
-  qt/locale/vitae_nl.ts \
-  qt/locale/vitae_pl.ts \
-  qt/locale/vitae_pt.ts \
-  qt/locale/vitae_pt_BR.ts \
-  qt/locale/vitae_ro_RO.ts \
-  qt/locale/vitae_ru.ts \
-  qt/locale/vitae_sk.ts \
-  qt/locale/vitae_sv.ts \
-  qt/locale/vitae_tr.ts \
-  qt/locale/vitae_uk.ts \
-  qt/locale/vitae_zh_CN.ts \
-  qt/locale/vitae_zh_TW.ts
+include Makefile.qt_locale.include
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
   qt/forms/askpassphrasedialog.ui \
-  qt/forms/bip38tooldialog.ui \
   qt/forms/coincontroldialog.ui \
-  qt/forms/blockexplorer.ui \
-  qt/forms/obfuscationconfig.ui \
   qt/forms/editaddressdialog.ui \
   qt/forms/helpmessagedialog.ui \
   qt/forms/intro.ui \
-  qt/forms/fundamentalnodelist.ui \
-  qt/forms/masternodelist.ui \
-  qt/forms/multisenddialog.ui \
-  qt/forms/multisigdialog.ui\
   qt/forms/openuridialog.ui \
   qt/forms/optionsdialog.ui \
-  qt/forms/overviewpage.ui \
-  qt/forms/receivecoinsdialog.ui \
-  qt/forms/privacydialog.ui \
-  qt/forms/receiverequestdialog.ui \
   qt/forms/rpcconsole.ui \
-  qt/forms/sendcoinsdialog.ui \
-  qt/forms/sendcoinsentry.ui \
-  qt/forms/signverifymessagedialog.ui \
-  qt/forms/transactiondescdialog.ui \
-  qt/forms/zVitcontroldialog.ui
+  qt/vitae/forms/loadingdialog.ui \
+  qt/forms/zVitcontroldialog.ui \
+  qt/vitae/forms/snackbar.ui \
+  qt/vitae/forms/navmenuwidget.ui \
+  qt/vitae/forms/lockunlock.ui \
+  qt/vitae/forms/expandablebutton.ui \
+  qt/vitae/forms/receivedialog.ui \
+  qt/vitae/forms/topbar.ui \
+  qt/vitae/forms/txrow.ui \
+  qt/vitae/forms/dashboardwidget.ui \
+  qt/vitae/forms/addresslabelrow.ui \
+  qt/vitae/forms/contactdropdownrow.ui \
+  qt/vitae/forms/mninfodialog.ui \
+  qt/vitae/forms/optionbutton.ui \
+  qt/vitae/forms/fundamentalnodewizarddialog.ui \
+  qt/vitae/forms/fnrow.ui \
+  qt/vitae/forms/fundamentalnodeswidget.ui \
+  qt/vitae/forms/masternodewizarddialog.ui \
+  qt/vitae/forms/mnrow.ui \
+  qt/vitae/forms/masternodeswidget.ui \
+  qt/vitae/forms/myaddressrow.ui \
+  qt/vitae/forms/csrow.ui \
+  qt/vitae/forms/sendchangeaddressdialog.ui \
+  qt/vitae/forms/sendconfirmdialog.ui \
+  qt/vitae/forms/sendcustomfeedialog.ui \
+  qt/vitae/forms/sendchangeaddressdialog.ui \
+  qt/vitae/forms/sendmultirow.ui \
+  qt/vitae/forms/send.ui \
+  qt/vitae/forms/addnewaddressdialog.ui \
+  qt/vitae/forms/addnewcontactdialog.ui \
+  qt/vitae/forms/requestdialog.ui \
+  qt/vitae/forms/receivewidget.ui \
+  qt/vitae/forms/tooltipmenu.ui \
+  qt/vitae/forms/addresseswidget.ui \
+  qt/vitae/forms/defaultdialog.ui \
+  qt/vitae/forms/privacywidget.ui \
+  qt/vitae/forms/coldstakingwidget.ui \
+  qt/vitae/settings/forms/settingsbackupwallet.ui \
+  qt/vitae/settings/forms/settingsexportcsv.ui \
+  qt/vitae/settings/forms/settingsbittoolwidget.ui \
+  qt/vitae/settings/forms/settingsconsolewidget.ui \
+  qt/vitae/settings/forms/settingsdisplayoptionswidget.ui \
+  qt/vitae/settings/forms/settingsfaqwidget.ui \
+  qt/vitae/settings/forms/settingsinformationwidget.ui \
+  qt/vitae/settings/forms/settingsmainoptionswidget.ui \
+  qt/vitae/settings/forms/settingsmultisenddialog.ui \
+  qt/vitae/settings/forms/settingsmultisendwidget.ui \
+  qt/vitae/settings/forms/settingssignmessagewidgets.ui \
+  qt/vitae/settings/forms/settingswalletoptionswidget.ui \
+  qt/vitae/settings/forms/settingswalletrepairwidget.ui \
+  qt/vitae/settings/forms/settingswidget.ui \
+  qt/vitae/forms/welcomecontentwidget.ui \
+  qt/vitae/forms/splash.ui
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
-  qt/moc_bip38tooldialog.cpp \
   qt/moc_bitcoinaddressvalidator.cpp \
   qt/moc_bitcoinamountfield.cpp \
-  qt/moc_bitcoingui.cpp \
+  qt/vitae/moc_vitaegui.cpp \
   qt/moc_bitcoinunits.cpp \
-  qt/moc_blockexplorer.cpp \
   qt/moc_clientmodel.cpp \
   qt/moc_coincontroldialog.cpp \
   qt/moc_coincontroltreewidget.cpp \
   qt/moc_csvmodelwriter.cpp \
-  qt/moc_obfuscationconfig.cpp \
   qt/moc_editaddressdialog.cpp \
   qt/moc_guiutil.cpp \
   qt/moc_intro.cpp \
   qt/moc_macdockiconhandler.cpp \
   qt/moc_macnotificationhandler.cpp \
   qt/moc_fundamentalnodelist.cpp \
-  qt/moc_masternodelist.cpp \
-  qt/moc_multisenddialog.cpp \
-  qt/moc_multisigdialog.cpp\
   qt/moc_notificator.cpp \
   qt/moc_openuridialog.cpp \
   qt/moc_optionsdialog.cpp \
   qt/moc_optionsmodel.cpp \
-  qt/moc_overviewpage.cpp \
   qt/moc_peertablemodel.cpp \
   qt/moc_paymentserver.cpp \
   qt/moc_qvalidatedlineedit.cpp \
   qt/moc_qvaluecombobox.cpp \
-  qt/moc_receivecoinsdialog.cpp \
-  qt/moc_privacydialog.cpp \
-  qt/moc_receiverequestdialog.cpp \
   qt/moc_recentrequeststablemodel.cpp \
   qt/moc_rpcconsole.cpp \
-  qt/moc_sendcoinsdialog.cpp \
-  qt/moc_sendcoinsentry.cpp \
-  qt/moc_signverifymessagedialog.cpp \
   qt/moc_splashscreen.cpp \
   qt/moc_trafficgraphwidget.cpp \
   qt/moc_transactiondesc.cpp \
-  qt/moc_transactiondescdialog.cpp \
   qt/moc_transactionfilterproxy.cpp \
   qt/moc_transactiontablemodel.cpp \
-  qt/moc_transactionview.cpp \
   qt/moc_utilitydialog.cpp \
-  qt/moc_walletframe.cpp \
   qt/moc_walletmodel.cpp \
-  qt/moc_walletview.cpp \
-  qt/moc_zVitcontroldialog.cpp
+  qt/vitae/moc_loadingdialog.cpp \
+  qt/moc_zVitcontroldialog.cpp \
+  qt/vitae/moc_pwidget.cpp \
+  qt/vitae/moc_snackbar.cpp \
+  qt/vitae/moc_navmenuwidget.cpp \
+  qt/vitae/moc_lockunlock.cpp \
+  qt/vitae/moc_expandablebutton.cpp \
+  qt/vitae/moc_furabstractlistitemdelegate.cpp \
+  qt/vitae/moc_receivedialog.cpp \
+  qt/vitae/moc_pfborderimage.cpp \
+  qt/vitae/moc_topbar.cpp \
+  qt/vitae/moc_txrow.cpp \
+  qt/vitae/moc_dashboardwidget.cpp \
+  qt/vitae/moc_addresslabelrow.cpp \
+  qt/vitae/moc_contactdropdownrow.cpp \
+  qt/vitae/moc_mninfodialog.cpp \
+  qt/vitae/moc_optionbutton.cpp \
+  qt/vitae/moc_coldstakingmodel.cpp \
+  qt/vitae/moc_fnmodel.cpp \
+  qt/vitae/moc_fundamentalnodewizarddialog.cpp \
+  qt/vitae/moc_fnrow.cpp \
+  qt/vitae/moc_fundamentalnodeswidget.cpp \
+  qt/vitae/moc_mnmodel.cpp \
+  qt/vitae/moc_masternodewizarddialog.cpp \
+  qt/vitae/moc_mnrow.cpp \
+  qt/vitae/moc_masternodeswidget.cpp \
+  qt/vitae/moc_myaddressrow.cpp \
+  qt/vitae/moc_csrow.cpp \
+  qt/vitae/moc_contactsdropdown.cpp \
+  qt/vitae/moc_sendchangeaddressdialog.cpp \
+  qt/vitae/moc_sendconfirmdialog.cpp \
+  qt/vitae/moc_sendcustomfeedialog.cpp \
+  qt/vitae/moc_sendchangeaddressdialog.cpp \
+  qt/vitae/moc_sendmultirow.cpp \
+  qt/vitae/moc_send.cpp \
+  qt/vitae/moc_addnewaddressdialog.cpp \
+  qt/vitae/moc_addnewcontactdialog.cpp \
+  qt/vitae/moc_requestdialog.cpp \
+  qt/vitae/moc_receivewidget.cpp \
+  qt/vitae/moc_tooltipmenu.cpp \
+  qt/vitae/moc_addresseswidget.cpp \
+  qt/vitae/moc_defaultdialog.cpp \
+  qt/vitae/moc_privacywidget.cpp \
+  qt/vitae/moc_coldstakingwidget.cpp \
+  qt/vitae/settings/moc_settingsbackupwallet.cpp \
+  qt/vitae/settings/moc_settingsexportcsv.cpp \
+  qt/vitae/settings/moc_settingsbittoolwidget.cpp \
+  qt/vitae/settings/moc_settingsconsolewidget.cpp \
+  qt/vitae/settings/moc_settingsdisplayoptionswidget.cpp \
+  qt/vitae/settings/moc_settingsfaqwidget.cpp \
+  qt/vitae/settings/moc_settingsinformationwidget.cpp \
+  qt/vitae/settings/moc_settingsmainoptionswidget.cpp \
+  qt/vitae/settings/moc_settingsmultisenddialog.cpp \
+  qt/vitae/settings/moc_settingsmultisendwidget.cpp \
+  qt/vitae/settings/moc_settingssignmessagewidgets.cpp \
+  qt/vitae/settings/moc_settingswalletoptionswidget.cpp \
+  qt/vitae/settings/moc_settingswalletrepairwidget.cpp \
+  qt/vitae/settings/moc_settingswidget.cpp \
+  qt/vitae/moc_welcomecontentwidget.cpp \
+  qt/vitae/moc_splash.cpp
 
 BITCOIN_MM = \
   qt/macdockiconhandler.mm \
@@ -119,8 +173,8 @@ QT_MOC = \
   qt/vitae.moc \
   qt/bitcoinamountfield.moc \
   qt/intro.moc \
-  qt/overviewpage.moc \
-  qt/rpcconsole.moc
+  qt/rpcconsole.moc \
+  qt/vitae/settings/moc_settingsconsolewidget.cpp
 
 QT_QRC_CPP = qt/qrc_vitae.cpp
 QT_QRC = qt/vitae.qrc
@@ -136,17 +190,14 @@ BITCOIN_QT_H = \
   qt/addresstablemodel.h \
   qt/askpassphrasedialog.h \
   qt/bantablemodel.h \
-  qt/bip38tooldialog.h \
   qt/bitcoinaddressvalidator.h \
   qt/bitcoinamountfield.h \
-  qt/bitcoingui.h \
+  qt/vitae/vitaegui.h \
   qt/bitcoinunits.h \
-  qt/blockexplorer.h \
   qt/clientmodel.h \
   qt/coincontroldialog.h \
   qt/coincontroltreewidget.h \
   qt/csvmodelwriter.h \
-  qt/obfuscationconfig.h \
   qt/editaddressdialog.h \
   qt/guiconstants.h \
   qt/guiutil.h \
@@ -154,44 +205,96 @@ BITCOIN_QT_H = \
   qt/macdockiconhandler.h \
   qt/macnotificationhandler.h \
   qt/fundamentalnodelist.h \
-  qt/masternodelist.h \
-  qt/multisenddialog.h \
-  qt/multisigdialog.h\
   qt/networkstyle.h \
   qt/notificator.h \
   qt/openuridialog.h \
   qt/optionsdialog.h \
   qt/optionsmodel.h \
-  qt/overviewpage.h \
   qt/paymentrequestplus.h \
   qt/paymentserver.h \
   qt/peertablemodel.h \
   qt/platformstyle.h \
   qt/qvalidatedlineedit.h \
   qt/qvaluecombobox.h \
-  qt/receivecoinsdialog.h \
-  qt/privacydialog.h \
-  qt/receiverequestdialog.h \
   qt/recentrequeststablemodel.h \
   qt/rpcconsole.h \
-  qt/sendcoinsdialog.h \
-  qt/sendcoinsentry.h \
-  qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/trafficgraphwidget.h \
   qt/transactiondesc.h \
-  qt/transactiondescdialog.h \
   qt/transactionfilterproxy.h \
   qt/transactionrecord.h \
   qt/transactiontablemodel.h \
-  qt/transactionview.h \
   qt/utilitydialog.h \
-  qt/walletframe.h \
   qt/walletmodel.h \
   qt/walletmodeltransaction.h \
-  qt/walletview.h \
+  qt/vitae/prunnable.h \
+  qt/vitae/pfborderimage.h \
+  qt/vitae/loadingdialog.h \
   qt/winshutdownmonitor.h \
-  qt/zVitcontroldialog.h
+  qt/zVitcontroldialog.h \
+  qt/vitae/pwidget.h \
+  qt/vitae/guitransactionsutils.h \
+  qt/vitae/snackbar.h \
+  qt/vitae/navmenuwidget.h \
+  qt/vitae/lockunlock.h \
+  qt/vitae/receivedialog.h \
+  qt/vitae/furlistrow.h \
+  qt/vitae/furabstractlistitemdelegate.h \
+  qt/vitae/txviewholder.h \
+  qt/vitae/qtutils.h \
+  qt/vitae/expandablebutton.h \
+  qt/vitae/topbar.h \
+  qt/vitae/txrow.h \
+  qt/vitae/addressholder.h \
+  qt/vitae/addressfilterproxymodel.h \
+  qt/vitae/dashboardwidget.h \
+  qt/vitae/addresslabelrow.h \
+  qt/vitae/contactdropdownrow.h \
+  qt/vitae/mninfodialog.h \
+  qt/vitae/optionbutton.h \
+  qt/vitae/coldstakingmodel.h \
+  qt/vitae/fnmodel.h \
+  qt/vitae/fundamentalnodewizarddialog.h \
+  qt/vitae/fnrow.h \
+  qt/vitae/fundamentalnodeswidget.h \
+  qt/vitae/mnmodel.h \
+  qt/vitae/masternodewizarddialog.h \
+  qt/vitae/mnrow.h \
+  qt/vitae/masternodeswidget.h \
+  qt/vitae/myaddressrow.h \
+  qt/vitae/csrow.h \
+  qt/vitae/contactsdropdown.h \
+  qt/vitae/sendchangeaddressdialog.h \
+  qt/vitae/sendconfirmdialog.h \
+  qt/vitae/sendcustomfeedialog.h \
+  qt/vitae/sendchangeaddressdialog.h \
+  qt/vitae/sendmultirow.h \
+  qt/vitae/send.h \
+  qt/vitae/addnewaddressdialog.h \
+  qt/vitae/addnewcontactdialog.h \
+  qt/vitae/requestdialog.h \
+  qt/vitae/receivewidget.h \
+  qt/vitae/tooltipmenu.h \
+  qt/vitae/addresseswidget.h \
+  qt/vitae/defaultdialog.h \
+  qt/vitae/privacywidget.h \
+  qt/vitae/coldstakingwidget.h \
+  qt/vitae/settings/settingsbackupwallet.h \
+  qt/vitae/settings/settingsexportcsv.h \
+  qt/vitae/settings/settingsbittoolwidget.h \
+  qt/vitae/settings/settingsconsolewidget.h \
+  qt/vitae/settings/settingsdisplayoptionswidget.h \
+  qt/vitae/settings/settingsfaqwidget.h \
+  qt/vitae/settings/settingsinformationwidget.h \
+  qt/vitae/settings/settingsmainoptionswidget.h \
+  qt/vitae/settings/settingsmultisenddialog.h \
+  qt/vitae/settings/settingsmultisendwidget.h \
+  qt/vitae/settings/settingssignmessagewidgets.h \
+  qt/vitae/settings/settingswalletoptionswidget.h \
+  qt/vitae/settings/settingswalletrepairwidget.h \
+  qt/vitae/settings/settingswidget.h \
+  qt/vitae/welcomecontentwidget.h \
+  qt/vitae/splash.h
 
 RES_ICONS = \
   qt/res/icons/add.png \
@@ -200,6 +303,7 @@ RES_ICONS = \
   qt/res/icons/bitcoin.png \
   qt/res/icons/bitcoin_testnet.ico \
   qt/res/icons/bitcoin_testnet.png \
+  qt/res/icons/bitcoin_regtest.png \
   qt/res/icons/browse.png \
   qt/res/icons/clock1.png \
   qt/res/icons/clock2.png \
@@ -237,6 +341,8 @@ RES_ICONS = \
   qt/res/icons/remove.png \
   qt/res/icons/send.png \
   qt/res/icons/send_dark.png \
+  qt/res/icons/governance.png \
+  qt/res/icons/governance_dark.png \
   qt/res/icons/staking_active.png \
   qt/res/icons/staking_inactive.png \
   qt/res/icons/synced.png \
@@ -248,26 +354,236 @@ RES_ICONS = \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
   qt/res/icons/tx_mined.png \
+  qt/res/icons/ic-transaction-received.png \
+  qt/res/icons/ic-transaction-mint.png \
+  qt/res/icons/ic-transaction-sent.png \
+  qt/res/icons/ic-transaction-staked.png \
   qt/res/icons/unit_vitae.png \
   qt/res/icons/unit_mvitae.png \
   qt/res/icons/unit_uvitae.png \
   qt/res/icons/unit_tvitae.png \
   qt/res/icons/unit_tmvitae.png \
-  qt/res/icons/unit_tuvitae.png
+  qt/res/icons/unit_tuvitae.png \
+  qt/res/icons/yesvote.png \
+  qt/res/icons/novote.png \
+  qt/res/icons/abstainvote.png \
+  qt/vitae/res/img/bg-dashboard-banner.png \
+  qt/vitae/res/img/bg-multi-number-dark.svg \
+  qt/vitae/res/img/ic-check-locked.svg \
+  qt/vitae/res/img/ic-nav-address.svg \
+  qt/vitae/res/img/ic-update.svg \
+  qt/vitae/res/img/bg-multi-number.svg \
+  qt/vitae/res/img/ic-check-mint-off.svg \
+  qt/vitae/res/img/ic-nav-cold-staking.svg \
+  qt/vitae/res/img/ic-nav-cold-staking-active.svg \
+  qt/vitae/res/img/ic-nav-dashboard-active.svg \
+  qt/vitae/res/img/ic-wallet-status-locked.svg \
+  qt/vitae/res/img/bg-splash.svg \
+  qt/vitae/res/img/bg-splash.png \
+  qt/vitae/res/img/ic-check-mint.svg \
+  qt/vitae/res/img/ic-nav-dashboard-hover.svg \
+  qt/vitae/res/img/ic-wallet-status-staking.svg \
+  qt/vitae/res/img/ic-check-peers-off.svg \
+  qt/vitae/res/img/ic-nav-dashboard.svg \
+  qt/vitae/res/img/ic-wallet-status-unlocked.svg \
+  qt/vitae/res/img/ic-check-peers.svg \
+  qt/vitae/res/img/ic-nav-master-active.svg \
+  qt/vitae/res/img/ic-watch-password-white.svg \
+  qt/vitae/res/img/bg-welcome-container.jpg \
+  qt/vitae/res/img/bg-welcome-container.png \
+  qt/vitae/res/img/bg-welcome-container.svg \
+  qt/vitae/res/img/bg-welcome-container@2x.png \
+  qt/vitae/res/img/bg-welcome-container@3x.png \
+  qt/vitae/res/img/ic-check-staking-off.svg \
+  qt/vitae/res/img/ic-nav-master-hover.svg \
+  qt/vitae/res/img/ic-watch-password.svg \
+  qt/vitae/res/img/bg-welcome.jpg \
+  qt/vitae/res/img/bg-welcome.svg \
+  qt/vitae/res/img/bg-welcome@2x.jpg \
+  qt/vitae/res/img/bg-welcome@3x.jpg \
+  qt/vitae/res/img/bg-welcome.png \
+  qt/vitae/res/img/ic-check-staking.svg \
+  qt/vitae/res/img/ic-nav-master.svg \
+  qt/vitae/res/img/img-dashboard-banner.jpg \
+  qt/vitae/res/img/btn-radio-active.svg \
+  qt/vitae/res/img/ic-check-sync-off.svg \
+  qt/vitae/res/img/ic-nav-privacy-active.svg \
+  qt/vitae/res/img/img-empty-contacts.svg \
+  qt/vitae/res/img/btn-radio-off.svg \
+  qt/vitae/res/img/ic-check-sync.png \
+  qt/vitae/res/img/ic-nav-privacy-hover.svg \
+  qt/vitae/res/img/img-empty-dark-contacts.svg \
+  qt/vitae/res/img/ic-contact-arrow-down.svg \
+  qt/vitae/res/img/ic-contact-arrow-down-white.svg \
+  qt/vitae/res/img/ic-check-sync.svg \
+  qt/vitae/res/img/ic-check-faq.svg \
+  qt/vitae/res/img/ic-nav-privacy.svg \
+  qt/vitae/res/img/img-empty-dark-error.svg \
+  qt/vitae/res/img/ic-add-label.svg \
+  qt/vitae/res/img/ic-pending.svg \
+  qt/vitae/res/img/ic-check-theme-dark.svg \
+  qt/vitae/res/img/ic-nav-receive-active.svg \
+  qt/vitae/res/img/img-empty-dark-masternode.svg \
+  qt/vitae/res/img/ic-add-liliac.svg \
+  qt/vitae/res/img/ic-check-theme-light.svg \
+  qt/vitae/res/img/ic-nav-receive-hover.svg \
+  qt/vitae/res/img/img-empty-dark-multisend.svg \
+  qt/vitae/res/img/ic-add-purple.svg \
+  qt/vitae/res/img/ic-check-white.svg \
+  qt/vitae/res/img/ic-nav-receive.svg \
+  qt/vitae/res/img/img-empty-dark-peers.svg \
+  qt/vitae/res/img/ic-add.svg \
+  qt/vitae/res/img/ic-check.svg \
+  qt/vitae/res/img/ic-nav-send-active.svg \
+  qt/vitae/res/img/img-empty-dark-staking-off.svg \
+  qt/vitae/res/img/img-empty-dark-staking-on.svg \
+  qt/vitae/res/img/ic-address-book-grey.svg \
+  qt/vitae/res/img/ic-chevron-left.svg \
+  qt/vitae/res/img/ic-nav-send-hover.svg \
+  qt/vitae/res/img/img-empty-dark-transactions.svg \
+  qt/vitae/res/img/ic-address-book-white.svg \
+  qt/vitae/res/img/ic-chevron-right.svg \
+  qt/vitae/res/img/ic-nav-send.svg \
+  qt/vitae/res/img/img-empty-error.svg \
+  qt/vitae/res/img/ic-address-book.svg \
+  qt/vitae/res/img/ic-clear-liliac.svg \
+  qt/vitae/res/img/ic-nav-settings-active.svg \
+  qt/vitae/res/img/img-empty-masternode.svg \
+  qt/vitae/res/img/ic-address-send-white.svg \
+  qt/vitae/res/img/ic-clear-purple.svg \
+  qt/vitae/res/img/ic-nav-settings-hover.svg \
+  qt/vitae/res/img/img-empty-multisend.svg \
+  qt/vitae/res/img/ic-address-send.svg \
+  qt/vitae/res/img/ic-close-white.svg \
+  qt/vitae/res/img/ic-nav-settings.svg \
+  qt/vitae/res/img/img-empty-peers.svg \
+  qt/vitae/res/img/img-empty-privacy.svg \
+  qt/vitae/res/img/img-empty-privacy-dark.svg \
+  qt/vitae/res/img/ic-arrow-drop-down-white.svg \
+  qt/vitae/res/img/ic-close.svg \
+  qt/vitae/res/img/ic-radio-liliac-on.svg \
+  qt/vitae/res/img/img-empty-staking-off.svg \
+  qt/vitae/res/img/ic-arrow-drop-down.svg \
+  qt/vitae/res/img/ic-coin-vit.svg \
+  qt/vitae/res/img/ic-receive-off.svg \
+  qt/vitae/res/img/img-empty-staking-on.svg \
+  qt/vitae/res/img/ic-arrow-drop-up-white.svg \
+  qt/vitae/res/img/ic-coin-zvit.png \
+  qt/vitae/res/img/ic-receive-on.svg \
+  qt/vitae/res/img/img-empty-transactions.svg \
+  qt/vitae/res/img/ic-arrow-drop-up.svg \
+  qt/vitae/res/img/ic-coin-zvit.svg \
+  qt/vitae/res/img/ic-received.svg \
+  qt/vitae/res/img/img-logo-vitae.png \
+  qt/vitae/res/img/ic-arrow-drop-white-down.svg \
+  qt/vitae/res/img/ic-combo-box.svg \
+  qt/vitae/res/img/ic-send.svg \
+  qt/vitae/res/img/img-logo-vitae@2x.png \
+  qt/vitae/res/img/ic-arrow-purple-down.svg \
+  qt/vitae/res/img/ic-connect.svg \
+  qt/vitae/res/img/ic-submenu-lock.svg \
+  qt/vitae/res/img/img-logo-vitae@3x.png \
+  qt/vitae/res/img/img-logo-vitae.svg \
+  qt/vitae/res/img/ic-arrow-right-white.svg \
+  qt/vitae/res/img/ic-arrow-left-white.svg \
+  qt/vitae/res/img/ic-arrow-left.svg \
+  qt/vitae/res/img/ic-copy-liliac.svg \
+  qt/vitae/res/img/ic-submenu-staking.svg \
+  qt/vitae/res/img/img-nav-logo-vitae.png \
+  qt/vitae/res/img/ic-arrow-right.svg \
+  qt/vitae/res/img/ic-copy.svg \
+  qt/vitae/res/img/ic-copy-big.svg \
+  qt/vitae/res/img/ic-copy-big-white.svg \
+  qt/vitae/res/img/ic-submenu-unlock.svg \
+  qt/vitae/res/img/img-nav-logo.png \
+  qt/vitae/res/img/ic-arrow-white-left.svg \
+  qt/vitae/res/img/ic-exit.svg \
+  qt/vitae/res/img/ic-switch-liliac-on.svg \
+  qt/vitae/res/img/img-nav-logo.svg \
+  qt/vitae/res/img/ic-arrow-white-right.svg \
+  qt/vitae/res/img/ic-expand.svg \
+  qt/vitae/res/img/ic-switch-off.svg \
+  qt/vitae/res/img/img-qr-test-big.png \
+  qt/vitae/res/img/ic-check-active.svg \
+  qt/vitae/res/img/ic-folder.svg \
+  qt/vitae/res/img/ic-switch-on.svg \
+  qt/vitae/res/img/img-qr-test.png \
+  qt/vitae/res/img/ic-check-box.svg \
+  qt/vitae/res/img/ic-check-box-dark-active.svg \
+  qt/vitae/res/img/ic-check-box-indeterminate.svg \
+  qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
+  qt/vitae/res/img/ic-label-liliac.svg \
+  qt/vitae/res/img/ic-transaction-warning.svg \
+  qt/vitae/res/img/ic-transaction-mint.svg \
+  qt/vitae/res/img/ic-transaction-mint-inactive.svg \
+  qt/vitae/res/img/ic-check-cold-staking.svg \
+  qt/vitae/res/img/ic-check-cold-staking-off.svg \
+  qt/vitae/res/img/ic-check-cold-staking-enabled.svg \
+  qt/vitae/res/img/dark/ic-transaction-cs-contract.svg \
+  qt/vitae/res/img/dark/ic-transaction-cs-contract-inactive.svg \
+  qt/vitae/res/img/img-qr.svg \
+  qt/vitae/res/img/ic-check-connect-off.svg \
+  qt/vitae/res/img/ic-check-tor-off.svg \
+  qt/vitae/res/img/ic-check-tor.svg \
+  qt/vitae/res/img/ic-label.svg \
+  qt/vitae/res/img/ic-transaction-received.svg \
+  qt/vitae/res/img/dark/ic-transaction-received.svg \
+  qt/vitae/res/img/dark/ic-transaction-warning.svg \
+  qt/vitae/res/img/dark/ic-transaction-mint.svg \
+  qt/vitae/res/img/dark/ic-transaction-mint-inactive.svg \
+  qt/vitae/res/img/ic-transaction-received-inactive.svg \
+  qt/vitae/res/img/dark/ic-transaction-received-inactive.svg \
+  qt/vitae/res/img/img-welcome-step1.png \
+  qt/vitae/res/img/ic-check-connect.svg \
+  qt/vitae/res/img/ic-menu-hover.svg \
+  qt/vitae/res/img/ic-transaction-sent.svg \
+  qt/vitae/res/img/ic-transaction-sent-inactive.svg \
+  qt/vitae/res/img/dark/ic-transaction-sent.svg \
+  qt/vitae/res/img/dark/ic-transaction-sent-inactive.svg \
+  qt/vitae/res/img/img-welcome-step2.png \
+  qt/vitae/res/img/ic-check-dark.svg \
+  qt/vitae/res/img/ic-mint.svg \
+  qt/vitae/res/img/ic-transaction-staked.svg \
+  qt/vitae/res/img/ic-transaction-staked-inactive.svg \
+  qt/vitae/res/img/dark/ic-transaction-staked.svg \
+  qt/vitae/res/img/dark/ic-transaction-staked-inactive.svg \
+  qt/vitae/res/img/img-welcome-step3.png \
+  qt/vitae/res/img/ic-check-liliac-on.svg \
+  qt/vitae/res/img/ic-nav-address-active.svg \
+  qt/vitae/res/img/ic-unlock-staking.svg \
+  qt/vitae/res/img/img-welcome-step4.png \
+  qt/vitae/res/img/ic-check-locked-off.svg \
+  qt/vitae/res/img/ic-nav-address-hover.svg \
+  qt/vitae/res/img/ic-update-liliac.svg \
+  qt/vitae/res/img/ic-arrow-drop-down-purple.svg \
+  qt/vitae/res/img/ic-arrow-drop-up-purple.svg \
+  qt/vitae/res/img/ic-check-liliac-indeterminate.svg \
+  qt/vitae/res/img/ic-check-box-liliac-indeterminate.svg \
+  qt/vitae/res/img/ic-transaction-stake-delegated.svg \
+  qt/vitae/res/img/ic-transaction-stake-delegated-inactive.svg \
+  qt/vitae/res/img/ic-transaction-stake-hot.svg \
+  qt/vitae/res/img/ic-transaction-stake-hot-inactive.svg \
+  qt/vitae/res/img/dark/ic-transaction-stake-hot.svg \
+  qt/vitae/res/img/dark/ic-transaction-stake-hot-inactive.svg \
+  qt/vitae/res/img/dark/ic-transaction-stake-delegated.svg \
+  qt/vitae/res/img/dark/ic-transaction-stake-delegated-inactive.svg \
+  qt/vitae/res/img/ic-transaction-cs-contract.svg \
+  qt/vitae/res/img/ic-transaction-cs-contract-inactive.svg \
+  qt/vitae/res/img/ic-check-box-indeterminate.svg \
+  qt/vitae/res/img/ani-loading-dark.gif \
+  qt/vitae/res/img/ani-loading.gif
 
-BITCOIN_QT_CPP = \
+BITCOIN_QT_BASE_CPP = \
   qt/bantablemodel.cpp \
   qt/bitcoinaddressvalidator.cpp \
   qt/bitcoinamountfield.cpp \
-  qt/bitcoingui.cpp \
+  qt/vitae/vitaegui.cpp \
   qt/bitcoinunits.cpp \
-  qt/blockexplorer.cpp \
   qt/clientmodel.cpp \
   qt/csvmodelwriter.cpp \
   qt/guiutil.cpp \
   qt/intro.cpp \
   qt/fundamentalnodelist.cpp \
-  qt/masternodelist.cpp \
   qt/networkstyle.cpp \
   qt/notificator.cpp \
   qt/optionsdialog.cpp \
@@ -281,54 +597,105 @@ BITCOIN_QT_CPP = \
   qt/trafficgraphwidget.cpp \
   qt/utilitydialog.cpp
 
-if TARGET_WINDOWS
-BITCOIN_QT_CPP += qt/winshutdownmonitor.cpp
-endif
+BITCOIN_QT_WINDOWS_CPP = qt/winshutdownmonitor.cpp
 
-if ENABLE_WALLET
-BITCOIN_QT_CPP += \
+BITCOIN_QT_WALLET_CPP = \
   qt/addressbookpage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
-  qt/bip38tooldialog.cpp \
-  qt/blockexplorer.cpp \
   qt/coincontroldialog.cpp \
   qt/coincontroltreewidget.cpp \
-  qt/obfuscationconfig.cpp \
   qt/editaddressdialog.cpp \
   qt/fundamentalnodelist.cpp \
-  qt/masternodelist.cpp \
-  qt/multisenddialog.cpp \
-  qt/multisigdialog.cpp\
   qt/openuridialog.cpp \
-  qt/overviewpage.cpp \
   qt/paymentrequestplus.cpp \
   qt/paymentserver.cpp \
-  qt/receivecoinsdialog.cpp \
-  qt/privacydialog.cpp \
-  qt/receiverequestdialog.cpp \
   qt/recentrequeststablemodel.cpp \
-  qt/sendcoinsdialog.cpp \
-  qt/sendcoinsentry.cpp \
-  qt/signverifymessagedialog.cpp \
   qt/transactiondesc.cpp \
-  qt/transactiondescdialog.cpp \
   qt/transactionfilterproxy.cpp \
   qt/transactionrecord.cpp \
   qt/transactiontablemodel.cpp \
-  qt/transactionview.cpp \
-  qt/walletframe.cpp \
   qt/walletmodel.cpp \
   qt/walletmodeltransaction.cpp \
-  qt/walletview.cpp \
-  qt/zVitcontroldialog.cpp
+  qt/vitae/loadingdialog.cpp \
+  qt/zVitcontroldialog.cpp \
+  qt/vitae/pwidget.cpp \
+  qt/vitae/guitransactionsutils.cpp \
+  qt/vitae/snackbar.cpp \
+  qt/vitae/navmenuwidget.cpp \
+  qt/vitae/lockunlock.cpp \
+  qt/vitae/receivedialog.cpp \
+  qt/vitae/furabstractlistitemdelegate.cpp \
+  qt/vitae/txviewholder.cpp \
+  qt/vitae/qtutils.cpp \
+  qt/vitae/expandablebutton.cpp \
+  qt/vitae/topbar.cpp \
+  qt/vitae/txrow.cpp \
+  qt/vitae/addressholder.cpp \
+  qt/vitae/addressfilterproxymodel.cpp \
+  qt/vitae/dashboardwidget.cpp \
+  qt/vitae/addresslabelrow.cpp \
+  qt/vitae/contactdropdownrow.cpp \
+  qt/vitae/contactsdropdown.cpp \
+  qt/vitae/optionbutton.cpp \
+  qt/vitae/mninfodialog.cpp \
+  qt/vitae/coldstakingmodel.cpp \
+  qt/vitae/fnmodel.cpp \
+  qt/vitae/fundamentalnodewizarddialog.cpp \
+  qt/vitae/fnrow.cpp \
+  qt/vitae/fundamentalnodeswidget.cpp \
+  qt/vitae/mnmodel.cpp \
+  qt/vitae/masternodewizarddialog.cpp \
+  qt/vitae/mnrow.cpp \
+  qt/vitae/masternodeswidget.cpp \
+  qt/vitae/myaddressrow.cpp \
+  qt/vitae/csrow.cpp \
+  qt/vitae/sendchangeaddressdialog.cpp \
+  qt/vitae/sendconfirmdialog.cpp \
+  qt/vitae/sendcustomfeedialog.cpp \
+  qt/vitae/sendchangeaddressdialog.cpp \
+  qt/vitae/sendmultirow.cpp \
+  qt/vitae/send.cpp \
+  qt/vitae/addnewaddressdialog.cpp \
+  qt/vitae/addnewcontactdialog.cpp \
+  qt/vitae/requestdialog.cpp \
+  qt/vitae/receivewidget.cpp \
+  qt/vitae/tooltipmenu.cpp \
+  qt/vitae/addresseswidget.cpp \
+  qt/vitae/defaultdialog.cpp \
+  qt/vitae/privacywidget.cpp \
+  qt/vitae/coldstakingwidget.cpp \
+  qt/vitae/settings/settingsbackupwallet.cpp \
+  qt/vitae/settings/settingsexportcsv.cpp \
+  qt/vitae/settings/settingsbittoolwidget.cpp \
+  qt/vitae/settings/settingsconsolewidget.cpp \
+  qt/vitae/settings/settingsdisplayoptionswidget.cpp \
+  qt/vitae/settings/settingsfaqwidget.cpp \
+  qt/vitae/settings/settingsinformationwidget.cpp \
+  qt/vitae/settings/settingsmainoptionswidget.cpp \
+  qt/vitae/settings/settingsmultisenddialog.cpp \
+  qt/vitae/settings/settingsmultisendwidget.cpp \
+  qt/vitae/settings/settingssignmessagewidgets.cpp \
+  qt/vitae/settings/settingswalletoptionswidget.cpp \
+  qt/vitae/settings/settingswalletrepairwidget.cpp \
+  qt/vitae/settings/settingswidget.cpp \
+  qt/vitae/welcomecontentwidget.cpp \
+  qt/vitae/splash.cpp
 
+
+BITCOIN_QT_CPP = $(BITCOIN_QT_BASE_CPP)
+if TARGET_WINDOWS
+BITCOIN_QT_CPP += $(BITCOIN_QT_WINDOWS_CPP)
+endif
+if ENABLE_WALLET
+BITCOIN_QT_CPP += $(BITCOIN_QT_WALLET_CPP)
 endif
 
 RES_IMAGES = \
   qt/res/images/about.png \
   qt/res/images/splash.png \
   qt/res/images/splash_testnet.png \
+  qt/res/images/splash_regtest.png \
   qt/res/images/vitae_logo_horizontal.png \
   qt/res/images/downArrow_dark.png \
   qt/res/images/downArrow_small_dark.png \
@@ -337,23 +704,24 @@ RES_IMAGES = \
   qt/res/images/upArrow_small.png \
   qt/res/images/leftArrow_small_dark.png \
   qt/res/images/rightArrow_small_dark.png \
-  qt/res/images/qtreeview_selected.png \
-  qt/res/images/walletFrame.png \
-  qt/res/images/walletFrame_bg.png \
-  qt/res/images/walletFrame_bg.png
+  qt/res/images/qtreeview_selected.png
 
 RES_CSS = \
-  qt/res/css/default.css
+  qt/res/css/default.css \
+  qt/vitae/res/css/style_dark.css \
+  qt/vitae/res/css/style_light.css
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
 BITCOIN_RC = qt/res/vitae-qt-res.rc
 
 BITCOIN_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
-  -I$(builddir)/qt/forms
+  -I$(builddir)/qt/forms -DQT_NO_KEYWORDS
 
-qt_libbitcoinqt_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
-  $(QT_INCLUDES) $(QT_DBUS_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
+qt_libbitcoinqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+  $(QT_INCLUDES) $(QT_DBUS_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS) $(SVG_CFLAGS) $(CHARTS_CFLAGS)
+qt_libbitcoinqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_libbitcoinqt_a_OBJCXXFLAGS = $(AM_OBJCXXFLAGS) $(QT_PIE_FLAGS)
 
 qt_libbitcoinqt_a_SOURCES = $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(QT_FORMS_UI) \
   $(QT_QRC) $(QT_QRC_LOCALE) $(QT_TS) $(PROTOBUF_PROTO) $(RES_ICONS) $(RES_IMAGES) $(RES_CSS) $(RES_MOVIES)
@@ -375,8 +743,9 @@ $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
 # vitae-qt binary #
-qt_vitae_qt_CPPFLAGS = $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
-  $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
+qt_vitae_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+  $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS) $(SVG_CFLAGS) $(CHARTS_CFLAGS)
+qt_vitae_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
 qt_vitae_qt_SOURCES = qt/vitae.cpp
 if TARGET_DARWIN
@@ -392,8 +761,8 @@ endif
 if ENABLE_ZMQ
 qt_vitae_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-qt_vitae_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBBITCOIN_ZEROCOIN) $(LIBLEVELDB) $(LIBMEMENV) \
-  $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
+qt_vitae_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBBITCOIN_ZEROCOIN) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
+  $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(SVG_LIBS) $(CHARTS_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
 qt_vitae_qt_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 qt_vitae_qt_LIBTOOLFLAGS = --tag CXX

@@ -1,4 +1,5 @@
 // Copyright (c) 2013 The Bitcoin Core developers
+// Copyright (c) 2019-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,6 +9,7 @@
 #include "key.h"
 #include "uint256.h"
 #include "util.h"
+#include "test/test_bitcoin.h"
 
 #include <string>
 #include <vector>
@@ -80,9 +82,9 @@ void RunTest(const TestVector &test) {
     std::vector<unsigned char> seed = ParseHex(test.strHexMaster);
     CExtKey key;
     CExtPubKey pubkey;
-    key.SetMaster(&seed[0], seed.size());
+    key.SetSeed(&seed[0], seed.size());
     pubkey = key.Neuter();
-    BOOST_FOREACH(const TestDerivation &derive, test.vDerive) {
+    for (const TestDerivation &derive : test.vDerive) {
         unsigned char data[74];
         key.Encode(data);
         pubkey.Encode(data);
@@ -107,7 +109,7 @@ void RunTest(const TestVector &test) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE(bip32_tests)
+BOOST_FIXTURE_TEST_SUITE(bip32_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(bip32_test1) {
     RunTest(test1);

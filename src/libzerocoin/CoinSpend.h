@@ -9,22 +9,85 @@
  * @copyright  Copyright 2013 Ian Miers, Christina Garman and Matthew Green
  * @license    This project is released under the MIT license.
  **/
-// Copyright (c) 2017 The VITAE developers
+// Copyright (c) 2017-2020 The PIVX developers
+// Copyright (c) 2017-2020 The VITAE developers
 
 #ifndef COINSPEND_H_
 #define COINSPEND_H_
 
+#include <streams.h>
+#include <utilstrencodings.h>
 #include "Accumulator.h"
-#include "AccumulatorProofOfKnowledge.h"
 #include "Coin.h"
 #include "Commitment.h"
 #include "Params.h"
-#include "SerialNumberSignatureOfKnowledge.h"
+#include "SpendType.h"
+
 #include "bignum.h"
+#include "pubkey.h"
 #include "serialize.h"
 
 namespace libzerocoin
 {
+// Lagacy zVIT - Only for serialization
+// Proof that a value inside a commitment C is accumulated in accumulator A
+class AccumulatorProofOfKnowledge {
+public:
+    AccumulatorProofOfKnowledge() {};
+    ADD_SERIALIZE_METHODS;
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(C_e); READWRITE(C_u); READWRITE(C_r); READWRITE(st_1); READWRITE(st_2); READWRITE(st_3);
+        READWRITE(t_1); READWRITE(t_2); READWRITE(t_3); READWRITE(t_4); READWRITE(s_alpha); READWRITE(s_beta);
+        READWRITE(s_zeta); READWRITE(s_sigma); READWRITE(s_eta); READWRITE(s_epsilon);
+        READWRITE(s_delta); READWRITE(s_xi); READWRITE(s_phi); READWRITE(s_gamma); READWRITE(s_psi);
+    }
+private:
+    CBigNum C_e, C_u, C_r;
+    CBigNum st_1, st_2, st_3;
+    CBigNum t_1, t_2, t_3, t_4;
+    CBigNum s_alpha, s_beta, s_zeta, s_sigma, s_eta, s_epsilon, s_delta;
+    CBigNum s_xi, s_phi, s_gamma, s_psi;
+};
+
+// Lagacy zVIT - Only for serialization
+// Signature of knowledge attesting that the signer knows the values to
+// open a commitment to a coin with given serial number
+class SerialNumberSignatureOfKnowledge {
+public:
+    SerialNumberSignatureOfKnowledge(){};
+    ADD_SERIALIZE_METHODS;
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(s_notprime);
+        READWRITE(sprime);
+        READWRITE(hash);
+    }
+private:
+    uint256 hash;
+    std::vector<CBigNum> s_notprime;
+    std::vector<CBigNum> sprime;
+};
+
+// Lagacy zVIT - Only for serialization
+// Proof that two commitments open to the same value (BROKEN)
+class CommitmentProofOfKnowledge {
+public:
+    CommitmentProofOfKnowledge() {};
+    ADD_SERIALIZE_METHODS;
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
+    {
+        READWRITE(S1); READWRITE(S2); READWRITE(S3); READWRITE(challenge);
+    }
+private:
+    CBigNum S1, S2, S3, challenge;
+};
+
+
+// Lagacy zVIT - Only for serialization
 /** The complete proof needed to spend a zerocoin.
  * Composes together a proof that a coin is accumulated
  * and that it has a given serial number.
@@ -32,67 +95,34 @@ namespace libzerocoin
 class CoinSpend
 {
 public:
-    template <typename Stream>
-    CoinSpend(const ZerocoinParams* p, Stream& strm) : accumulatorPoK(&p->accumulatorParams),
-                                                       serialNumberSoK(p),
-                                                       commitmentPoK(&p->serialNumberSoKCommitmentGroup, &p->accumulatorParams.accumulatorPoKCommitmentGroup)
-    {
-        strm >> *this;
-    }
-    /**Generates a proof spending a zerocoin.
-	 *
-	 * To use this, provide an unspent PrivateCoin, the latest Accumulator
-	 * (e.g from the most recent Bitcoin block) containing the public part
-	 * of the coin, a witness to that, and whatever medeta data is needed.
-	 *
-	 * Once constructed, this proof can be serialized and sent.
-	 * It is validated simply be calling validate.
-	 * @warning Validation only checks that the proof is correct
-	 * @warning for the specified values in this class. These values must be validated
-	 *  Clients ought to check that
-	 * 1) params is the right params
-	 * 2) the accumulator actually is in some block
-	 * 3) that the serial number is unspent
-	 * 4) that the transaction
-	 *
-	 * @param p cryptographic parameters
-	 * @param coin The coin to be spend
-	 * @param a The current accumulator containing the coin
-	 * @param witness The witness showing that the accumulator contains the coin
-	 * @param a hash of the partial transaction that contains this coin spend
-	 * @throw ZerocoinException if the process fails
-	 */
-    CoinSpend(const ZerocoinParams* p, const PrivateCoin& coin, Accumulator& a, const uint32_t checksum, const AccumulatorWitness& witness, const uint256& ptxHash);
 
-    /** Returns the serial number of the coin spend by this proof.
-	 *
-	 * @return the coin's serial number
-	 */
+    CoinSpend() {};
+    CoinSpend(CDataStream& strm) { strm >> *this; }
+    virtual ~CoinSpend(){};
+
     const CBigNum& getCoinSerialNumber() const { return this->coinSerialNumber; }
-
-    /**Gets the denomination of the coin spent in this proof.
-	 *
-	 * @return the denomination
-	 */
     CoinDenomination getDenomination() const { return this->denomination; }
-
-    /**Gets the checksum of the accumulator used in this proof.
-	 *
-	 * @return the checksum
-	 */
     uint32_t getAccumulatorChecksum() const { return this->accChecksum; }
-
-    /**Gets the txout hash used in this proof.
-	 *
-	 * @return the txout hash
-	 */
     uint256 getTxOutHash() const { return ptxHash; }
     CBigNum getAccCommitment() const { return accCommitmentToCoinValue; }
     CBigNum getSerialComm() const { return serialCommitmentToCoinValue; }
+    uint8_t getVersion() const { return version; }
+    int getCoinVersion() const { return libzerocoin::ExtractVersionFromSerial(coinSerialNumber); }
+    CPubKey getPubKey() const { return pubkey; }
+    SpendType getSpendType() const { return spendType; }
+    std::vector<unsigned char> getSignature() const { return vchSig; }
 
-    bool Verify(const Accumulator& a) const;
+    static std::vector<unsigned char> ParseSerial(CDataStream& s);
+
+    virtual const uint256 signatureHash() const;
     bool HasValidSerial(ZerocoinParams* params) const;
+    bool HasValidSignature() const;
+    void setTxOutHash(uint256 txOutHash) { this->ptxHash = txOutHash; };
+    void setDenom(libzerocoin::CoinDenomination denom) { this->denomination = denom; }
+    void setPubKey(CPubKey pkey, bool fUpdateSerial = false);
+
     CBigNum CalculateValidSerial(ZerocoinParams* params);
+    std::string ToString() const;
 
     ADD_SERIALIZE_METHODS;
     template <typename Stream, typename Operation>
@@ -107,19 +137,35 @@ public:
         READWRITE(accumulatorPoK);
         READWRITE(serialNumberSoK);
         READWRITE(commitmentPoK);
+
+        try {
+            READWRITE(version);
+            READWRITE(pubkey);
+            READWRITE(vchSig);
+            READWRITE(spendType);
+        } catch (...) {
+            version = 1;
+        }
     }
 
-private:
-    const uint256 signatureHash() const;
-    CoinDenomination denomination;
-    uint32_t accChecksum;
+protected:
+    CoinDenomination denomination = ZQ_ERROR;
+    CBigNum coinSerialNumber;
+    uint8_t version;
+    //As of version 2
+    CPubKey pubkey;
+    std::vector<unsigned char> vchSig;
+    SpendType spendType;
     uint256 ptxHash;
+
+private:
+    uint32_t accChecksum;
     CBigNum accCommitmentToCoinValue;
     CBigNum serialCommitmentToCoinValue;
-    CBigNum coinSerialNumber;
     AccumulatorProofOfKnowledge accumulatorPoK;
     SerialNumberSignatureOfKnowledge serialNumberSoK;
     CommitmentProofOfKnowledge commitmentPoK;
+
 };
 
 } /* namespace libzerocoin */

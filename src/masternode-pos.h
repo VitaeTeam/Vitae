@@ -18,13 +18,10 @@
 #include "base58.h"
 #include "main.h"
 
-using namespace std;
-using namespace boost;
-
 class CMasternodeScanning;
 class CMasternodeScanningError;
 
-extern map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
+extern std::map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
 extern CMasternodeScanning mnscan;
 
 static const int MIN_MASTERNODE_POS_PROTO_VERSION = 70075;

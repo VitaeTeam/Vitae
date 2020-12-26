@@ -9,13 +9,14 @@
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
 #include "sync.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
 #include "walletmodel.h"
+#include "askpassphrasedialog.h"
 
 #include <QMessageBox>
 #include <QTimer>
 
-CCriticalSection cs_fundamentalnodes;
+RecursiveMutex cs_fundamentalnodes;
 
 FundamentalnodeList::FundamentalnodeList(QWidget* parent) : QWidget(parent),
                                                   ui(new Ui::FundamentalnodeList),
@@ -84,7 +85,7 @@ void FundamentalnodeList::StartAlias(std::string strAlias)
     std::string strStatusHtml;
     strStatusHtml += "<center>Alias: " + strAlias;
 
-    BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         if (mne.getAlias() == strAlias) {
             std::string strError;
             CFundamentalnodeBroadcast mnb;
@@ -116,7 +117,7 @@ void FundamentalnodeList::StartAll(std::string strCommand)
     int nCountFailed = 0;
     std::string strFailedHtml;
 
-    BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         std::string strError;
         CFundamentalnodeBroadcast mnb;
 
@@ -204,7 +205,7 @@ void FundamentalnodeList::updateMyNodeList(bool fForce)
     nTimeMyListUpdated = GetTime();
 
     ui->tableWidgetMyFundamentalnodes->setSortingEnabled(false);
-    BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
@@ -241,7 +242,7 @@ void FundamentalnodeList::on_startButton_clicked()
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
-    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForStaking) {
         WalletModel::UnlockContext ctx(walletModel->requestUnlock());
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
@@ -265,7 +266,7 @@ void FundamentalnodeList::on_startAllButton_clicked()
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
-    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForStaking) {
         WalletModel::UnlockContext ctx(walletModel->requestUnlock());
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
@@ -296,7 +297,7 @@ void FundamentalnodeList::on_startMissingButton_clicked()
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
-    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForStaking) {
         WalletModel::UnlockContext ctx(walletModel->requestUnlock());
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled

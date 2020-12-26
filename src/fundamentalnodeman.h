@@ -17,11 +17,12 @@
 #define FUNDAMENTALNODES_DUMP_SECONDS (15 * 60)
 #define FUNDAMENTALNODES_DSEG_SECONDS (3 * 60 * 60)
 
-using namespace std;
-
 class CFundamentalnodeMan;
+class CActiveFundamentalnode;
 
 extern CFundamentalnodeMan mnodeman;
+extern std::string strFundamentalNodePrivKey;
+
 void DumpFundamentalnodes();
 
 /** Access to the MN database (mncache.dat)
@@ -52,10 +53,10 @@ class CFundamentalnodeMan
 {
 private:
     // critical section to protect the inner data structures
-    mutable CCriticalSection cs;
+    mutable RecursiveMutex cs;
 
     // critical section to protect the inner data structures specifically on messaging
-    mutable CCriticalSection cs_process_message;
+    mutable RecursiveMutex cs_process_message;
 
     // map to hold all MNs
     std::vector<CFundamentalnode> vFundamentalnodes;
@@ -68,9 +69,9 @@ private:
 
 public:
     // Keep track of all broadcasts I've seen
-    map<uint256, CFundamentalnodeBroadcast> mapSeenFundamentalnodeBroadcast;
+    std::map<uint256, CFundamentalnodeBroadcast> mapSeenFundamentalnodeBroadcast;
     // Keep track of all pings I've seen
-    map<uint256, CFundamentalnodePing> mapSeenFundamentalnodePing;
+    std::map<uint256, CFundamentalnodePing> mapSeenFundamentalnodePing;
 
     // keep track of dsq count to prevent fundamentalnodes from gaming obfuscation queue
     int64_t nDsqCount;
@@ -135,11 +136,9 @@ public:
         return vFundamentalnodes;
     }
 
-    std::vector<pair<int, CFundamentalnode> > GetFundamentalnodeRanks(int64_t nBlockHeight, int minProtocol = 0);
+    std::vector<std::pair<int, CFundamentalnode> > GetFundamentalnodeRanks(int64_t nBlockHeight, int minProtocol = 0);
     int GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol = 0, bool fOnlyActive = true);
     CFundamentalnode* GetFundamentalnodeByRank(int nRank, int64_t nBlockHeight, int minProtocol = 0, bool fOnlyActive = true);
-
-    void ProcessFundamentalnodeConnections();
 
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
@@ -152,6 +151,8 @@ public:
     std::string ToString() const;
 
     void Remove(CTxIn vin);
+
+    int GetEstimatedMasternodes(int nBlock);
 
     /// Update fundamentalnode list and maps using provided CFundamentalnodeBroadcast
     void UpdateFundamentalnodeList(CFundamentalnodeBroadcast mnb);

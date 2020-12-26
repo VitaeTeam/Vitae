@@ -1,13 +1,14 @@
 // Copyright (c) 2014-2015 The Bitsend developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef MASTERNODEMAN_H
 #define MASTERNODEMAN_H
 
+#include "activemasternode.h"
 //#include "bignum.h"
 #include "sync.h"
 #include "net.h"
@@ -22,11 +23,13 @@
 #define MASTERNODES_DUMP_SECONDS               (15*60)
 #define MASTERNODES_DSEG_SECONDS               (3*60*60)
 
-using namespace std;
-
 class CMasternodeMan;
+class CActiveMasternode;
 
 extern CMasternodeMan m_nodeman;
+extern CActiveMasternode activeMasternode;
+extern std::string strMasterNodePrivKey;
+
 void DumpMasternodes();
 
 /** Access to the MN database (mncache.dat)
@@ -56,7 +59,10 @@ class CMasternodeMan
 {
 private:
     // critical section to protect the inner data structures
-    mutable CCriticalSection cs;
+    mutable RecursiveMutex cs;
+
+    // critical section to protect the inner data structures specifically on messaging
+    mutable RecursiveMutex cs_process_message;
 
     // map to hold all MNs
     std::vector<CMasternode> vMasternodes;
@@ -68,7 +74,7 @@ private:
     std::map<COutPoint, int64_t> mWeAskedForMasternodeListEntry;
 
 public:
-    // keep track of dsq count to prevent masternodes from gaming darksend queue
+    // keep track of dsq count to prevent masternodes from gaming queue
     int64_t nDsqCount;
 
     ADD_SERIALIZE_METHODS;
@@ -106,7 +112,7 @@ public:
     /// Clear Masternode vector
     void Clear();
 
-    int CountEnabled();
+    int CountEnabled(int protocolVersion = -1);
 
     void CountNetworks(int protocolVersion, int& ipv4, int& ipv6, int& onion);
 
@@ -129,11 +135,9 @@ public:
 
     std::vector<CMasternode> GetFullMasternodeVector() { Check(); return vMasternodes; }
 
-    std::vector<pair<int, CMasternode> > GetMasternodeRanks(int64_t nBlockHeight, int minProtocol=0);
+    std::vector<std::pair<int, CMasternode> > GetMasternodeRanks(int64_t nBlockHeight, int minProtocol=0);
     int GetMasternodeRank(const CTxIn &vin, int64_t nBlockHeight, int minProtocol=0, bool fOnlyActive=true);
     CMasternode* GetMasternodeByRank(int nRank, int64_t nBlockHeight, int minProtocol=0, bool fOnlyActive=true);
-
-    void ProcessMasternodeConnections();
 
     void ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
 
@@ -157,5 +161,7 @@ public:
 	// Get Masternode Protocol Version
 	int GetMinMasternodePaymentsProto();
 };
+
+void ThreadCheckMasternodes();
 
 #endif

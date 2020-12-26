@@ -1,23 +1,25 @@
 // Copyright (c) 2012-2013 The Bitcoin Core developers
+// Copyright (c) 2019-2020 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "consensus/tx_verify.h"
 #include "key.h"
 #include "keystore.h"
 #include "main.h"
 #include "script/script.h"
 #include "script/script_error.h"
 #include "script/sign.h"
+#include "test_vitae.h"
 
 #ifdef ENABLE_WALLET
-#include "wallet_ismine.h"
+#include "wallet/wallet_ismine.h"
 #endif
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace std;
 
 // Helpers:
 static std::vector<unsigned char>
@@ -46,8 +48,7 @@ Verify(const CScript& scriptSig, const CScript& scriptPubKey, bool fStrict, Scri
     return VerifyScript(scriptSig, scriptPubKey, fStrict ? SCRIPT_VERIFY_P2SH : SCRIPT_VERIFY_NONE, MutableTransactionSignatureChecker(&txTo, 0), &err);
 }
 
-
-BOOST_AUTO_TEST_SUITE(script_P2SH_tests)
+BOOST_FIXTURE_TEST_SUITE(script_P2SH_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(sign)
 {
@@ -80,7 +81,7 @@ BOOST_AUTO_TEST_CASE(sign)
     }
 
     CMutableTransaction txFrom;  // Funding transaction:
-    string reason;
+    std::string reason;
     txFrom.vout.resize(8);
     for (int i = 0; i < 4; i++)
     {
@@ -178,7 +179,7 @@ BOOST_AUTO_TEST_CASE(set)
     }
 
     CMutableTransaction txFrom;  // Funding transaction:
-    string reason;
+    std::string reason;
     txFrom.vout.resize(4);
     for (int i = 0; i < 4; i++)
     {
@@ -210,7 +211,7 @@ BOOST_AUTO_TEST_CASE(set)
 BOOST_AUTO_TEST_CASE(is)
 {
     // Test CScript::IsPayToScriptHash()
-    uint160 dummy(0);
+    uint160 dummy;
     CScript p2sh;
     p2sh << OP_HASH160 << ToByteVector(dummy) << OP_EQUAL;
     BOOST_CHECK(p2sh.IsPayToScriptHash());
@@ -265,7 +266,7 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     CCoinsViewCache coins(&coinsDummy);
     CBasicKeyStore keystore;
     CKey key[6];
-    vector<CPubKey> keys;
+    std::vector<CPubKey> keys;
     for (int i = 0; i < 6; i++)
     {
         key[i].MakeNewKey(true);
@@ -337,8 +338,8 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     // SignSignature doesn't know how to sign these. We're
     // not testing validating signatures, so just create
     // dummy signatures that DO include the correct P2SH scripts:
-    txTo.vin[3].scriptSig << OP_11 << OP_11 << static_cast<vector<unsigned char> >(oneAndTwo);
-    txTo.vin[4].scriptSig << static_cast<vector<unsigned char> >(fifteenSigops);
+    txTo.vin[3].scriptSig << OP_11 << OP_11 << static_cast<std::vector<unsigned char> >(oneAndTwo);
+    txTo.vin[4].scriptSig << static_cast<std::vector<unsigned char> >(fifteenSigops);
 
     BOOST_CHECK(::AreInputsStandard(txTo, coins));
     // 22 P2SH sigops for all inputs (1 for vin[0], 6 for vin[3], 15 for vin[4]
@@ -360,7 +361,7 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd1.vin.resize(1);
     txToNonStd1.vin[0].prevout.n = 5;
     txToNonStd1.vin[0].prevout.hash = txFrom.GetHash();
-    txToNonStd1.vin[0].scriptSig << static_cast<vector<unsigned char> >(sixteenSigops);
+    txToNonStd1.vin[0].scriptSig << static_cast<std::vector<unsigned char> >(sixteenSigops);
 
     BOOST_CHECK(!::AreInputsStandard(txToNonStd1, coins));
     BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd1, coins), 16U);
@@ -372,7 +373,7 @@ BOOST_AUTO_TEST_CASE(AreInputsStandard)
     txToNonStd2.vin.resize(1);
     txToNonStd2.vin[0].prevout.n = 6;
     txToNonStd2.vin[0].prevout.hash = txFrom.GetHash();
-    txToNonStd2.vin[0].scriptSig << static_cast<vector<unsigned char> >(twentySigops);
+    txToNonStd2.vin[0].scriptSig << static_cast<std::vector<unsigned char> >(twentySigops);
 
     BOOST_CHECK(!::AreInputsStandard(txToNonStd2, coins));
     BOOST_CHECK_EQUAL(GetP2SHSigOpCount(txToNonStd2, coins), 20U);

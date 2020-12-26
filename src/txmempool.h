@@ -1,8 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2016-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -15,6 +14,7 @@
 #include "coins.h"
 #include "primitives/transaction.h"
 #include "sync.h"
+#include "random.h"
 
 class CAutoFile;
 
@@ -105,7 +105,34 @@ private:
     uint64_t totalTxSize; //! sum of all mempool tx' byte sizes
 
 public:
-    mutable CCriticalSection cs;
+    /**
+     * This mutex needs to be locked when accessing `mapTx` or other members
+     * that are guarded by it.
+     *
+     * @par Consistency guarantees
+     *
+     * By design, it is guaranteed that:
+     *
+     * 1. Locking both `cs_main` and `mempool.cs` will give a view of mempool
+     *    that is consistent with current chain tip (`::ChainActive()` and
+     *    `CoinsTip()`) and is fully populated. Fully populated means that if the
+     *    current active chain is missing transactions that were present in a
+     *    previously active chain, all the missing transactions will have been
+     *    re-added to the mempool and should be present if they meet size and
+     *    consistency constraints.
+     *
+     * 2. Locking `mempool.cs` without `cs_main` will give a view of a mempool
+     *    consistent with some chain that was active since `cs_main` was last
+     *    locked, and that is fully populated as described above. It is ok for
+     *    code that only needs to query or remove transactions from the mempool
+     *    to lock just `mempool.cs` without `cs_main`.
+     *
+     * To provide these guarantees, it is necessary to lock both `cs_main` and
+     * `mempool.cs` whenever adding transactions to the mempool and whenever
+     * changing the chain tip. It's necessary to keep both mutexes locked until
+     * the mempool is consistent with the new chain tip and fully populated.
+     */
+    mutable RecursiveMutex cs;
     std::map<uint256, CTxMemPoolEntry> mapTx;
     std::map<COutPoint, CInPoint> mapNextTx;
     std::map<uint256, std::pair<double, CAmount> > mapDeltas;
@@ -129,6 +156,7 @@ public:
     void removeForBlock(const std::vector<CTransaction>& vtx, unsigned int nBlockHeight, std::list<CTransaction>& conflicts);
     void clear();
     void queryHashes(std::vector<uint256>& vtxid);
+    void getTransactions(std::set<uint256>& setTxid);
     void pruneSpent(const uint256& hash, CCoins& coins);
     unsigned int GetTransactionsUpdated() const;
     void AddTransactionsUpdated(unsigned int n);

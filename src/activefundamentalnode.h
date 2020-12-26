@@ -11,9 +11,12 @@
 #include "key.h"
 #include "fundamentalnode.h"
 #include "net.h"
-#include "obfuscation.h"
 #include "sync.h"
-#include "wallet.h"
+#include "wallet/wallet.h"
+
+class CActiveFundamentalnode;
+
+extern CActiveFundamentalnode activeFundamentalnode;
 
 #define ACTIVE_FUNDAMENTALNODE_INITIAL 0 // initial state
 #define ACTIVE_FUNDAMENTALNODE_SYNC_IN_PROCESS 1
@@ -26,13 +29,13 @@ class CActiveFundamentalnode
 {
 private:
     // critical section to protect the inner data structures
-    mutable CCriticalSection cs;
+    mutable RecursiveMutex cs;
 
     /// Ping Fundamentalnode
     bool SendFundamentalnodePing(std::string& errorMessage);
 
-    /// Register any Fundamentalnode
-    bool Register(CTxIn vin, CService service, CKey key, CPubKey pubKey, CKey keyFundamentalnode, CPubKey pubKeyFundamentalnode, std::string& errorMessage);
+    /// Create Fundamentalnode broadcast, needs to be relayed manually after that
+    bool CreateBroadcast(CTxIn vin, CService service, CKey key, CPubKey pubKey, CKey keyFundamentalnode, CPubKey pubKeyFundamentalnode, std::string& errorMessage, CFundamentalnodeBroadcast &mnb);
 
     /// Get 10000 VITAE input that can be used for the Fundamentalnode
     bool GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex);
@@ -59,12 +62,12 @@ public:
     void ManageStatus();
     std::string GetStatus();
 
-    /// Register remote Fundamentalnode
-    bool Register(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& errorMessage);
+    /// Create Fundamentalnode broadcast, needs to be relayed manually after that
+    bool CreateBroadcast(std::string strService, std::string strKey, std::string strTxHash, std::string strOutputIndex, std::string& errorMessage, CFundamentalnodeBroadcast &mnb, bool fOffline = false);
 
     /// Get 10000 VITAE input that can be used for the Fundamentalnode
     bool GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
-    vector<COutput> SelectCoinsFundamentalnode();
+    std::vector<COutput> SelectCoinsFundamentalnode();
 
     /// Enable cold wallet mode (run a Fundamentalnode with no funds)
     bool EnableHotColdFundamentalNode(CTxIn& vin, CService& addr);

@@ -14,7 +14,7 @@ To install:
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your vitaeqt binary to `/usr/bin`
+the .desktop file or copy or symlink your vitae-qt binary to `/usr/bin`
 and the `../../share/pixmaps/vitae128.png` to `/usr/share/pixmaps`
 
 vitae-qt.protocol (KDE)

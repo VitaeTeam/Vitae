@@ -97,7 +97,8 @@ public:
 
     void clear();
     bool read(std::string& strErr);
-    void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
+    CFundamentalnodeConfig::CFundamentalnodeEntry* add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
+    void remove(std::string alias);
 
     std::vector<CFundamentalnodeEntry>& getEntries()
     {
@@ -107,7 +108,7 @@ public:
     int getCount()
     {
         int c = -1;
-        BOOST_FOREACH (CFundamentalnodeEntry e, entries) {
+        for (CFundamentalnodeEntry e : entries) {
             if (e.getAlias() != "") c++;
         }
         return c;

@@ -12,13 +12,11 @@
 #include "util.h"
 #include "script/script.h"
 #include "base58.h"
+#include "messagesigner.h"
 #include "protocol.h"
 #include "mn-spork.h"
 #include "main.h"
 #include <boost/lexical_cast.hpp>
-
-using namespace std;
-using namespace boost;
 
 class CMNSporkMessage;
 class CMNSporkManager;
@@ -45,10 +43,10 @@ void ProcessMNSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
         uint256 hash = mn_spork.GetHash();
         if(mapMNSporksActive.count(mn_spork.nMNSporkID)) {
             if(mapMNSporksActive[mn_spork.nMNSporkID].nTimeSigned >= mn_spork.nTimeSigned){
-                if(fDebug) LogPrintf("mn_spork - seen %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
+                LogPrint(BCLog::MASTERNODE, "mn_spork - seen %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
                 return;
             } else {
-                if(fDebug) LogPrintf("mn_spork - got updated mn_spork %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
+                LogPrint(BCLog::MASTERNODE, "mn_spork - got updated mn_spork %s block %d \n", hash.ToString().c_str(), chainActive.Tip()->nHeight);
             }
         }
 
@@ -133,7 +131,7 @@ bool CMNSporkManager::CheckSignature(CMNSporkMessage& mn_spork)
     CPubKey pubkey(ParseHex(strPubKey));
 
     std::string errorMessage = "";
-    if(!obfuScationSigner.VerifyMessage(pubkey, mn_spork.vchSig, strMessage, errorMessage)){
+    if(!CMessageSigner::VerifyMessage(pubkey, mn_spork.vchSig, strMessage, errorMessage)){
         return false;
     }
 
@@ -148,18 +146,18 @@ bool CMNSporkManager::Sign(CMNSporkMessage& mn_spork)
     CPubKey pubkey2;
     std::string errorMessage = "";
 
-    if(!obfuScationSigner.SetKey(strMasterPrivKey, errorMessage, key2, pubkey2))
+    if(!CMessageSigner::GetKeysFromSecret(strMasterPrivKey, key2, pubkey2))
     {
         LogPrintf("CMasternodePayments::Sign - ERROR: Invalid masternodeprivkey: '%s'\n", errorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, mn_spork.vchSig, key2)) {
+    if(!CMessageSigner::SignMessage(strMessage, mn_spork.vchSig, key2)) {
         LogPrintf("CMasternodePayments::Sign - Sign message failed");
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubkey2, mn_spork.vchSig, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubkey2, mn_spork.vchSig, strMessage, errorMessage)) {
         LogPrintf("CMasternodePayments::Sign - Verify message failed");
         return false;
     }
@@ -189,10 +187,10 @@ void CMNSporkManager::Relay(CMNSporkMessage& msg)
 {
     CInv inv(MSG_MN_SPORK, msg.GetHash());
 
-    vector<CInv> vInv;
+    std::vector<CInv> vInv;
     vInv.push_back(inv);
     LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes){
+    for(CNode* pnode : vNodes){
         pnode->PushMessage("inv", vInv);
     }
 }

@@ -71,7 +71,9 @@ public:
     void Reset();
     void Process();
     bool IsSynced();
+    bool NotCompleted();
     bool IsBlockchainSynced();
+    bool IsSporkListSynced();
     bool IsFundamentalnodeListSynced() { return RequestedFundamentalnodeAssets > FUNDAMENTALNODE_SYNC_LIST; }
     void ClearFulfilledRequest();
 };

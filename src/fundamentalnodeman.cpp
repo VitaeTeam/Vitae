@@ -7,11 +7,12 @@
 #include "activefundamentalnode.h"
 #include "addrman.h"
 #include "fundamentalnode.h"
-#include "obfuscation.h"
+#include "fundamentalnode-payments.h"
+#include "fundamentalnode-sync.h"
+#include "messagesigner.h"
 #include "spork.h"
 #include "util.h"
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 #define MN_WINNER_MINIMUM_AGE 8000    // Age in seconds. This should be > FUNDAMENTALNODE_REMOVAL_SECONDS to avoid misconfigured new nodes in the list.
 
@@ -19,24 +20,24 @@
 CFundamentalnodeMan mnodeman;
 
 struct CompareLastPaid {
-    bool operator()(const pair<int64_t, CTxIn>& t1,
-        const pair<int64_t, CTxIn>& t2) const
+    bool operator()(const std::pair<int64_t, CTxIn>& t1,
+        const std::pair<int64_t, CTxIn>& t2) const
     {
         return t1.first < t2.first;
     }
 };
 
 struct CompareScoreTxIn {
-    bool operator()(const pair<int64_t, CTxIn>& t1,
-        const pair<int64_t, CTxIn>& t2) const
+    bool operator()(const std::pair<int64_t, CTxIn>& t1,
+        const std::pair<int64_t, CTxIn>& t2) const
     {
         return t1.first < t2.first;
     }
 };
 
 struct CompareScoreMN {
-    bool operator()(const pair<int64_t, CFundamentalnode>& t1,
-        const pair<int64_t, CFundamentalnode>& t2) const
+    bool operator()(const std::pair<int64_t, CFundamentalnode>& t1,
+        const std::pair<int64_t, CFundamentalnode>& t2) const
     {
         return t1.first < t2.first;
     }
@@ -79,8 +80,8 @@ bool CFundamentalnodeDB::Write(const CFundamentalnodeMan& mnodemanToSave)
     //    FileCommit(fileout);
     fileout.fclose();
 
-    LogPrint("fundamentalnode","Written info to mncache.dat  %dms\n", GetTimeMillis() - nStart);
-    LogPrint("fundamentalnode","  %s\n", mnodemanToSave.ToString());
+    LogPrint(BCLog::FUNDAMENTALNODE,"Written info to mncache.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint(BCLog::FUNDAMENTALNODE,"  %s\n", mnodemanToSave.ToString());
 
     return true;
 }
@@ -102,7 +103,7 @@ CFundamentalnodeDB::ReadResult CFundamentalnodeDB::Read(CFundamentalnodeMan& mno
     // Don't try to resize to a negative number if file is small
     if (dataSize < 0)
         dataSize = 0;
-    vector<unsigned char> vchData;
+    std::vector<unsigned char> vchData;
     vchData.resize(dataSize);
     uint256 hashIn;
 
@@ -154,13 +155,13 @@ CFundamentalnodeDB::ReadResult CFundamentalnodeDB::Read(CFundamentalnodeMan& mno
         return IncorrectFormat;
     }
 
-    LogPrint("fundamentalnode","Loaded info from mncache.dat  %dms\n", GetTimeMillis() - nStart);
-    LogPrint("fundamentalnode","  %s\n", mnodemanToLoad.ToString());
+    LogPrint(BCLog::FUNDAMENTALNODE,"Loaded info from mncache.dat  %dms\n", GetTimeMillis() - nStart);
+    LogPrint(BCLog::FUNDAMENTALNODE,"  %s\n", mnodemanToLoad.ToString());
     if (!fDryRun) {
-        LogPrint("fundamentalnode","Fundamentalnode manager - cleaning....\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode manager - cleaning....\n");
         mnodemanToLoad.CheckAndRemove(true);
-        LogPrint("fundamentalnode","Fundamentalnode manager - result:\n");
-        LogPrint("fundamentalnode","  %s\n", mnodemanToLoad.ToString());
+        LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode manager - result:\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"  %s\n", mnodemanToLoad.ToString());
     }
 
     return Ok;
@@ -173,24 +174,24 @@ void DumpFundamentalnodes()
     CFundamentalnodeDB mndb;
     CFundamentalnodeMan tempMnodeman;
 
-    LogPrint("fundamentalnode","Verifying mncache.dat format...\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"Verifying mncache.dat format...\n");
     CFundamentalnodeDB::ReadResult readResult = mndb.Read(tempMnodeman, true);
     // there was an error and it was not an error on file opening => do not proceed
     if (readResult == CFundamentalnodeDB::FileError)
-        LogPrint("fundamentalnode","Missing fundamentalnode cache file - mncache.dat, will try to recreate\n");
+        LogPrint(BCLog::FUNDAMENTALNODE,"Missing fundamentalnode cache file - mncache.dat, will try to recreate\n");
     else if (readResult != CFundamentalnodeDB::Ok) {
-        LogPrint("fundamentalnode","Error reading mncache.dat: ");
+        LogPrint(BCLog::FUNDAMENTALNODE,"Error reading mncache.dat: ");
         if (readResult == CFundamentalnodeDB::IncorrectFormat)
-            LogPrint("fundamentalnode","magic is ok but data has invalid format, will try to recreate\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"magic is ok but data has invalid format, will try to recreate\n");
         else {
-            LogPrint("fundamentalnode","file format is unknown or invalid, please fix it manually\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"file format is unknown or invalid, please fix it manually\n");
             return;
         }
     }
-    LogPrint("fundamentalnode","Writting info to mncache.dat...\n");
+    LogPrint(BCLog::FUNDAMENTALNODE,"Writting info to mncache.dat...\n");
     mndb.Write(mnodeman);
 
-    LogPrint("fundamentalnode","Fundamentalnode dump finished  %dms\n", GetTimeMillis() - nStart);
+    LogPrint(BCLog::FUNDAMENTALNODE,"Fundamentalnode dump finished  %dms\n", GetTimeMillis() - nStart);
 }
 
 CFundamentalnodeMan::CFundamentalnodeMan()
@@ -207,7 +208,7 @@ bool CFundamentalnodeMan::Add(CFundamentalnode& mn)
 
     CFundamentalnode* pmn = Find(mn.vin);
     if (pmn == NULL) {
-        LogPrint("fundamentalnode", "CFundamentalnodeMan: Adding new Fundamentalnode %s - %i now\n", mn.vin.prevout.hash.ToString(), size() + 1);
+        LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeMan: Adding new Fundamentalnode %s - %i now\n", mn.vin.prevout.hash.ToString(), size() + 1);
         vFundamentalnodes.push_back(mn);
         return true;
     }
@@ -225,7 +226,7 @@ void CFundamentalnodeMan::AskForMN(CNode* pnode, CTxIn& vin)
 
     // ask for the fnb info once from the node that sent fnp
 
-    LogPrint("fundamentalnode", "CFundamentalnodeMan::AskForMN - Asking node for missing entry, vin: %s\n", vin.prevout.hash.ToString());
+    LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeMan::AskForMN - Asking node for missing entry, vin: %s\n", vin.prevout.hash.ToString());
     pnode->PushMessage("obseg", vin);
     int64_t askAgain = GetTime() + FUNDAMENTALNODE_MIN_MNP_SECONDS;
     mWeAskedForFundamentalnodeListEntry[vin.prevout] = askAgain;
@@ -235,7 +236,7 @@ void CFundamentalnodeMan::Check()
 {
     LOCK(cs);
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         mn.Check();
     }
 }
@@ -247,18 +248,18 @@ void CFundamentalnodeMan::CheckAndRemove(bool forceExpiredRemoval)
     LOCK(cs);
 
     //remove inactive and outdated
-    vector<CFundamentalnode>::iterator it = vFundamentalnodes.begin();
+    std::vector<CFundamentalnode>::iterator it = vFundamentalnodes.begin();
     while (it != vFundamentalnodes.end()) {
         if ((*it).activeState == CFundamentalnode::FUNDAMENTALNODE_REMOVE ||
             (*it).activeState == CFundamentalnode::FUNDAMENTALNODE_VIN_SPENT ||
             (forceExpiredRemoval && (*it).activeState == CFundamentalnode::FUNDAMENTALNODE_EXPIRED) ||
             (*it).protocolVersion < fundamentalnodePayments.GetMinFundamentalnodePaymentsProto()) {
-            LogPrint("fundamentalnode", "CFundamentalnodeMan: Removing inactive Fundamentalnode %s - %i now\n", (*it).vin.prevout.hash.ToString(), size() - 1);
+            LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeMan: Removing inactive Fundamentalnode %s - %i now\n", (*it).vin.prevout.hash.ToString(), size() - 1);
 
             //erase all of the broadcasts we've seen from this vin
             // -- if we missed a few pings and the node was removed, this will allow is to get it back without them
             //    sending a brand new fnb
-            map<uint256, CFundamentalnodeBroadcast>::iterator it3 = mapSeenFundamentalnodeBroadcast.begin();
+            std::map<uint256, CFundamentalnodeBroadcast>::iterator it3 = mapSeenFundamentalnodeBroadcast.begin();
             while (it3 != mapSeenFundamentalnodeBroadcast.end()) {
                 if ((*it3).second.vin == (*it).vin) {
                     fundamentalnodeSync.mapSeenSyncMNB.erase((*it3).first);
@@ -269,7 +270,7 @@ void CFundamentalnodeMan::CheckAndRemove(bool forceExpiredRemoval)
             }
 
             // allow us to ask for this fundamentalnode again if we see another ping
-            map<COutPoint, int64_t>::iterator it2 = mWeAskedForFundamentalnodeListEntry.begin();
+            std::map<COutPoint, int64_t>::iterator it2 = mWeAskedForFundamentalnodeListEntry.begin();
             while (it2 != mWeAskedForFundamentalnodeListEntry.end()) {
                 if ((*it2).first == (*it).vin.prevout) {
                     mWeAskedForFundamentalnodeListEntry.erase(it2++);
@@ -285,7 +286,7 @@ void CFundamentalnodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // check who's asked for the Fundamentalnode list
-    map<CNetAddr, int64_t>::iterator it1 = mAskedUsForFundamentalnodeList.begin();
+    std::map<CNetAddr, int64_t>::iterator it1 = mAskedUsForFundamentalnodeList.begin();
     while (it1 != mAskedUsForFundamentalnodeList.end()) {
         if ((*it1).second < GetTime()) {
             mAskedUsForFundamentalnodeList.erase(it1++);
@@ -305,7 +306,7 @@ void CFundamentalnodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // check which Fundamentalnodes we've asked for
-    map<COutPoint, int64_t>::iterator it2 = mWeAskedForFundamentalnodeListEntry.begin();
+    std::map<COutPoint, int64_t>::iterator it2 = mWeAskedForFundamentalnodeListEntry.begin();
     while (it2 != mWeAskedForFundamentalnodeListEntry.end()) {
         if ((*it2).second < GetTime()) {
             mWeAskedForFundamentalnodeListEntry.erase(it2++);
@@ -315,7 +316,7 @@ void CFundamentalnodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // remove expired mapSeenFundamentalnodeBroadcast
-    map<uint256, CFundamentalnodeBroadcast>::iterator it3 = mapSeenFundamentalnodeBroadcast.begin();
+    std::map<uint256, CFundamentalnodeBroadcast>::iterator it3 = mapSeenFundamentalnodeBroadcast.begin();
     while (it3 != mapSeenFundamentalnodeBroadcast.end()) {
         if ((*it3).second.lastPing.sigTime < GetTime() - (FUNDAMENTALNODE_REMOVAL_SECONDS * 2)) {
             mapSeenFundamentalnodeBroadcast.erase(it3++);
@@ -326,7 +327,7 @@ void CFundamentalnodeMan::CheckAndRemove(bool forceExpiredRemoval)
     }
 
     // remove expired mapSeenFundamentalnodePing
-    map<uint256, CFundamentalnodePing>::iterator it4 = mapSeenFundamentalnodePing.begin();
+    std::map<uint256, CFundamentalnodePing>::iterator it4 = mapSeenFundamentalnodePing.begin();
     while (it4 != mapSeenFundamentalnodePing.end()) {
         if ((*it4).second.sigTime < GetTime() - (FUNDAMENTALNODE_REMOVAL_SECONDS * 2)) {
             mapSeenFundamentalnodePing.erase(it4++);
@@ -355,11 +356,11 @@ int CFundamentalnodeMan::stable_size ()
     int64_t nFundamentalnode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nFundamentalnode_Age = 0;
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         if (mn.protocolVersion < nMinProtocol) {
             continue; // Skip obsolete versions
         }
-        if (IsSporkActive (SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+        if (sporkManager.IsSporkActive (SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
             nFundamentalnode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nFundamentalnode_Age) < nFundamentalnode_Min_Age) {
                 continue; // Skip fundamentalnodes younger than (default) 8000 sec (MUST be > FUNDAMENTALNODE_REMOVAL_SECONDS)
@@ -380,7 +381,7 @@ int CFundamentalnodeMan::CountEnabled(int protocolVersion)
     int i = 0;
     protocolVersion = protocolVersion == -1 ? fundamentalnodePayments.GetMinFundamentalnodePaymentsProto() : protocolVersion;
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         mn.Check();
         if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         i++;
@@ -393,12 +394,12 @@ void CFundamentalnodeMan::CountNetworks(int protocolVersion, int& ipv4, int& ipv
 {
     protocolVersion = protocolVersion == -1 ? fundamentalnodePayments.GetMinFundamentalnodePaymentsProto() : protocolVersion;
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         mn.Check();
         std::string strHost;
         int port;
         SplitHostPort(mn.addr.ToString(), port, strHost);
-        CNetAddr node = CNetAddr(strHost, false);
+        CNetAddr node = CNetAddr(strHost);
         int nNetwork = node.GetNetwork();
         switch (nNetwork) {
             case 1 :
@@ -423,7 +424,7 @@ void CFundamentalnodeMan::DsegUpdate(CNode* pnode)
             std::map<CNetAddr, int64_t>::iterator it = mWeAskedForFundamentalnodeList.find(pnode->addr);
             if (it != mWeAskedForFundamentalnodeList.end()) {
                 if (GetTime() < (*it).second) {
-                    LogPrint("fundamentalnode", "obseg - we already asked peer %i for the list; skipping...\n", pnode->GetId());
+                    LogPrint(BCLog::FUNDAMENTALNODE, "obseg - we already asked peer %i for the list; skipping...\n", pnode->GetId());
                     return;
                 }
             }
@@ -440,7 +441,7 @@ CFundamentalnode* CFundamentalnodeMan::Find(const CScript& payee)
     LOCK(cs);
     CScript payee2;
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         payee2 = GetScriptForDestination(mn.pubKeyCollateralAddress.GetID());
         if (payee2 == payee)
             return &mn;
@@ -452,7 +453,7 @@ CFundamentalnode* CFundamentalnodeMan::Find(const CTxIn& vin)
 {
     LOCK(cs);
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         if (mn.vin.prevout == vin.prevout)
             return &mn;
     }
@@ -464,7 +465,7 @@ CFundamentalnode* CFundamentalnodeMan::Find(const CPubKey& pubKeyFundamentalnode
 {
     LOCK(cs);
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         if (mn.pubKeyFundamentalnode == pubKeyFundamentalnode)
             return &mn;
     }
@@ -479,14 +480,14 @@ CFundamentalnode* CFundamentalnodeMan::GetNextFundamentalnodeInQueueForPayment(i
     LOCK(cs);
 
     CFundamentalnode* pBestFundamentalnode = NULL;
-    std::vector<pair<int64_t, CTxIn> > vecFundamentalnodeLastPaid;
+    std::vector<std::pair<int64_t, CTxIn> > vecFundamentalnodeLastPaid;
 
     /*
         Make a vector with all of the last paid times
     */
 
     int nMnCount = CountEnabled();
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         mn.Check();
         if (!mn.IsEnabled()) continue;
 
@@ -502,7 +503,7 @@ CFundamentalnode* CFundamentalnodeMan::GetNextFundamentalnodeInQueueForPayment(i
         //make sure it has as many confirmations as there are fundamentalnodes
         if (mn.GetFundamentalnodeInputAge() < nMnCount) continue;
 
-        vecFundamentalnodeLastPaid.push_back(make_pair(mn.SecondsSincePayment(), mn.vin));
+        vecFundamentalnodeLastPaid.push_back(std::make_pair(mn.SecondsSincePayment(), mn.vin));
     }
 
     nCount = (int)vecFundamentalnodeLastPaid.size();
@@ -520,7 +521,7 @@ CFundamentalnode* CFundamentalnodeMan::GetNextFundamentalnodeInQueueForPayment(i
     int nTenthNetwork = CountEnabled() / 10;
     int nCountTenth = 0;
     uint256 nHigh = 0;
-    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecFundamentalnodeLastPaid) {
+    for (PAIRTYPE(int64_t, CTxIn) & s : vecFundamentalnodeLastPaid) {
         CFundamentalnode* pmn = Find(s.second);
         if (!pmn) break;
 
@@ -542,17 +543,17 @@ CFundamentalnode* CFundamentalnodeMan::FindRandomNotInVec(std::vector<CTxIn>& ve
     protocolVersion = protocolVersion == -1 ? fundamentalnodePayments.GetMinFundamentalnodePaymentsProto() : protocolVersion;
 
     int nCountEnabled = CountEnabled(protocolVersion);
-    LogPrint("fundamentalnode", "CFundamentalnodeMan::FindRandomNotInVec - nCountEnabled - vecToExclude.size() %d\n", nCountEnabled - vecToExclude.size());
+    LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeMan::FindRandomNotInVec - nCountEnabled - vecToExclude.size() %d\n", nCountEnabled - vecToExclude.size());
     if (nCountEnabled - vecToExclude.size() < 1) return NULL;
 
     int rand = GetRandInt(nCountEnabled - vecToExclude.size());
-    LogPrint("fundamentalnode", "CFundamentalnodeMan::FindRandomNotInVec - rand %d\n", rand);
+    LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeMan::FindRandomNotInVec - rand %d\n", rand);
     bool found;
 
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         if (mn.protocolVersion < protocolVersion || !mn.IsEnabled()) continue;
         found = false;
-        BOOST_FOREACH (CTxIn& usedVin, vecToExclude) {
+        for (CTxIn& usedVin : vecToExclude) {
             if (mn.vin.prevout == usedVin.prevout) {
                 found = true;
                 break;
@@ -573,7 +574,7 @@ CFundamentalnode* CFundamentalnodeMan::GetCurrentFundamentalNode(int mod, int64_
     CFundamentalnode* winner = NULL;
 
     // scan for winner
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         mn.Check();
         if (mn.protocolVersion < minProtocol || !mn.IsEnabled()) continue;
 
@@ -593,7 +594,7 @@ CFundamentalnode* CFundamentalnodeMan::GetCurrentFundamentalNode(int mod, int64_
 
 int CFundamentalnodeMan::GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
-    std::vector<pair<int64_t, CTxIn> > vecFundamentalnodeScores;
+    std::vector<std::pair<int64_t, CTxIn> > vecFundamentalnodeScores;
     int64_t nFundamentalnode_Min_Age = MN_WINNER_MINIMUM_AGE;
     int64_t nFundamentalnode_Age = 0;
 
@@ -602,16 +603,16 @@ int CFundamentalnodeMan::GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlock
     if (!GetBlockHash(hash, nBlockHeight)) return -1;
 
     // scan for winner
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         if (mn.protocolVersion < minProtocol) {
-            LogPrint("fundamentalnode","Skipping Fundamentalnode with obsolete version %d\n", mn.protocolVersion);
+            LogPrint(BCLog::FUNDAMENTALNODE,"Skipping Fundamentalnode with obsolete version %d\n", mn.protocolVersion);
             continue;                                                       // Skip obsolete versions
         }
 
-        if (IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
+        if (sporkManager.IsSporkActive(SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT)) {
             nFundamentalnode_Age = GetAdjustedTime() - mn.sigTime;
             if ((nFundamentalnode_Age) < nFundamentalnode_Min_Age) {
-                if (fDebug) LogPrint("fundamentalnode","Skipping just activated Fundamentalnode. Age: %ld\n", nFundamentalnode_Age);
+                LogPrint(BCLog::FUNDAMENTALNODE,"Skipping just activated Fundamentalnode. Age: %ld\n", nFundamentalnode_Age);
                 continue;                                                   // Skip fundamentalnodes younger than (default) 1 hour
             }
         }
@@ -622,13 +623,13 @@ int CFundamentalnodeMan::GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlock
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         int64_t n2 = n.GetCompact(false);
 
-        vecFundamentalnodeScores.push_back(make_pair(n2, mn.vin));
+        vecFundamentalnodeScores.push_back(std::make_pair(n2, mn.vin));
     }
 
     sort(vecFundamentalnodeScores.rbegin(), vecFundamentalnodeScores.rend(), CompareScoreTxIn());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecFundamentalnodeScores) {
+    for (PAIRTYPE(int64_t, CTxIn) & s : vecFundamentalnodeScores) {
         rank++;
         if (s.second.prevout == vin.prevout) {
             return rank;
@@ -638,38 +639,38 @@ int CFundamentalnodeMan::GetFundamentalnodeRank(const CTxIn& vin, int64_t nBlock
     return -1;
 }
 
-std::vector<pair<int, CFundamentalnode> > CFundamentalnodeMan::GetFundamentalnodeRanks(int64_t nBlockHeight, int minProtocol)
+std::vector<std::pair<int, CFundamentalnode> > CFundamentalnodeMan::GetFundamentalnodeRanks(int64_t nBlockHeight, int minProtocol)
 {
-    std::vector<pair<int64_t, CFundamentalnode> > vecFundamentalnodeScores;
-    std::vector<pair<int, CFundamentalnode> > vecFundamentalnodeRanks;
+    std::vector<std::pair<int64_t, CFundamentalnode> > vecFundamentalnodeScores;
+    std::vector<std::pair<int, CFundamentalnode> > vecFundamentalnodeRanks;
 
     //make sure we know about this block
     uint256 hash = 0;
     if (!GetBlockHash(hash, nBlockHeight)) return vecFundamentalnodeRanks;
 
     // scan for winner
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         mn.Check();
 
         if (mn.protocolVersion < minProtocol) continue;
 
         if (!mn.IsEnabled()) {
-            vecFundamentalnodeScores.push_back(make_pair(9999, mn));
+            vecFundamentalnodeScores.push_back(std::make_pair(9999, mn));
             continue;
         }
 
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         int64_t n2 = n.GetCompact(false);
 
-        vecFundamentalnodeScores.push_back(make_pair(n2, mn));
+        vecFundamentalnodeScores.push_back(std::make_pair(n2, mn));
     }
 
     sort(vecFundamentalnodeScores.rbegin(), vecFundamentalnodeScores.rend(), CompareScoreMN());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(int64_t, CFundamentalnode) & s, vecFundamentalnodeScores) {
+    for (PAIRTYPE(int64_t, CFundamentalnode) & s : vecFundamentalnodeScores) {
         rank++;
-        vecFundamentalnodeRanks.push_back(make_pair(rank, s.second));
+        vecFundamentalnodeRanks.push_back(std::make_pair(rank, s.second));
     }
 
     return vecFundamentalnodeRanks;
@@ -677,10 +678,10 @@ std::vector<pair<int, CFundamentalnode> > CFundamentalnodeMan::GetFundamentalnod
 
 CFundamentalnode* CFundamentalnodeMan::GetFundamentalnodeByRank(int nRank, int64_t nBlockHeight, int minProtocol, bool fOnlyActive)
 {
-    std::vector<pair<int64_t, CTxIn> > vecFundamentalnodeScores;
+    std::vector<std::pair<int64_t, CTxIn> > vecFundamentalnodeScores;
 
     // scan for winner
-    BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+    for (CFundamentalnode& mn : vFundamentalnodes) {
         if (mn.protocolVersion < minProtocol) continue;
         if (fOnlyActive) {
             mn.Check();
@@ -690,13 +691,13 @@ CFundamentalnode* CFundamentalnodeMan::GetFundamentalnodeByRank(int nRank, int64
         uint256 n = mn.CalculateScore(1, nBlockHeight);
         int64_t n2 = n.GetCompact(false);
 
-        vecFundamentalnodeScores.push_back(make_pair(n2, mn.vin));
+        vecFundamentalnodeScores.push_back(std::make_pair(n2, mn.vin));
     }
 
     sort(vecFundamentalnodeScores.rbegin(), vecFundamentalnodeScores.rend(), CompareScoreTxIn());
 
     int rank = 0;
-    BOOST_FOREACH (PAIRTYPE(int64_t, CTxIn) & s, vecFundamentalnodeScores) {
+    for (PAIRTYPE(int64_t, CTxIn) & s : vecFundamentalnodeScores) {
         rank++;
         if (rank == nRank) {
             return Find(s.second);
@@ -704,22 +705,6 @@ CFundamentalnode* CFundamentalnodeMan::GetFundamentalnodeByRank(int nRank, int64
     }
 
     return NULL;
-}
-
-void CFundamentalnodeMan::ProcessFundamentalnodeConnections()
-{
-    //we don't care about this for regtest
-    if (Params().NetworkID() == CBaseChainParams::REGTEST) return;
-
-    LOCK(cs_vNodes);
-    BOOST_FOREACH (CNode* pnode, vNodes) {
-        if (pnode->fObfuScationMaster) {
-            if (obfuScationPool.pSubmittedToFundamentalnode != NULL && pnode->addr == obfuScationPool.pSubmittedToFundamentalnode->addr) continue;
-            LogPrint("fundamentalnode","Closing Fundamentalnode connection peer=%i \n", pnode->GetId());
-            pnode->fObfuScationMaster = false;
-            pnode->Release();
-        }
-    }
 }
 
 void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
@@ -737,7 +722,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
             return;
         }
-        mapSeenFundamentalnodeBroadcast.insert(make_pair(fnb.GetHash(), fnb));
+        mapSeenFundamentalnodeBroadcast.insert(std::make_pair(fnb.GetHash(), fnb));
 
         int nDoS = 0;
         if (!fnb.CheckAndUpdate(nDoS)) {
@@ -752,8 +737,8 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         CTransaction tx;
         // make sure the vout that was signed is related to the transaction that spawned the Fundamentalnode
         //  - this is expensive, so it's only done once per Fundamentalnode
-        if (!obfuScationSigner.IsVinAssociatedWithPubkey(fnb.vin, fnb.pubKeyCollateralAddress, tx, hashBlock)) {
-            LogPrint("fundamentalnode","fnb - Got mismatched pubkey and vin\n");
+        if (!CMessageSigner::IsVinAssociatedWithPubkey(fnb.vin, fnb.pubKeyCollateralAddress)) {
+            LogPrint(BCLog::FUNDAMENTALNODE,"fnb - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 33);
             return;
         }
@@ -765,7 +750,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             addrman.Add(CAddress(fnb.addr), pfrom->addr, 2 * 60 * 60);
             fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
         } else {
-            LogPrint("fundamentalnode","fnb - Rejected Fundamentalnode entry %s\n", fnb.vin.prevout.hash.ToString());
+            LogPrint(BCLog::FUNDAMENTALNODE,"fnb - Rejected Fundamentalnode entry %s\n", fnb.vin.prevout.hash.ToString());
 
             if (nDoS > 0)
                 Misbehaving(pfrom->GetId(), nDoS);
@@ -776,10 +761,10 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         CFundamentalnodePing fnp;
         vRecv >> fnp;
 
-        LogPrint("fundamentalnode", "fnp - Fundamentalnode ping, vin: %s\n", fnp.vin.prevout.hash.ToString());
+        LogPrint(BCLog::FUNDAMENTALNODE, "fnp - Fundamentalnode ping, vin: %s\n", fnp.vin.prevout.hash.ToString());
 
         if (mapSeenFundamentalnodePing.count(fnp.GetHash())) return; //seen
-        mapSeenFundamentalnodePing.insert(make_pair(fnp.GetHash(), fnp));
+        mapSeenFundamentalnodePing.insert(std::make_pair(fnp.GetHash(), fnp));
 
         int nDoS = 0;
         if (fnp.CheckAndUpdate(nDoS)) return;
@@ -813,7 +798,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                     int64_t t = (*i).second;
                     if (GetTime() < t) {
                         Misbehaving(pfrom->GetId(), 34);
-                        LogPrint("fundamentalnode","obseg - peer already asked me for the list\n");
+                        LogPrint(BCLog::FUNDAMENTALNODE,"obseg - peer already asked me for the list\n");
                         return;
                     }
                 }
@@ -825,21 +810,21 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
         int nInvCount = 0;
 
-        BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+        for (CFundamentalnode& mn : vFundamentalnodes) {
             if (mn.addr.IsRFC1918()) continue; //local network
 
             if (mn.IsEnabled()) {
-                LogPrint("fundamentalnode", "obseg - Sending Fundamentalnode entry - %s \n", mn.vin.prevout.hash.ToString());
+                LogPrint(BCLog::FUNDAMENTALNODE, "obseg - Sending Fundamentalnode entry - %s \n", mn.vin.prevout.hash.ToString());
                 if (vin == CTxIn() || vin == mn.vin) {
                     CFundamentalnodeBroadcast fnb = CFundamentalnodeBroadcast(mn);
                     uint256 hash = fnb.GetHash();
                     pfrom->PushInventory(CInv(MSG_FUNDAMENTALNODE_ANNOUNCE, hash));
                     nInvCount++;
 
-                    if (!mapSeenFundamentalnodeBroadcast.count(hash)) mapSeenFundamentalnodeBroadcast.insert(make_pair(hash, fnb));
+                    if (!mapSeenFundamentalnodeBroadcast.count(hash)) mapSeenFundamentalnodeBroadcast.insert(std::make_pair(hash, fnb));
 
                     if (vin == mn.vin) {
-                        LogPrint("fundamentalnode", "obseg - Sent 1 Fundamentalnode entry to peer %i\n", pfrom->GetId());
+                        LogPrint(BCLog::FUNDAMENTALNODE, "obseg - Sent 1 Fundamentalnode entry to peer %i\n", pfrom->GetId());
                         return;
                     }
                 }
@@ -848,7 +833,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
         if (vin == CTxIn()) {
             pfrom->PushMessage("ssc", FUNDAMENTALNODE_SYNC_LIST, nInvCount);
-            LogPrint("fundamentalnode", "obseg - Sent %d Fundamentalnode entries to peer %i\n", nInvCount, pfrom->GetId());
+            LogPrint(BCLog::FUNDAMENTALNODE, "obseg - Sent %d Fundamentalnode entries to peer %i\n", nInvCount, pfrom->GetId());
         }
     }
     /*
@@ -859,13 +844,13 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
     // Light version for OLD MASSTERNODES - fake pings, no self-activation
     else if (strCommand == "obsee") { //ObfuScation Election Entry
 
-        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
+        if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
         CService addr;
         CPubKey pubkey;
         CPubKey pubkey2;
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         int64_t sigTime;
         int count;
         int current;
@@ -879,7 +864,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
         // make sure signature isn't in the future (past is OK)
         if (sigTime > GetAdjustedTime() + 60 * 60) {
-            LogPrint("fundamentalnode","obsee - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
             Misbehaving(pfrom->GetId(), 1);
             return;
         }
@@ -887,10 +872,10 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         std::string vchPubKey(pubkey.begin(), pubkey.end());
         std::string vchPubKey2(pubkey2.begin(), pubkey2.end());
 
-        strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion) + donationAddress.ToString() + boost::lexical_cast<std::string>(donationPercentage);
+        strMessage = addr.ToString() + std::to_string(sigTime) + vchPubKey + vchPubKey2 + std::to_string(protocolVersion) + donationAddress.ToString() + std::to_string(donationPercentage);
 
         if (protocolVersion < fundamentalnodePayments.GetMinFundamentalnodePaymentsProto()) {
-            LogPrint("fundamentalnode","obsee - ignoring outdated Fundamentalnode %s protocol version %d < %d\n", vin.prevout.hash.ToString(), protocolVersion, fundamentalnodePayments.GetMinFundamentalnodePaymentsProto());
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - ignoring outdated Fundamentalnode %s protocol version %d < %d\n", vin.prevout.hash.ToString(), protocolVersion, fundamentalnodePayments.GetMinFundamentalnodePaymentsProto());
             Misbehaving(pfrom->GetId(), 1);
             return;
         }
@@ -899,7 +884,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         pubkeyScript = GetScriptForDestination(pubkey.GetID());
 
         if (pubkeyScript.size() != 25) {
-            LogPrint("fundamentalnode","obsee - pubkey the wrong size\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - pubkey the wrong size\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
@@ -908,20 +893,20 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         pubkeyScript2 = GetScriptForDestination(pubkey2.GetID());
 
         if (pubkeyScript2.size() != 25) {
-            LogPrint("fundamentalnode","obsee - pubkey2 the wrong size\n");
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - pubkey2 the wrong size\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
 
         if (!vin.scriptSig.empty()) {
-            LogPrint("fundamentalnode","obsee - Ignore Not Empty ScriptSig %s\n", vin.prevout.hash.ToString());
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - Ignore Not Empty ScriptSig %s\n", vin.prevout.hash.ToString());
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
 
         std::string errorMessage = "";
-        if (!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
-            LogPrint("fundamentalnode","obsee - Got bad Fundamentalnode address signature\n");
+        if (!CMessageSigner::VerifyMessage(pubkey, vchSig, strMessage, errorMessage)) {
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - Got bad Fundamentalnode address signature\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
@@ -941,7 +926,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             if (count == -1 && pmn->pubKeyCollateralAddress == pubkey && (GetAdjustedTime() - pmn->nLastDsee > FUNDAMENTALNODE_MIN_MNB_SECONDS)) {
                 if (pmn->protocolVersion > GETHEADERS_VERSION && sigTime - pmn->lastPing.sigTime < FUNDAMENTALNODE_MIN_MNB_SECONDS) return;
                 if (pmn->nLastDsee < sigTime) { //take the newest entry
-                    LogPrint("fundamentalnode", "obsee - Got updated entry for %s\n", vin.prevout.hash.ToString());
+                    LogPrint(BCLog::FUNDAMENTALNODE, "obsee - Got updated entry for %s\n", vin.prevout.hash.ToString());
                     if (pmn->protocolVersion < GETHEADERS_VERSION) {
                         pmn->pubKeyFundamentalnode = pubkey2;
                         pmn->sigTime = sigTime;
@@ -956,7 +941,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                     if (pmn->IsEnabled()) {
                         TRY_LOCK(cs_vNodes, lockNodes);
                         if (!lockNodes) return;
-                        BOOST_FOREACH (CNode* pnode, vNodes)
+                        for (CNode* pnode : vNodes)
                             if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
                                 pnode->PushMessage("obsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
                     }
@@ -968,10 +953,10 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
         static std::map<COutPoint, CPubKey> mapSeenobsee;
         if (mapSeenobsee.count(vin.prevout) && mapSeenobsee[vin.prevout] == pubkey) {
-            LogPrint("fundamentalnode", "obsee - already seen this vin %s\n", vin.prevout.ToString());
+            LogPrint(BCLog::FUNDAMENTALNODE, "obsee - already seen this vin %s\n", vin.prevout.ToString());
             return;
         }
-        mapSeenobsee.insert(make_pair(vin.prevout, pubkey));
+        mapSeenobsee.insert(std::make_pair(vin.prevout, pubkey));
         // make sure the vout that was signed is related to the transaction that spawned the Fundamentalnode
         //  - this is expensive, so it's only done once per Fundamentalnode
 
@@ -979,23 +964,19 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         CTransaction tx;
 
 
-        if (!obfuScationSigner.IsVinAssociatedWithPubkey(vin, pubkey, tx, hashBlock )) {
-            LogPrint("fundamentalnode","obsee - Got mismatched pubkey and vin\n");
+        if (!CMessageSigner::IsVinAssociatedWithPubkey(vin, pubkey)) {
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - Got mismatched pubkey and vin\n");
             Misbehaving(pfrom->GetId(), 100);
             return;
         }
 
 
-        LogPrint("fundamentalnode", "obsee - Got NEW OLD Fundamentalnode entry %s\n", vin.prevout.hash.ToString());
+        LogPrint(BCLog::FUNDAMENTALNODE, "obsee - Got NEW OLD Fundamentalnode entry %s\n", vin.prevout.hash.ToString());
 
         // make sure it's still unspent
         //  - this is checked later by .check() in many places and by ThreadCheckObfuScationPool()
 
         CValidationState state;
-        /*CMutableTransaction tx = CMutableTransaction();
-        CTxOut vout = CTxOut(9999.99 * COIN, obfuScationPool.collateralPubKey);
-        tx.vin.push_back(vin);
-        tx.vout.push_back(vout);*/
 
         bool fAcceptable = false;
         {
@@ -1006,7 +987,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
         if (fAcceptable) {
             if (GetInputAge(vin) < FUNDAMENTALNODE_MIN_CONFIRMATIONS) {
-                LogPrint("fundamentalnode","obsee - Input must have least %d confirmations\n", FUNDAMENTALNODE_MIN_CONFIRMATIONS);
+                LogPrint(BCLog::FUNDAMENTALNODE,"obsee - Input must have least %d confirmations\n", FUNDAMENTALNODE_MIN_CONFIRMATIONS);
                 Misbehaving(pfrom->GetId(), 20);
                 return;
             }
@@ -1021,7 +1002,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                 CBlockIndex* pMNIndex = (*mi).second;                                                        // block for 10000 VITAE tx -> 1 confirmation
                 CBlockIndex* pConfIndex = chainActive[pMNIndex->nHeight + FUNDAMENTALNODE_MIN_CONFIRMATIONS - 1]; // block where tx got FUNDAMENTALNODE_MIN_CONFIRMATIONS
                 if (pConfIndex->GetBlockTime() > sigTime) {
-                    LogPrint("fundamentalnode","fnb - Bad sigTime %d for Fundamentalnode %s (%i conf block is at %d)\n",
+                    LogPrint(BCLog::FUNDAMENTALNODE,"fnb - Bad sigTime %d for Fundamentalnode %s (%i conf block is at %d)\n",
                         sigTime, vin.prevout.hash.ToString(), FUNDAMENTALNODE_MIN_CONFIRMATIONS, pConfIndex->GetBlockTime());
                     return;
                 }
@@ -1044,22 +1025,22 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             mn.Check(true);
             // add v11 fundamentalnodes, v12 should be added by fnb only
             if (protocolVersion < GETHEADERS_VERSION) {
-                LogPrint("fundamentalnode", "obsee - Accepted OLD Fundamentalnode entry %i %i\n", count, current);
+                LogPrint(BCLog::FUNDAMENTALNODE, "obsee - Accepted OLD Fundamentalnode entry %i %i\n", count, current);
                 Add(mn);
             }
             if (mn.IsEnabled()) {
                 TRY_LOCK(cs_vNodes, lockNodes);
                 if (!lockNodes) return;
-                BOOST_FOREACH (CNode* pnode, vNodes)
+                for (CNode* pnode : vNodes)
                     if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
                         pnode->PushMessage("obsee", vin, addr, vchSig, sigTime, pubkey, pubkey2, count, current, lastUpdated, protocolVersion, donationAddress, donationPercentage);
             }
         } else {
-            LogPrint("fundamentalnode","obsee - Rejected Fundamentalnode entry %s\n", vin.prevout.hash.ToString());
+            LogPrint(BCLog::FUNDAMENTALNODE,"obsee - Rejected Fundamentalnode entry %s\n", vin.prevout.hash.ToString());
 
             int nDoS = 0;
             if (state.IsInvalid(nDoS)) {
-                LogPrint("fundamentalnode","obsee - %s from %i %s was not accepted into the memory pool\n", tx.GetHash().ToString().c_str(),
+                LogPrint(BCLog::FUNDAMENTALNODE,"obsee - %s from %i %s was not accepted into the memory pool\n", tx.GetHash().ToString().c_str(),
                     pfrom->GetId(), pfrom->cleanSubVer.c_str());
                 if (nDoS > 0)
                     Misbehaving(pfrom->GetId(), nDoS);
@@ -1069,24 +1050,24 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
 
     else if (strCommand == "obseep") { //ObfuScation Election Entry Ping
 
-        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
+        if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return;
 
         CTxIn vin;
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         int64_t sigTime;
         bool stop;
         vRecv >> vin >> vchSig >> sigTime >> stop;
 
-        //LogPrint("fundamentalnode","obseep - Received: vin: %s sigTime: %lld stop: %s\n", vin.ToString().c_str(), sigTime, stop ? "true" : "false");
+        //LogPrint(BCLog::FUNDAMENTALNODE,"obseep - Received: vin: %s sigTime: %lld stop: %s\n", vin.ToString().c_str(), sigTime, stop ? "true" : "false");
 
         if (sigTime > GetAdjustedTime() + 60 * 60) {
-            LogPrint("fundamentalnode","obseep - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
+            LogPrint(BCLog::FUNDAMENTALNODE,"obseep - Signature rejected, too far into the future %s\n", vin.prevout.hash.ToString());
             Misbehaving(pfrom->GetId(), 1);
             return;
         }
 
         if (sigTime <= GetAdjustedTime() - 60 * 60) {
-            LogPrint("fundamentalnode","obseep - Signature rejected, too far into the past %s - %d %d \n", vin.prevout.hash.ToString(), sigTime, GetAdjustedTime());
+            LogPrint(BCLog::FUNDAMENTALNODE,"obseep - Signature rejected, too far into the past %s - %d %d \n", vin.prevout.hash.ToString(), sigTime, GetAdjustedTime());
             Misbehaving(pfrom->GetId(), 1);
             return;
         }
@@ -1100,14 +1081,14 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
         // see if we have this Fundamentalnode
         CFundamentalnode* pmn = this->Find(vin);
         if (pmn != NULL && pmn->protocolVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto()) {
-            // LogPrint("fundamentalnode","obseep - Found corresponding mn for vin: %s\n", vin.ToString().c_str());
+            // LogPrint(BCLog::FUNDAMENTALNODE,"obseep - Found corresponding mn for vin: %s\n", vin.ToString().c_str());
             // take this only if it's newer
             if (sigTime - pmn->nLastDseep > FUNDAMENTALNODE_MIN_MNP_SECONDS) {
-                std::string strMessage = pmn->addr.ToString() + boost::lexical_cast<std::string>(sigTime) + boost::lexical_cast<std::string>(stop);
+                std::string strMessage = pmn->addr.ToString() + std::to_string(sigTime) + std::to_string(stop);
 
                 std::string errorMessage = "";
-                if (!obfuScationSigner.VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
-                    LogPrint("fundamentalnode","obseep - Got bad Fundamentalnode address signature %s \n", vin.prevout.hash.ToString());
+                if (!CMessageSigner::VerifyMessage(pmn->pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+                    LogPrint(BCLog::FUNDAMENTALNODE,"obseep - Got bad Fundamentalnode address signature %s \n", vin.prevout.hash.ToString());
                     //Misbehaving(pfrom->GetId(), 100);
                     return;
                 }
@@ -1119,8 +1100,8 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
                 if (pmn->IsEnabled()) {
                     TRY_LOCK(cs_vNodes, lockNodes);
                     if (!lockNodes) return;
-                    LogPrint("fundamentalnode", "obseep - relaying %s \n", vin.prevout.hash.ToString());
-                    BOOST_FOREACH (CNode* pnode, vNodes)
+                    LogPrint(BCLog::FUNDAMENTALNODE, "obseep - relaying %s \n", vin.prevout.hash.ToString());
+                    for (CNode* pnode : vNodes)
                         if (pnode->nVersion >= fundamentalnodePayments.GetMinFundamentalnodePaymentsProto())
                             pnode->PushMessage("obseep", vin, vchSig, sigTime, stop);
                 }
@@ -1128,7 +1109,7 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             return;
         }
 
-        LogPrint("fundamentalnode", "obseep - Couldn't find Fundamentalnode entry %s peer=%i\n", vin.prevout.hash.ToString(), pfrom->GetId());
+        LogPrint(BCLog::FUNDAMENTALNODE, "obseep - Couldn't find Fundamentalnode entry %s peer=%i\n", vin.prevout.hash.ToString(), pfrom->GetId());
 
         AskForMN(pfrom, vin);
     }
@@ -1142,10 +1123,10 @@ void CFundamentalnodeMan::Remove(CTxIn vin)
 {
     LOCK(cs);
 
-    vector<CFundamentalnode>::iterator it = vFundamentalnodes.begin();
+    std::vector<CFundamentalnode>::iterator it = vFundamentalnodes.begin();
     while (it != vFundamentalnodes.end()) {
         if ((*it).vin == vin) {
-            LogPrint("fundamentalnode", "CFundamentalnodeMan: Removing Fundamentalnode %s - %i now\n", (*it).vin.prevout.hash.ToString(), size() - 1);
+            LogPrint(BCLog::FUNDAMENTALNODE, "CFundamentalnodeMan: Removing Fundamentalnode %s - %i now\n", (*it).vin.prevout.hash.ToString(), size() - 1);
             vFundamentalnodes.erase(it);
             break;
         }
@@ -1155,20 +1136,18 @@ void CFundamentalnodeMan::Remove(CTxIn vin)
 
 void CFundamentalnodeMan::UpdateFundamentalnodeList(CFundamentalnodeBroadcast fnb)
 {
-    LOCK(cs);
     mapSeenFundamentalnodePing.insert(std::make_pair(fnb.lastPing.GetHash(), fnb.lastPing));
     mapSeenFundamentalnodeBroadcast.insert(std::make_pair(fnb.GetHash(), fnb));
+	fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
 
-    LogPrint("fundamentalnode","CFundamentalnodeMan::UpdateFundamentalnodeList -- fundamentalnode=%s\n", fnb.vin.prevout.ToStringShort());
+    LogPrint(BCLog::FUNDAMENTALNODE,"CFundamentalnodeMan::UpdateFundamentalnodeList() -- fundamentalnode=%s\n", fnb.vin.prevout.ToString());
 
     CFundamentalnode* pmn = Find(fnb.vin);
     if (pmn == NULL) {
         CFundamentalnode mn(fnb);
-        if (Add(mn)) {
-            fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
-        }
-    } else if (pmn->UpdateFromNewBroadcast(fnb)) {
-        fundamentalnodeSync.AddedFundamentalnodeList(fnb.GetHash());
+        Add(mn);
+    } else {
+        pmn->UpdateFromNewBroadcast(fnb);
     }
 }
 

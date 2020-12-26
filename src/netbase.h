@@ -1,6 +1,5 @@
 // Copyright (c) 2009-2013 The Bitcoin developers
-// Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -50,8 +49,8 @@ protected:
 public:
     CNetAddr();
     CNetAddr(const struct in_addr& ipv4Addr);
-    explicit CNetAddr(const char* pszIp, bool fAllowLookup = false);
-    explicit CNetAddr(const std::string& strIp, bool fAllowLookup = false);
+    explicit CNetAddr(const char* pszIp);
+    explicit CNetAddr(const std::string& strIp);
     void Init();
     void SetIP(const CNetAddr& ip);
 
@@ -121,7 +120,7 @@ protected:
 
 public:
     CSubNet();
-    explicit CSubNet(const std::string& strSubnet, bool fAllowLookup = false);
+    explicit CSubNet(const std::string& strSubnet);
 
     //constructor for single ip subnet (<ipv4>/32 or <ipv6>/128)
     explicit CSubNet(const CNetAddr &addr);
@@ -156,10 +155,10 @@ public:
     CService(const CNetAddr& ip, unsigned short port);
     CService(const struct in_addr& ipv4Addr, unsigned short port);
     CService(const struct sockaddr_in& addr);
-    explicit CService(const char* pszIpPort, int portDefault, bool fAllowLookup = false);
-    explicit CService(const char* pszIpPort, bool fAllowLookup = false);
-    explicit CService(const std::string& strIpPort, int portDefault, bool fAllowLookup = false);
-    explicit CService(const std::string& strIpPort, bool fAllowLookup = false);
+    explicit CService(const char* pszIpPort, int portDefault);
+    explicit CService(const char* pszIpPort);
+    explicit CService(const std::string& strIpPort, int portDefault);
+    explicit CService(const std::string& strIpPort);
     void Init();
     void SetPort(unsigned short portIn);
     unsigned short GetPort() const;
@@ -209,9 +208,9 @@ bool GetProxy(enum Network net, proxyType& proxyInfoOut);
 bool IsProxy(const CNetAddr& addr);
 bool SetNameProxy(const proxyType &addrProxy);
 bool HaveNameProxy();
-bool LookupHost(const char* pszName, std::vector<CNetAddr>& vIP, unsigned int nMaxSolutions = 0, bool fAllowLookup = true);
-bool Lookup(const char* pszName, CService& addr, int portDefault = 0, bool fAllowLookup = true);
-bool Lookup(const char* pszName, std::vector<CService>& vAddr, int portDefault = 0, bool fAllowLookup = true, unsigned int nMaxSolutions = 0);
+bool LookupHost(const char* pszName, std::vector<CNetAddr>& vIP, unsigned int nMaxSolutions, bool fAllowLookup);
+bool Lookup(const char* pszName, CService& addr, int portDefault, bool fAllowLookup);
+bool Lookup(const char* pszName, std::vector<CService>& vAddr, int portDefault, bool fAllowLookup, unsigned int nMaxSolutions);
 bool LookupNumeric(const char* pszName, CService& addr, int portDefault = 0);
 bool ConnectSocket(const CService& addr, SOCKET& hSocketRet, int nTimeout, bool* outProxyConnectionFailed = 0);
 bool ConnectSocketByName(CService& addr, SOCKET& hSocketRet, const char* pszDest, int portDefault, int nTimeout, bool* outProxyConnectionFailed = 0);

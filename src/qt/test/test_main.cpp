@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The VITAE developers
+// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -19,13 +20,23 @@
 #include <QObject>
 #include <QTest>
 
-#if defined(QT_STATICPLUGIN) && QT_VERSION < 0x050000
+#include <openssl/ssl.h>
+
+#if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
-Q_IMPORT_PLUGIN(qcncodecs)
-Q_IMPORT_PLUGIN(qjpcodecs)
-Q_IMPORT_PLUGIN(qtwcodecs)
-Q_IMPORT_PLUGIN(qkrcodecs)
+#if defined(QT_QPA_PLATFORM_MINIMAL)
+Q_IMPORT_PLUGIN(QMinimalIntegrationPlugin);
 #endif
+#if defined(QT_QPA_PLATFORM_XCB)
+Q_IMPORT_PLUGIN(QXcbIntegrationPlugin);
+#elif defined(QT_QPA_PLATFORM_WINDOWS)
+Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
+#elif defined(QT_QPA_PLATFORM_COCOA)
+Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
+#endif
+#endif
+
+extern void noui_connect();
 
 // This is all you need to run all the tests
 int main(int argc, char *argv[])
@@ -37,6 +48,8 @@ int main(int argc, char *argv[])
     // QCoreApplication:: in the tests
     QCoreApplication app(argc, argv);
     app.setApplicationName("Vitae-Qt-test");
+
+    SSL_library_init();
 
     URITests test1;
     if (QTest::qExec(&test1) != 0)
