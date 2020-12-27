@@ -17,7 +17,6 @@
 
 #include <boost/function.hpp>
 #include <boost/bind.hpp>
-#include <boost/bind/placeholders.hpp>
 #include <boost/signals2/signal.hpp>
 #include <boost/foreach.hpp>
 #include <boost/algorithm/string/predicate.hpp>

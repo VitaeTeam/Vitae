@@ -24,7 +24,6 @@
 #include "util.h"
 
 #include <stdint.h>
-#include <boost/bind/placeholders.hpp>
 
 #include <QDateTime>
 #include <QDebug>
