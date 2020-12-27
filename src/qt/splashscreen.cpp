@@ -18,8 +18,6 @@
 #include "wallet.h"
 #endif
 
-#include <boost/bind/placeholders.hpp>
-
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDesktopWidget>

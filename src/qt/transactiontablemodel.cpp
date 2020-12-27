@@ -18,8 +18,6 @@
 #include "util.h"
 #include "wallet.h"
 
-#include <boost/bind/placeholders.hpp>
-
 #include <QColor>
 #include <QDateTime>
 #include <QDebug>
