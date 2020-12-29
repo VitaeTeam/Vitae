@@ -2244,6 +2244,13 @@ int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamen
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200)
             return 0;
+        if (nHeight < GetSporkValue(SPORK_22_REMOVE_SEESAW_BLOCK)) {
+            ret = (blockValue * 6 )/ 10;
+        }
+        else {
+            ret = (blockValue * 4 )/ 10;
+        }
+
     }
 
     if(nHeight < 209467){
