@@ -2281,7 +2281,7 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         if (nHeight < 200)
             return 0;
         // Start TESTNET seesaw at block 138000
-        if (nHeight < 138000) {
+        if (nHeight < 137910) {
             ret = blockValue * .25;
         }
     }
