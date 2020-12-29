@@ -2259,18 +2259,26 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
 {
     int64_t ret = 0;
 
+    if (Params().NetworkID() == CBaseChainParams::MAIN) {
+        if (nHeight < 209467) {
+            ret = blockValue * .25;
+        }
+    }
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200)
             return 0;
+        // Start TESTNET seesaw at block 138000
+        if (nHeight < 138000) {
+            ret = blockValue * .25;
+        }
     }
-    if(nHeight < 209467){
-        ret = blockValue * .25;
-    }
-    // TODO: set proper height to disable seesaw, or remove this "else if" if we want the new release to be hard fork and remove seesaw immediately
+
+    // Keep seesaw protocol until removal spork is activated
     else if(nHeight < GetSporkValue(SPORK_22_REMOVE_SEESAW_BLOCK)){
         blockValue = blockValue * 0.6 ;
         ret = GetSeeSaw(nHeight, blockValue);
     }
+    // After seesaw removal, keep masternode payment constant at 2 VITAE
     else{
         ret = (blockValue * 4 )/ 10;
     }
