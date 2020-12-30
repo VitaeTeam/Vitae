@@ -2263,7 +2263,7 @@ int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamen
         else {
             ret = (blockValue * 4 )/ 10;
         }
-
+        return ret;
     }
 
     if(nHeight < 209467){
