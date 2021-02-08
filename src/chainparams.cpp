@@ -116,6 +116,21 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
     return &ZCParamsDec;
 }
 
+bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime,
+        const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const
+{
+    // Age not required on regtest
+    if (NetworkID() == CBaseChainParams::REGTEST)
+        return true;
+
+    // before stake modifier V2, the age required was 60 * 60 (1 hour)
+    //if (!IsStakeModifierV2(contextHeight))
+        return (utxoFromBlockTime + 3600 <= contextTime);
+
+    // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
+    //return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
+}
+
 int CChainParams::FutureBlockTimeDrift(const int nHeight) const
 {
     if (IsTimeProtocolV2(nHeight))
