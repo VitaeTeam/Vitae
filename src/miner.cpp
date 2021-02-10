@@ -145,6 +145,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     if (Params().MineBlocksOnDemand())
         pblock->nVersion = GetArg("-blockversion", pblock->nVersion);
 
+    /* This is from old Vitae code, should we use it or the above code for version which is from PIVX?
     // Make sure to create the correct block version after zerocoin is enabled
     bool fZerocoinActive = GetAdjustedTime() >= Params().Zerocoin_StartTime();
     // Supports CLTV activation
@@ -153,6 +154,7 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     if(! fZerocoinActive) {
         pblock->nVersion = 3;
     }
+    */
 
     // Create coinbase tx
     CMutableTransaction txNew;

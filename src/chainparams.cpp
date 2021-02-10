@@ -188,7 +188,6 @@ public:
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
-        nStakeTimestampMask = 0xf;
         nTimeSlotLength = 15;           // 15 seconds
 
         /** Height or Time Based Activations **/
@@ -476,7 +475,6 @@ public:
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         nLastPOWBlock = 250;
         nMaturity = 100;
-        nStakeTimestampMask = 0;        // time not masked on RegNet
         nTimeSlotLength = 1;            // time not masked on RegNet
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 0;       //approx Mon, 17 Apr 2017 04:00:00 GMT
