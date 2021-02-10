@@ -156,7 +156,6 @@ protected:
     int nEnforceBlockUpgradeMajority;
     int nRejectBlockOutdatedMajority;
     int nToCheckBlockUpgradeMajority;
-    int64_t nTargetTimespan;
     int64_t nTargetSpacing;
     int64_t nTargetSpacing_V2;
     int64_t nTargetTimespan;
