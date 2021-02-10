@@ -202,6 +202,7 @@ public:
         nBlockZerocoinV2 = 999999999; //The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
+        nBlockStakeModifierlV2 = 1967000; // To be changed
         nBlockTimeProtocolV2 = 2967000; // To be changed
 
         /**
@@ -371,6 +372,7 @@ public:
         nBlockZerocoinV2 = 999999999; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
+        nBlockStakeModifierlV2 = 1967000; // To be changed
         nBlockTimeProtocolV2 = 2214000; // To be changed
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.

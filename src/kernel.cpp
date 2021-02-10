@@ -275,6 +275,76 @@ bool GetKernelStakeModifier(uint256 hashBlockFrom, uint64_t& nStakeModifier, int
     return true;
 }
 
+bool CheckStakeKernelHash(const CBlockIndex* pindexPrev, const unsigned int nBits, CStakeInput* stake, const unsigned int nTimeTx, uint256& hashProofOfStake, const bool fVerify)
+{
+    // Calculate the proof of stake hash
+    if (!GetHashProofOfStake(pindexPrev, stake, nTimeTx, fVerify, hashProofOfStake)) {
+        return error("%s : Failed to calculate the proof of stake hash", __func__);
+    }
+
+    const CAmount& nValueIn = stake->GetValue();
+    const CDataStream& ssUniqueID = stake->GetUniqueness();
+
+    // Base target
+    uint256 bnTarget;
+    bnTarget.SetCompact(nBits);
+
+    // Weighted target
+    uint256 bnWeight = uint256(nValueIn) / 100;
+    bnTarget *= bnWeight;
+
+    // Check if proof-of-stake hash meets target protocol
+    const bool res = (hashProofOfStake < bnTarget);
+
+    if (fVerify || res) {
+        LogPrint("staking", "%s : Proof Of Stake:"
+                            "\nssUniqueID=%s"
+                            "\nnTimeTx=%d"
+                            "\nhashProofOfStake=%s"
+                            "\nnBits=%d"
+                            "\nweight=%d"
+                            "\nbnTarget=%s (res: %d)\n\n",
+            __func__, HexStr(ssUniqueID), nTimeTx, hashProofOfStake.GetHex(),
+            nBits, nValueIn, bnTarget.GetHex(), res);
+    }
+    return res;
+}
+
+bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet)
+{
+    // Grab the stake data
+    CBlockIndex* pindexfrom = stake->GetIndexFrom();
+    if (!pindexfrom) return error("%s : Failed to find the block index for stake origin", __func__);
+    const CDataStream& ssUniqueID = stake->GetUniqueness();
+    const unsigned int nTimeBlockFrom = pindexfrom->nTime;
+    CDataStream modifier_ss(SER_GETHASH, 0);
+
+    // Hash the modifier
+//    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1)) {
+        // Modifier v1
+        uint64_t nStakeModifier = 0;
+        if (!stake->GetModifier(nStakeModifier))
+            return error("%s : Failed to get kernel stake modifier", __func__);
+        modifier_ss << nStakeModifier;
+    //} else {
+        // Modifier v2
+//        modifier_ss << pindexPrev->nStakeModifierV2;
+    //}
+
+    CDataStream ss(modifier_ss);
+    // Calculate hash
+    ss << nTimeBlockFrom << ssUniqueID << nTimeTx;
+    hashProofOfStakeRet = Hash(ss.begin(), ss.end());
+
+    if (fVerify) {
+        LogPrint("staking", "%s :{ nStakeModifier=%s\n"
+                            "nStakeModifierHeight=%s\n"
+                            "}\n",
+            __func__, HexStr(modifier_ss), ((stake->IsZPIV()) ? "Not available" : std::to_string(0 /*stake->getStakeModifierHeight()*/)));
+    }
+    return true;
+}
+
 uint256 stakeHash(unsigned int nTimeTx, CDataStream ss, unsigned int prevoutIndex, uint256 prevoutHash, unsigned int nTimeBlockFrom)
 {
     //VITAE will hash in the transaction hash and the index number in order to make sure each hash is unique
