@@ -1257,7 +1257,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
         }
     }
 
-    bool hasZcSpendInputs = tx.HasZerocoinSpendInputs();
+    bool hasZcSpendInputs = tx.IsZerocoinSpend();
 
     // Check for conflicts with in-memory transactions
     if (!hasZcSpendInputs) {
