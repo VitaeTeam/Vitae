@@ -49,7 +49,4 @@ bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierCheck
 // Get time weight using supplied timestamps
 int64_t GetWeight(int64_t nIntervalBeginning, int64_t nIntervalEnd);
 
-int64_t GetTimeSlot(const int64_t nTime);
-int64_t GetCurrentTimeSlot();
-
 #endif // BITCOIN_KERNEL_H

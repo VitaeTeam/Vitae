@@ -556,17 +556,3 @@ bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierCheck
     return true;
 }
 
-// Timestamp for time protocol V2: slot duration 15 seconds
-int64_t GetTimeSlot(const int64_t nTime)
-{
-    const int slotLen = Params().TimeSlotLength();
-    return (nTime / slotLen) * slotLen;
-}
-
-int64_t GetCurrentTimeSlot()
-{
-    return GetTimeSlot(GetAdjustedTime());
-}
-
-
-
