@@ -14,6 +14,7 @@
 #include "primitives/block.h"
 #include "uint256.h"
 #include "util.h"
+#include "spork.h"
 
 #include <math.h>
 
@@ -36,7 +37,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
     }
 
     if (pindexLast->nHeight >= Params().LAST_POW_BLOCK()) {
-        const bool fTimeV2 = Params().IsTimeProtocolV2(pindexLast->nHeight+1);
+        const bool fTimeV2 = Params().IsTimeProtocolV2(pindexLast->nHeight+1, GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK));
         const uint256 bnTargetLimit = Params().ProofOfStakeLimit(fTimeV2);
         const int64_t nTargetSpacing = Params().TargetSpacing();
         const int64_t nTargetTimespan = Params().TargetTimespan(fTimeV2);
@@ -55,7 +56,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         bnNew.SetCompact(pindexLast->nBits);
 
         // on first block with V2 time protocol, reduce the difficulty by a factor 16
-        if (fTimeV2 && !Params().IsTimeProtocolV2(pindexLast->nHeight))
+        if (fTimeV2 && !Params().IsTimeProtocolV2(pindexLast->nHeight, GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK)))
             bnNew <<= 4;
 
         int64_t nInterval = nTargetTimespan / nTargetSpacing;

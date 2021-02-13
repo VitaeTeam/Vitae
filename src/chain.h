@@ -334,26 +334,9 @@ public:
         return pbegin[(pend - pbegin) / 2];
     }
 
-    int64_t MaxFutureBlockTime() const
-    {
-        return GetAdjustedTime() + Params().FutureBlockTimeDrift(nHeight+1);
-    }
+    int64_t MaxFutureBlockTime() const;
 
-    int64_t MinPastBlockTime() const
-    {
-        // Time Protocol v1: pindexPrev->MedianTimePast + 1
-        if (!Params().IsTimeProtocolV2(nHeight+1))
-            return GetMedianTimePast();
-
-        // on the transition from Time Protocol v1 to v2
-        // pindexPrev->nTime might be in the future (up to the allowed drift)
-        // so we allow the nBlockTimeProtocolV2 to be at most (180-14) seconds earlier than previous block
-        if (nHeight + 1 == Params().BlockStartTimeProtocolV2())
-            return GetBlockTime() - Params().FutureBlockTimeDrift(nHeight) + Params().FutureBlockTimeDrift(nHeight + 1);
-
-        // Time Protocol v2: pindexPrev->nTime
-        return GetBlockTime();
-    }
+    int64_t MinPastBlockTime() const;
 
     bool IsProofOfWork() const
     {

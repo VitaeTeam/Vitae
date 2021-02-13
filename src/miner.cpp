@@ -96,7 +96,7 @@ public:
 
 void UpdateTime(CBlockHeader* pblock, const CBlockIndex* pindexPrev)
 {
-    if (Params().IsTimeProtocolV2(pindexPrev->nHeight+1)) {
+    if (Params().IsTimeProtocolV2(pindexPrev->nHeight+1, GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK))) {
         pblock->nTime = GetCurrentTimeSlot();
     } else {
         pblock->nTime = std::max(pindexPrev->GetMedianTimePast() + 1, GetAdjustedTime());
@@ -666,7 +666,7 @@ void BitcoinMiner(CWallet* pwallet, bool fProofOfStake)
                     continue;
             }
 
-            const bool fTimeV2 = Params().IsTimeProtocolV2(chainActive.Height()+1);
+            const bool fTimeV2 = Params().IsTimeProtocolV2(chainActive.Height()+1, GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK));
             //search our map of hashed blocks, see if bestblock has been hashed yet
             const int chainHeight = chainActive.Height();
             if (mapHashedBlocks.count(chainHeight) && !fLastLoopOrphan)

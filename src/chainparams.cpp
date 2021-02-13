@@ -120,16 +120,16 @@ bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t
         const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const
 {
     // before stake modifier V2, the age required was 60 * 60 (1 hour). Not required for regtest
-    if (!IsStakeModifierV2(contextHeight))
+    //if (!IsStakeModifierV2(contextHeight))
         return NetworkID() == CBaseChainParams::REGTEST || (utxoFromBlockTime + nStakeMinAge <= contextTime);
 
     // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
     //return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
 }
 
-int CChainParams::FutureBlockTimeDrift(const int nHeight) const
+int CChainParams::FutureBlockTimeDrift(const int nHeight, const int sporkValue) const
 {
-    if (IsTimeProtocolV2(nHeight))
+    if (IsTimeProtocolV2(nHeight, sporkValue))
         // PoS (TimeV2): 14 seconds
         return TimeSlotLength() - 1;
 
@@ -138,14 +138,29 @@ int CChainParams::FutureBlockTimeDrift(const int nHeight) const
     return (nHeight > LAST_POW_BLOCK()) ? nFutureTimeDriftPoS : nFutureTimeDriftPoW;
 }
 
-bool CChainParams::IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const
+bool CChainParams::IsValidBlockTimeStamp(const int64_t nTime, const int nHeight, const int sporkValue) const
 {
     // Before time protocol V2, blocks can have arbitrary timestamps
-    if (!IsTimeProtocolV2(nHeight))
+    if (!IsTimeProtocolV2(nHeight, sporkValue))
         return true;
 
     // Time protocol v2 requires time in slots
     return (nTime % TimeSlotLength()) == 0;
+}
+
+int CChainParams::BlockStartTimeProtocolV2(const int sporkValue) const
+{
+    return sporkValue;
+    //return GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK);
+    //return nBlockTimeProtocolV2;
+}
+
+bool CChainParams::IsTimeProtocolV2(const int nHeight, const int sporkValue) const
+{
+    // The caller must pass sporkValue with GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK)
+    // CChainParams can't call any spork stuff because library-common doesn't include any spork related files.
+    return nHeight >= sporkValue;
+    //return nHeight >= BlockStartTimeProtocolV2();
 }
 
 class CMainParams : public CChainParams
@@ -176,10 +191,10 @@ public:
         nToCheckBlockUpgradeMajority = 14400;  // Approximate expected amount of blocks in 7 days (1920*7.5)
         nMinerThreads = 0;
         nFundamentalnodeCountDrift = 20;
-        nTargetSpacing = 1 * 60;        // 1 minute
-        nTargetTimespan = 40 * 60;      // 40 minutes
+        nTargetSpacing = 1 * 45;
+        nTargetTimespan = 40 * 45;
         nTimeSlotLength = 15;                       // 15 seconds
-        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 15 minutes
+        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
         nStakeMinAge = 60 * 60;                         // 1 hour
         nStakeMinDepth = 600;
         nFutureTimeDriftPoW = 7200;
@@ -203,7 +218,7 @@ public:
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
         nBlockStakeModifierlV2 = 999999999;
-        nBlockTimeProtocolV2 = 2967000; // To be changed
+        //nBlockTimeProtocolV2 = 2967000; // To be changed
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -354,7 +369,7 @@ public:
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
         nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
+        nTargetSpacing = 40 * 45;  // VITAE: 1 minute
         nLastPOWBlock = 200;
         nMaturity = 15;
         nFundamentalnodeCountDrift = 4;
@@ -373,7 +388,7 @@ public:
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
         nBlockStakeModifierlV2 = 999999999;
-        nBlockTimeProtocolV2 = 2214000; // To be changed
+        //nBlockTimeProtocolV2 = 2214000; // To be changed
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1589445785;
@@ -486,7 +501,7 @@ public:
         nBlockFirstFraudulent = 999999999; //First block that bad serials emerged
         nBlockLastGoodCheckpoint = 999999999; //Last valid accumulator checkpoint
         nBlockStakeModifierlV2 = 999999999;
-        nBlockTimeProtocolV2 = 999999999;
+        //nBlockTimeProtocolV2 = 999999999;
 
         genesis.nTime = 1454124731;
         genesis.nBits = 0x207fffff;
@@ -598,3 +613,4 @@ bool SelectParamsFromCommandLine()
     SelectParams(network);
     return true;
 }
+

@@ -85,11 +85,11 @@ public:
     bool HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime, const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime) const;
 
     /** Time Protocol V2 **/
-    int BlockStartTimeProtocolV2() const { return nBlockTimeProtocolV2; }
-    bool IsTimeProtocolV2(const int nHeight) const { return nHeight >= BlockStartTimeProtocolV2(); }
+    int BlockStartTimeProtocolV2(const int sporkValue) const;
+    bool IsTimeProtocolV2(const int nHeight, const int sporkValue) const;
     int TimeSlotLength() const { return nTimeSlotLength; }
-    int FutureBlockTimeDrift(const int nHeight) const;
-    bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight) const;
+    int FutureBlockTimeDrift(const int nHeight, const int sporkValue) const;
+    bool IsValidBlockTimeStamp(const int64_t nTime, const int nHeight, const int sporkValue) const;
 
     CAmount MaxMoneyOut() const { return nMaxMoneyOut; }
     /** The fundamentalnode count that we will allow the see-saw reward payments to be off by */
@@ -218,7 +218,7 @@ protected:
     int nBlockEnforceInvalidUTXO;
     int nBlockZerocoinV2;
     int nBlockStakeModifierlV2;
-    int nBlockTimeProtocolV2;
+    //int nBlockTimeProtocolV2;
 };
 
 /**

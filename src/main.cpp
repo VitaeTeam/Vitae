@@ -4413,7 +4413,7 @@ bool CheckBlockTime(const CBlockHeader& block, CValidationState& state, CBlockIn
         return state.DoS(50, error("%s : block timestamp too old", __func__), REJECT_INVALID, "time-too-old");
 
     // Check blocktime mask
-    if (!Params().IsValidBlockTimeStamp(blockTime, blockHeight))
+    if (!Params().IsValidBlockTimeStamp(blockTime, blockHeight, GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK)))
         return state.DoS(100, error("%s : block timestamp mask not valid", __func__), REJECT_INVALID, "invalid-time-mask");
 
     // All good
