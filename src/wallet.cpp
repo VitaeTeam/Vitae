@@ -3018,6 +3018,7 @@ bool CWallet::CreateCoinStake(
     if (!SelectStakeCoins(listInputs, nBalance - nReserveBalance, pindexPrev->nHeight + 1)) {
         LogPrintf("CreateCoinStake(): selectStakeCoins failed\n");
         return false;
+    }
 
     if (listInputs.empty())
         return false;
