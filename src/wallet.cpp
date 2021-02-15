@@ -2994,7 +2994,6 @@ bool CWallet::CreateCoinStake(
     // The following split & combine thresholds are important to security
     // Should not be adjusted if you don't understand the consequences
     //int64_t nCombineThreshold = 0;
-    const CBlockIndex* pindexPrev = chainActive.Tip();
     txNew.vin.clear();
     txNew.vout.clear();
 
