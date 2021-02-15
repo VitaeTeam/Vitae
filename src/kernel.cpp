@@ -366,7 +366,6 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
                   "nStakeModifierHeight=%s\n"
                   "}\n", __func__, HexStr(modifier_ss), ((stake->IsZPIV()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
     }
-    }
     return true;
 }
 
