@@ -29,7 +29,7 @@ bool CheckStake(const CDataStream& ssUniqueID, CAmount nValueIn, const uint64_t 
 bool stakeTargetHit(uint256 hashProofOfStake, int64_t nValueIn, uint256 bnTargetPerCoinDay);
 
 // Initialize the stake input object
-bool initStakeInput(const CBlock block, std::unique_ptr<CStakeInput>& stake, int nPreviousBlockHeight);
+bool initStakeInput(const CBlock & block, std::unique_ptr<CStakeInput>& stake, int nPreviousBlockHeight);
 
 // Check kernel hash target and coinstake signature
 // Sets hashProofOfStake on success return
