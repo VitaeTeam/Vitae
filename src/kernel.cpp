@@ -322,14 +322,13 @@ bool CheckStakeKernelHash(const CBlockIndex* pindexPrev, const unsigned int nBit
     return res;
 }
 
-bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet, const bool fDebug)
+bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, const unsigned int nTimeTx, const bool fVerify, uint256& hashProofOfStakeRet)
 {
     // Grab the stake data
     CBlockIndex* pindexfrom = stake->GetIndexFrom();
     if (!pindexfrom) return error("%s : Failed to find the block index for stake origin", __func__);
     const CDataStream& ssUniqueID = stake->GetUniqueness();
     const unsigned int nTimeBlockFrom = pindexfrom->nTime;
-
     CDataStream modifier_ss(SER_GETHASH, 0);
 
     // Hash the modifier
@@ -345,23 +344,15 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
     }
 
     CDataStream ss(modifier_ss);
-
-    // Base target
-    uint256 bnTarget;
-    bnTarget.SetCompact(nBits);
-
-    // Weighted target
-    uint256 bnWeight = uint256(nValueIn) / 100;
-    bnTarget *= bnWeight;
-
     // Calculate hash
     ss << nTimeBlockFrom << ssUniqueID << nTimeTx;
     hashProofOfStakeRet = Hash(ss.begin(), ss.end());
 
-    if (fDebug) {
-        LogPrintf("%s :{ nStakeModifier=%s\n"
-                  "nStakeModifierHeight=%s\n"
-                  "}\n", __func__, HexStr(modifier_ss), ((stake->IsZPIV()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
+    if (fVerify) {
+        LogPrint("staking", "%s :{ nStakeModifier=%s\n"
+                            "nStakeModifierHeight=%s\n"
+                            "}\n",
+            __func__, HexStr(modifier_ss), ((stake->IsZPIV()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
     }
     return true;
 }
