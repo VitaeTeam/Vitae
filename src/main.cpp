@@ -7147,3 +7147,9 @@ public:
         mapOrphanTransactionsByPrev.clear();
     }
 } instance_of_cmaincleanup;
+
+// This function is to decouple from spork dependence (not depend on the spork ID)
+int64_t getTimeProtocolV2SporkValue()
+{
+    return GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK);
+}

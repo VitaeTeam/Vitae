@@ -645,4 +645,6 @@ struct CBlockTemplate {
     std::vector<int64_t> vTxSigOps;
 };
 
+int64_t getTimeProtocolV2SporkValue();
+
 #endif // BITCOIN_MAIN_H

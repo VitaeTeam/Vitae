@@ -373,7 +373,7 @@ bool Stake(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, unsigned int 
     if (!pindexFrom || pindexFrom->nHeight < 1) return error("%s : no pindexfrom", __func__);
 
     // Time protocol V2: one-try
-    if (Params().IsTimeProtocolV2(nHeight, GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK))) {
+    if (Params().IsTimeProtocolV2(nHeight, getTimeProtocolV2SporkValue())) {
         // store a time stamp of when we last hashed on this block
         mapHashedBlocks.clear();
         mapHashedBlocks[pindexPrev->nHeight] = GetTime();
