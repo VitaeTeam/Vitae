@@ -2110,7 +2110,7 @@ bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInp
 
             CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
             //check for maturity (min age/depth)
-            if (!Params().HasStakeMinAgeOrDepth(blockHeight, GetAdjustedTime(), utxoBlock->nHeight, utxoBlock->GetBlockTime()))
+            if (!Params().HasStakeMinAgeOrDepth(blockHeight, GetAdjustedTime(), utxoBlock->nHeight, utxoBlock->GetBlockTime(), getStakeModifierV2SporkValue()))
                 continue;
 
             //add to our stake set
@@ -2177,7 +2177,7 @@ bool CWallet::MintableCoins()
         for (const COutput& out : vCoins) {
             CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
             //check for maturity (min age/depth)
-            if (Params().HasStakeMinAgeOrDepth(chainHeight, time, utxoBlock->nHeight, utxoBlock->nTime))
+            if (Params().HasStakeMinAgeOrDepth(chainHeight, time, utxoBlock->nHeight, utxoBlock->nTime, getStakeModifierV2SporkValue()))
                 return true;
         }
     }

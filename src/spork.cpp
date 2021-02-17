@@ -145,6 +145,7 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_21_MASTERNODE_PAY_UPDATED_NODES) r = SPORK_21_MASTERNODE_PAY_UPDATED_NODES_DEFAULT;
         if (nSporkID == SPORK_22_REMOVE_SEESAW_BLOCK) r = SPORK_22_REMOVE_SEESAW_BLOCK_DEFAULT;
         if (nSporkID == SPORK_23_TIME_PROTOCOL_V2_BLOCK) r = SPORK_23_TIME_PROTOCOL_V2_BLOCK_DEFAULT;
+        if (nSporkID == SPORK_24_STAKE_MODIFIER_V2_BLOCK) r = SPORK_24_STAKE_MODIFIER_V2_BLOCK_DEFAULT;
 
         if (r == -1) LogPrintf("%s : Unknown Spork %d\n", __func__, nSporkID);
     }
@@ -299,6 +300,7 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     if (strName == "SPORK_21_MASTERNODE_PAY_UPDATED_NODES") return SPORK_21_MASTERNODE_PAY_UPDATED_NODES;
     if (strName == "SPORK_22_REMOVE_SEESAW_BLOCK") return SPORK_22_REMOVE_SEESAW_BLOCK;
     if (strName == "SPORK_23_TIME_PROTOCOL_V2_BLOCK") return SPORK_23_TIME_PROTOCOL_V2_BLOCK;
+    if (strName == "SPORK_24_STAKE_MODIFIER_V2_BLOCK") return SPORK_24_STAKE_MODIFIER_V2_BLOCK;
 
     return -1;
 }
@@ -323,6 +325,7 @@ std::string CSporkManager::GetSporkNameByID(int id)
     if (id == SPORK_21_MASTERNODE_PAY_UPDATED_NODES) return "SPORK_21_MASTERNODE_PAY_UPDATED_NODES";
     if (id == SPORK_22_REMOVE_SEESAW_BLOCK) return "SPORK_22_REMOVE_SEESAW_BLOCK";
     if (id == SPORK_23_TIME_PROTOCOL_V2_BLOCK) return "SPORK_23_TIME_PROTOCOL_V2_BLOCK";
+    if (id == SPORK_24_STAKE_MODIFIER_V2_BLOCK) return "SPORK_24_STAKE_MODIFIER_V2_BLOCK";
 
     return "Unknown";
 }

@@ -4038,7 +4038,7 @@ CBlockIndex* AddToBlockIndex(const CBlock& block)
             pindexNew->hashProofOfStake = mapProofOfStake[hash];
         }
 
-        if (!Params().IsStakeModifierV2(pindexNew->nHeight)) {
+        if (!Params().IsStakeModifierV2(pindexNew->nHeight, getStakeModifierV2SporkValue())) {
             uint64_t nStakeModifier = 0;
             bool fGeneratedStakeModifier = false;
             if (!ComputeNextStakeModifier(pindexNew->pprev, nStakeModifier, fGeneratedStakeModifier))
@@ -7152,4 +7152,9 @@ public:
 int64_t getTimeProtocolV2SporkValue()
 {
     return GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK);
+}
+
+int64_t getStakeModifierV2SporkValue()
+{
+    return GetSporkValue(SPORK_24_STAKE_MODIFIER_V2_BLOCK);
 }

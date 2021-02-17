@@ -127,7 +127,7 @@ uint256 ComputeStakeModifier(const CBlockIndex* pindexPrev, const uint256& kerne
     ss << kernel;
 
     // switch with old modifier on upgrade block
-    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1))
+    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1, getStakeModifierV2SporkValue()))
         ss << pindexPrev->nStakeModifier;
     else
         ss << pindexPrev->nStakeModifierV2;
@@ -332,7 +332,7 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
     CDataStream modifier_ss(SER_GETHASH, 0);
 
     // Hash the modifier
-    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1)) {
+    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1, getStakeModifierV2SporkValue())) {
         // Modifier v1
         uint64_t nStakeModifier = 0;
         if (!stake->GetModifier(nStakeModifier))

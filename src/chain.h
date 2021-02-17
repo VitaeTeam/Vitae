@@ -24,6 +24,8 @@
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 
+int64_t getStakeModifierV2SporkValue();
+
 struct CDiskBlockPos {
     int nFile;
     unsigned int nPos;
@@ -461,7 +463,7 @@ public:
         READWRITE(nFlags);
 
         // v1/v2 modifier selection.
-        if (!Params().IsStakeModifierV2(nHeight)) {
+        if (!Params().IsStakeModifierV2(nHeight, getStakeModifierV2SporkValue())) {
             READWRITE(nStakeModifier);
         } else {
             READWRITE(nStakeModifierV2);
