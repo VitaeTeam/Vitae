@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "chain.h"
+#include "main.h"
 
 using namespace std;
 
@@ -77,3 +78,25 @@ uint256 CBlockIndex::GetBlockTrust() const
         return bnPoWTrust > 1 ? bnPoWTrust : 1;
     }
 }
+
+int64_t CBlockIndex::MaxFutureBlockTime() const
+{
+    return GetAdjustedTime() + Params().FutureBlockTimeDrift(nHeight+1, getTimeProtocolV2SporkValue());
+}
+
+int64_t CBlockIndex::MinPastBlockTime() const
+{
+    // Time Protocol v1: pindexPrev->MedianTimePast + 1
+    if (!Params().IsTimeProtocolV2(nHeight+1, getTimeProtocolV2SporkValue()))
+        return GetMedianTimePast();
+
+    // on the transition from Time Protocol v1 to v2
+    // pindexPrev->nTime might be in the future (up to the allowed drift)
+    // so we allow the nBlockTimeProtocolV2 to be at most (180-14) seconds earlier than previous block
+    if (nHeight + 1 == Params().BlockStartTimeProtocolV2(getTimeProtocolV2SporkValue()))
+        return GetBlockTime() - Params().FutureBlockTimeDrift(nHeight, getTimeProtocolV2SporkValue()) + Params().FutureBlockTimeDrift(nHeight + 1, getTimeProtocolV2SporkValue());
+
+    // Time Protocol v2: pindexPrev->nTime
+    return GetBlockTime();
+}
+

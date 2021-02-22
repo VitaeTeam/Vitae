@@ -95,6 +95,8 @@ public:
         return (nSequence == std::numeric_limits<uint32_t>::max());
     }
 
+    bool IsZerocoinSpend() const;
+
     friend bool operator==(const CTxIn& a, const CTxIn& b)
     {
         return (a.prevout   == b.prevout &&

@@ -1,14 +1,19 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2011-2013 The PPCoin developers
+// Copyright (c) 2013-2014 The NovaCoin Developers
+// Copyright (c) 2014-2018 The BlackCoin Developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #ifndef BITCOIN_CHAIN_H
 #define BITCOIN_CHAIN_H
 
+#include "chainparams.h"
 #include "pow.h"
 #include "primitives/block.h"
+#include "timedata.h"
 #include "tinyformat.h"
 #include "uint256.h"
 #include "util.h"
@@ -18,6 +23,8 @@
 
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
+
+int64_t getStakeModifierV2SporkValue();
 
 struct CDiskBlockPos {
     int nFile;
@@ -157,6 +164,7 @@ public:
         BLOCK_STAKE_MODIFIER = (1 << 2), // regenerated stake modifier
     };
 
+
     // proof-of-stake specific fields
     uint256 GetBlockTrust() const;
     uint64_t nStakeModifier;             // hash modifier for proof-of-stake
@@ -166,6 +174,7 @@ public:
     uint256 hashProofOfStake;
     int64_t nMint;
     int64_t nMoneySupply;
+    uint256 nStakeModifierV2;
 
     //! block header
     int nVersion;
@@ -201,6 +210,7 @@ public:
         nMoneySupply = 0;
         nFlags = 0;
         nStakeModifier = 0;
+        nStakeModifierV2 = uint256();
         nStakeModifierChecksum = 0;
         prevoutStake.SetNull();
         nStakeTime = 0;
@@ -235,22 +245,10 @@ public:
         if(block.nVersion > 3)
             nAccumulatorCheckpoint = block.nAccumulatorCheckpoint;
 
-        //Proof of Stake
-        bnChainTrust = uint256();
-        nMint = 0;
-        nMoneySupply = 0;
-        nFlags = 0;
-        nStakeModifier = 0;
-        nStakeModifierChecksum = 0;
-        hashProofOfStake = uint256();
-
         if (block.IsProofOfStake()) {
             SetProofOfStake();
             prevoutStake = block.vtx[1].vin[0].prevout;
             nStakeTime = block.nTime;
-        } else {
-            prevoutStake.SetNull();
-            nStakeTime = 0;
         }
     }
 
@@ -328,6 +326,10 @@ public:
         std::sort(pbegin, pend);
         return pbegin[(pend - pbegin) / 2];
     }
+
+    int64_t MaxFutureBlockTime() const;
+
+    int64_t MinPastBlockTime() const;
 
     bool IsProofOfWork() const
     {
@@ -459,7 +461,14 @@ public:
         READWRITE(nMint);
         READWRITE(nMoneySupply);
         READWRITE(nFlags);
-        READWRITE(nStakeModifier);
+
+        // v1/v2 modifier selection.
+        if (!Params().IsStakeModifierV2(nHeight, getStakeModifierV2SporkValue())) {
+            READWRITE(nStakeModifier);
+        } else {
+            READWRITE(nStakeModifierV2);
+        }
+
         if (IsProofOfStake()) {
             READWRITE(prevoutStake);
             READWRITE(nStakeTime);
