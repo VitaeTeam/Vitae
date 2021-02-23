@@ -22,7 +22,7 @@ public:
     virtual CAmount GetValue() = 0;
     virtual bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) = 0;
     virtual bool GetModifier(uint64_t& nStakeModifier) = 0;
-    virtual bool IsZPIV() = 0;
+    virtual bool IsZVIT() = 0;
     virtual CDataStream GetUniqueness() = 0;
     virtual uint256 GetSerialHash() const = 0;
 
@@ -32,7 +32,7 @@ public:
 };
 
 
-// zPIVStake can take two forms
+// zVITStake can take two forms
 // 1) the stake candidate, which is a zcmint that is attempted to be staked
 // 2) a staked zvit, which is a zcspend that has successfully staked
 class CZVitStake : public CStakeInput
@@ -61,7 +61,7 @@ public:
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) override;
     bool MarkSpent(CWallet* pwallet, const uint256& txid);
-    bool IsZPIV() override { return true; }
+    bool IsZVIT() override { return true; }
     uint256 GetSerialHash() const override { return hashSerial; }
     int GetChecksumHeightFromMint();
     int GetChecksumHeightFromSpend();
@@ -90,7 +90,7 @@ public:
     CDataStream GetUniqueness() override;
     bool CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut = 0) override;
     bool CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTotal) override;
-    bool IsZPIV() override { return false; }
+    bool IsZVIT() override { return false; }
     uint256 GetSerialHash() const override { return uint256(0); }
 
     uint64_t getStakeModifierHeight() const override { return nStakeModifierHeight; }

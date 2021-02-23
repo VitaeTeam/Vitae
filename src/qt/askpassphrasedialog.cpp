@@ -75,7 +75,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
     }
 
     // Set checkbox "For anonymization and staking only" depending on from where we were called
-    if (context == Context::Unlock_Menu || context == Context::Mint_zPIV || context == Context::BIP_38) {
+    if (context == Context::Unlock_Menu || context == Context::Mint_zVIT || context == Context::BIP_38) {
         ui->anonymizationCheckBox->setChecked(true);
     }
     else {
@@ -83,7 +83,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
     }
 
     // It doesn't make sense to show the checkbox for sending PIV because you wouldn't check it anyway.
-    if (context == Context::Send_PIV || context == Context::Send_zPIV) {
+    if (context == Context::Send_PIV || context == Context::Send_zVIT) {
         ui->anonymizationCheckBox->hide();
     }
 

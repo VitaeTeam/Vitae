@@ -146,7 +146,7 @@ void CzVITAEWallet::GenerateMintPool(uint32_t nCountStart, uint32_t nCountEnd)
         CBigNum bnSerial;
         CBigNum bnRandomness;
         CKey key;
-        SeedToZPIV(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
+        SeedToZVIT(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
 
         mintPool.Add(bnValue, i);
         CWalletDB(strWalletFile).WriteMintPoolPair(hashSeed, GetPubCoinHash(bnValue), i);
@@ -292,7 +292,7 @@ bool CzVITAEWallet::SetMintSeen(const CBigNum& bnValue, const int& nHeight, cons
     CBigNum bnSerial;
     CBigNum bnRandomness;
     CKey key;
-    SeedToZPIV(seedZerocoin, bnValueGen, bnSerial, bnRandomness, key);
+    SeedToZVIT(seedZerocoin, bnValueGen, bnSerial, bnRandomness, key);
 
     //Sanity check
     if (bnValueGen != bnValue)
@@ -350,7 +350,7 @@ bool IsValidCoinValue(const CBigNum& bnValue)
     bnValue.isPrime();
 }
 
-void CzVITAEWallet::SeedToZPIV(const uint512& seedZerocoin, CBigNum& bnValue, CBigNum& bnSerial, CBigNum& bnRandomness, CKey& key)
+void CzVITAEWallet::SeedToZVIT(const uint512& seedZerocoin, CBigNum& bnValue, CBigNum& bnSerial, CBigNum& bnRandomness, CKey& key)
 {
     ZerocoinParams* params = Params().Zerocoin_Params(false);
 
@@ -414,7 +414,7 @@ void CzVITAEWallet::UpdateCount()
     walletdb.WriteZVITCount(nCountLastUsed);
 }
 
-void CzVITAEWallet::GenerateDeterministicZPIV(CoinDenomination denom, PrivateCoin& coin, CDeterministicMint& dMint, bool fGenerateOnly)
+void CzVITAEWallet::GenerateDeterministicZVIT(CoinDenomination denom, PrivateCoin& coin, CDeterministicMint& dMint, bool fGenerateOnly)
 {
     GenerateMint(nCountLastUsed + 1, denom, coin, dMint);
     if (fGenerateOnly)
@@ -431,7 +431,7 @@ void CzVITAEWallet::GenerateMint(const uint32_t& nCount, const CoinDenomination 
     CBigNum bnSerial;
     CBigNum bnRandomness;
     CKey key;
-    SeedToZPIV(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
+    SeedToZVIT(seedZerocoin, bnValue, bnSerial, bnRandomness, key);
     coin = PrivateCoin(Params().Zerocoin_Params(false), denom, bnSerial, bnRandomness);
     coin.setPrivKey(key.GetPrivKey());
     coin.setVersion(PrivateCoin::CURRENT_VERSION);

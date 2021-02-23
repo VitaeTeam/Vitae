@@ -352,7 +352,7 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
         LogPrint("staking", "%s :{ nStakeModifier=%s\n"
                             "nStakeModifierHeight=%s\n"
                             "}\n",
-            __func__, HexStr(modifier_ss), ((stake->IsZPIV()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
+            __func__, HexStr(modifier_ss), ((stake->IsZVIT()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
     }
     return true;
 }
@@ -463,9 +463,9 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
             return error("%s : VerifyScript failed on coinstake %s %s", __func__, tx.GetHash().ToString(), strErr);
         }
 
-        CVitStake* pivInput = new CVitStake();
-        pivInput->SetInput(txPrev, txin.prevout.n);
-        stake = std::unique_ptr<CStakeInput>(pivInput);
+        CVitStake* vitInput = new CVitStake();
+        vitInput->SetInput(txPrev, txin.prevout.n);
+        stake = std::unique_ptr<CStakeInput>(vitInput);
     }
     return true;
 }
@@ -490,7 +490,7 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
     //const int nBlockFromHeight = pindexfrom->nHeight;
 
     /*if (!txin.IsZerocoinSpend() && nPreviousBlockHeight >= Params().Zerocoin_Block_Public_Spend_Enabled() - 1) {
-        //Equivalent for zPIV is checked above in ContextualCheckZerocoinStake()
+        //Equivalent for zVIT is checked above in ContextualCheckZerocoinStake()
         if (nTxTime < nBlockFromTime) // Transaction timestamp nTxTime
             return error("%s : nTime violation - nBlockFromTime=%d nTimeTx=%d", __func__, nBlockFromTime, nTxTime);
         if (nBlockFromTime + Params().StakeMinAge(nPreviousBlockHeight + 1) > nTxTime) // Min age requirement
