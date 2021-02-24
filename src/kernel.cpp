@@ -352,7 +352,7 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
         LogPrint("staking", "%s :{ nStakeModifier=%s\n"
                             "nStakeModifierHeight=%s\n"
                             "}\n",
-            __func__, HexStr(modifier_ss), ((stake->IsZPIV()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
+            __func__, HexStr(modifier_ss), ((stake->IsZVIT()) ? "Not available" : std::to_string(stake->getStakeModifierHeight())));
     }
     return true;
 }
@@ -431,32 +431,6 @@ bool StakeV1(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, const uint3
     return fSuccess;
 }
 
-bool ContextualCheckZerocoinStake(int nPreviousBlockHeight, CStakeInput* stake)
-{
-    if (nPreviousBlockHeight < Params().Zerocoin_Block_V2_Start())
-        return error("%s : zPIV stake block is less than allowed start height", __func__);
-
-    if (CZVitStake* zPIV = dynamic_cast<CZVitStake*>(stake)) {
-        CBlockIndex* pindexFrom = zPIV->GetIndexFrom();
-        if (!pindexFrom)
-            return error("%s : failed to get index associated with zPIV stake checksum", __func__);
-
-        int depth = (nPreviousBlockHeight + 1) - pindexFrom->nHeight;
-        if (depth < Params().Zerocoin_RequiredStakeDepth())
-            return error("%s : zPIV stake does not have required confirmation depth. Current height %d,  stakeInput height %d.", __func__, nPreviousBlockHeight, pindexFrom->nHeight);
-
-        //The checksum needs to be the exact checksum from 200 blocks ago
-        uint256 nCheckpoint200 = chainActive[nPreviousBlockHeight - Params().Zerocoin_RequiredStakeDepth()]->nAccumulatorCheckpoint;
-        uint32_t nChecksum200 = ParseChecksum(nCheckpoint200, libzerocoin::AmountToZerocoinDenomination(zPIV->GetValue()));
-        if (nChecksum200 != zPIV->GetChecksum())
-            return error("%s : accumulator checksum is different than the block 200 blocks previous. stake=%d block200=%d", __func__, zPIV->GetChecksum(), nChecksum200);
-    } else {
-        return error("%s : dynamic_cast of stake ptr failed", __func__);
-    }
-
-    return true;
-}
-
 bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, int nPreviousBlockHeight) {
     const CTransaction tx = block.vtx[1];
     if (!tx.IsCoinStake())
@@ -472,9 +446,6 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
             return error("%s : spend is using the wrong SpendType (%d)", __func__, (int)spend.getSpendType());
 
         stake = std::unique_ptr<CStakeInput>(new CZVitStake(spend));
-
-        if (!ContextualCheckZerocoinStake(nPreviousBlockHeight, stake.get()))
-            return error("%s : staked zPIV fails context checks", __func__);
     } else {
         // First try finding the previous transaction in database
         uint256 hashBlock;
@@ -492,9 +463,9 @@ bool initStakeInput(const CBlock& block, std::unique_ptr<CStakeInput>& stake, in
             return error("%s : VerifyScript failed on coinstake %s %s", __func__, tx.GetHash().ToString(), strErr);
         }
 
-        CVitStake* pivInput = new CVitStake();
-        pivInput->SetInput(txPrev, txin.prevout.n);
-        stake = std::unique_ptr<CStakeInput>(pivInput);
+        CVitStake* vitInput = new CVitStake();
+        vitInput->SetInput(txPrev, txin.prevout.n);
+        stake = std::unique_ptr<CStakeInput>(vitInput);
     }
     return true;
 }
@@ -508,18 +479,18 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
 
     const CTransaction tx = block.vtx[1];
     // Kernel (input 0) must match the stake hash target per coin age (nBits)
-    const CTxIn& txin = tx.vin[0];
+    //const CTxIn& txin = tx.vin[0];
     CBlockIndex* pindexPrev = mapBlockIndex[block.hashPrevBlock];
     CBlockIndex* pindexfrom = stake->GetIndexFrom();
     if (!pindexfrom)
         return error("%s : Failed to find the block index for stake origin", __func__);
 
-    unsigned int nBlockFromTime = pindexfrom->nTime;
+    //unsigned int nBlockFromTime = pindexfrom->nTime;
     unsigned int nTxTime = block.nTime;
-    const int nBlockFromHeight = pindexfrom->nHeight;
+    //const int nBlockFromHeight = pindexfrom->nHeight;
 
     /*if (!txin.IsZerocoinSpend() && nPreviousBlockHeight >= Params().Zerocoin_Block_Public_Spend_Enabled() - 1) {
-        //Equivalent for zPIV is checked above in ContextualCheckZerocoinStake()
+        //Equivalent for zVIT is checked above in ContextualCheckZerocoinStake()
         if (nTxTime < nBlockFromTime) // Transaction timestamp nTxTime
             return error("%s : nTime violation - nBlockFromTime=%d nTimeTx=%d", __func__, nBlockFromTime, nTxTime);
         if (nBlockFromTime + Params().StakeMinAge(nPreviousBlockHeight + 1) > nTxTime) // Min age requirement
