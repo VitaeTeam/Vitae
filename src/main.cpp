@@ -2005,7 +2005,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
         int nMasternodeCount = 0 ;
 
         //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-        if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
+        if (IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
         else
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
@@ -5878,9 +5878,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         // VITAE: We use certain sporks during IBD, so check to see if they are
         // available. If not, ask the first peer connected for them.
-        bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
-                !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
-                !pSporkDB->SporkExists(SPORK_20_ZEROCOIN_MAINTENANCE_MODE) &&
+        bool fMissingSporks = !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
+                //!pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
                 !pSporkDB->SporkExists(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4) &&
                 !pSporkDB->SporkExists(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5) &&
                 !pSporkDB->SporkExists(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
@@ -6733,10 +6732,10 @@ int ActiveProtocol()
 
 */
 
-    // SPORK_14 is used for 71024. Nodes < 70926 won't see it and still get their protocol version via SPORK_17 and their
+    // SPORK_15 is used for 71025. Nodes < 71025 won't see it and still get their protocol version via SPORK_14 and their
     // own ModifierUpgradeBlock()
 
-    if (IsSporkActive(SPORK_14_NEW_PROTOCOL_ENFORCEMENT))
+    if (IsSporkActive(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }
