@@ -2159,7 +2159,7 @@ bool CWallet::MintableCoins()
 {
     LOCK(cs_main);
     CAmount nBalance = GetBalance();
-    CAmount nZpivBalance = GetZerocoinBalance(false);
+    CAmount nZvitBalance = GetZerocoinBalance(false);
 
     int chainHeight = chainActive.Height();
 
@@ -2183,7 +2183,7 @@ bool CWallet::MintableCoins()
     }
 
     // zVITAE
-    if (nZpivBalance > 0) {
+    if (nZvitBalance > 0) {
         set<CMintMeta> setMints = zvitTracker->ListMints(true, true, true);
         for (auto mint : setMints) {
             if (mint.nVersion < CZerocoinMint::STAKABLE_VERSION)

@@ -17,7 +17,7 @@ from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import p2p_port, assert_equal, assert_raises_rpc_error, assert_greater_than_or_equal
 
 
-class zPIVValidCoinSpendTest(BitcoinTestFramework):
+class zVITValidCoinSpendTest(BitcoinTestFramework):
 
     def set_test_params(self):
         self.setup_clean_chain = True
@@ -87,7 +87,7 @@ class zPIVValidCoinSpendTest(BitcoinTestFramework):
 
 
         # 2) Mint zerocoins
-        self.log.info("Minting %d-denom zPIVs..." % DENOM_TO_USE)
+        self.log.info("Minting %d-denom zVITs..." % DENOM_TO_USE)
         for i in range(5):
             self.mintZerocoin(DENOM_TO_USE)
 
@@ -180,7 +180,7 @@ class zPIVValidCoinSpendTest(BitcoinTestFramework):
 
         # 11) Try to relay old v3 spend now
         self.log.info("%s: Trying to send old v3 spend now" % self.__class__.__name__)
-        assert_raises_rpc_error(-26, "bad-txns-invalid-zpiv",
+        assert_raises_rpc_error(-26, "bad-txns-invalid-zvit",
                                 self.nodes[0].sendrawtransaction, old_spend_v3)
         self.log.info("GOOD: Old transaction not sent.")
 
@@ -212,4 +212,4 @@ class zPIVValidCoinSpendTest(BitcoinTestFramework):
 
 
 if __name__ == '__main__':
-    zPIVValidCoinSpendTest().main()
+    zVITValidCoinSpendTest().main()
