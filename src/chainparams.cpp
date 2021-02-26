@@ -196,6 +196,7 @@ public:
         nTargetTimespan = 40 * 45;
         nTimeSlotLength = 15;                       // 15 seconds
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
+        nMaturity = 8;
         nStakeMinAge = 60 * 60;                         // 1 hour
         nStakeMinDepth = 600;
         nFutureTimeDriftPoW = 7200;
@@ -366,14 +367,24 @@ public:
         pchMessageStart[3] = 0xba;
         vAlertPubKey = ParseHex("000010e83b2703ccf322f7dbd62dd5855ac7c10bd055814ce121ba32607d573b8810c02c0582aed05b4deb9c4b77b26d92428c61256cd42774babea0a073b2ed0c9");
         nDefaultPort = 8763;
+        bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfStakeLimit = ~uint256(0) >> 24;
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nEnforceBlockUpgradeMajority = 6480;
         nRejectBlockOutdatedMajority = 8208;
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
+        nTargetTimespan = 40 * 45; // VITAE: 1 day
+        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
         nTargetSpacing = 1 * 45;  // VITAE: 45 seconds
         nLastPOWBlock = 200;
         nMaturity = 15;
+        nTimeSlotLength = 15;                       // 15 seconds
+        nStakeMinAge = 60 * 60;                         // 1 hour
+        nStakeMinDepth = 600;
+        nFutureTimeDriftPoW = 7200;
+        nFutureTimeDriftPoS = 180;
+
         nFundamentalnodeCountDrift = 4;
         nStakeMinDepth = 100;
         nMasternodeCountDrift = 4;
@@ -489,6 +500,8 @@ public:
         nTargetTimespan = 24 * 60 * 60; // VITAE: 1 day
         nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfStakeLimit = ~uint256(0) >> 24;
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nLastPOWBlock = 250;
         nMaturity = 100;
         nStakeMinAge = 0;
