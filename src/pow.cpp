@@ -35,7 +35,7 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return Params().ProofOfWorkLimit().GetCompact();
     }
 
-    if (pindexLast->nHeight >= Params().LAST_POW_BLOCK()) {
+    if (pindexLast->nHeight > Params().LAST_POW_BLOCK()) {
         const bool fTimeV2 = Params().IsTimeProtocolV2(pindexLast->nHeight+1, getTimeProtocolV2SporkValue());
         const uint256 bnTargetLimit = Params().ProofOfStakeLimit(fTimeV2);
         const int64_t nTargetSpacing = Params().TargetSpacing();
