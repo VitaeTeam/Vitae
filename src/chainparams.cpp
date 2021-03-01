@@ -14,6 +14,7 @@
 #include <assert.h>
 
 #include <boost/assign/list_of.hpp>
+#include <limits>
 
 using namespace std;
 using namespace boost::assign;
@@ -116,6 +117,53 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
     return &ZCParamsDec;
 }
 
+bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime,
+        const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime, const int sporkValue) const
+{
+    // before stake modifier V2, the age required was 60 * 60 (1 hour). Not required for regtest
+    if (!IsStakeModifierV2(contextHeight, sporkValue))
+        return NetworkID() == CBaseChainParams::REGTEST || (utxoFromBlockTime + nStakeMinAge <= contextTime);
+
+    // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
+    return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
+}
+
+int CChainParams::FutureBlockTimeDrift(const int nHeight, const int sporkValue) const
+{
+    if (IsTimeProtocolV2(nHeight, sporkValue))
+        // PoS (TimeV2): 14 seconds
+        return TimeSlotLength() - 1;
+
+    // PoS (TimeV1): 3 minutes
+    // PoW: 2 hours
+    return (nHeight > LAST_POW_BLOCK()) ? nFutureTimeDriftPoS : nFutureTimeDriftPoW;
+}
+
+bool CChainParams::IsValidBlockTimeStamp(const int64_t nTime, const int nHeight, const int sporkValue) const
+{
+    // Before time protocol V2, blocks can have arbitrary timestamps
+    if (!IsTimeProtocolV2(nHeight, sporkValue))
+        return true;
+
+    // Time protocol v2 requires time in slots
+    return (nTime % TimeSlotLength()) == 0;
+}
+
+int CChainParams::BlockStartTimeProtocolV2(const int sporkValue) const
+{
+    return sporkValue;
+    //return GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK);
+    //return nBlockTimeProtocolV2;
+}
+
+bool CChainParams::IsTimeProtocolV2(const int nHeight, const int sporkValue) const
+{
+    // The caller must pass sporkValue with GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK)
+    // CChainParams can't call any spork stuff because library-common doesn't include any spork related files.
+    return nHeight >= sporkValue;
+    //return nHeight >= BlockStartTimeProtocolV2();
+}
+
 class CMainParams : public CChainParams
 {
 public:
@@ -135,18 +183,27 @@ public:
         vAlertPubKey = ParseHex("0000098d3ba6ba6e7423fa5cbd6a89e0a9a5348f88d332b44a5cb1a8b7ed2c1eaa335fc8dc4f012cb8241cc0bdafd6ca70c5f5448916e4e6f511bcd746ed57dc50");
         nDefaultPort = 8765;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // VITAE starting difficulty is 1 / 2^12
+        bnProofOfStakeLimit = ~uint256(0) >> 24;
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 10800;  // 75% ... ((60*60*24)/45)*7.5 = 14400 or about 7 days
         nRejectBlockOutdatedMajority = 13680;  // 95%
         nToCheckBlockUpgradeMajority = 14400;  // Approximate expected amount of blocks in 7 days (1920*7.5)
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
-        nMaturity = 8;
         nFundamentalnodeCountDrift = 20;
+        nTargetSpacing = 1 * 45;
+        nTargetTimespan = 40 * 45;
+        nTimeSlotLength = 15;                       // 15 seconds
+        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
+        nMaturity = 8;
+        nStakeMinAge = 60 * 60;                         // 1 hour
+        nStakeMinDepth = 600;
+        nFutureTimeDriftPoW = 7200;
+        nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
         nMaxMoneyOut = 21000000 * COIN;
+        nTimeSlotLength = 15;           // 15 seconds
 
         /** Height or Time Based Activations **/
         nLastPOWBlock = 200;
@@ -162,6 +219,8 @@ public:
         nBlockZerocoinV2 = 999999999; //The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
+        //nBlockStakeModifierlV2 = 999999999;
+        //nBlockTimeProtocolV2 = 2967000; // To be changed
 
         /**
          * Build the genesis block. Note that the output of the genesis coinbase cannot
@@ -250,6 +309,7 @@ public:
     {
         return data;
     }
+
 };
 static CMainParams mainParams;
 
@@ -307,20 +367,31 @@ public:
         pchMessageStart[3] = 0xba;
         vAlertPubKey = ParseHex("000010e83b2703ccf322f7dbd62dd5855ac7c10bd055814ce121ba32607d573b8810c02c0582aed05b4deb9c4b77b26d92428c61256cd42774babea0a073b2ed0c9");
         nDefaultPort = 8763;
+        bnProofOfWorkLimit = ~uint256(0) >> 20;
+        bnProofOfStakeLimit = ~uint256(0) >> 24;
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
         nEnforceBlockUpgradeMajority = 6480;
         nRejectBlockOutdatedMajority = 8208;
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
         nMinerThreads = 0;
-        nTargetTimespan = 1 * 45; // VITAE: 1 day
-        nTargetSpacing = 1 * 45;  // VITAE: 1 minute
+        nTargetTimespan = 40 * 45; // VITAE: 1 day
+        nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
+        nTargetSpacing = 1 * 45;  // VITAE: 45 seconds
         nLastPOWBlock = 200;
         nMaturity = 15;
+        nTimeSlotLength = 15;                       // 15 seconds
+        nStakeMinAge = 60 * 60;                         // 1 hour
+        nStakeMinDepth = 600;
+        nFutureTimeDriftPoW = 7200;
+        nFutureTimeDriftPoS = 180;
+
         nFundamentalnodeCountDrift = 4;
+        nStakeMinDepth = 100;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
-        nZerocoinStartHeight = 201576;
-        nZerocoinStartTime = 2004318070; // disabled
+        nZerocoinStartHeight = 130400;
+        nZerocoinStartTime = 1608878580; // Friday, December 25, 2020 6:43:00 AM GMT  
         nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
         nBlockRecalculateAccumulators = 9908000; //Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 9891737; //First block that bad serials emerged
@@ -330,6 +401,8 @@ public:
         nBlockZerocoinV2 = 999999999; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
+        //nBlockStakeModifierlV2 = 999999999;
+        //nBlockTimeProtocolV2 = 2214000; // To be changed
 
         //! Modify the testnet genesis block so the timestamp is valid for a later start.
         genesis.nTime = 1589445785;
@@ -427,6 +500,25 @@ public:
         nTargetTimespan = 24 * 60 * 60; // VITAE: 1 day
         nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
+        bnProofOfStakeLimit = ~uint256(0) >> 24;
+        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
+        nLastPOWBlock = 250;
+        nMaturity = 100;
+        nStakeMinAge = 0;
+        nStakeMinDepth = 0;
+        nMasternodeCountDrift = 4;
+        nModifierUpdateBlock = 0;       //approx Mon, 17 Apr 2017 04:00:00 GMT
+        nMaxMoneyOut = 43199500 * COIN;
+        nZerocoinStartHeight = 300;
+        nBlockZerocoinV2 = 300;
+        nZerocoinStartTime = 1501776000;
+        nBlockEnforceSerialRange = 1; //Enforce serial range starting this block
+        nBlockRecalculateAccumulators = 999999999; //Trigger a recalculation of accumulators
+        nBlockFirstFraudulent = 999999999; //First block that bad serials emerged
+        nBlockLastGoodCheckpoint = 999999999; //Last valid accumulator checkpoint
+        //nBlockStakeModifierlV2 = std::numeric_limits<int>::max(); // max integer value (never switch on regtest)
+        //nBlockTimeProtocolV2 = 999999999;
+
         genesis.nTime = 1454124731;
         genesis.nBits = 0x207fffff;
         genesis.nNonce = 12345;
@@ -489,7 +581,6 @@ public:
 };
 static CUnitTestParams unitTestParams;
 
-
 static CChainParams* pCurrentParams = 0;
 
 CModifiableParams* ModifiableParams()
@@ -537,3 +628,4 @@ bool SelectParamsFromCommandLine()
     SelectParams(network);
     return true;
 }
+

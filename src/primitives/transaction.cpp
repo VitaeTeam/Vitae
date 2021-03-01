@@ -47,6 +47,11 @@ CTxIn::CTxIn(uint256 hashPrevTx, uint32_t nOut, CScript scriptSigIn, uint32_t nS
     nSequence = nSequenceIn;
 }
 
+bool CTxIn::IsZerocoinSpend() const
+{
+    return prevout.hash == 0 && scriptSig.IsZerocoinSpend();
+}
+
 std::string CTxIn::ToString() const
 {
     std::string str;

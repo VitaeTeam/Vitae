@@ -15,7 +15,6 @@ CZVitStake::CZVitStake(const libzerocoin::CoinSpend& spend)
     this->denom = spend.getDenomination();
     uint256 nSerial = spend.getCoinSerialNumber().getuint256();
     this->hashSerial = Hash(nSerial.begin(), nSerial.end());
-    this->pindexFrom = nullptr;
     fMint = false;
 }
 
@@ -115,7 +114,7 @@ bool CZVitStake::CreateTxIn(CWallet* pwallet, CTxIn& txIn, uint256 hashTxOut)
     int nSecurityLevel = 100;
     CZerocoinSpendReceipt receipt;
     if (!pwallet->MintToTxIn(mint, nSecurityLevel, hashTxOut, txIn, receipt, libzerocoin::SpendType::STAKE, GetIndexFrom()))
-        return error("%s\n", receipt.GetStatusMessage());
+        return error("%s", receipt.GetStatusMessage());
 
     return true;
 }
@@ -126,7 +125,7 @@ bool CZVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nT
     CTxOut outReward;
     libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
     CDeterministicMint dMint;
-    if (!pwallet->CreateZPIVOutPut(denomStaked, outReward, dMint))
+    if (!pwallet->CreateZVITOutPut(denomStaked, outReward, dMint))
         return error("%s: failed to create zVITAE output", __func__);
     vout.emplace_back(outReward);
 
@@ -137,7 +136,7 @@ bool CZVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nT
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
-        if (!pwallet->CreateZPIVOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
+        if (!pwallet->CreateZVITOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
             return error("%s: failed to create zVITAE output", __func__);
         vout.emplace_back(out);
 
@@ -226,15 +225,16 @@ bool CVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nTo
 
 bool CVitStake::GetModifier(uint64_t& nStakeModifier)
 {
-    int nStakeModifierHeight = 0;
-    int64_t nStakeModifierTime = 0;
-    GetIndexFrom();
-    if (!pindexFrom)
-        return error("%s: failed to get index from", __func__);
-
-    if (!GetKernelStakeModifier(pindexFrom->GetBlockHash(), nStakeModifier, nStakeModifierHeight, nStakeModifierTime, false))
-        return error("CheckStakeKernelHash(): failed to get kernel stake modifier \n");
-
+    if (this->nStakeModifier == 0) {
+        // look for the modifier
+        GetIndexFrom();
+        if (!pindexFrom)
+            return error("%s: failed to get index from", __func__);
+        // TODO: This method must be removed from here in the short terms.. it's a call to an static method in kernel.cpp when this class method is only called from kernel.cpp, no comments..
+        if (!GetKernelStakeModifier(pindexFrom->GetBlockHash(), this->nStakeModifier, this->nStakeModifierHeight, this->nStakeModifierTime, false))
+            return error("CheckStakeKernelHash(): failed to get kernel stake modifier");
+    }
+    nStakeModifier = this->nStakeModifier;
     return true;
 }
 
@@ -249,6 +249,8 @@ CDataStream CVitStake::GetUniqueness()
 //The block that the UTXO was added to the chain
 CBlockIndex* CVitStake::GetIndexFrom()
 {
+    if (pindexFrom)
+        return pindexFrom;
     uint256 hashBlock = 0;
     CTransaction tx;
     if (GetTransaction(txFrom.GetHash(), tx, hashBlock, true)) {
