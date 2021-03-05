@@ -6730,7 +6730,7 @@ int ActiveProtocol()
 
 */
 
-    // SPORK_25 is used for 71025. Nodes < 71025 won't see it and still get their protocol version via SPORK_14 and their
+    // SPORK_25 is used for 71026. Nodes < 71026 won't see it and still get their protocol version via SPORK_14 and their
     // own ModifierUpgradeBlock()
 
     if (IsSporkActive(SPORK_25_NEW_PROTOCOL_ENFORCEMENT_6))
