@@ -479,25 +479,24 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
 
     const CTransaction tx = block.vtx[1];
     // Kernel (input 0) must match the stake hash target per coin age (nBits)
-    //const CTxIn& txin = tx.vin[0];
+    const CTxIn& txin = tx.vin[0];
     CBlockIndex* pindexPrev = mapBlockIndex[block.hashPrevBlock];
-    CBlockIndex* pindexfrom = stake->GetIndexFrom();
-    if (!pindexfrom)
+    CBlockIndex* pindexFrom = stake->GetIndexFrom();
+    if (!pindexFrom)
         return error("%s : Failed to find the block index for stake origin", __func__);
 
     //unsigned int nBlockFromTime = pindexfrom->nTime;
     unsigned int nTxTime = block.nTime;
     //const int nBlockFromHeight = pindexfrom->nHeight;
 
-    /*if (!txin.IsZerocoinSpend() && nPreviousBlockHeight >= Params().Zerocoin_Block_Public_Spend_Enabled() - 1) {
-        //Equivalent for zVIT is checked above in ContextualCheckZerocoinStake()
-        if (nTxTime < nBlockFromTime) // Transaction timestamp nTxTime
-            return error("%s : nTime violation - nBlockFromTime=%d nTimeTx=%d", __func__, nBlockFromTime, nTxTime);
-        if (nBlockFromTime + Params().StakeMinAge(nPreviousBlockHeight + 1) > nTxTime) // Min age requirement
-            return error("%s : min age violation - nBlockFromTime=%d nStakeMinAge=%d nTimeTx=%d",
-                    __func__, nBlockFromTime, Params().StakeMinAge(nPreviousBlockHeight + 1), nTxTime);
+    const int nHeightBlockFrom = pindexFrom->nHeight;
+    const uint32_t nTimeBlockFrom = pindexFrom->nTime;
+
+    if (!txin.IsZerocoinSpend()) {
+        if(! Params().HasStakeMinAgeOrDepth(nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom, getStakeModifierV2SporkValue()))
+            return error("%s : min age violation - height=%d - time=%d, nHeightBlockFrom=%d, nTimeBlockFrom=%d",
+                         __func__, nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom);
     }
-    */
 
     if (!CheckStakeKernelHash(pindexPrev, block.nBits, stake.get(), nTxTime, hashProofOfStake, true))
         return error("%s : INFO: check kernel failed on coinstake %s, hashProof=%s", __func__,
@@ -529,4 +528,3 @@ bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierCheck
     }
     return true;
 }
-
