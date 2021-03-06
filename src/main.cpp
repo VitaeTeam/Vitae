@@ -2005,7 +2005,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
         int nMasternodeCount = 0 ;
 
         //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-        if (IsSporkActive(SPORK_25_NEW_PROTOCOL_ENFORCEMENT_6))
+        if (IsSporkActive(SPORK_27_NEW_PROTOCOL_ENFORCEMENT_7))
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
         else
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
@@ -6733,7 +6733,7 @@ int ActiveProtocol()
     // SPORK_25 is used for 71026. Nodes < 71026 won't see it and still get their protocol version via SPORK_14 and their
     // own ModifierUpgradeBlock()
 
-    if (IsSporkActive(SPORK_25_NEW_PROTOCOL_ENFORCEMENT_6))
+    if (IsSporkActive(SPORK_27_NEW_PROTOCOL_ENFORCEMENT_7))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }
