@@ -85,7 +85,8 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample, int nOffsetLimit)
             std::string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong VITAE Core will not work properly.");
             strMiscWarning = strMessage;
             LogPrintf("*** %s\n", strMessage);
-            uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_ERROR);
+            // Commented out to prevent freezing of Qt wallet--TODO: Revisit to resolve cause of freezing
+            //uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_ERROR);
         }
         if (fDebug) {
             BOOST_FOREACH (int64_t n, vSorted)
