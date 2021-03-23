@@ -201,7 +201,7 @@ public:
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
         nMaturity = 8;
         nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 600;
+        nStakeMinDepth = 80;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
@@ -384,12 +384,11 @@ public:
         nMaturity = 15;
         nTimeSlotLength = 15;                       // 15 seconds
         nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 600;
+        nStakeMinDepth = 80;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
 
         nFundamentalnodeCountDrift = 4;
-        nStakeMinDepth = 100;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
