@@ -3102,7 +3102,10 @@ bool CWallet::CreateCoinStake(
             break;
         }
     }
+    LogPrint("staking", "%s: attempted staking %d times\n", __func__, nAttempts);
+
     if (!fKernelFound)
+        LogPrint("staking","%s: no stake found\n", __func__);
         return false;
 
     // Sign

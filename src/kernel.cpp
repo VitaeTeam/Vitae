@@ -318,6 +318,11 @@ bool CheckStakeKernelHash(const CBlockIndex* pindexPrev, const unsigned int nBit
                             "\nbnTarget=%s (res: %d)\n\n",
             __func__, HexStr(ssUniqueID), nTimeTx, hashProofOfStake.GetHex(),
             nBits, nValueIn, bnTarget.GetHex(), res);
+    } else {
+        LogPrint("staking2", "%s : StakeAttempt:"
+                             "\nhashProofOfStake=%s"
+                             "\nbnTarget=%s\n",
+            __func__, hashProofOfStake.GetHex(), bnTarget.GetHex());
     }
     return res;
 }

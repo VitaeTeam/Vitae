@@ -60,21 +60,16 @@ static Checkpoints::MapCheckpoints mapCheckpoints =
     (204464,uint256("9d2f9808c10408899cfff44f6a3adc44690912dd0dcb3b530c45cd2ad9a31f0e")) //about when spork 16 activated
     (369647,uint256("82ba21a1afcb59ebdede612516d9c3bfed42e2e18baba172b971fd714d32bdf6"))
     (600000,uint256("c6c87c5f70578ebb270012492e0dd222d6532a864853beefc894840aad73f021"))    
-    (700000,uint256("5a857ad8a1f2922273ea8691491332f805af19e9c2e3b8eba57d473e93f67fb7"))    
     (800000,uint256("ef48831e1547b45d90ef5360c606f49e35504f38abe383614486753cb9451515"))    
-    (900000,uint256("23614a26ae6b3e457eec08dde3ad04ff15b0ca4e0ec3e8acf0c4c153beb997eb"))    
     (1000000,uint256("3a121397bca5552e637c80f981db080c54e1bae2def44fc06071cb4867df7124"))    
-    (1356300,uint256("b6a142e71ced86ca8ce28991cf2a1a84944f68baaf786d8cd17b24cd27a69cb0"))
-    (1402300,uint256("b7681e795c973a8ee5c87444f1a22eedd9ffb8b034f835019fab4fb2db3a6e00"))
     (1402500,uint256("d9544578aae78d2ae2c68599641f66e90829156bb9157c73e807e570f927d6a0"))
-    (1527500,uint256("962401aa296b4a5834bde6f7ce2240bf02358c50eef3121501b6075bb8fe2ecc"))
     (1529400,uint256("2e2f9fc719f478a532177f57c56345502539aeb37ba45b8147fbdf53f15f628f"))
-    (1540850,uint256("ad53c70beb0dde7fe7c291cbdc5382c29d011d946edf14adf8274db765213c48"))
     (1594800,uint256("35d628c9471ff3d2b98d327a87b69669b219e5c473c0ccd54d6db84198b38819"))
     (1797000,uint256("3222dfdda3b2c842eaff173e3a632964d56c3f5a957d0b444af2df07dd06754d"))
     (2000016,uint256("Fed89c61b9c7e19593c259344eb5d8a3121fd7f516d2cca31499a28f68af73b7"))
     (2050000,uint256("6f89ed36393384b07325b96e54b59abdd8a1803b98b1ccaae14cc80c8912395e"))
-    (2078350,uint256("55599f4c11d8e59a8eb94047789123da1eb64d2a4bcce09f499d4e2ad01e3b5a"));
+    (2078350,uint256("55599f4c11d8e59a8eb94047789123da1eb64d2a4bcce09f499d4e2ad01e3b5a"))
+    (2108600,uint256("0bd5d302f078b69a55a1e8caeb643dd8034407d17cb6adc63e867eba5699d7b6"));
     
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
@@ -201,7 +196,7 @@ public:
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
         nMaturity = 8;
         nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 600;
+        nStakeMinDepth = 80;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
@@ -384,12 +379,11 @@ public:
         nMaturity = 15;
         nTimeSlotLength = 15;                       // 15 seconds
         nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 600;
+        nStakeMinDepth = 80;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
 
         nFundamentalnodeCountDrift = 4;
-        nStakeMinDepth = 100;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 51197; //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;
