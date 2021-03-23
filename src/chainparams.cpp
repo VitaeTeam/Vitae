@@ -187,7 +187,7 @@ public:
         nDefaultPort = 8765;
         bnProofOfWorkLimit = ~uint256(0) >> 20; // VITAE starting difficulty is 1 / 2^12
         bnProofOfStakeLimit = ~uint256(0) >> 24;
-        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
+        bnProofOfStakeLimit_V2 = bnProofOfStakeLimit;
         nSubsidyHalvingInterval = 210000;
         nMaxReorganizationDepth = 100;
         nEnforceBlockUpgradeMajority = 10800;  // 75% ... ((60*60*24)/45)*7.5 = 14400 or about 7 days
@@ -372,7 +372,7 @@ public:
         nDefaultPort = 8763;
         bnProofOfWorkLimit = ~uint256(0) >> 20;
         bnProofOfStakeLimit = ~uint256(0) >> 24;
-        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
+        bnProofOfStakeLimit_V2 = bnProofOfStakeLimit;
         nEnforceBlockUpgradeMajority = 6480;
         nRejectBlockOutdatedMajority = 8208;
         nToCheckBlockUpgradeMajority = 8640; // ((60*60*24)/45)*4.5 = 8640 or about 4 days
@@ -504,7 +504,7 @@ public:
         nTargetSpacing = 1 * 60;        // VITAE: 1 minutes
         bnProofOfWorkLimit = ~uint256(0) >> 1;
         bnProofOfStakeLimit = ~uint256(0) >> 24;
-        bnProofOfStakeLimit_V2 = ~uint256(0) >> 20; // 60/4 = 15 ==> use 2**4 higher limit
+        bnProofOfStakeLimit_V2 = bnProofOfStakeLimit;
         nLastPOWBlock = 250;
         nMaturity = 100;
         nStakeMinAge = 0;
