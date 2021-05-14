@@ -1,13 +1,13 @@
-VITAE Core version *4.5.0* is now available from:  <https://github.com/vitaeteam/vitae/releases>
+VITAE Core version *4.0.2* is now available from:  <https://github.com/vitae-project/vitae/releases>
 
-This is a new minor version release, including various bug fixes and performance improvements, as well as updated translations.
+This is a new revision version release, including various bug fixes and performance improvements, as well as updated translations.
 
-Please report bugs using the issue tracker at github: <https://github.com/vitaeteam/vitae/issues>
+Please report bugs using the issue tracker at github: <https://github.com/vitae-project/vitae/issues>
 
-Mandatory Update
+Recommended Update
 ==============
 
-VITAE Core v4.5.0 is a mandatory update for all wallets, fundamental nodes, and masternodes. It includes changes to consensus rules that require every node to update in order to stay compatible with the rest of the Vitae network.
+VITAE Core v4.0.2 is NOT a mandatory update, and user can choose to stay with v4.0.0 if they wish. However, v4.0.2 does contain minor bug fixes and performance improvements to address feedback from the v4.0.0/v4.0.1 versions.
 
 How to Upgrade
 ==============
@@ -18,120 +18,83 @@ If you are running an older version, shut it down. Wait until it has completely 
 Compatibility
 ==============
 
-VITAE Core is extensively tested on multiple operating systems using
-the Linux kernel, macOS 10.8+, and Windows Vista and later.
+VITAE Core is extensively tested on multiple operating systems using the Linux kernel, macOS 10.10+, and Windows 7 and later.
 
 Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support),
 No attempt is made to prevent installing or running the software on Windows XP, you
 can still do so at your own risk but be aware that there are known instabilities and issues.
 Please do not report issues about Windows XP to the issue tracker.
 
-VITAE Core should also work on most other Unix-like systems but is not
-frequently tested on them.
+VITAE Core is extensively tested on multiple operating systems using the Linux kernel, macOS 10.10+, and Windows 7 and later.
 
-### :exclamation::exclamation::exclamation: MacOS 10.13 High Sierra :exclamation::exclamation::exclamation:
+Microsoft ended support for Windows XP on [April 8th, 2014](https://www.microsoft.com/en-us/WindowsForBusiness/end-of-xp-support), No attempt is made to prevent installing or running the software on Windows XP, you can still do so at your own risk but be aware that there are known instabilities and issues. Please do not report issues about Windows XP to the issue tracker.
 
-**Currently there are issues with the 4.4.2+ gitian release on MacOS version 10.13 (High Sierra), no reports of issues on older versions of MacOS.**
+Apple released it's last Mountain Lion update August 13, 2015, and officially ended support on [December 14, 2015](http://news.fnal.gov/2015/10/mac-os-x-mountain-lion-10-8-end-of-life-december-14/). VITAE Core software starting with v3.2.0 will no longer run on MacOS versions prior to Yosemite (10.10). Please do not report issues about MacOS versions prior to Yosemite to the issue tracker.
+
+VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
+
+
+Apple released it's last Mountain Lion update August 13, 2015, and officially ended support on [December 14, 2015](http://news.fnal.gov/2015/10/mac-os-x-mountain-lion-10-8-end-of-life-december-14/). VITAE Core software starting with v3.2.0 will no longer run on MacOS versions prior to Yosemite (10.10). Please do not report issues about MacOS versions prior to Yosemite to the issue tracker.
+
+VITAE Core should also work on most other Unix-like systems but is not frequently tested on them.
+
 
 Notable Changes
 ==============
 
-zVITAE Updates
+Bug Fixes
 --------------
 
-### Adjustment to staking properties to reduce orphaned blocks
+#### Double counting of delegated values
 
-zVITAE stake set to update more frequently and lowering the stake hashdrift to 30 seconds to reduce the number of orphans being experienced by VITAE stakers.
+Fixed a bug where the values/amounts for cold staking delegations was being double counted in the UI's available/total balance calculation.
 
-Further work is being done to improve the efficiently of zPoS beyond this, and will be available in a subsequent release at a later date.
+#### Incorrect sorting for transaction loading
 
+Fixed a bug where The 20,000 limit for loading wallet transactions was incorrectly sorting these transactions, resulting in the **first** 20,000 transactions to be loaded instead of the **most recent** 20,000 transactions.
 
-User Experience
+#### No information shown for spent cold stake delegations
+
+Fixed a bug where the transaction record for spent cold stake delegations was showing as "No information".
+
+GUI Changes
 --------------
 
-### Fix wrongly displayed balance on Overview tab
+#### Add latest block height to top bar
 
-Fixes a display issue introduced with a previous change. This was a "display only" issue, all your coins were there all the time.
+The top bar's sync status button now shows the latest block height (number) when hovering over the button.
 
-### Show progress percent for zvit reindex operations
+#### Coin Control copy functions
 
-When starting the wallet with `-reindexaccumulators` and/or `-reindexzerocoin`, these operations can take a considerable time to complete depending on system hardware. A progress percent on the splash screen is now shown for these processes to avoid confusion in thinking that the wallet has frozen.
+The coin control screen now allows for copying the various values to the OS clipboard
 
+*v4.0.2* Change log
+==============
 
-### Add TOR service icon to status bar
+Detailed release notes follow. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
 
-An icon is now shown for clients that are connected and operating over the TOR network. Included is a mouse-over tooltip showing the onion address associated with the client. This icon is only shown when a connection to the TOR network can be established, and will be hidden otherwise.
-
-
-VITAE Daemon & Client (RPC Changes)
---------------
-
-### Fix listtransactions RPC function
-
-This addresses an issue where new incoming transactions are not recorded properly, and subsequently, not returned with `listtransactions` in the same session.
-
-Technical Changes
---------------
-
-### Switch to libsecp256k1 signature verification
-
-Here is the long overdue update for VITAE to let go of OpenSSL in its consensus code. The rationale behind it is to avoid depending on an external and changing library where our consensus code is affected. This is security and consensus critical. VITAE users will experience quicker block validations and sync times as block transactions are verified under libsecp256k1.
-
-The recent [CVE-2018-0495](https://www.nccgroup.trust/us/our-research/technical-advisory-return-of-the-hidden-number-problem/) brings into question a potential vulnerability with OpenSSL (and other crypto libraries) that libsecp256k1 is not susceptible to.
-
-### Write to the zerocoinDB in batches
-
-Instead of using a separate write operation for each and every bit of data that needs to be flushed to disk, utilize leveldb's batch writing capability. The primary area of improvement this offers is when reindexing the zerocoinDB (`-reindexzerocoin`), which went from needing multiple hours on some systems to mere minutes.
-
-Secondary improvement area is in ConnectBlock() when multiple zerocoin transactions are involved.
-
-### Resolution of excessive peer banning
-
-It was found that following a forced closure of the VITAE core wallet (ungraceful), a situation could arise that left partial/incomplete data in the disk cache. This caused the client to fail a basic sanity test and ban any peer which was sending the (complete) data. This, in turn, was causing the wallet to become stuck. This issue has been resolved client side by guarding against this partial/incomplete data in the disk cache.
-
-*4.5.0* Change log
---------------
-
-Detailed release notes follow. This overview includes changes that affect behavior, code moves, refactoring and string updates. For convenience in locating the code changes and accompanying discussion, both the pull request and git merge commit are mentioned.
-
-### Core Features
- - #549 `8bf13a5ad` [Crypto] Switch to libsecp256k1 signature verification and update the lib (warrows)
- - #609 `6b73598b9` [MoveOnly] Remove zVITAE code from main.cpp (presstab)
- - #610 `6c3bc8c76` [Main] Check whether tx is in chain in ContextualCheckZerocoinMint(). (presstab)
- - #624 `1a82aec96` [Core] Missing seesaw value for block 325000 (warrows)
- - #636 `d359c6136` [Main] Write to the zerocoinDB in batches (Fuzzbawls)
-
-### Build System
- - #605 `b4d82c944` [Build] Remove unnecessary BOOST dependency (Mrs-X)
- - #622 `b8c672c98` [Build] Make sure Boost headers are included for libzerocoin (Fuzzbawls)
- - #639 `98c7a4f65` [Travis] Add separate job to check doc/logprint/subtree (Fuzzbawls)
- - #648 `9950fce59` [Depends] Update Qt download url (fanquake)
- 
-### P2P Protocol and Network Code
- - #608 `a602d00eb` [Budget] Make sorting of finalized budgets deterministic (Mrs-X)
- - #647 `3aa3e5c97` [Net] Update hard-coded fallback seeds (Fuzzbawls)
+### Core
+- #1273 `d114eda990` [Core] Update checkpoints for first v7 block (Fuzzbawls)
 
 ### GUI
- - #580 `c296b7572` Fixed Multisend dialog to show settings properly (SHTDJ)
- - #598 `f0d894253` [GUI] Fix wrongly displayed balance on Overview tab (Mrs-X)
- - #600 `217433561` [GUI] Only enable/disable PrivacyDialog zVITAE elements if needed. (presstab)
- - #612 `6dd752cb5` [Qt] Show progress percent for zvit reindex operations (Fuzzbawls)
- - #626 `9b6a42ba0` [Qt] Add Tor service icon to status bar (Fuzzbawls)
- - #629 `14e125795` [Qt] Remove useless help button from QT dialogs (windows) (warrows)
- - #646 `c66b7b632` [Qt] Periodic translation update (Fuzzbawls)
- 
-### Wallet
- - #597 `766d5196c` [Wallet] Write new transactions to wtxOrdered properly (Fuzzbawls)
- - #603 `779d8d597` Fix spending for v1 zVITAE created before block 1050020. (presstab)
- - #617 `6b525f0df` [Wallet] Adjust staking properties to lower orphan rates. (presstab)
- - #625 `5f2e61d60` [Wallet] Add some LOCK to avoid crash (warrows)
- 
-### Miscellaneous
- - #585 `76c01a560` [Doc] Change aarch assert sign output folder (Warrows)
- - #595 `d2ce04cc0` [Tests] Fix chain ordering in budget tests (Fuzzbawls)
- - #611 `c6a57f664` [Output] Properly log reason(s) for increasing a peer's DoS score. (Fuzzbawls)
- - #649 `f6bfb4ade` [Utils] Add copyright header to logprint-scanner.py (Fuzzbawls)
- 
+- #1261 `c02cc4acdd` [Bug][GUI] Double counted delegated balance. (furszy)
+- #1267 `350184044d` [Qt][Bug] Load the most recent instead of the first transactions (Fuzzbawls)
+- #1263 `1d0c1bb81c` [GUI] P2CS transaction divided in two types for visual accuracy. (furszy)
+- #1266 `f659cbf1ef` [GUI] Quick minor GUI startup useful changes. (furszy)
+- #1269 `0771075668` [GUI] CoinControlDialog, every copy to clipboard action implemented. (furszy)
+- #1265 `da7c50eca1` [GUI] Connect P2CSUnlockOwner and P2CSUnlockStaker records to the model (random-zebra)
+- #1268 `912cf67847` [GUI] Display latest block number in the top bar (random-zebra)
+- #1279 `c09cd0d40f` [GUI] Transaction record cold staking fixes. (furszy)
+
+### Wallet Code
+- #1264 `1a12735df5` [Wallet] Don't add P2CS automatically to GetLockedCredit (random-zebra)
+
+### Documentation
+- #1272 `d4a9475e40` [Trivial] Update copyright headers for 4.0.2 (Fuzzbawls)
+
+### RPC Interface
+- #1274 `f5c3552c96` [RPC] Remove extra PoW rounds in 'generate' (random-zebra)
+
 ## Credits
 Thanks to everyone who directly contributed to this release:
 

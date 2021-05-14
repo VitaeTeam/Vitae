@@ -2,14 +2,14 @@
 // Copyright (c) 2015-2017 The PIVX developers
 
 //#include "core.h"
-#include "protocol.h"
 #include "activemasternode.h"
+#include "addrman.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
-#include "addrman.h"
 #include "main.h"
+#include "messagesigner.h"
+#include "protocol.h"
 #include "mn-spork.h"
-#include <boost/lexical_cast.hpp>
 
 //
 // Bootup the Masternode, look for a 5000 BSD input and register on the network
@@ -77,8 +77,8 @@ void CActiveMasternode::ManageStatus()
         if(GetMasterNodeVin(vin, pubKeyCollateralAddress, keyCollateralAddress)) {
 
             if(GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS){
-                notCapableReason = "Input must have least " + boost::lexical_cast<string>(MASTERNODE_MIN_CONFIRMATIONS) +
-                        " confirmations - " + boost::lexical_cast<string>(GetInputAge(vin)) + " confirmations";
+                notCapableReason = "Input must have least " + std::to_string(MASTERNODE_MIN_CONFIRMATIONS) +
+                        " confirmations - " + std::to_string(GetInputAge(vin)) + " confirmations";
                 LogPrintf("CActiveMasternode::ManageStatus() - %s\n", notCapableReason.c_str());
                 status = MASTERNODE_INPUT_TOO_NEW;
                 return;
@@ -95,9 +95,8 @@ void CActiveMasternode::ManageStatus()
             CPubKey pubKeyMasternode;
             CKey keyMasternode;
 
-            if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode))
-            {
-                LogPrintf("Register::ManageStatus() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+            if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+                LogPrintf("%s : Invalid masternode key", __func__);
                 return;
             }
 
@@ -146,8 +145,8 @@ bool CActiveMasternode::StopMasterNode(std::string strService, std::string strKe
     CKey keyMasternode;
     CPubKey pubKeyMasternode;
 
-    if(!obfuScationSigner.SetKey(strKeyMasternode, errorMessage, keyMasternode, pubKeyMasternode)) {
-        LogPrintf("CActiveMasternode::StopMasterNode() - Error: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -167,9 +166,8 @@ bool CActiveMasternode::StopMasterNode(std::string& errorMessage) {
     CPubKey pubKeyMasternode;
     CKey keyMasternode;
 
-    if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode))
-    {
-        LogPrintf("Register::ManageStatus() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -192,9 +190,8 @@ bool CActiveMasternode::Dseep(std::string& errorMessage) {
     CPubKey pubKeyMasternode;
     CKey keyMasternode;
 
-    if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, keyMasternode, pubKeyMasternode))
-    {
-        LogPrintf("CActiveMasternode::Dseep() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -207,15 +204,15 @@ bool CActiveMasternode::Dseep(CTxIn vin, CService service, CKey keyMasternode, C
     std::string strMasterNodeSignMessage;
     int64_t masterNodeSignatureTime = GetAdjustedTime();
 
-    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(masterNodeSignatureTime) + boost::lexical_cast<std::string>(stop);
+    std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + std::to_string(stop);
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyMasternode)) {
-        retErrorMessage = "sign message failed: " + errorMessage;
+    if(!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, keyMasternode)) {
+        retErrorMessage = "sign message failed.";
         LogPrintf("CActiveMasternode::Dseep() - Error: %s\n", retErrorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyMasternode, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubKeyMasternode, vchMasterNodeSignature, strMessage, errorMessage)) {
         retErrorMessage = "Verify message failed: " + errorMessage;
         LogPrintf("CActiveMasternode::Dseep() - Error: %s\n", retErrorMessage.c_str());
         return false;
@@ -256,9 +253,8 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
     CScript donationAddress = CScript();
     int donationPercentage = 0;
 
-    if(!obfuScationSigner.SetKey(strKeyMasternode, errorMessage, keyMasternode, pubKeyMasternode))
-    {
-        LogPrintf("CActiveMasternode::Register() - Error upon calling SetKey: %s\n", errorMessage.c_str());
+    if (!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, keyMasternode, pubKeyMasternode)) {
+        LogPrintf("%s : Invalid masternode key", __func__);
         return false;
     }
 
@@ -279,7 +275,7 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
         donationAddress = GetScriptForDestination(address.Get());
 
         try {
-            donationPercentage = boost::lexical_cast<int>( strDonationPercentage );
+            donationPercentage = (int)std::stoul( strDonationPercentage );
         } catch( boost::bad_lexical_cast const& ) {
             LogPrintf("CActiveMasternode::Register - Invalid Donation Percentage (Couldn't cast)\n");
             return false;
@@ -304,15 +300,15 @@ bool CActiveMasternode::Register(CTxIn vin, CService service, CKey keyCollateral
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyMasternode.begin(), pubKeyMasternode.end());
 
-    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(PROTOCOL_VERSION) + donationAddress.ToString() + boost::lexical_cast<std::string>(donationPercentage);
+    std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress.ToString() + std::to_string(donationPercentage);
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyCollateralAddress)) {
-        retErrorMessage = "sign message failed: " + errorMessage;
+    if(!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, keyCollateralAddress)) {
+        retErrorMessage = "sign message failed.";
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", retErrorMessage.c_str());
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchMasterNodeSignature, strMessage, errorMessage)) {
         retErrorMessage = "Verify message failed: " + errorMessage;
         LogPrintf("CActiveMasternode::Register() - Error: %s\n", retErrorMessage.c_str());
         return false;
@@ -342,16 +338,19 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     CScript pubScript;
 
     // Find possible candidates
-    vector<COutput> possibleCoins = SelectCoinsMasternode();
-    COutput *selectedOutput;
+    TRY_LOCK(pwalletMain->cs_wallet, fWallet);
+    if (!fWallet) return false;
+
+    std::vector<COutput> possibleCoins = SelectCoinsMasternode();
+    COutput* selectedOutput;
 
     // Find the vin
     if(!strTxHash.empty()) {
         // Let's find it
         uint256 txHash(strTxHash);
-        int outputIndex = boost::lexical_cast<int>(strOutputIndex);
+        int outputIndex = (unsigned int) std::stoul(strOutputIndex);
         bool found = false;
-        BOOST_FOREACH(COutput& out, possibleCoins) {
+        for(COutput& out : possibleCoins) {
             if(out.tx->GetHash() == txHash && out.i == outputIndex)
             {
                 selectedOutput = &out;
@@ -406,16 +405,16 @@ bool CActiveMasternode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubke
 }
 
 // get all possible outputs for running Masternode
-vector<COutput> CActiveMasternode::SelectCoinsMasternode()
+std::vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 {
-    vector<COutput> vCoins;
-    vector<COutput> filteredCoins;
-    vector<COutPoint> confLockedCoins;
+    std::vector<COutput> vCoins;
+    std::vector<COutput> filteredCoins;
+    std::vector<COutPoint> confLockedCoins;
 
     // Temporary unlock MN coins from masternode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mn, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mn : masternodeConfig.getEntries()) {
             mnTxHash.SetHex(mn.getTxHash());
 
             int nIndex;
@@ -433,12 +432,12 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 
 	// Lock MN coins from masternode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
-        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+        for (COutPoint outpoint : confLockedCoins)
             pwalletMain->LockCoin(outpoint);
     }
 
     // Filter
-    BOOST_FOREACH(const COutput& out, vCoins)
+    for(const COutput& out : vCoins)
     {
         if(out.tx->vout[out.i].nValue == MASTERNODEAMOUNT*COIN) { //exactly        bitsenddev   04-2015
             filteredCoins.push_back(out);

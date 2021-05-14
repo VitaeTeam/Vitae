@@ -10,7 +10,6 @@
 #include "init.h"
 #include "uint256.h"
 
-#include <boost/foreach.hpp>
 #include <openssl/aes.h>
 #include <openssl/evp.h>
 #include "wallet.h"
@@ -26,8 +25,8 @@ bool CCrypter::SetKeyFromPassphrase(const SecureString& strKeyData, const std::v
             (unsigned char*)&strKeyData[0], strKeyData.size(), nRounds, chKey, chIV);
 
     if (i != (int)WALLET_CRYPTO_KEY_SIZE) {
-        OPENSSL_cleanse(chKey, sizeof(chKey));
-        OPENSSL_cleanse(chIV, sizeof(chIV));
+        memory_cleanse(chKey, sizeof(chKey));
+        memory_cleanse(chIV, sizeof(chIV));
         return false;
     }
 
@@ -246,7 +245,7 @@ bool CCryptoKeyStore::Unlock(const CKeyingMaterial& vMasterKeyIn)
         }
         if (keyPass && keyFail) {
             LogPrintf("The wallet is probably corrupted: Some keys decrypt but not all.");
-            assert(false);
+            throw std::runtime_error("Error unlocking wallet: some keys decrypt but not all. Your wallet file may be corrupt.");
         }
         if (keyFail || !keyPass)
             return false;
@@ -255,14 +254,13 @@ bool CCryptoKeyStore::Unlock(const CKeyingMaterial& vMasterKeyIn)
 
         uint256 hashSeed;
         if (CWalletDB(pwalletMain->strWalletFile).ReadCurrentSeedHash(hashSeed)) {
-
             uint256 nSeed;
             if (!GetDeterministicSeed(hashSeed, nSeed)) {
-                return error("Failed to read zVITAE seed from DB. Wallet is probably corrupt.");
+                return error("Failed to read zVIT seed from DB. Wallet is probably corrupt.");
             }
             pwalletMain->zwalletMain->SetMasterSeed(nSeed, false);
         } else {
-            // First time this wallet has been unlocked with dzVITAE
+            // First time this wallet has been unlocked with dzVIT
             // Borrow random generator from the key class so that we don't have to worry about randomness
             CKey key;
             key.MakeNewKey(true);
@@ -358,7 +356,7 @@ bool CCryptoKeyStore::EncryptKeys(CKeyingMaterial& vMasterKeyIn)
             return false;
 
         fUseCrypto = true;
-        BOOST_FOREACH (KeyMap::value_type& mKey, mapKeys) {
+        for (KeyMap::value_type& mKey : mapKeys) {
             const CKey& key = mKey.second;
             CPubKey vchPubKey = key.GetPubKey();
             CKeyingMaterial vchSecret(key.begin(), key.end());
@@ -376,14 +374,14 @@ bool CCryptoKeyStore::EncryptKeys(CKeyingMaterial& vMasterKeyIn)
 bool CCryptoKeyStore::AddDeterministicSeed(const uint256& seed)
 {
     CWalletDB db(pwalletMain->strWalletFile);
-    string strErr;
+    std::string strErr;
     uint256 hashSeed = Hash(seed.begin(), seed.end());
 
     if(IsCrypted()) {
         if (!IsLocked()) { //if we have password
 
             CKeyingMaterial kmSeed(seed.begin(), seed.end());
-            vector<unsigned char> vchSeedSecret;
+            std::vector<unsigned char> vchSeedSecret;
 
 
             //attempt encrypt
@@ -402,7 +400,7 @@ bool CCryptoKeyStore::AddDeterministicSeed(const uint256& seed)
         }
         strErr = "save zvitseed to wallet";
     }
-                //the use case for this is no password set seed, mint dzVITAE,
+                //the use case for this is no password set seed, mint dzVIT,
 
     return error("s%: Failed to %s\n", __func__, strErr);
 }
@@ -411,11 +409,11 @@ bool CCryptoKeyStore::GetDeterministicSeed(const uint256& hashSeed, uint256& see
 {
 
     CWalletDB db(pwalletMain->strWalletFile);
-    string strErr;
+    std::string strErr;
     if (IsCrypted()) {
         if(!IsLocked()) { //if we have password
 
-            vector<unsigned char> vchCryptedSeed;
+            std::vector<unsigned char> vchCryptedSeed;
             //read encrypted seed
             if (db.ReadZVITSeed(hashSeed, vchCryptedSeed)) {
                 uint256 seedRetrieved = uint256(ReverseEndianString(HexStr(vchCryptedSeed)));
@@ -436,7 +434,7 @@ bool CCryptoKeyStore::GetDeterministicSeed(const uint256& hashSeed, uint256& see
             } else { strErr = "read seed from wallet"; }
         } else { strErr = "read seed; wallet is locked"; }
     } else {
-        vector<unsigned char> vchSeed;
+        std::vector<unsigned char> vchSeed;
         // wallet not crypted
         if (db.ReadZVITSeed(hashSeed, vchSeed)) {
             seedOut = uint256(ReverseEndianString(HexStr(vchSeed)));

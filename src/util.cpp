@@ -1,7 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -14,7 +15,6 @@
 #include "allocators.h"
 #include "chainparamsbase.h"
 #include "random.h"
-#include "serialize.h"
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utiltime.h"
@@ -22,10 +22,6 @@
 #include <stdarg.h>
 
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <openssl/bio.h>
-#include <openssl/buffer.h>
-#include <openssl/crypto.h> // for OPENSSL_cleanse()
-#include <openssl/evp.h>
 
 
 #ifndef WIN32
@@ -82,7 +78,6 @@
 #include <boost/algorithm/string/predicate.hpp> // for startswith() and endswith()
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/fstream.hpp>
-#include <boost/foreach.hpp>
 #include <boost/program_options/detail/config_file.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/thread.hpp>
@@ -103,45 +98,43 @@ std::string to_internal(const std::string&);
 
 } // namespace boost
 
-using namespace std;
-
 // VITAE only features
 // fundamentalnode
 bool fFundamentalNode = false;
-string strFundamentalNodePrivKey = "";
-string strFundamentalNodeAddr = "";
+std::string strFundamentalNodePrivKey = "";
+std::string strFundamentalNodeAddr = "";
 bool fLiteMode = false;
 // SwiftX
 bool fEnableSwiftTX = true;
 int nSwiftTXDepth = 5;
-int nZeromintPercentage = 0;
+// Automatic Zerocoin minting
+bool fEnableZeromint = true;
+bool fEnableAutoConvert = true;
+int nZeromintPercentage = 10;
 int nPreferredDenom = 0;
 
-int nAnonymizeVitaeAmount = 1000;
-int nLiquidityProvider = 0;
 /** Spork enforcement enabled time */
 int64_t enforceFundamentalnodePaymentsTime = 4085657524;
 bool fSucessfullyLoaded = false;
 /** All denominations used by obfuscation */
 std::vector<int64_t> obfuScationDenominations;
-string strBudgetMode = "";
+std::string strBudgetMode = "";
 
 bool fMasterNode = false;
-string strMasterNodePrivKey = "";
-string strMasterNodeAddr = "";
+std::string strMasterNodePrivKey = "";
+std::string strMasterNodeAddr = "";
 bool fMNLiteMode = false;
 
 int64_t enforceMasternodePaymentsTime = 4085657524;
 bool fMNSucessfullyLoaded = false;
 
-map<string, string> mapArgs;
-map<string, vector<string> > mapMultiArgs;
+std::map<std::string, std::string> mapArgs;
+std::map<std::string, std::vector<std::string> > mapMultiArgs;
 bool fDebug = false;
 bool fPrintToConsole = false;
 bool fPrintToDebugLog = true;
 bool fDaemon = false;
-bool fServer = false;
-string strMiscWarning;
+std::string strMiscWarning;
 bool fLogTimestamps = false;
 bool fLogIPs = false;
 volatile bool fReopenDebugLog = false;
@@ -237,26 +230,27 @@ bool LogAcceptCategory(const char* category)
         // This helps prevent issues debugging global destructors,
         // where mapMultiArgs might be deleted before another
         // global destructor calls LogPrint()
-        static boost::thread_specific_ptr<set<string> > ptrCategory;
+        static boost::thread_specific_ptr<std::set<std::string> > ptrCategory;
         if (ptrCategory.get() == NULL) {
-            const vector<string>& categories = mapMultiArgs["-debug"];
-            ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
+            const std::vector<std::string>& categories = mapMultiArgs["-debug"];
+            ptrCategory.reset(new std::set<std::string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
             // "vitae" is a composite category enabling all VITAE-related debug output
-            if (ptrCategory->count(string("vitae"))) {
-                ptrCategory->insert(string("obfuscation"));
-                ptrCategory->insert(string("swiftx"));
-                ptrCategory->insert(string("fundamentalnode"));
-                ptrCategory->insert(string("fnpayments"));
-                ptrCategory->insert(string("zero"));
-                ptrCategory->insert(string("fnbudget"));
+            if (ptrCategory->count(std::string("vitae"))) {
+                ptrCategory->insert(std::string("obfuscation"));
+                ptrCategory->insert(std::string("swiftx"));
+                ptrCategory->insert(std::string("fundamentalnode"));
+                ptrCategory->insert(std::string("fnpayments"));
+                ptrCategory->insert(std::string("zero"));
+                ptrCategory->insert(std::string("fnbudget"));
+                ptrCategory->insert(std::string("staking"));
             }
         }
-        const set<string>& setCategories = *ptrCategory.get();
+        const std::set<std::string>& setCategories = *ptrCategory.get();
 
         // if not debugging everything and not debugging specific category, LogPrint does nothing.
-        if (setCategories.count(string("")) == 0 &&
-            setCategories.count(string(category)) == 0)
+        if (setCategories.count(std::string("")) == 0 &&
+            setCategories.count(std::string(category)) == 0)
             return false;
     }
     return true;
@@ -518,8 +512,8 @@ boost::filesystem::path GetMasternodeConfigFile()
     return pathConfigFile;
 }
 
-void ReadConfigFile(map<string, string>& mapSettingsRet,
-    map<string, vector<string> >& mapMultiSettingsRet)
+void ReadConfigFile(std::map<std::string, std::string>& mapSettingsRet,
+    std::map<std::string, std::vector<std::string> >& mapMultiSettingsRet)
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good()) {
@@ -530,13 +524,13 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
         return; // Nothing to read, so just return
     }
 
-    set<string> setOptions;
+    std::set<std::string> setOptions;
     setOptions.insert("*");
 
     for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it) {
         // Don't overwrite existing settings so command line settings override vitae.conf
-        string strKey = string("-") + it->string_key;
-        string strValue = it->value[0];
+        std::string strKey = std::string("-") + it->string_key;
+        std::string strValue = it->value[0];
         InterpretNegativeSetting(strKey, strValue);
         if (mapSettingsRet.count(strKey) == 0)
             mapSettingsRet[strKey] = strValue;
@@ -584,7 +578,7 @@ bool TryCreateDirectory(const boost::filesystem::path& p)
 {
     try {
         return boost::filesystem::create_directory(p);
-    } catch (const boost::filesystem::filesystem_error) {
+    } catch (const boost::filesystem::filesystem_error&) {
         if (!boost::filesystem::exists(p) || !boost::filesystem::is_directory(p))
             throw;
     }
@@ -699,12 +693,12 @@ void ShrinkDebugFile()
         // Restart the file with some of the end
         std::vector<char> vch(200000, 0);
         fseek(file, -((long)vch.size()), SEEK_END);
-        int nBytes = fread(begin_ptr(vch), 1, vch.size(), file);
+        int nBytes = fread(vch.data(), 1, vch.size(), file);
         fclose(file);
 
         file = fopen(pathLog.string().c_str(), "w");
         if (file) {
-            fwrite(begin_ptr(vch), 1, nBytes, file);
+            fwrite(vch.data(), 1, nBytes, file);
             fclose(file);
         }
     } else if (file != NULL)

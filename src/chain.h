@@ -21,8 +21,6 @@
 
 #include <vector>
 
-#include <boost/foreach.hpp>
-#include <boost/lexical_cast.hpp>
 
 int64_t getStakeModifierV2SporkValue();
 
@@ -223,7 +221,7 @@ public:
         nAccumulatorCheckpoint = 0;
         // Start supply of each denomination with 0s
         for (auto& denom : libzerocoin::zerocoinDenomList) {
-            mapZerocoinSupply.insert(make_pair(denom, 0));
+            mapZerocoinSupply.insert(std::make_pair(denom, 0));
         }
         vMintDenominationsInBlock.clear();
     }
@@ -242,7 +240,7 @@ public:
         nTime = block.nTime;
         nBits = block.nBits;
         nNonce = block.nNonce;
-        if(block.nVersion > 3)
+        if(block.nVersion > 3 && block.nVersion < 7)
             nAccumulatorCheckpoint = block.nAccumulatorCheckpoint;
 
         if (block.IsProofOfStake()) {
@@ -291,9 +289,29 @@ public:
     {
         int64_t nTotal = 0;
         for (auto& denom : libzerocoin::zerocoinDenomList) {
-            nTotal += libzerocoin::ZerocoinDenominationToAmount(denom) * mapZerocoinSupply.at(denom);
+            nTotal += GetZcMintsAmount(denom);
         }
         return nTotal;
+    }
+
+    /**
+     * Total of mints added to the specific accumulator.
+     * @param denom
+     * @return
+     */
+    int64_t GetZcMints(libzerocoin::CoinDenomination denom) const
+    {
+        return mapZerocoinSupply.at(denom);
+    }
+
+    /**
+     * Total available amount in an specific denom.
+     * @param denom
+     * @return
+     */
+    int64_t GetZcMintsAmount(libzerocoin::CoinDenomination denom) const
+    {
+        return libzerocoin::ZerocoinDenominationToAmount(denom) * GetZcMints(denom);
     }
 
     bool MintedDenomination(libzerocoin::CoinDenomination denom) const
@@ -434,9 +452,9 @@ public:
         hashNext = uint256();
     }
 
-    explicit CDiskBlockIndex(CBlockIndex* pindex) : CBlockIndex(*pindex)
+    explicit CDiskBlockIndex(const CBlockIndex* pindex) : CBlockIndex(*pindex)
     {
-        hashPrev = (pprev ? pprev->GetBlockHash() : uint256());
+        hashPrev = (pprev ? pprev->GetBlockHash() : uint256(0));
     }
 
     ADD_SERIALIZE_METHODS;
@@ -591,6 +609,9 @@ public:
 
     /** Find the last common block between this chain and a block index entry. */
     const CBlockIndex* FindFork(const CBlockIndex* pindex) const;
+
+    /** Check if new message signatures are active **/
+    bool NewSigsActive() { return Params().NewSigsActive(Height()); }
 };
 
 #endif // BITCOIN_CHAIN_H

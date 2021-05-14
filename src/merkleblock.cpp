@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -11,14 +11,13 @@
 #include "primitives/block.h" // for MAX_BLOCK_SIZE
 #include "utilstrencodings.h"
 
-using namespace std;
 
 CMerkleBlock::CMerkleBlock(const CBlock& block, CBloomFilter& filter)
 {
     header = block.GetBlockHeader();
 
-    vector<bool> vMatch;
-    vector<uint256> vHashes;
+    std::vector<bool> vMatch;
+    std::vector<uint256> vHashes;
 
     vMatch.reserve(block.vtx.size());
     vHashes.reserve(block.vtx.size());
@@ -27,7 +26,7 @@ CMerkleBlock::CMerkleBlock(const CBlock& block, CBloomFilter& filter)
         const uint256& hash = block.vtx[i].GetHash();
         if (filter.IsRelevantAndUpdate(block.vtx[i])) {
             vMatch.push_back(true);
-            vMatchedTxn.push_back(make_pair(i, hash));
+            vMatchedTxn.push_back(std::make_pair(i, hash));
         } else
             vMatch.push_back(false);
         vHashes.push_back(hash);

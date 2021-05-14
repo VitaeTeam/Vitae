@@ -67,7 +67,7 @@ public:
     /// Get 5000DRK input that can be used for the Masternode
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
     bool GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey, std::string strTxHash, std::string strOutputIndex);
-    vector<COutput> SelectCoinsMasternode();
+    std::vector<COutput> SelectCoinsMasternode();
     bool GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
 
     /// Enable hot wallet mode (run a Masternode with no funds)

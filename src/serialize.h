@@ -22,6 +22,7 @@
 #include <vector>
 #include "libzerocoin/Denominations.h"
 #include "libzerocoin/SpendType.h"
+#include "sporkid.h"
 
 class CScript;
 
@@ -45,35 +46,6 @@ template <typename T>
 inline T* NCONST_PTR(const T* val)
 {
     return const_cast<T*>(val);
-}
-
-/**
- * Get begin pointer of vector (non-const version).
- * @note These functions avoid the undefined case of indexing into an empty
- * vector, as well as that of indexing after the end of the vector.
- */
-template <class T, class TAl>
-inline T* begin_ptr(std::vector<T, TAl>& v)
-{
-    return v.empty() ? NULL : &v[0];
-}
-/** Get begin pointer of vector (const version) */
-template <class T, class TAl>
-inline const T* begin_ptr(const std::vector<T, TAl>& v)
-{
-    return v.empty() ? NULL : &v[0];
-}
-/** Get end pointer of vector (non-const version) */
-template <class T, class TAl>
-inline T* end_ptr(std::vector<T, TAl>& v)
-{
-    return v.empty() ? NULL : (&v[0] + v.size());
-}
-/** Get end pointer of vector (const version) */
-template <class T, class TAl>
-inline const T* end_ptr(const std::vector<T, TAl>& v)
-{
-    return v.empty() ? NULL : (&v[0] + v.size());
 }
 
 /////////////////////////////////////////////////////////////////
@@ -321,6 +293,23 @@ inline void Unserialize(Stream& s, libzerocoin::SpendType & a, int, int = 0)
     a = static_cast<libzerocoin::SpendType>(f);
 }
 
+// Serialization for SporkId
+inline unsigned int GetSerializeSize(SporkId sporkID, int, int = 0) { return sizeof(SporkId); }
+template <typename Stream>
+inline void Serialize(Stream& s, SporkId sporkID, int, int = 0)
+{
+    int32_t f = static_cast<int32_t>(sporkID);
+    WRITEDATA(s, f);
+}
+
+template <typename Stream>
+inline void Unserialize(Stream& s, SporkId& sporkID, int, int = 0)
+{
+    int32_t f=0;
+    READDATA(s, f);
+    sporkID = (SporkId) f;
+}
+
 
 /**
  * Compact Size
@@ -485,8 +474,8 @@ public:
     template <class T, class TAl>
     explicit CFlatData(std::vector<T, TAl>& v)
     {
-        pbegin = (char*)begin_ptr(v);
-        pend = (char*)end_ptr(v);
+        pbegin = (char*)v.data();
+        pend = (char*)(v.data() + v.size());
     }
     char* begin() { return pbegin; }
     const char* begin() const { return pbegin; }
@@ -584,7 +573,7 @@ CVarInt<I> WrapVarInt(I& n)
  */
 
 /**
- *  string
+ *  std::string
  */
 template <typename C>
 unsigned int GetSerializeSize(const std::basic_string<C>& str, int, int = 0);

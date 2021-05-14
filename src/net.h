@@ -30,7 +30,6 @@
 #endif
 
 #include <boost/filesystem/path.hpp>
-#include <boost/foreach.hpp>
 #include <boost/signals2/signal.hpp>
 
 class CAddrMan;
@@ -53,6 +52,8 @@ static const unsigned int MAX_INV_SZ = 50000;
 static const unsigned int MAX_ADDR_TO_SEND = 1000;
 /** Maximum length of incoming protocol messages (no message over 2 MiB is currently acceptable). */
 static const unsigned int MAX_PROTOCOL_MESSAGE_LENGTH = 2 * 1024 * 1024;
+/** Maximum length of strSubVer in `version` message */
+static const unsigned int MAX_SUBVERSION_LENGTH = 256;
 /** -listen default */
 static const bool DEFAULT_LISTEN = true;
 /** -upnp default */
@@ -63,6 +64,10 @@ static const bool DEFAULT_UPNP = false;
 #endif
 /** The maximum number of entries in mapAskFor */
 static const size_t MAPASKFOR_MAX_SZ = MAX_INV_SZ;
+/** Disconnected peers are added to setOffsetDisconnectedPeers only if node has less than ENOUGH_CONNECTIONS */
+#define ENOUGH_CONNECTIONS 2
+/** Maximum number of peers added to setOffsetDisconnectedPeers before triggering a warning */
+#define MAX_TIMEOFFSET_DISCONNECTIONS 16
 
 unsigned int ReceiveFloodSize();
 unsigned int SendBufferSize();
@@ -82,6 +87,7 @@ bool BindListenPort(const CService& bindAddr, std::string& strError, bool fWhite
 void StartNode(boost::thread_group& threadGroup, CScheduler& scheduler);
 bool StopNode();
 void SocketSendData(CNode* pnode);
+void CheckOffsetDisconnectedPeers(const CNetAddr& ip);
 
 typedef int NodeId;
 
@@ -109,7 +115,7 @@ enum {
 };
 
 bool IsPeerAddrLocalGood(CNode* pnode);
-void AdvertizeLocal(CNode* pnode);
+void AdvertiseLocal(CNode* pnode);
 void SetLimited(enum Network net, bool fLimited = true);
 bool IsLimited(enum Network net);
 bool IsLimited(const CNetAddr& addr);
@@ -143,6 +149,9 @@ extern CCriticalSection cs_vAddedNodes;
 
 extern NodeId nLastNodeId;
 extern CCriticalSection cs_nLastNodeId;
+
+/** Subversion as sent to the P2P network in `version` messages */
+extern std::string strSubVersion;
 
 struct LocalServiceInfo {
     int nScore;
@@ -408,7 +417,7 @@ public:
     unsigned int GetTotalRecvSize()
     {
         unsigned int total = 0;
-        BOOST_FOREACH (const CNetMessage& msg, vRecvMsg)
+        for (const CNetMessage& msg : vRecvMsg)
             total += msg.vRecv.size() + 24;
         return total;
     }
@@ -420,7 +429,7 @@ public:
     void SetRecvVersion(int nVersionIn)
     {
         nRecvVersion = nVersionIn;
-        BOOST_FOREACH (CNetMessage& msg, vRecvMsg)
+        for (CNetMessage& msg : vRecvMsg)
             msg.SetVersion(nVersionIn);
     }
 
@@ -441,14 +450,14 @@ public:
         setAddrKnown.insert(addr);
     }
 
-    void PushAddress(const CAddress& addr)
+    void PushAddress(const CAddress& _addr, FastRandomContext &insecure_rand)
     {
         // Known checking here is only to save space from duplicates.
         // SendMessages will filter it again for knowns that were added
         // after addresses were pushed.
         if (addr.IsValid() && !setAddrKnown.count(addr)) {
             if (vAddrToSend.size() >= MAX_ADDR_TO_SEND) {
-                vAddrToSend[insecure_rand() % vAddrToSend.size()] = addr;
+                vAddrToSend[insecure_rand.randrange(vAddrToSend.size())] = _addr;
             } else {
                 vAddrToSend.push_back(addr);
             }
@@ -656,7 +665,7 @@ public:
 
     bool HasFulfilledRequest(std::string strRequest)
     {
-        BOOST_FOREACH (std::string& type, vecRequestsFulfilled) {
+        for (std::string& type : vecRequestsFulfilled) {
             if (type == strRequest) return true;
         }
         return false;

@@ -9,6 +9,7 @@
 #include "fundamentalnode.h"
 #include "fundamentalnodeconfig.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 #include "protocol.h"
 #include "spork.h"
 
@@ -100,9 +101,8 @@ void CActiveFundamentalnode::ManageStatus()
             CPubKey pubKeyFundamentalnode;
             CKey keyFundamentalnode;
 
-            if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-                notCapableReason = "Error upon calling SetKey: " + errorMessage;
-                LogPrintf("Register::ManageStatus() - %s\n", notCapableReason);
+            if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+                LogPrintf("%s : Invalid fundamentalnode key", __func__);
                 return;
             }
 
@@ -166,8 +166,8 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
     CPubKey pubKeyFundamentalnode;
     CKey keyFundamentalnode;
 
-    if (!obfuScationSigner.SetKey(strFundamentalNodePrivKey, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-        errorMessage = strprintf("Error upon calling SetKey: %s\n", errorMessage);
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+        LogPrintf("%s : Invalid fundamentalnode key", __func__);
         return false;
     }
 
@@ -188,7 +188,7 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
         }
 
         pmn->lastPing = mnp;
-        mnodeman.mapSeenFundamentalnodePing.insert(make_pair(mnp.GetHash(), mnp));
+        mnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(mnp.GetHash(), mnp));
 
         //mnodeman.mapSeenFundamentalnodeBroadcast.lastPing is probably outdated, so we'll update it
         CFundamentalnodeBroadcast mnb(*pmn);
@@ -202,27 +202,27 @@ bool CActiveFundamentalnode::SendFundamentalnodePing(std::string& errorMessage)
          * AFTER MIGRATION TO V12 IS DONE
          */
 
-        if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
+        if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
         // for migration purposes ping our node on old fundamentalnodes network too
         std::string retErrorMessage;
         std::vector<unsigned char> vchFundamentalNodeSignature;
         int64_t fundamentalNodeSignatureTime = GetAdjustedTime();
 
-        std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(fundamentalNodeSignatureTime) + boost::lexical_cast<std::string>(false);
+        std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + std::to_string(false);
 
-        if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchFundamentalNodeSignature, keyFundamentalnode)) {
-            errorMessage = "dseep sign message failed: " + retErrorMessage;
+        if (!CMessageSigner::SignMessage(strMessage, vchFundamentalNodeSignature, keyFundamentalnode)) {
+            errorMessage = "dseep sign message failed.";
             return false;
         }
 
-        if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
+        if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
             errorMessage = "dseep verify message failed: " + retErrorMessage;
             return false;
         }
 
         LogPrint("fundamentalnode", "dseep - relaying from active mn, %s \n", vin.ToString().c_str());
         LOCK(cs_vNodes);
-        BOOST_FOREACH (CNode* pnode, vNodes)
+        for (CNode* pnode : vNodes)
             pnode->PushMessage("obseep", vin, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, false);
 
         /*
@@ -254,9 +254,8 @@ bool CActiveFundamentalnode::CreateBroadcast(std::string strService, std::string
         return false;
     }
 
-    if (!obfuScationSigner.SetKey(strKeyFundamentalnode, errorMessage, keyFundamentalnode, pubKeyFundamentalnode)) {
-        errorMessage = strprintf("Can't find keys for fundamentalnode %s - %s", strService, errorMessage);
-        LogPrintf("CActiveFundamentalnode::CreateBroadcast() - %s\n", errorMessage);
+    if (!CMessageSigner::GetKeysFromSecret(strFundamentalNodePrivKey, keyFundamentalnode, pubKeyFundamentalnode)) {
+        LogPrintf("%s : Invalid fundamentalnode key", __func__);
         return false;
     }
 
@@ -302,7 +301,7 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
      * AFTER MIGRATION TO V12 IS DONE
      */
 
-    if (IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
+    if (sporkManager.IsSporkActive(SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES)) return true;
     // for migration purposes inject our node in old fundamentalnodes' list too
     std::string retErrorMessage;
     std::vector<unsigned char> vchFundamentalNodeSignature;
@@ -313,22 +312,22 @@ bool CActiveFundamentalnode::CreateBroadcast(CTxIn vin, CService service, CKey k
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
 
-    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(PROTOCOL_VERSION) + donationAddress + boost::lexical_cast<std::string>(donationPercantage);
+    std::string strMessage = service.ToString() + std::to_string(fundamentalNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress + std::to_string(donationPercantage);
 
-    if (!obfuScationSigner.SignMessage(strMessage, retErrorMessage, vchFundamentalNodeSignature, keyCollateralAddress)) {
-        errorMessage = "dsee sign message failed: " + retErrorMessage;
+    if (!CMessageSigner::SignMessage(strMessage, vchFundamentalNodeSignature, keyCollateralAddress)) {
+        errorMessage = "dsee sign message failed.";
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, vchFundamentalNodeSignature, strMessage, retErrorMessage)) {
         errorMessage = "dsee verify message failed: " + retErrorMessage;
         LogPrintf("CActiveFundamentalnode::CreateBroadcast() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
     LOCK(cs_vNodes);
-    BOOST_FOREACH (CNode* pnode, vNodes)
+    for (CNode* pnode : vNodes)
         pnode->PushMessage("obsee", vin, service, vchFundamentalNodeSignature, fundamentalNodeSignatureTime, pubKeyCollateralAddress, pubKeyFundamentalnode, -1, -1, fundamentalNodeSignatureTime, PROTOCOL_VERSION, donationAddress, donationPercantage);
 
     /*
@@ -352,7 +351,7 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
     TRY_LOCK(pwalletMain->cs_wallet, fWallet);
     if (!fWallet) return false;
 
-    vector<COutput> possibleCoins = SelectCoinsFundamentalnode();
+    std::vector<COutput> possibleCoins = SelectCoinsFundamentalnode();
     COutput* selectedOutput;
 
     // Find the vin
@@ -368,7 +367,7 @@ bool CActiveFundamentalnode::GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, 
         }
 
         bool found = false;
-        BOOST_FOREACH (COutput& out, possibleCoins) {
+        for (COutput& out : possibleCoins) {
             if (out.tx->GetHash() == txHash && out.i == outputIndex) {
                 selectedOutput = &out;
                 found = true;
@@ -425,16 +424,16 @@ bool CActiveFundamentalnode::GetVinFromOutput(COutput out, CTxIn& vin, CPubKey& 
 }
 
 // get all possible outputs for running Fundamentalnode
-vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
+std::vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
 {
-    vector<COutput> vCoins;
-    vector<COutput> filteredCoins;
-    vector<COutPoint> confLockedCoins;
+    std::vector<COutput> vCoins;
+    std::vector<COutput> filteredCoins;
+    std::vector<COutPoint> confLockedCoins;
 
     // Temporary unlock MN coins from fundamentalnode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             mnTxHash.SetHex(mne.getTxHash());
 
             int nIndex;
@@ -452,12 +451,12 @@ vector<COutput> CActiveFundamentalnode::SelectCoinsFundamentalnode()
 
     // Lock MN coins from fundamentalnode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
-        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+        for (COutPoint outpoint : confLockedCoins)
             pwalletMain->LockCoin(outpoint);
     }
 
     // Filter
-    BOOST_FOREACH (const COutput& out, vCoins) {
+    for (const COutput& out : vCoins) {
         if (out.tx->vout[out.i].nValue == FN_MAGIC_AMOUNT) { //exactly
             filteredCoins.push_back(out);
         }

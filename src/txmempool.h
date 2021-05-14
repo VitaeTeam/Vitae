@@ -15,6 +15,7 @@
 #include "coins.h"
 #include "primitives/transaction.h"
 #include "sync.h"
+#include "random.h"
 
 class CAutoFile;
 

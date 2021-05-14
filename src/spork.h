@@ -1,6 +1,5 @@
 // Copyright (c) 2014-2016 The Dash developers
-// Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2016-2019 The PIVX developers
 // Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -9,108 +8,63 @@
 #define SPORK_H
 
 #include "base58.h"
+#include "hash.h"
 #include "key.h"
 #include "main.h"
 #include "net.h"
+#include "sporkid.h"
 #include "sync.h"
 #include "util.h"
 
 #include "obfuscation.h"
 #include "protocol.h"
-#include <boost/lexical_cast.hpp>
 
-using namespace std;
-using namespace boost;
-
-/*
-    Don't ever reuse these IDs for other sporks
-    - This would result in old clients getting confused about which spork is for what
-
-    Sporks 11,12, and 16 to be removed with 1st zerocoin release
-*/
-#define SPORK_START 10001
-#define SPORK_END 10026
-
-#define SPORK_2_SWIFTTX 10001
-#define SPORK_3_SWIFTTX_BLOCK_FILTERING 10002
-#define SPORK_5_MAX_VALUE 10004
-#define SPORK_7_FUNDAMENTALNODE_SCANNING 10006
-#define SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT 10007
-#define SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT 10008
-//#define SPORK_10_FUNDAMENTALNODE_PAY_UPDATED_NODES 10009
-//#define SPORK_11_LOCK_INVALID_UTXO 10010
-//#define SPORK_12_RECONSIDER_BLOCKS 10011
-#define SPORK_13_ENABLE_SUPERBLOCKS 10012
-//#define SPORK_14_NEW_PROTOCOL_ENFORCEMENT 10013
-//#define SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2 10014
-//#define SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3 10015
-#define SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4 10016
-#define SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5 10017
-#define SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES 10018
-#define SPORK_20_ZEROCOIN_MAINTENANCE_MODE 10019
-#define SPORK_21_MASTERNODE_PAY_UPDATED_NODES 10020
-#define SPORK_22_REMOVE_SEESAW_BLOCK 10021
-#define SPORK_23_TIME_PROTOCOL_V2_BLOCK 10022
-#define SPORK_24_STAKE_MODIFIER_V2_BLOCK 10023
-#define SPORK_25_NEW_PROTOCOL_ENFORCEMENT_6 10024
-#define SPORK_26_MINIMUM_STAKE_AGE_BLOCK 10025
-#define SPORK_27_NEW_PROTOCOL_ENFORCEMENT_7 10026
-
-#define SPORK_2_SWIFTTX_DEFAULT 978307200                         //2001-1-1
-#define SPORK_3_SWIFTTX_BLOCK_FILTERING_DEFAULT 1424217600        //2015-2-18
-#define SPORK_5_MAX_VALUE_DEFAULT 1000                            //1000 VITAE
-#define SPORK_7_FUNDAMENTALNODE_SCANNING_DEFAULT 978307200             //2001-1-1
-#define SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT_DEFAULT 4070908800 //OFF
-#define SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT_DEFAULT 4070908800  //OFF
-//#define SPORK_10_FUNDAMENTALNODE_PAY_UPDATED_NODES_DEFAULT 4070908800  //OFF
-//#define SPORK_11_LOCK_INVALID_UTXO_DEFAULT 4070908800             //OFF - NOTE: this is block height not time!
-#define SPORK_13_ENABLE_SUPERBLOCKS_DEFAULT 4070908800            //OFF
-//#define SPORK_14_NEW_PROTOCOL_ENFORCEMENT_DEFAULT 4070908800      //OFF
-#define SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2_DEFAULT 4070908800   //ON
-#define SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3_DEFAULT 4070908800    //ON
-#define SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4_DEFAULT 4070908800   //ON
-#define SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5_DEFAULT 4070908800   //OFF
-#define SPORK_19_FUNDAMENTALNODE_PAY_UPDATED_NODES_DEFAULT 4070908800  //OFF
-#define SPORK_20_ZEROCOIN_MAINTENANCE_MODE_DEFAULT 4070908800     //OFF
-#define SPORK_21_MASTERNODE_PAY_UPDATED_NODES_DEFAULT 4070908800  //OFF
-#define SPORK_22_REMOVE_SEESAW_BLOCK_DEFAULT 9999999999  //OFF
-#define SPORK_23_TIME_PROTOCOL_V2_BLOCK_DEFAULT 9999999999  //OFF
-#define SPORK_24_STAKE_MODIFIER_V2_BLOCK_DEFAULT 9999999999  //OFF
-#define SPORK_25_NEW_PROTOCOL_ENFORCEMENT_6_DEFAULT 9999999999  //OFF
-#define SPORK_26_MINIMUM_STAKE_AGE_BLOCK_DEFAULT 9999999999  //OFF
-#define SPORK_27_NEW_PROTOCOL_ENFORCEMENT_7_DEFAULT 9999999999  //OFF
 
 class CSporkMessage;
 class CSporkManager;
 
+extern std::vector<CSporkDef> sporkDefs;
 extern std::map<uint256, CSporkMessage> mapSporks;
-extern std::map<int, CSporkMessage> mapSporksActive;
 extern CSporkManager sporkManager;
 
-void LoadSporksFromDB();
-void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
-int64_t GetSporkValue(int nSporkID);
-bool IsSporkActive(int nSporkID);
-void ReprocessBlocks(int nBlocks);
-
 //
-// Spork Class
-// Keeps track of all of the network spork settings
+// Spork Classes
+// Keep track of all of the network spork settings
 //
 
-class CSporkMessage
+class CSporkMessage : public CSignedMessage
 {
 public:
-    std::vector<unsigned char> vchSig;
-    int nSporkID;
+    SporkId nSporkID;
     int64_t nValue;
     int64_t nTimeSigned;
 
-    uint256 GetHash()
-    {
-        uint256 n = HashQuark(BEGIN(nSporkID), END(nTimeSigned));
-        return n;
-    }
+    CSporkMessage() :
+        CSignedMessage(),
+        nSporkID((SporkId)0),
+        nValue(0),
+        nTimeSigned(0)
+    {}
+
+    CSporkMessage(SporkId nSporkID, int64_t nValue, int64_t nTimeSigned) :
+        CSignedMessage(),
+        nSporkID(nSporkID),
+        nValue(nValue),
+        nTimeSigned(nTimeSigned)
+    { }
+
+    uint256 GetHash() const { return HashQuark(BEGIN(nSporkID), END(nTimeSigned)); }
+
+    // override CSignedMessage functions
+    uint256 GetSignatureHash() const override;
+    std::string GetStrMessage() const override;
+    const CTxIn GetVin() const override { return CTxIn(); };
+
+    // override GetPublicKey - gets Params().SporkPubkey()
+    const CPubKey GetPublicKey(std::string& strErrorRet) const override;
+    const CPubKey GetPublicKeyOld() const;
+
+    void Relay();
 
     ADD_SERIALIZE_METHODS;
 
@@ -121,6 +75,12 @@ public:
         READWRITE(nValue);
         READWRITE(nTimeSigned);
         READWRITE(vchSig);
+        try
+        {
+            READWRITE(nMessVersion);
+        } catch (...) {
+            nMessVersion = MessageVersion::MESS_VER_STRMESS;
+        }
     }
 };
 
@@ -128,21 +88,38 @@ public:
 class CSporkManager
 {
 private:
-    std::vector<unsigned char> vchSig;
+    mutable CCriticalSection cs;
     std::string strMasterPrivKey;
+    std::map<SporkId, CSporkDef*> sporkDefsById;
+    std::map<std::string, CSporkDef*> sporkDefsByName;
+    std::map<SporkId, CSporkMessage> mapSporksActive;
 
 public:
-    CSporkManager()
+    CSporkManager();
+
+    ADD_SERIALIZE_METHODS;
+
+    template <typename Stream, typename Operation>
+    inline void SerializationOp(Stream& s, Operation ser_action, int nType, int nVersion)
     {
+        READWRITE(mapSporksActive);
+        // we don't serialize private key to prevent its leakage
     }
 
-    std::string GetSporkNameByID(int id);
-    int GetSporkIDByName(std::string strName);
-    bool UpdateSpork(int nSporkID, int64_t nValue);
+    void Clear();
+    void LoadSporksFromDB();
+
+    void ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
+    int64_t GetSporkValue(SporkId nSporkID);
+    void ExecuteSpork(SporkId nSporkID, int nValue);
+    bool UpdateSpork(SporkId nSporkID, int64_t nValue);
+
+    bool IsSporkActive(SporkId nSporkID);
+    std::string GetSporkNameByID(SporkId id);
+    SporkId GetSporkIDByName(std::string strName);
+
     bool SetPrivKey(std::string strPrivKey);
-    bool CheckSignature(CSporkMessage& spork, bool fCheckSigner = false);
-    bool Sign(CSporkMessage& spork);
-    void Relay(CSporkMessage& msg);
+    std::string ToString() const;
 };
 
 #endif

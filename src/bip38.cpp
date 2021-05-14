@@ -1,5 +1,5 @@
-// Copyright (c) 2017 The VITAE Core developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -12,7 +12,6 @@
 #include "random.h"
 
 #include <openssl/aes.h>
-#include <openssl/sha.h>
 #include <secp256k1.h>
 #include <string>
 
@@ -83,7 +82,7 @@ bool ComputePasspoint(uint256 passfactor, CPubKey& passpoint)
 void ComputeSeedBPass(CPubKey passpoint, std::string strAddressHash, std::string strOwnerSalt, uint512& seedBPass)
 {
     // Derive decryption key for seedb using scrypt with passpoint, addresshash, and ownerentropy
-    string salt = ReverseEndianString(strAddressHash + strOwnerSalt);
+    std::string salt = ReverseEndianString(strAddressHash + strOwnerSalt);
     uint256 s2(salt);
     scrypt_hash(BEGIN(passpoint), HexStr(passpoint).size() / 2, BEGIN(s2), salt.size() / 2, BEGIN(seedBPass), 1024, 1, 1, 64);
 }
@@ -106,7 +105,7 @@ std::string AddressToBip38Hash(std::string address)
 
 std::string BIP38_Encrypt(std::string strAddress, std::string strPassphrase, uint256 privKey, bool fCompressed)
 {
-    string strAddressHash = AddressToBip38Hash(strAddress);
+    std::string strAddressHash = AddressToBip38Hash(strAddress);
 
     uint512 hashed;
     uint64_t salt = uint256(ReverseEndianString(strAddressHash)).Get64();
@@ -133,7 +132,7 @@ std::string BIP38_Encrypt(std::string strAddress, std::string strPassphrase, uin
     uint512 encrypted2;
     AES_encrypt(block2.begin(), encrypted2.begin(), &key);
 
-    string strPrefix = "0142";
+    std::string strPrefix = "0142";
     strPrefix += (fCompressed ? "E0" : "C0");
 
     uint512 encryptedKey(ReverseEndianString(strPrefix + strAddressHash));
@@ -274,7 +273,7 @@ bool BIP38_Decrypt(std::string strPassphrase, std::string strEncryptedKey, uint2
     CKey k;
     k.Set(privKey.begin(), privKey.end(), fCompressed);
     CPubKey pubkey = k.GetPubKey();
-    string address = CBitcoinAddress(pubkey.GetID()).ToString();
+    std::string address = CBitcoinAddress(pubkey.GetID()).ToString();
 
     return strAddressHash == AddressToBip38Hash(address);
 }

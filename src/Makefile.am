@@ -10,21 +10,6 @@ else
 LIBUNIVALUE = $(UNIVALUE_LIBS)
 endif
 
-if EMBEDDED_LEVELDB
-LEVELDB_CPPFLAGS += -I$(srcdir)/leveldb/include
-LEVELDB_CPPFLAGS += -I$(srcdir)/leveldb/helpers/memenv
-LIBLEVELDB += $(builddir)/leveldb/libleveldb.a
-LIBMEMENV  += $(builddir)/leveldb/libmemenv.a
-
-# NOTE: This dependency is not strictly necessary, but without it make may try to build both in parallel, which breaks the LevelDB build system in a race
-$(LIBLEVELDB): $(LIBMEMENV)
-
-$(LIBLEVELDB) $(LIBMEMENV):
-	@echo "Building LevelDB ..." && $(MAKE) -C $(@D) $(@F) CXX="$(CXX)" \
-	  CC="$(CC)" PLATFORM=$(TARGET_OS) AR="$(AR)" $(LEVELDB_TARGET_FLAGS) \
-          OPT="$(CXXFLAGS) $(CPPFLAGS)"
-endif
-
 BITCOIN_CONFIG_INCLUDES=-I$(builddir)/config
 BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
@@ -85,10 +70,6 @@ endif
 BITCOIN_CORE_H = \
   activefundamentalnode.h \
   activemasternode.h \
-  accumulators.h \
-  accumulatorcheckpoints.h \
-  accumulatorcheckpoints.json.h \
-  accumulatormap.h \
   addrman.h \
   alert.h \
   allocators.h \
@@ -109,12 +90,14 @@ BITCOIN_CORE_H = \
   compat.h \
   compat/sanity.h \
   compressor.h \
+  consensus/merkle.h \
   primitives/block.h \
   primitives/deterministicmint.h \
   primitives/transaction.h \
-  primitives/zerocoin.h \
   core_io.h \
   crypter.h \
+  pairresult.h \
+  addressbook.h \
   denomination_functions.h \
   obfuscation.h \
   obfuscation-relay.h \
@@ -148,6 +131,7 @@ BITCOIN_CORE_H = \
   fundamentalnodeman.h \
   fundamentalnodeconfig.h \
   merkleblock.h \
+  messagesigner.h \
   miner.h \
   mintpool.h \
   mruset.h \
@@ -174,8 +158,10 @@ BITCOIN_CORE_H = \
   spork.h \
   mn-spork.h \
   sporkdb.h \
+  sporkid.h \
   stakeinput.h \
   streams.h \
+  support/cleanse.h \
   sync.h \
   threadsafety.h \
   timedata.h \
@@ -196,8 +182,20 @@ BITCOIN_CORE_H = \
   wallet_ismine.h \
   walletdb.h \
   zvitchain.h \
-  zvittracker.h \
-  zvitwallet.h \
+  zvit/accumulators.h \
+  zvit/accumulatorcheckpoints.h \
+  zvit/accumulatorcheckpoints.json.h \
+  zvit/accumulatormap.h \
+  zvit/deterministicmint.h \
+  zvit/mintpool.h \
+  zvit/witness.h \
+  zvit/zerocoin.h \
+  zvit/zvittracker.h \
+  zvit/zvitwallet.h \
+  zvit/zvitmodule.h \
+  genwit.h \
+  concurrentqueue.h \
+  lightzvitthread.h \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h \
   zmq/zmqnotificationinterface.h \
@@ -274,6 +272,7 @@ libbitcoin_wallet_a_SOURCES = \
   bitpool.cpp \
   obfuscation-relay.cpp \
   db.cpp \
+  addressbook.cpp \
   crypter.cpp \
   swifttx.cpp \
   fundamentalnode.cpp \
@@ -282,18 +281,26 @@ libbitcoin_wallet_a_SOURCES = \
   fundamentalnode-sync.cpp \
   fundamentalnodeconfig.cpp \
   fundamentalnodeman.cpp \
-  mintpool.cpp \
+  messagesigner.cpp \
   rpcdump.cpp \
-  primitives/deterministicmint.cpp \
-  primitives/zerocoin.cpp \
+  zvit/deterministicmint.cpp \
+  zvit/zerocoin.cpp \
   rpcwallet.cpp \
   kernel.cpp \
   wallet.cpp \
   wallet_ismine.cpp \
   walletdb.cpp \
-  zvitwallet.cpp \
-  zvittracker.cpp \
+  zvit/accumulators.cpp \
+  zvit/mintpool.cpp \
+  zvit/witness.cpp \
+  zvit/zvitwallet.cpp \
+  zvit/zvittracker.cpp \
   stakeinput.cpp \
+  genwit.cpp \
+  zvit/zvitmodule.cpp \
+  lightzvitthread.cpp \
+  libzerocoin/CoinRandomnessSchnorrSignature.h \
+  libzerocoin/CoinRandomnessSchnorrSignature.cpp \
   $(BITCOIN_CORE_H)
 
 # crypto primitives library
@@ -303,6 +310,8 @@ crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/sha1.cpp \
   crypto/sha256.cpp \
   crypto/sha512.cpp \
+  crypto/chacha20.h \
+  crypto/chacha20.cpp \
   crypto/hmac_sha256.cpp \
   crypto/rfc6979_hmac_sha256.cpp \
   crypto/hmac_sha512.cpp \
@@ -340,6 +349,7 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/AccumulatorProofOfKnowledge.h \
   libzerocoin/bignum.h \
   libzerocoin/Coin.h \
+  libzerocoin/CoinRandomnessSchnorrSignature.h \
   libzerocoin/CoinSpend.h \
   libzerocoin/Commitment.h \
   libzerocoin/Denominations.h \
@@ -348,23 +358,31 @@ libzerocoin_libbitcoin_zerocoin_a_SOURCES = \
   libzerocoin/SerialNumberSignatureOfKnowledge.h \
   libzerocoin/SpendType.h \
   libzerocoin/ZerocoinDefines.h \
+  libzerocoin/bignum.cpp \
   libzerocoin/Accumulator.cpp \
   libzerocoin/AccumulatorProofOfKnowledge.cpp \
   libzerocoin/Coin.cpp \
-  libzerocoin/Denominations.cpp \
+  libzerocoin/CoinRandomnessSchnorrSignature.cpp \
   libzerocoin/CoinSpend.cpp \
   libzerocoin/Commitment.cpp \
+  libzerocoin/Denominations.cpp \
   libzerocoin/ParamGeneration.cpp \
   libzerocoin/Params.cpp \
   libzerocoin/SerialNumberSignatureOfKnowledge.cpp
+if USE_NUM_GMP
+  libzerocoin_libbitcoin_zerocoin_a_SOURCES += libzerocoin/bignum_gmp.cpp
+endif
+if USE_NUM_OPENSSL
+  libzerocoin_libbitcoin_zerocoin_a_SOURCES += libzerocoin/bignum_openssl.cpp
+endif
 
 # common: shared between vitaed, and vitae-qt and non-server tools
 libbitcoin_common_a_CPPFLAGS = $(BITCOIN_INCLUDES)
 libbitcoin_common_a_SOURCES = \
   activemasternode.cpp \
-  accumulators.cpp \
-  accumulatorcheckpoints.cpp \
-  accumulatormap.cpp \
+  zvit/accumulators.cpp \
+  zvit/accumulatorcheckpoints.cpp \
+  zvit/accumulatormap.cpp \
   allocators.cpp \
   amount.cpp \
   base58.cpp \
@@ -372,14 +390,15 @@ libbitcoin_common_a_SOURCES = \
   chainparams.cpp \
   coins.cpp \
   compressor.cpp \
+  consensus/merkle.cpp \
   primitives/block.cpp \
-  primitives/deterministicmint.cpp \
+  zvit/deterministicmint.cpp \
   primitives/transaction.cpp \
-  primitives/zerocoin.cpp \
   masternode.cpp \
   masternode-pos.cpp \
   masternodeman.cpp \
   masternodeconfig.cpp \
+  zvit/zerocoin.cpp \
   core_read.cpp \
   core_write.cpp \
   hash.cpp \
@@ -413,6 +432,7 @@ libbitcoin_util_a_SOURCES = \
   clientversion.cpp \
   random.cpp \
   rpcprotocol.cpp \
+  support/cleanse.cpp \
   sync.cpp \
   uint256.cpp \
   util.cpp \
@@ -423,7 +443,7 @@ libbitcoin_util_a_SOURCES = \
 
 if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
-libbitcoin_util_a_SOURCES += compat/glibcxx_compat.cpp
+AM_LDFLAGS += $(COMPAT_LDFLAGS)
 endif
 
 # cli: shared between vitae-cli and vitae-qt
@@ -444,6 +464,7 @@ vitaed_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBLEVELDB) \
+  $(LIBLEVELDB_SSE42) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
@@ -461,7 +482,7 @@ if TARGET_WINDOWS
 vitaed_SOURCES += vitaed-res.rc
 endif
 
-vitaed_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+vitaed_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(LIBBITCOIN_CRYPTO) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
 vitaed_CPPFLAGS = $(BITCOIN_INCLUDES)
 vitaed_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
@@ -473,7 +494,7 @@ vitae_cli_LDADD = \
   $(LIBBITCOIN_UTIL) \
   $(BOOST_LIBS) \
   $(SSL_LIBS) \
-  $(CRYPTO_LIBS) \
+  $(LIBBITCOIN_CRYPTO) \
   $(EVENT_LIBS)
 
 vitae_cli_SOURCES = \
@@ -491,7 +512,7 @@ vitae_tx_LDADD = \
   $(LIBBITCOIN_CRYPTO) \
   $(LIBSECP256K1) \
   $(BOOST_LIBS) \
-  $(CRYPTO_LIBS)
+  $(LIBBITCOIN_CRYPTO)
 
 vitae_tx_SOURCES = vitae-tx.cpp
 vitae_tx_CPPFLAGS = $(BITCOIN_INCLUDES)
@@ -537,17 +558,29 @@ CLEANFILES = leveldb/libleveldb.a leveldb/libmemenv.a
 CLEANFILES += *.gcda *.gcno
 CLEANFILES += compat/*.gcda compat/*.gcno
 CLEANFILES += crypto/*.gcda crypto/*.gcno
+CLEANFILES += libzerocoin/*.gcda libzerocoin/*.gcno
 CLEANFILES += primitives/*.gcda primitives/*.gcno
+CLEANFILES += rpc/*.gcda rpc/*.gcno
 CLEANFILES += script/*.gcda script/*.gcno
+CLEANFILES += support/*.gcda support/*.gcno
 CLEANFILES += univalue/*.gcda univalue/*.gcno
+CLEANFILES += wallet/*.gcda wallet/*.gcno
+CLEANFILES += wallet/test/*.gcda wallet/test/*.gcno
 CLEANFILES += zmq/*.gcda zmq/*.gcno
+CLEANFILES += zvit/*.gcda zvit/*.gcno
+CLEANFILES += obj/build.h
+
+EXTRA_DIST =
+
+
+config/pivx-config.h: config/stamp-h1
+	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
 
 DISTCLEANFILES = obj/build.h
 
 EXTRA_DIST = leveldb
 
 clean-local:
-	-$(MAKE) -C leveldb clean
 	-$(MAKE) -C secp256k1 clean
 	-$(MAKE) -C univalue clean
 	rm -f leveldb/*/*.gcno leveldb/helpers/memenv/*.gcno
@@ -557,13 +590,28 @@ clean-local:
 	@test -f $(WINDRES)
 	$(AM_V_GEN) $(WINDRES) -DWINDRES_PREPROC -i $< -o $@
 
-.mm.o:
-	$(AM_V_CXX) $(OBJCXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
-	  $(CPPFLAGS) $(AM_CXXFLAGS) $(QT_INCLUDES) $(CXXFLAGS)  -c -o $@ $<
+	## FIXME: How to get the appropriate modulename_CPPFLAGS in here?
+	$(AM_V_GEN) $(WINDRES) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(CPPFLAGS) -DWINDRES_PREPROC -i $< -o $@
+
+check-symbols: $(bin_PROGRAMS)
+if GLIBC_BACK_COMPAT
+	@echo "Checking glibc back compat..."
+	$(AM_V_at) READELF=$(READELF) CPPFILT=$(CPPFILT) $(PYTHON) $(top_srcdir)/contrib/devtools/symbol-check.py < $(bin_PROGRAMS)
+endif
+
+check-security: $(bin_PROGRAMS)
+#if HARDEN
+#	@echo "Checking binary security..."
+#	$(AM_V_at) READELF=$(READELF) OBJDUMP=$(OBJDUMP) $(PYTHON) $(top_srcdir)/contrib/devtools/security-check.py < $(bin_PROGRAMS)
+#endif
 
 %.pb.cc %.pb.h: %.proto
 	@test -f $(PROTOC)
 	$(AM_V_GEN) $(PROTOC) --cpp_out=$(@D) --proto_path=$(abspath $(<D) $<)
+
+if EMBEDDED_LEVELDB
+include Makefile.leveldb.include
+endif
 
 if ENABLE_TESTS
 include Makefile.test.include

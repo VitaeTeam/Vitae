@@ -64,7 +64,7 @@ public:
 
     /// Get 10000 VITAE input that can be used for the Fundamentalnode
     bool GetFundamentalNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secretKey);
-    vector<COutput> SelectCoinsFundamentalnode();
+    std::vector<COutput> SelectCoinsFundamentalnode();
 
     /// Enable cold wallet mode (run a Fundamentalnode with no funds)
     bool EnableHotColdFundamentalNode(CTxIn& vin, CService& addr);

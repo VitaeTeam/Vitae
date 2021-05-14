@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
 // Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -39,7 +39,10 @@ static const char* ppszTypeName[] =
     "mn winner",
     "mn scan error",
     "mn announce",
-    "mn ping"
+    "mn ping",
+        "pubcoins",
+        "genwit",
+        "accvalue"
 };
 
 CMessageHeader::CMessageHeader()
@@ -106,7 +109,6 @@ void CAddress::Init()
 {
     nServices = NODE_NETWORK;
     nTime = 100000000;
-    nLastTry = 0;
 }
 
 CInv::CInv()

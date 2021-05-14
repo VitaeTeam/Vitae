@@ -37,7 +37,7 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
     if (nValue > pwalletMain->GetBalance())
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
 
-    string strError;
+    std::string strError;
     if (pwalletMain->IsLocked()) {
         strError = "Error: Wallet locked, unable to create transaction!";
         LogPrintf("SendMoney() : %s", strError);
@@ -60,61 +60,10 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
         throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
 }
 
-UniValue obfuscation(const UniValue& params, bool fHelp)
-{
-    throw runtime_error("Obfuscation is not supported any more. Use Zerocoin\n");
-
-    if (fHelp || params.size() == 0)
-        throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, reset, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
-
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
-
-    if (params[0].get_str() == "auto") {
-        if (fFundamentalNode)
-            return "ObfuScation is not supported from fundamentalnodes";
-
-        return "DoAutomaticDenominating " + (obfuScationPool.DoAutomaticDenominating() ? "successful" : ("failed: " + obfuScationPool.GetStatus()));
-    }
-
-    if (params[0].get_str() == "reset") {
-        obfuScationPool.Reset();
-        return "successfully reset obfuscation";
-    }
-
-    if (params.size() != 2)
-        throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, denominate, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
-
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Vitae address");
-
-    // Amount
-    CAmount nAmount = AmountFromValue(params[1]);
-
-    // Wallet comments
-    CWalletTx wtx;
-    //    string strError = pwalletMain->SendMoneyToDestination(address.Get(), nAmount, wtx, ONLY_DENOMINATED);
-    SendMoney(address.Get(), nAmount, wtx, ONLY_DENOMINATED);
-    //    if (strError != "")
-    //        throw JSONRPCError(RPC_WALLET_ERROR, strError);
-
-    return wtx.GetHash().GetHex();
-}
-
-
 UniValue getpoolinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
-        throw runtime_error(
+        throw std::runtime_error(
             "getpoolinfo\n"
             "\nReturns anonymous pool-related information\n"
 
@@ -141,7 +90,7 @@ UniValue getpoolinfo(const UniValue& params, bool fHelp)
 // Future removal of this command is planned to keep things clean.
 UniValue fundamentalnode(const UniValue& params, bool fHelp)
 {
-    string strCommand;
+    std::string strCommand;
     if (params.size() >= 1)
         strCommand = params[0].get_str();
 
@@ -150,7 +99,7 @@ UniValue fundamentalnode(const UniValue& params, bool fHelp)
             strCommand != "start-disabled" && strCommand != "list" && strCommand != "list-conf" && strCommand != "count" && strCommand != "enforce" &&
             strCommand != "debug" && strCommand != "current" && strCommand != "winners" && strCommand != "genkey" && strCommand != "connect" &&
             strCommand != "outputs" && strCommand != "status" && strCommand != "calcscore"))
-        throw runtime_error(
+        throw std::runtime_error(
             "fundamentalnode \"command\"...\n"
             "\nSet of commands to execute fundamentalnode related actions\n"
             "This command is depreciated, please see individual command documentation for future reference\n\n"
@@ -280,14 +229,14 @@ UniValue fundamentalnode(const UniValue& params, bool fHelp)
 
 UniValue masternode(const UniValue& params, bool fHelp)
 {
-    string strCommand;
+    std::string strCommand;
     if (params.size() >= 1)
         strCommand = params[0].get_str();
 
     if (fHelp  ||
             (strCommand != "start" && strCommand != "start-alias" && strCommand != "start-many" && strCommand != "stop" && strCommand != "stop-alias" && strCommand != "stop-many" && strCommand != "list-conf" && strCommand != "count"  && strCommand != "enforce"
              && strCommand != "debug" && strCommand != "current" && strCommand != "winners" && strCommand != "genkey" && strCommand != "connect" && strCommand != "outputs" /* && strCommand != "vote-many" && strCommand != "vote" */))
-        throw runtime_error(
+        throw std::runtime_error(
                 "masternode \"command\"... ( \"passphrase\" )\n"
                 "Set of commands to execute masternode related actions\n"
                 "\nArguments:\n"
@@ -324,7 +273,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             if (params.size() == 2){
                 strWalletPass = params[1].get_str().c_str();
             } else {
-                throw runtime_error(
+                throw std::runtime_error(
                             "Your wallet is locked, passphrase is required\n");
             }
 
@@ -352,7 +301,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
     if (strCommand == "stop-alias")
     {
         if (params.size() < 2){
-            throw runtime_error(
+            throw std::runtime_error(
                         "command needs at least 2 parameters\n");
         }
 
@@ -365,7 +314,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             if (params.size() == 3){
                 strWalletPass = params[2].get_str().c_str();
             } else {
-                throw runtime_error(
+                throw std::runtime_error(
                             "Your wallet is locked, passphrase is required\n");
             }
 
@@ -380,7 +329,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -412,7 +361,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             if (params.size() == 2){
                 strWalletPass = params[1].get_str().c_str();
             } else {
-                throw runtime_error(
+                throw std::runtime_error(
                             "Your wallet is locked, passphrase is required\n");
             }
 
@@ -429,7 +378,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultsObj;
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             total++;
 
             std::string errorMessage;
@@ -453,8 +402,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
-        returnObj.push_back(Pair("overall", "Successfully stopped " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to stop " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+        returnObj.push_back(Pair("overall", "Successfully stopped " + std::to_string(successful) + " masternodes, failed to stop " +
+                                 std::to_string(fail) + ", total " + std::to_string(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -464,7 +413,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
     if (strCommand == "count")
     {
         if (params.size() > 2){
-            throw runtime_error(
+            throw std::runtime_error(
                         "too many parameters\n");
         }
         UniValue rtnStr(UniValue::VSTR);
@@ -475,7 +424,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                                 //return rtnStr;
                         }*/
             /* if(params[1] == "both"){
-                                rtnStr = boost::lexical_cast<std::string>(mnodeman.CountEnabled()) + " / " + boost::lexical_cast<std::string>(mnodeman.size());
+                                rtnStr = std::to_string(mnodeman.CountEnabled()) + " / " + std::to_string(mnodeman.size());
                                 return rtnStr;
                         } */
         }
@@ -511,7 +460,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             if (params.size() == 2){
                 strWalletPass = params[1].get_str().c_str();
             } else {
-                throw runtime_error(
+                throw std::runtime_error(
                             "Your wallet is locked, passphrase is required\n");
             }
 
@@ -540,7 +489,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
     if (strCommand == "start-alias")
     {
         if (params.size() < 2){
-            throw runtime_error(
+            throw std::runtime_error(
                         "command needs at least 2 parameters\n");
         }
 
@@ -553,7 +502,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             if (params.size() == 3){
                 strWalletPass = params[2].get_str().c_str();
             } else {
-                throw runtime_error(
+                throw std::runtime_error(
                             "Your wallet is locked, passphrase is required\n");
             }
 
@@ -568,7 +517,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -605,7 +554,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
             if (params.size() == 2){
                 strWalletPass = params[1].get_str().c_str();
             } else {
-                throw runtime_error(
+                throw std::runtime_error(
                             "Your wallet is locked, passphrase is required\n");
             }
 
@@ -624,7 +573,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultsObj;
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             total++;
 
             std::string errorMessage;
@@ -652,8 +601,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
-        returnObj.push_back(Pair("overall", "Successfully started " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to start " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+        returnObj.push_back(Pair("overall", "Successfully started " + std::to_string(successful) + " masternodes, failed to start " +
+                                 std::to_string(fail) + ", total " + std::to_string(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -730,9 +679,9 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 CTxDestination address1;
                 ExtractDestination(payee, address1);
                 CBitcoinAddress address2(address1);
-                obj.push_back(Pair(boost::lexical_cast<std::string>(nHeight),       address2.ToString().c_str()));
+                obj.push_back(Pair(std::to_string(nHeight),       address2.ToString().c_str()));
             } else {
-                obj.push_back(Pair(boost::lexical_cast<std::string>(nHeight),       ""));
+                obj.push_back(Pair(std::to_string(nHeight),       ""));
             }
         }
 
@@ -750,7 +699,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         if (params.size() == 2){
             strAddress = params[1].get_str().c_str();
         } else {
-            throw runtime_error(
+            throw std::runtime_error(
                         "Masternode address required\n");
         }
 
@@ -773,7 +722,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultObj;
         UniValue resultObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             //Object mnObj;
             UniValue mnObj(UniValue::VOBJ);
             mnObj.push_back(Pair("alias", mne.getAlias()));
@@ -791,12 +740,12 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
     if (strCommand == "outputs"){
         // Find possible candidates
-        vector<COutput> possibleCoins = activeMasternode.SelectCoinsMasternode();
+        std::vector<COutput> possibleCoins = activeMasternode.SelectCoinsMasternode();
 
         //Object obj;
         UniValue obj(UniValue::VOBJ);
-        BOOST_FOREACH(COutput& out, possibleCoins) {
-            obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), boost::lexical_cast<std::string>(out.i)));
+        for(COutput& out : possibleCoins) {
+            obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), std::to_string(out.i)));
         }
 
         return obj;
@@ -809,7 +758,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         mnEntries = masternodeConfig.getEntries();
 
         if (params.size() != 2)
-        throw runtime_error("You can only vote 'yea' or 'nay'");
+        throw std::runtime_error("You can only vote 'yea' or 'nay'");
 
         std::string vote = params[1].get_str().c_str();
         if(vote != "yea" && vote != "nay") return "You can only vote 'yea' or 'nay'";
@@ -823,7 +772,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         Object resultObj;
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             std::string errorMessage;
             std::vector<unsigned char> vchMasterNodeSignature;
             std::string strMasterNodeSignMessage;
@@ -847,7 +796,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                                 continue;
             }
 
-            std::string strMessage = pmn->vin.ToString() + boost::lexical_cast<std::string>(nVote);
+            std::string strMessage = pmn->vin.ToString() + std::to_string(nVote);
 
                         if(!darkSendSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyMasternode)){
                                 printf(" Error upon calling SignMessage for %s\n", mne.getAlias().c_str());
@@ -865,11 +814,11 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
             //send to all peers
             //LOCK(cs_vNodes);
-            //BOOST_FOREACH(CNode* pnode, vNodes)
+            //for(CNode* pnode : vNodes)
                // pnode->PushMessage("mvote", pmn->vin, vchMasterNodeSignature, nVote);
 
         }
-                return("Voted successfully " + boost::lexical_cast<std::string>(success) + " time(s) and failed " + boost::lexical_cast<std::string>(failed) + " time(s).");
+                return("Voted successfully " + std::to_string(success) + " time(s) and failed " + std::to_string(failed) + " time(s).");
     }*/
 
     /*if (strCommand == "list")
@@ -881,7 +830,6 @@ UniValue masternode(const UniValue& params, bool fHelp)
         }
         return masternodelist(newParams);
     }*/
-    return NullUniValue;
 }
 
 UniValue masternodelist(const UniValue& params, bool fHelp)
@@ -896,7 +844,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
             (strMode != "status" && strMode != "vin" && strMode != "pubkey" && strMode != "lastseen" && strMode != "activeseconds" && strMode != "rank"
                 && strMode != "protocol" && strMode != "full" && strMode != "votes" && strMode != "donation" && strMode != "pose"))
     {
-        throw runtime_error(
+        throw std::runtime_error(
                 "masternodelist ( \"mode\" \"filter\" )\n"
                 "Get a list of masternodes in different modes\n"
                 "\nArguments:\n"
@@ -920,33 +868,33 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
     //Object obj;
         UniValue obj(UniValue::VOBJ);
     if (strMode == "rank") {
-        std::vector<pair<int, CMasternode> > vMasternodeRanks = m_nodeman.GetMasternodeRanks(chainActive.Tip()->nHeight);
-        BOOST_FOREACH(PAIRTYPE(int, CMasternode)& s, vMasternodeRanks) {
+        std::vector<std::pair<int, CMasternode> > vMasternodeRanks = m_nodeman.GetMasternodeRanks(chainActive.Tip()->nHeight);
+        for(PAIRTYPE(int, CMasternode)& s : vMasternodeRanks) {
             std::string strAddr = s.second.addr.ToString();
-            if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
+            if(strFilter !="" && strAddr.find(strFilter) == std::string::npos) continue;
             obj.push_back(Pair(strAddr,       s.first));
         }
     } else {
         std::vector<CMasternode> vMasternodes = m_nodeman.GetFullMasternodeVector();
-        BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+        for(CMasternode& mn : vMasternodes) {
             std::string strAddr = mn.addr.ToString();
             if (strMode == "activeseconds") {
-                if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && strAddr.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)(mn.lastTimeSeen - mn.sigTime)));
             } else if (strMode == "donation") {
                 CTxDestination address1;
                 ExtractDestination(mn.donationAddress, address1);
                 CBitcoinAddress address2(address1);
 
-                if(strFilter !="" && address2.ToString().find(strFilter) == string::npos &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && address2.ToString().find(strFilter) == std::string::npos &&
+                    strAddr.find(strFilter) == std::string::npos) continue;
 
                 std::string strOut = "";
 
                 if(mn.donationPercentage != 0){
                     strOut = address2.ToString().c_str();
                     strOut += ":";
-                    strOut += boost::lexical_cast<std::string>(mn.donationPercentage);
+                    strOut += std::to_string(mn.donationPercentage);
                 }
                 obj.push_back(Pair(strAddr,       strOut.c_str()));
             } else if (strMode == "full") {
@@ -957,27 +905,27 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 CBitcoinAddress address2(address1);
 
                 std::ostringstream addrStream;
-                addrStream << setw(21) << strAddr;
+                addrStream << std::setw(21) << strAddr;
 
                 std::ostringstream stringStream;
-                stringStream << setw(10) <<
+                stringStream << std::setw(10) <<
                                mn.Status() << " " <<
                                mn.protocolVersion << " " <<
                                address2.ToString() << " " <<
                                addrStream.str() << " " <<
-                               mn.lastTimeSeen << " " << setw(8) <<
+                               mn.lastTimeSeen << " " << std::setw(8) <<
                                (mn.lastTimeSeen - mn.sigTime);
                 std::string output = stringStream.str();
                 stringStream << " " << strAddr;
-                if(strFilter !="" && stringStream.str().find(strFilter) == string::npos &&
-                        strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && stringStream.str().find(strFilter) == std::string::npos &&
+                        strAddr.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(mn.vin.prevout.hash.ToString(), output));
             } else if (strMode == "lastseen") {
-                if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && strAddr.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.lastTimeSeen));
             } else if (strMode == "protocol") {
-                if(strFilter !="" && strFilter != boost::lexical_cast<std::string>(mn.protocolVersion) &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && strFilter != std::to_string(mn.protocolVersion) &&
+                    strAddr.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.protocolVersion));
             } else if (strMode == "pubkey") {
                 CScript pubkey;
@@ -986,20 +934,20 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 ExtractDestination(pubkey, address1);
                 CBitcoinAddress address2(address1);
 
-                if(strFilter !="" && address2.ToString().find(strFilter) == string::npos &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && address2.ToString().find(strFilter) == std::string::npos &&
+                    strAddr.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(strAddr,       address2.ToString().c_str()));
             } else if (strMode == "pose") {
-                if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
-                std::string strOut = boost::lexical_cast<std::string>(mn.nScanningErrorCount);
+                if(strFilter !="" && strAddr.find(strFilter) == std::string::npos) continue;
+                std::string strOut = std::to_string(mn.nScanningErrorCount);
                 obj.push_back(Pair(strAddr,       strOut.c_str()));
             } else if(strMode == "status") {
                 std::string strStatus = mn.Status();
-                if(strFilter !="" && strAddr.find(strFilter) == string::npos && strStatus.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && strAddr.find(strFilter) == std::string::npos && strStatus.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(strAddr,       strStatus.c_str()));
             } else if (strMode == "vin") {
-                if(strFilter !="" && mn.vin.prevout.hash.ToString().find(strFilter) == string::npos &&
-                    strAddr.find(strFilter) == string::npos) continue;
+                if(strFilter !="" && mn.vin.prevout.hash.ToString().find(strFilter) == std::string::npos &&
+                    strAddr.find(strFilter) == std::string::npos) continue;
                 obj.push_back(Pair(strAddr,       mn.vin.prevout.hash.ToString().c_str()));
             } else if(strMode == "votes"){
                 std::string strStatus = "ABSTAIN";
@@ -1011,7 +959,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                     if(mn.nVote == 1) strStatus = "YEA";
                 }
 
-                if(strFilter !="" && (strAddr.find(strFilter) == string::npos && strStatus.find(strFilter) == string::npos)) continue;
+                if(strFilter !="" && (strAddr.find(strFilter) == std::string::npos && strStatus.find(strFilter) == std::string::npos)) continue;
                 obj.push_back(Pair(strAddr,       strStatus.c_str()));
             }
         }
@@ -1022,7 +970,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
 UniValue getmasternodestatus (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "getmasternodestatus\n"
             "\nPrint masternode status\n"
 
@@ -1039,7 +987,7 @@ UniValue getmasternodestatus (const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getmasternodestatus", "") + HelpExampleRpc("getmasternodestatus", ""));
 
-    if (!fMasterNode) throw runtime_error("This is not a masternode");
+    if (!fMasterNode) throw std::runtime_error("This is not a masternode");
 
     CMasternode* pmn = m_nodeman.Find(activeMasternode.vin);
 
@@ -1054,7 +1002,7 @@ UniValue getmasternodestatus (const UniValue& params, bool fHelp)
         mnObj.push_back(Pair("message", activeMasternode.GetStatus()));
         return mnObj;
     }
-    throw runtime_error("Masternode not found in the list of available masternodes. Current status: "
+    throw std::runtime_error("Masternode not found in the list of available masternodes. Current status: "
                         + activeMasternode.GetStatus());
 }
 
@@ -1065,7 +1013,7 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
     if (params.size() == 1) strFilter = params[0].get_str();
 
     if (fHelp || (params.size() > 1))
-        throw runtime_error(
+        throw std::runtime_error(
             "listfundamentalnodes ( \"filter\" )\n"
             "\nGet a ranked list of fundamentalnodes\n"
 
@@ -1098,8 +1046,8 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
         if(!pindex) return 0;
         nHeight = pindex->nHeight;
     }
-    std::vector<pair<int, CFundamentalnode> > vFundamentalnodeRanks = mnodeman.GetFundamentalnodeRanks(nHeight);
-    BOOST_FOREACH (PAIRTYPE(int, CFundamentalnode) & s, vFundamentalnodeRanks) {
+    std::vector<std::pair<int, CFundamentalnode> > vFundamentalnodeRanks = mnodeman.GetFundamentalnodeRanks(nHeight);
+    for (PAIRTYPE(int, CFundamentalnode) & s : vFundamentalnodeRanks) {
         UniValue obj(UniValue::VOBJ);
         std::string strVin = s.second.vin.prevout.ToStringShort();
         std::string strTxHash = s.second.vin.prevout.hash.ToString();
@@ -1108,9 +1056,9 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
         CFundamentalnode* mn = mnodeman.Find(s.second.vin);
 
         if (mn != NULL) {
-            if (strFilter != "" && strTxHash.find(strFilter) == string::npos &&
-                mn->Status().find(strFilter) == string::npos &&
-                CBitcoinAddress(mn->pubKeyCollateralAddress.GetID()).ToString().find(strFilter) == string::npos) continue;
+            if (strFilter != "" && strTxHash.find(strFilter) == std::string::npos &&
+                mn->Status().find(strFilter) == std::string::npos &&
+                CBitcoinAddress(mn->pubKeyCollateralAddress.GetID()).ToString().find(strFilter) == std::string::npos) continue;
 
             std::string strStatus = mn->Status();
             std::string strHost;
@@ -1140,7 +1088,7 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
 UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 1))
-        throw runtime_error(
+        throw std::runtime_error(
             "fundamentalnodeconnect \"address\"\n"
             "\nAttempts to connect to specified fundamentalnode address\n"
 
@@ -1159,14 +1107,14 @@ UniValue fundamentalnodeconnect(const UniValue& params, bool fHelp)
         pnode->Release();
         return NullUniValue;
     } else {
-        throw runtime_error("error connecting\n");
+        throw std::runtime_error("error connecting\n");
     }
 }
 
 UniValue getfundamentalnodecount (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() > 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "getfundamentalnodecount\n"
             "\nGet fundamentalnode count values\n"
 
@@ -1205,7 +1153,7 @@ UniValue getfundamentalnodecount (const UniValue& params, bool fHelp)
 UniValue fundamentalnodecurrent (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "fundamentalnodecurrent\n"
             "\nGet current fundamentalnode winner\n"
 
@@ -1232,13 +1180,13 @@ UniValue fundamentalnodecurrent (const UniValue& params, bool fHelp)
         return obj;
     }
 
-    throw runtime_error("unknown");
+    throw std::runtime_error("unknown");
 }
 
 UniValue fundamentalnodedebug (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "fundamentalnodedebug\n"
             "\nPrint fundamentalnode status\n"
 
@@ -1254,7 +1202,7 @@ UniValue fundamentalnodedebug (const UniValue& params, bool fHelp)
     CPubKey pubkey;
     CKey key;
     if (!activeFundamentalnode.GetFundamentalNodeVin(vin, pubkey, key))
-        throw runtime_error("Missing fundamentalnode input, please look at the documentation for instructions on fundamentalnode creation\n");
+        throw std::runtime_error("Missing fundamentalnode input, please look at the documentation for instructions on fundamentalnode creation\n");
     else
         return activeFundamentalnode.GetStatus();
 }
@@ -1277,7 +1225,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
     if (fHelp || params.size() < 2 || params.size() > 3 ||
         (params.size() == 2 && (strCommand != "local" && strCommand != "all" && strCommand != "many" && strCommand != "missing" && strCommand != "disabled")) ||
         (params.size() == 3 && strCommand != "alias"))
-        throw runtime_error(
+        throw std::runtime_error(
             "startfundamentalnode \"local|all|many|missing|disabled|alias\" lockwallet ( \"alias\" )\n"
             "\nAttempts to start one or more fundamentalnode(s)\n"
 
@@ -1307,7 +1255,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
     bool fLock = (params[1].get_str() == "true" ? true : false);
 
     if (strCommand == "local") {
-        if (!fFundamentalNode) throw runtime_error("you must set fundamentalnode=1 in the configuration\n");
+        if (!fFundamentalNode) throw std::runtime_error("you must set fundamentalnode=1 in the configuration\n");
 
         if (pwalletMain->IsLocked())
             throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
@@ -1329,7 +1277,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
         if ((strCommand == "missing" || strCommand == "disabled") &&
             (fundamentalnodeSync.RequestedFundamentalnodeAssets <= FUNDAMENTALNODE_SYNC_LIST ||
                 fundamentalnodeSync.RequestedFundamentalnodeAssets == FUNDAMENTALNODE_SYNC_FAILED)) {
-            throw runtime_error("You can't use this command until fundamentalnode list is synced\n");
+            throw std::runtime_error("You can't use this command until fundamentalnode list is synced\n");
         }
 
         std::vector<CFundamentalnodeConfig::CFundamentalnodeEntry> mnEntries;
@@ -1340,7 +1288,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
             int nIndex;
             if(!mne.castOutputIndex(nIndex))
@@ -1394,7 +1342,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             if (mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1439,7 +1387,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 UniValue createfundamentalnodekey (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "createfundamentalnodekey\n"
             "\nCreate a new fundamentalnode private key\n"
 
@@ -1457,7 +1405,7 @@ UniValue createfundamentalnodekey (const UniValue& params, bool fHelp)
 UniValue getfundamentalnodeoutputs (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "getfundamentalnodeoutputs\n"
             "\nPrint all fundamentalnode transaction outputs\n"
 
@@ -1474,10 +1422,10 @@ UniValue getfundamentalnodeoutputs (const UniValue& params, bool fHelp)
             HelpExampleCli("getfundamentalnodeoutputs", "") + HelpExampleRpc("getfundamentalnodeoutputs", ""));
 
     // Find possible candidates
-    vector<COutput> possibleCoins = activeFundamentalnode.SelectCoinsFundamentalnode();
+    std::vector<COutput> possibleCoins = activeFundamentalnode.SelectCoinsFundamentalnode();
 
     UniValue ret(UniValue::VARR);
-    BOOST_FOREACH (COutput& out, possibleCoins) {
+    for (COutput& out : possibleCoins) {
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("txhash", out.tx->GetHash().ToString()));
         obj.push_back(Pair("outputidx", out.i));
@@ -1494,7 +1442,7 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
     if (params.size() == 1) strFilter = params[0].get_str();
 
     if (fHelp || (params.size() > 1))
-        throw runtime_error(
+        throw std::runtime_error(
             "listfundamentalnodeconf ( \"filter\" )\n"
             "\nPrint fundamentalnode.conf in JSON format\n"
 
@@ -1522,7 +1470,7 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
 
     UniValue ret(UniValue::VARR);
 
-    BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
@@ -1531,10 +1479,10 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
 
         std::string strStatus = pmn ? pmn->Status() : "MISSING";
 
-        if (strFilter != "" && mne.getAlias().find(strFilter) == string::npos &&
-            mne.getIp().find(strFilter) == string::npos &&
-            mne.getTxHash().find(strFilter) == string::npos &&
-            strStatus.find(strFilter) == string::npos) continue;
+        if (strFilter != "" && mne.getAlias().find(strFilter) == std::string::npos &&
+            mne.getIp().find(strFilter) == std::string::npos &&
+            mne.getTxHash().find(strFilter) == std::string::npos &&
+            strStatus.find(strFilter) == std::string::npos) continue;
 
         UniValue mnObj(UniValue::VOBJ);
         mnObj.push_back(Pair("alias", mne.getAlias()));
@@ -1552,7 +1500,7 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
 UniValue getfundamentalnodestatus (const UniValue& params, bool fHelp)
 {
     if (fHelp || (params.size() != 0))
-        throw runtime_error(
+        throw std::runtime_error(
             "getfundamentalnodestatus\n"
             "\nPrint fundamentalnode status\n"
 
@@ -1569,7 +1517,7 @@ UniValue getfundamentalnodestatus (const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("getfundamentalnodestatus", "") + HelpExampleRpc("getfundamentalnodestatus", ""));
 
-    if (!fFundamentalNode) throw runtime_error("This is not a fundamentalnode");
+    if (!fFundamentalNode) throw std::runtime_error("This is not a fundamentalnode");
 
     CFundamentalnode* pmn = mnodeman.Find(activeFundamentalnode.vin);
 
@@ -1583,14 +1531,14 @@ UniValue getfundamentalnodestatus (const UniValue& params, bool fHelp)
         mnObj.push_back(Pair("message", activeFundamentalnode.GetStatus()));
         return mnObj;
     }
-    throw runtime_error("Fundamentalnode not found in the list of available fundamentalnodes. Current status: "
+    throw std::runtime_error("Fundamentalnode not found in the list of available fundamentalnodes. Current status: "
                         + activeFundamentalnode.GetStatus());
 }
 
 UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 3)
-        throw runtime_error(
+        throw std::runtime_error(
             "getfundamentalnodewinners ( blocks \"filter\" )\n"
             "\nPrint the fundamentalnode winners for the last n blocks\n"
 
@@ -1657,7 +1605,7 @@ UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
             UniValue winner(UniValue::VARR);
             boost::char_separator<char> sep(",");
             boost::tokenizer< boost::char_separator<char> > tokens(strPayment, sep);
-            BOOST_FOREACH (const string& t, tokens) {
+            for (const std::string& t : tokens) {
                 UniValue addr(UniValue::VOBJ);
                 std::size_t pos = t.find(":");
                 std::string strAddress = t.substr(0,pos);
@@ -1691,7 +1639,7 @@ UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
 UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "getfundamentalnodescores ( blocks )\n"
             "\nPrint list of winning fundamentalnode by score\n"
 
@@ -1712,7 +1660,7 @@ UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
         try {
             nLast = std::stoi(params[0].get_str());
         } catch (const boost::bad_lexical_cast &) {
-            throw runtime_error("Exception on param 2");
+            throw std::runtime_error("Exception on param 2");
         }
     }
     UniValue obj(UniValue::VOBJ);
@@ -1721,7 +1669,7 @@ UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
     for (int nHeight = chainActive.Tip()->nHeight - nLast; nHeight < chainActive.Tip()->nHeight + 20; nHeight++) {
         uint256 nHigh = 0;
         CFundamentalnode* pBestFundamentalnode = NULL;
-        BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+        for (CFundamentalnode& mn : vFundamentalnodes) {
             uint256 n = mn.CalculateScore(1, nHeight - 100);
             if (n > nHigh) {
                 nHigh = n;
@@ -1740,7 +1688,7 @@ bool DecodeHexMnb(CFundamentalnodeBroadcast& mnb, std::string strHexMnb) {
     if (!IsHex(strHexMnb))
         return false;
 
-    vector<unsigned char> mnbData(ParseHex(strHexMnb));
+    std::vector<unsigned char> mnbData(ParseHex(strHexMnb));
     CDataStream ssData(mnbData, SER_NETWORK, PROTOCOL_VERSION);
     try {
         ssData >> mnb;
@@ -1754,11 +1702,11 @@ bool DecodeHexMnb(CFundamentalnodeBroadcast& mnb, std::string strHexMnb) {
 
 UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
-	string strCommand;
+	std::string strCommand;
 	if (params.size() >= 1)
 		strCommand = params[0].get_str();
 	if (fHelp || (strCommand != "alias" && strCommand != "all") || (strCommand == "alias" && params.size() < 2))
-		throw runtime_error(
+		throw std::runtime_error(
 				"createfundamentalnodebroadcast \"command\" ( \"alias\")\n"
 				"Creates a fundamentalnode broadcast message for one or all fundamentalnodes configured in fundamentalnode.conf\n"
 				"\nArguments:\n"
@@ -1783,7 +1731,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for(CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1831,7 +1779,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for(CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
 
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));
@@ -1870,7 +1818,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
 	if (fHelp || params.size() != 1)
-		throw runtime_error(
+		throw std::runtime_error(
 				"decodefundamentalnodebroadcast \"hexstring\"\n"
 				"Command to decode fundamentalnode broadcast messages\n"
 				"\nArgument:\n"
@@ -1929,7 +1877,7 @@ UniValue decodefundamentalnodebroadcast(const UniValue& params, bool fHelp)
 UniValue relayfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
         		"relayfundamentalnodebroadcast \"hexstring\"\n"
         		"Command to relay fundamentalnode broadcast messages\n"
         		"1. \"hexstring\"        (hex string) The fundamentalnode broadcast message\n"

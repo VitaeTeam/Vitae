@@ -11,8 +11,6 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
-#include <boost/foreach.hpp>
-
 
 static CCriticalSection cs_nTimeOffset;
 static int64_t nTimeOffset = 0;
@@ -33,11 +31,6 @@ int64_t GetTimeOffset()
 int64_t GetAdjustedTime()
 {
     return GetTime() + GetTimeOffset();
-}
-
-static int64_t abs64(int64_t n)
-{
-    return (n >= 0 ? n : -n);
 }
 
 #define BITCOIN_TIMEDATA_MAX_SAMPLES 200
@@ -80,16 +73,16 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample, int nOffsetLimit)
         // Only let other nodes change our time by so much
         if (abs64(nMedian) < nOffsetLimit) {
             nTimeOffset = nMedian;
+            strMiscWarning = "";
         } else {
             nTimeOffset = (nMedian > 0 ? 1 : -1) * nOffsetLimit;
-            std::string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong VITAE Core will not work properly.");
+            std::string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong PIVX Core will not work properly.");
             strMiscWarning = strMessage;
             LogPrintf("*** %s\n", strMessage);
-            // Commented out to prevent freezing of Qt wallet--TODO: Revisit to resolve cause of freezing
-            //uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_ERROR);
+            uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_ERROR);
         }
         if (fDebug) {
-            BOOST_FOREACH (int64_t n, vSorted)
+            for (int64_t n : vSorted)
                 LogPrintf("%+d  ", n);
             LogPrintf("|  ");
         }

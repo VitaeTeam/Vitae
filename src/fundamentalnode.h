@@ -25,12 +25,10 @@
 static const CAmount FUNDAMENTALNODE_AMOUNT = 10000* COIN;
 static const CAmount FN_MAGIC_AMOUNT = 0.1234 *COIN;
 
-using namespace std;
-
 class CFundamentalnode;
 class CFundamentalnodeBroadcast;
 class CFundamentalnodePing;
-extern map<int64_t, uint256> mapCacheBlockHashes;
+extern std::map<int64_t, uint256> mapCacheBlockHashes;
 
 bool GetBlockHash(uint256& hash, int nBlockHeight);
 
@@ -124,7 +122,8 @@ public:
         FUNDAMENTALNODE_WATCHDOG_EXPIRED,
         FUNDAMENTALNODE_POSE_BAN,
         FUNDAMENTALNODE_VIN_SPENT,
-        FUNDAMENTALNODE_POS_ERROR
+        FUNDAMENTALNODE_POS_ERROR,
+        FUNDAMENTALNODE_MISSING
     };
 
     CTxIn vin;
@@ -273,12 +272,16 @@ public:
         if (activeState == CFundamentalnode::FUNDAMENTALNODE_VIN_SPENT) strStatus = "VIN_SPENT";
         if (activeState == CFundamentalnode::FUNDAMENTALNODE_REMOVE) strStatus = "REMOVE";
         if (activeState == CFundamentalnode::FUNDAMENTALNODE_POS_ERROR) strStatus = "POS_ERROR";
+        if (activeState == CFundamentalnode::FUNDAMENTALNODE_POS_ERROR) strStatus = "MISSING";
 
         return strStatus;
     }
 
     int64_t GetLastPaid();
     bool IsValidNetAddr();
+
+    /// Is the input associated with collateral public key? (and there is 10000 VIT - checking if valid masternode)
+    //bool IsInputAssociatedWithPubkey() const;
 };
 
 

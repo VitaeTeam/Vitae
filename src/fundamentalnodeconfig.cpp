@@ -11,10 +11,23 @@
 
 CFundamentalnodeConfig fundamentalnodeConfig;
 
-void CFundamentalnodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex)
+CFundamentalnodeConfig::CFundamentalnodeEntry* CFundamentalnodeConfig::add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex)
 {
     CFundamentalnodeEntry cme(alias, ip, privKey, txHash, outputIndex);
     entries.push_back(cme);
+    return &(entries[entries.size()-1]);
+}
+
+void CFundamentalnodeConfig::remove(std::string alias) {
+    int pos = -1;
+    for (int i = 0; i < ((int) entries.size()); ++i) {
+        CFundamentalnodeEntry e = entries[i];
+        if (e.getAlias() == alias) {
+            pos = i;
+            break;
+        }
+    }
+    entries.erase(entries.begin() + pos);
 }
 
 bool CFundamentalnodeConfig::read(std::string& strErr)

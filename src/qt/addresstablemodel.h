@@ -1,5 +1,6 @@
 // Copyright (c) 2011-2013 The Bitcoin developers
-// Copyright (c) 2017 The PIVX developers
+// Copyright (c) 2017-2019 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,7 +28,8 @@ public:
 
     enum ColumnIndex {
         Label = 0,  /**< User specified label */
-        Address = 1 /**< Bitcoin address */
+        Address = 1, /**< Bitcoin address */
+        Date = 2 /**< Address creation date */
     };
 
     enum RoleIndex {
@@ -47,11 +49,19 @@ public:
     static const QString Send;    /**< Specifies send address */
     static const QString Receive; /**< Specifies receive address */
     static const QString Zerocoin; /**< Specifies stealth address */
+    static const QString Delegators; /**< Specifies cold staking addresses which delegated tokens to this wallet */
+    static const QString ColdStaking; /**< Specifies cold staking own addresses */
+    static const QString ColdStakingSend; /**< Specifies send cold staking addresses (simil 'contacts')*/
 
     /** @name Methods overridden from QAbstractTableModel
         @{*/
     int rowCount(const QModelIndex& parent) const;
     int columnCount(const QModelIndex& parent) const;
+    int sizeSend() const;
+    int sizeRecv() const;
+    int sizeDell() const;
+    int sizeColdSend() const;
+    void notifyChange(const QModelIndex &index);
     QVariant data(const QModelIndex& index, int role) const;
     bool setData(const QModelIndex& index, const QVariant& value, int role);
     QVariant headerData(int section, Qt::Orientation orientation, int role) const;
@@ -73,6 +83,21 @@ public:
        Return -1 if not found.
      */
     int lookupAddress(const QString& address) const;
+
+    /*
+     * Look up purpose for address in address book, if not found return empty string
+     */
+    std::string purposeForAddress(const std::string& address) const;
+
+    /**
+     * Checks if the address is whitelisted
+     */
+    bool isWhitelisted(const std::string& address) const;
+
+    /**
+     * Return last unused address
+     */
+    QString getAddressToShow() const;
 
     EditStatus getEditStatus() const { return editStatus; }
 

@@ -6,13 +6,13 @@
 #include "fundamentalnode.h"
 #include "addrman.h"
 #include "fundamentalnodeman.h"
+#include "messagesigner.h"
 #include "obfuscation.h"
 #include "sync.h"
 #include "util.h"
-#include <boost/lexical_cast.hpp>
 
 // keep track of the scanning errors I've seen
-map<uint256, int> mapSeenFundamentalnodeScanningErrors;
+std::map<uint256, int> mapSeenFundamentalnodeScanningErrors;
 // cache block hashes as we calculate them
 std::map<int64_t, uint256> mapCacheBlockHashes;
 
@@ -148,7 +148,7 @@ bool CFundamentalnode::UpdateFromNewBroadcast(CFundamentalnodeBroadcast& mnb)
         int nDoS = 0;
         if (mnb.lastPing == CFundamentalnodePing() || (mnb.lastPing != CFundamentalnodePing() && mnb.lastPing.CheckAndUpdate(nDoS, false))) {
             lastPing = mnb.lastPing;
-            mnodeman.mapSeenFundamentalnodePing.insert(make_pair(lastPing.GetHash(), lastPing));
+            mnodeman.mapSeenFundamentalnodePing.insert(std::make_pair(lastPing.GetHash(), lastPing));
         }
         return true;
     }
@@ -317,6 +317,8 @@ std::string CFundamentalnode::GetStatus()
         return "WATCHDOG_EXPIRED";
     case CFundamentalnode::FUNDAMENTALNODE_POSE_BAN:
         return "POSE_BAN";
+    case CFundamentalnode::FUNDAMENTALNODE_MISSING:
+        return "MISSING";
     default:
         return "UNKNOWN";
     }
@@ -329,6 +331,24 @@ bool CFundamentalnode::IsValidNetAddr()
     return Params().NetworkID() == CBaseChainParams::REGTEST ||
            (IsReachable(addr) && addr.IsRoutable());
 }
+
+/*
+bool CFundamentalnode::IsInputAssociatedWithPubkey() const
+{
+    CScript payee;
+    payee = GetScriptForDestination(pubKeyCollateralAddress.GetID());
+
+    CTransaction txVin;
+    uint256 hash;
+    if(GetTransaction(vin.prevout.hash, txVin, hash, true)) {
+        for (CTxOut out : txVin.vout) {
+            if (out.nValue == 10000 * COIN && out.scriptPubKey == payee) return true;
+        }
+    }
+
+    return false;
+}
+*/
 
 CFundamentalnodeBroadcast::CFundamentalnodeBroadcast()
 {
@@ -405,7 +425,7 @@ bool CFundamentalnodeBroadcast::Create(std::string strService, std::string strKe
         return false;
     }
 
-    if (!obfuScationSigner.GetKeysFromSecret(strKeyFundamentalnode, keyFundamentalnodeNew, pubKeyFundamentalnodeNew)) {
+    if (!CMessageSigner::GetKeysFromSecret(strKeyFundamentalnode, keyFundamentalnodeNew, pubKeyFundamentalnodeNew)) {
         strErrorRet = strprintf("Invalid fundamentalnode key %s", strKeyFundamentalnode);
         LogPrint("fundamentalnode","CFundamentalnodeBroadcast::Create -- %s\n", strErrorRet);
         return false;
@@ -519,8 +539,8 @@ bool CFundamentalnodeBroadcast::CheckAndUpdate(int& nDos)
     }
 
     std::string errorMessage = "";
-    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
-    		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
+    		&& !CMessageSigner::VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
         // don't ban for old fundamentalnodes, their sigs could be broken because of the bug
         nDos = protocolVersion < MIN_PEER_MNANNOUNCE ? 0 : 100;
         return error("CFundamentalnodeBroadcast::CheckAndUpdate - Got bad Fundamentalnode address signature\n");
@@ -600,7 +620,7 @@ bool CFundamentalnodeBroadcast::CheckInputsAndAdd(int& nDoS)
 
         int64_t nValueIn = 0;
 
-        BOOST_FOREACH (const CTxIn& txin, tx2.vin) {
+        for (const CTxIn& txin : tx2.vin) {
             // First try finding the previous transaction in database
             CTransaction txPrev;
             uint256 hashBlockPrev;
@@ -687,11 +707,11 @@ bool CFundamentalnodeBroadcast::Sign(CKey& keyCollateralAddress)
     else
     	strMessage = GetNewStrMessage();
 
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, sig, keyCollateralAddress)) {
-        return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
+    if (!CMessageSigner::SignMessage(strMessage, sig, keyCollateralAddress)) {
+        return error("CFundamentalnodeBroadcast::Sign() - Error.\n");
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, sig, strMessage, errorMessage)) {
         return error("CFundamentalnodeBroadcast::Sign() - Error: %s\n", errorMessage);
     }
 
@@ -702,8 +722,8 @@ bool CFundamentalnodeBroadcast::VerifySignature()
 {
     std::string errorMessage;
 
-    if(!obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
-    		&& !obfuScationSigner.VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubKeyCollateralAddress, sig, GetNewStrMessage(), errorMessage)
+    		&& !CMessageSigner::VerifyMessage(pubKeyCollateralAddress, sig, GetOldStrMessage(), errorMessage)) {
         return error("CFundamentalnodeBroadcast::VerifySignature() - Error: %s\n", errorMessage);
     }
 
@@ -716,7 +736,7 @@ std::string CFundamentalnodeBroadcast::GetOldStrMessage()
 
 	std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
 	std::string vchPubKey2(pubKeyFundamentalnode.begin(), pubKeyFundamentalnode.end());
-	strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(protocolVersion);
+	strMessage = addr.ToString() + std::to_string(sigTime) + vchPubKey + vchPubKey2 + std::to_string(protocolVersion);
 
     return strMessage;
 }
@@ -725,7 +745,7 @@ std:: string CFundamentalnodeBroadcast::GetNewStrMessage()
 {
 	std::string strMessage;
 
-	strMessage = addr.ToString() + boost::lexical_cast<std::string>(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + boost::lexical_cast<std::string>(protocolVersion);
+	strMessage = addr.ToString() + std::to_string(sigTime) + pubKeyCollateralAddress.GetID().ToString() + pubKeyFundamentalnode.GetID().ToString() + std::to_string(protocolVersion);
 
 	return strMessage;
 }
@@ -753,14 +773,14 @@ bool CFundamentalnodePing::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundame
     std::string strFundamentalNodeSignMessage;
 
     sigTime = GetAdjustedTime();
-    std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
+    std::string strMessage = vin.ToString() + blockHash.ToString() + std::to_string(sigTime);
 
-    if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
-        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", errorMessage);
+    if (!CMessageSigner::SignMessage(strMessage, vchSig, keyFundamentalnode)) {
+        LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error.\n");
         return false;
     }
 
-    if (!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
+    if (!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)) {
         LogPrint("fundamentalnode","CFundamentalnodePing::Sign() - Error: %s\n", errorMessage);
         return false;
     }
@@ -769,10 +789,10 @@ bool CFundamentalnodePing::Sign(CKey& keyFundamentalnode, CPubKey& pubKeyFundame
 }
 
 bool CFundamentalnodePing::VerifySignature(CPubKey& pubKeyFundamentalnode, int &nDos) {
-	std::string strMessage = vin.ToString() + blockHash.ToString() + boost::lexical_cast<std::string>(sigTime);
+	std::string strMessage = vin.ToString() + blockHash.ToString() + std::to_string(sigTime);
 	std::string errorMessage = "";
 
-	if(!obfuScationSigner.VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)){
+	if(!CMessageSigner::VerifyMessage(pubKeyFundamentalnode, vchSig, strMessage, errorMessage)){
 		nDos = 33;
 		return error("CFundamentalnodePing::VerifySignature - Got bad Fundamentalnode ping signature %s Error: %s\n", vin.ToString(), errorMessage);
 	}

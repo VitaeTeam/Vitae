@@ -8,7 +8,7 @@
 #include "config/vitae-config.h"
 #endif
 
-#include "bitcoingui.h"
+#include "qt/vitae/vitaegui.h"
 
 #include "clientmodel.h"
 #include "guiconstants.h"
@@ -17,7 +17,8 @@
 #include "net.h"
 #include "networkstyle.h"
 #include "optionsmodel.h"
-#include "splashscreen.h"
+#include "qt/vitae/splash.h"
+#include "qt/vitae/welcomecontentwidget.h"
 #include "utilitydialog.h"
 #include "winshutdownmonitor.h"
 
@@ -31,7 +32,6 @@
 #include "init.h"
 #include "main.h"
 #include "rpcserver.h"
-#include "scheduler.h"
 #include "ui_interface.h"
 #include "util.h"
 
@@ -57,13 +57,6 @@
 
 #if defined(QT_STATICPLUGIN)
 #include <QtPlugin>
-#if QT_VERSION < 0x050000
-Q_IMPORT_PLUGIN(qcncodecs)
-Q_IMPORT_PLUGIN(qjpcodecs)
-Q_IMPORT_PLUGIN(qtwcodecs)
-Q_IMPORT_PLUGIN(qkrcodecs)
-Q_IMPORT_PLUGIN(qtaccessiblewidgets)
-#else
 #if QT_VERSION < 0x050400
 Q_IMPORT_PLUGIN(AccessibleFactory)
 #endif
@@ -74,11 +67,8 @@ Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin);
 #elif defined(QT_QPA_PLATFORM_COCOA)
 Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin);
 #endif
-#endif
-#endif
-
-#if QT_VERSION < 0x050000
-#include <QTextCodec>
+Q_IMPORT_PLUGIN(QSvgPlugin);
+Q_IMPORT_PLUGIN(QSvgIconPlugin);
 #endif
 
 // Declare meta types used for QMetaObject::invokeMethod
@@ -152,20 +142,12 @@ static void initTranslations(QTranslator& qtTranslatorBase, QTranslator& qtTrans
 }
 
 /* qDebug() message handler --> debug.log */
-#if QT_VERSION < 0x050000
-void DebugMessageHandler(QtMsgType type, const char* msg)
-{
-    const char* category = (type == QtDebugMsg) ? "qt" : NULL;
-    LogPrint(category, "GUI: %s\n", msg);
-}
-#else
 void DebugMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     Q_UNUSED(context);
     const char* category = (type == QtDebugMsg) ? "qt" : NULL;
     LogPrint(category, "GUI: %s\n", msg.toStdString());
 }
-#endif
 
 /** Class encapsulating VITAE Core startup and shutdown.
  * Allows running startup and shutdown in a different thread from the UI thread.
@@ -187,14 +169,11 @@ signals:
     void runawayException(const QString& message);
 
 private:
-    boost::thread_group threadGroup;
-    CScheduler scheduler;
-
     /// Flag indicating a restart
     bool execute_restart;
 
     /// Pass fatal exception message to UI thread
-    void handleRunawayException(std::exception* e);
+    void handleRunawayException(const std::exception* e);
 };
 
 /** Main VITAE application object */
@@ -216,6 +195,9 @@ public:
     /// Create splash screen
     void createSplashScreen(const NetworkStyle* networkStyle);
 
+    /// Create tutorial screen
+    bool createTutorialScreen();
+
     /// Request core initialization
     void requestInitialize();
     /// Request core shutdown
@@ -224,7 +206,7 @@ public:
     /// Get process return value
     int getReturnValue() { return returnValue; }
 
-    /// Get window identifier of QMainWindow (BitcoinGUI)
+    /// Get window identifier of QMainWindow (VITAEGUI)
     WId getMainWinId() const;
 
 public slots:
@@ -232,6 +214,7 @@ public slots:
     void shutdownResult(int retval);
     /// Handle runaway exceptions. Shows a message box with the problem and quits the program.
     void handleRunawayException(const QString& message);
+    void updateTranslation();
 
 signals:
     void requestedInitialize();
@@ -244,13 +227,14 @@ private:
     QThread* coreThread;
     OptionsModel* optionsModel;
     ClientModel* clientModel;
-    BitcoinGUI* window;
+    VITAEGUI* window;
     QTimer* pollShutdownTimer;
 #ifdef ENABLE_WALLET
     PaymentServer* paymentServer;
     WalletModel* walletModel;
 #endif
     int returnValue;
+    QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
 
     void startThread();
 };
@@ -261,7 +245,7 @@ BitcoinCore::BitcoinCore() : QObject()
 {
 }
 
-void BitcoinCore::handleRunawayException(std::exception* e)
+void BitcoinCore::handleRunawayException(const std::exception* e)
 {
     PrintExceptionContinue(e, "Runaway exception");
     emit runawayException(QString::fromStdString(strMiscWarning));
@@ -273,9 +257,9 @@ void BitcoinCore::initialize()
 
     try {
         qDebug() << __func__ << ": Running AppInit2 in thread";
-        int rv = AppInit2(threadGroup, scheduler);
+        int rv = AppInit2();
         emit initializeResult(rv);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
         handleRunawayException(NULL);
@@ -288,8 +272,7 @@ void BitcoinCore::restart(QStringList args)
         execute_restart = false;
         try {
             qDebug() << __func__ << ": Running Restart in thread";
-            Interrupt(threadGroup);
-            threadGroup.join_all();
+            Interrupt();
             PrepareShutdown();
             qDebug() << __func__ << ": Shutdown finished";
             emit shutdownResult(1);
@@ -297,7 +280,7 @@ void BitcoinCore::restart(QStringList args)
             QProcess::startDetached(QApplication::applicationFilePath(), args);
             qDebug() << __func__ << ": Restart initiated...";
             QApplication::quit();
-        } catch (std::exception& e) {
+        } catch (const std::exception& e) {
             handleRunawayException(&e);
         } catch (...) {
             handleRunawayException(NULL);
@@ -309,12 +292,11 @@ void BitcoinCore::shutdown()
 {
     try {
         qDebug() << __func__ << ": Running Shutdown in thread";
-        Interrupt(threadGroup);
-        threadGroup.join_all();
+        Interrupt();
         Shutdown();
         qDebug() << __func__ << ": Shutdown finished";
         emit shutdownResult(1);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         handleRunawayException(&e);
     } catch (...) {
         handleRunawayException(NULL);
@@ -375,7 +357,7 @@ void BitcoinApplication::createOptionsModel()
 
 void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
 {
-    window = new BitcoinGUI(networkStyle, 0);
+    window = new VITAEGUI(networkStyle, 0);
 
     pollShutdownTimer = new QTimer(window);
     connect(pollShutdownTimer, SIGNAL(timeout()), window, SLOT(detectShutdown()));
@@ -384,12 +366,31 @@ void BitcoinApplication::createWindow(const NetworkStyle* networkStyle)
 
 void BitcoinApplication::createSplashScreen(const NetworkStyle* networkStyle)
 {
-    SplashScreen* splash = new SplashScreen(0, networkStyle);
+    Splash* splash = new Splash(0, networkStyle);
     // We don't hold a direct pointer to the splash screen after creation, so use
     // Qt::WA_DeleteOnClose to make sure that the window will be deleted eventually.
     splash->setAttribute(Qt::WA_DeleteOnClose);
     splash->show();
     connect(this, SIGNAL(splashFinished(QWidget*)), splash, SLOT(slotFinish(QWidget*)));
+}
+
+bool BitcoinApplication::createTutorialScreen()
+{
+    WelcomeContentWidget* widget = new WelcomeContentWidget();
+
+    connect(widget, &WelcomeContentWidget::onLanguageSelected, [this](){
+        updateTranslation();
+    });
+
+    widget->exec();
+    bool ret = widget->isOk;
+    widget->deleteLater();
+    return ret;
+}
+
+void BitcoinApplication::updateTranslation(){
+    // Re-initialize translations after change them
+    initTranslations(this->qtTranslatorBase, this->qtTranslator, this->translatorBase, this->translator);
 }
 
 void BitcoinApplication::startThread()
@@ -462,8 +463,8 @@ void BitcoinApplication::initializeResult(int retval)
         if (pwalletMain) {
             walletModel = new WalletModel(pwalletMain, optionsModel);
 
-            window->addWallet(BitcoinGUI::DEFAULT_WALLET, walletModel);
-            window->setCurrentWallet(BitcoinGUI::DEFAULT_WALLET);
+            window->addWallet(VITAEGUI::DEFAULT_WALLET, walletModel);
+            window->setCurrentWallet(VITAEGUI::DEFAULT_WALLET);
 
             connect(walletModel, SIGNAL(coinsSent(CWallet*, SendCoinsRecipient, QByteArray)),
                 paymentServer, SLOT(fetchPaymentACK(CWallet*, const SendCoinsRecipient&, QByteArray)));
@@ -502,7 +503,7 @@ void BitcoinApplication::shutdownResult(int retval)
 
 void BitcoinApplication::handleRunawayException(const QString& message)
 {
-    QMessageBox::critical(0, "Runaway exception", BitcoinGUI::tr("A fatal error occurred. VITAE can no longer continue safely and will quit.") + QString("\n\n") + message);
+    QMessageBox::critical(0, "Runaway exception", VITAEGUI::tr("A fatal error occurred. VITAE can no longer continue safely and will quit.") + QString("\n\n") + message);
     ::exit(1);
 }
 
@@ -526,12 +527,6 @@ int main(int argc, char* argv[])
 // Do not refer to data directory yet, this can be overridden by Intro::pickDataDirectory
 
 /// 2. Basic Qt initialization (not dependent on parameters or configuration)
-#if QT_VERSION < 0x050000
-    // Internal string conversion is all UTF-8
-    QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
-    QTextCodec::setCodecForCStrings(QTextCodec::codecForTr());
-#endif
-
     Q_INIT_RESOURCE(vitae_locale);
     Q_INIT_RESOURCE(vitae);
 
@@ -540,7 +535,7 @@ int main(int argc, char* argv[])
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
 #if QT_VERSION >= 0x050600
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QGuiApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 #ifdef Q_OS_MAC
     QApplication::setAttribute(Qt::AA_DontShowIconsInMenus);
@@ -563,8 +558,8 @@ int main(int argc, char* argv[])
 
     /// 4. Initialization of translations, so that intro dialog is in user's language
     // Now that QSettings are accessible, initialize translations
-    QTranslator qtTranslatorBase, qtTranslator, translatorBase, translator;
-    initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+    //initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+    app.updateTranslation();
     uiInterface.Translate.connect(Translate);
 
     // Show help message immediately after parsing command-line options (for "-lang") and setting locale,
@@ -616,18 +611,18 @@ int main(int argc, char* argv[])
     // Allow for separate UI settings for testnets
     QApplication::setApplicationName(networkStyle->getAppName());
     // Re-initialize translations after changing application name (language in network-specific settings can be different)
-    initTranslations(qtTranslatorBase, qtTranslator, translatorBase, translator);
+    app.updateTranslation();
 
 #ifdef ENABLE_WALLET
     /// 7a. parse fundamentalnode.conf
-    string strErr;
+    std::string strErr;
     if (!fundamentalnodeConfig.read(strErr)) {
         QMessageBox::critical(0, QObject::tr("VITAE Core"),
             QObject::tr("Error reading fundamentalnode configuration file: %1").arg(strErr.c_str()));
         return 0;
     }
 
-    string strErrMN;
+    std::string strErrMN;
     if (!masternodeConfig.read(strErrMN)) {
         QMessageBox::critical(0, QObject::tr("VITAE Core"),
             QObject::tr("Error reading masternode configuration file: %1").arg(strErrMN.c_str()));
@@ -651,22 +646,38 @@ int main(int argc, char* argv[])
     /// 9. Main GUI initialization
     // Install global event filter that makes sure that long tooltips can be word-wrapped
     app.installEventFilter(new GUIUtil::ToolTipToRichTextFilter(TOOLTIP_WRAP_THRESHOLD, &app));
-#if QT_VERSION < 0x050000
-    // Install qDebug() message handler to route to debug.log
-    qInstallMsgHandler(DebugMessageHandler);
-#else
 #if defined(Q_OS_WIN)
     // Install global event filter for processing Windows session related Windows messages (WM_QUERYENDSESSION and WM_ENDSESSION)
     qApp->installNativeEventFilter(new WinShutdownMonitor());
 #endif
     // Install qDebug() message handler to route to debug.log
     qInstallMessageHandler(DebugMessageHandler);
-#endif
     // Load GUI settings from QSettings
     app.createOptionsModel();
 
     // Subscribe to global signals from core
     uiInterface.InitMessage.connect(InitMessage);
+
+    bool ret = true;
+#ifdef ENABLE_WALLET
+    // Check if the wallet exists or need to be created
+    std::string strWalletFile = GetArg("-wallet", "wallet.dat");
+    std::string strDataDir = GetDataDir().string();
+    // Wallet file must be a plain filename without a directory
+    if (strWalletFile != boost::filesystem::basename(strWalletFile) + boost::filesystem::extension(strWalletFile)){
+        throw std::runtime_error(strprintf(_("Wallet %s resides outside data directory %s"), strWalletFile, strDataDir));
+    }
+
+    boost::filesystem::path pathBootstrap = GetDataDir() / strWalletFile;
+    if (!boost::filesystem::exists(pathBootstrap)) {
+        // wallet doesn't exist, popup tutorial screen.
+        ret = app.createTutorialScreen();
+    }
+#endif
+    if(!ret){
+        // wallet not loaded.
+        return 0;
+    }
 
     if (GetBoolArg("-splash", true) && !GetBoolArg("-min", false))
         app.createSplashScreen(networkStyle.data());
@@ -674,13 +685,13 @@ int main(int argc, char* argv[])
     try {
         app.createWindow(networkStyle.data());
         app.requestInitialize();
-#if defined(Q_OS_WIN) && QT_VERSION >= 0x050000
+#if defined(Q_OS_WIN)
         WinShutdownMonitor::registerShutdownBlockReason(QObject::tr("VITAE Core didn't yet exit safely..."), (HWND)app.getMainWinId());
 #endif
         app.exec();
         app.requestShutdown();
         app.exec();
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, "Runaway exception");
         app.handleRunawayException(QString::fromStdString(strMiscWarning));
     } catch (...) {

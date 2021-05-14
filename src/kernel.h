@@ -41,4 +41,6 @@ unsigned int GetStakeModifierChecksum(const CBlockIndex* pindex);
 // Check stake modifier hard checkpoints
 bool CheckStakeModifierCheckpoints(int nHeight, unsigned int nStakeModifierChecksum);
 
+bool ContextualCheckZerocoinStake(int nPreviousBlockHeight, CStakeInput* stake);
+
 #endif // BITCOIN_KERNEL_H

@@ -22,9 +22,9 @@ static MacDockIconHandler *s_instance = NULL;
 bool dockClickHandler(id self,SEL _cmd,...) {
     Q_UNUSED(self)
     Q_UNUSED(_cmd)
-    
+
     s_instance->handleDockIconClickEvent();
-    
+
     // Return NO (false) to suppress the default OS X actions
     return false;
 }
@@ -116,10 +116,10 @@ void MacDockIconHandler::cleanup()
 }
 
 /**
-  * Force application activation on macOS. With Qt 5.5.1 this is required when
-  * an action in the Dock menu is triggered.
-  * TODO: Define a Qt version where it's no-longer necessary.
-  */
+ * Force application activation on macOS. With Qt 5.5.1 this is required when
+ * an action in the Dock menu is triggered.
+ * TODO: Define a Qt version where it's no-longer necessary.
+ */
 void ForceActivation()
 {
     [[NSApplication sharedApplication] activateIgnoringOtherApps:YES];

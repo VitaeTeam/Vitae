@@ -21,8 +21,6 @@
 #include "wallet.h"
 #endif // ENABLE_WALLET
 
-#include <openssl/crypto.h>
-
 #include <univalue.h>
 
 #ifdef ENABLE_WALLET
@@ -38,10 +36,6 @@
 #include <QTime>
 #include <QTimer>
 #include <QStringList>
-
-#if QT_VERSION < 0x050000
-#include <QUrl>
-#endif
 
 // TODO: add a scrollback limit, as there is currently none
 // TODO: make it possible to filter out categories (esp debug messages when implemented)
@@ -78,7 +72,7 @@ class RPCExecutor : public QObject
     Q_OBJECT
 
 public slots:
-    void request(const QString& command);
+    void TEMPrequest(const QString& command);
 
 signals:
     void reply(int category, const QString& command);
@@ -133,7 +127,7 @@ public:
  * @param[out]   args        Parsed arguments will be appended to this list
  * @param[in]    strCommand  Command line to split
  */
-bool parseCommandLine(std::vector<std::string>& args, const std::string& strCommand)
+bool TEMPparseCommandLine(std::vector<std::string>& args, const std::string& strCommand)
 {
     enum CmdParseState {
         STATE_EATING_SPACES,
@@ -217,10 +211,10 @@ bool parseCommandLine(std::vector<std::string>& args, const std::string& strComm
     }
 }
 
-void RPCExecutor::request(const QString& command)
+void RPCExecutor::TEMPrequest(const QString& command)
 {
     std::vector<std::string> args;
-    if (!parseCommandLine(args, command.toStdString())) {
+    if (!TEMPparseCommandLine(args, command.toStdString())) {
         emit reply(RPCConsole::CMD_ERROR, QString("Parse error: unbalanced ' or \""));
         return;
     }
@@ -290,10 +284,9 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHi
     connect(ui->btn_resync, SIGNAL(clicked()), this, SLOT(walletResync()));
 
     // set library version labels
-    ui->openSSLVersion->setText(SSLeay_version(SSLEAY_VERSION));
 #ifdef ENABLE_WALLET
     std::string strPathCustom = GetArg("-backuppath", "");
-    std::string strzVITPathCustom = GetArg("zvitaebackuppath", "");
+    std::string strzVITPathCustom = GetArg("zvitbackuppath", "");
     int nCustomBackupThreshold = GetArg("-custombackupthreshold", DEFAULT_CUSTOMBACKUPTHRESHOLD);
 
     if(!strPathCustom.empty()) {
@@ -303,9 +296,9 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHi
     }
 
     if(!strzVITPathCustom.empty()) {
-        ui->wallet_customzvitaebackuppath->setText(QString::fromStdString(strzVITPathCustom));
-        ui->wallet_customzvitaebackuppath_label->setVisible(true);
-        ui->wallet_customzvitaebackuppath->setVisible(true);
+        ui->wallet_customzvitbackuppath->setText(QString::fromStdString(strzVITPathCustom));
+        ui->wallet_customzvitbackuppath_label->setVisible(true);
+        ui->wallet_customzvitbackuppath->setVisible(true);
     }
 
     if((!strPathCustom.empty() || !strzVITPathCustom.empty()) && nCustomBackupThreshold > 0) {
@@ -323,7 +316,9 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHi
 #endif
     // Register RPC timer interface
     rpcTimerInterface = new QtRPCTimerInterface();
-    RPCRegisterTimerInterface(rpcTimerInterface);
+    // avoid accidentally overwriting an existing, non QTThread
+    // based timer interface
+    RPCSetTimerInterfaceIfUnset(rpcTimerInterface);
 
     startExecutor();
     setTrafficGraphRange(INITIAL_TRAFFIC_GRAPH_MINS);
@@ -337,7 +332,7 @@ RPCConsole::~RPCConsole()
 {
     GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
     emit stopExecutor();
-    RPCUnregisterTimerInterface(rpcTimerInterface);
+    RPCUnsetTimerInterface(rpcTimerInterface);
     delete rpcTimerInterface;
     delete ui;
 }
@@ -496,6 +491,7 @@ void RPCConsole::setClientModel(ClientModel* model)
         ui->clientVersion->setText(model->formatFullVersion());
         ui->clientName->setText(model->clientName());
         ui->buildDate->setText(model->formatBuildDate());
+        ui->dataDir->setText(model->dataDir());
         ui->startupTime->setText(model->formatClientStartupTime());
         ui->networkName->setText(QString::fromStdString(Params().NetworkIDString()));
 
@@ -635,12 +631,22 @@ void RPCConsole::clear()
         "td.message { font-family: Courier, Courier New, Lucida Console, monospace; font-size: 12px; } " // Todo: Remove fixed font-size
         "td.cmd-request { color: #006060; } "
         "td.cmd-error { color: red; } "
+        ".secwarning { color: red; }"
         "b { color: #006060; } ");
 
+#ifdef Q_OS_MAC
+    QString clsKey = "(⌘)-L";
+#else
+    QString clsKey = "Ctrl-L";
+#endif
+
     message(CMD_REPLY, (tr("Welcome to the VITAE RPC console.") + "<br>" +
-                           tr("Use up and down arrows to navigate history, and <b>Ctrl-L</b> to clear screen.") + "<br>" +
-                           tr("Type <b>help</b> for an overview of available commands.")),
-        true);
+                        tr("Use up and down arrows to navigate history, and %1 to clear screen.").arg("<b>"+clsKey+"</b>") + "<br>" +
+                        tr("Type <b>help</b> for an overview of available commands.") +
+                        "<br><span class=\"secwarning\"><br>" +
+                        tr("WARNING: Scammers have been active, telling users to type commands here, stealing their wallet contents. Do not use this console without fully understanding the ramifications of a command.") +
+                        "</span>"),
+                        true);
 }
 
 void RPCConsole::reject()
@@ -681,8 +687,10 @@ void RPCConsole::setNumConnections(int count)
 void RPCConsole::setNumBlocks(int count)
 {
     ui->numberOfBlocks->setText(QString::number(count));
-    if (clientModel)
+    if (clientModel) {
         ui->lastBlockTime->setText(clientModel->getLastBlockDate().toString());
+        ui->lastBlockHash->setText(clientModel->getLastBlockHash());
+    }
 }
 
 void RPCConsole::setFundamentalnodeCount(const QString& strFundamentalnodes)
@@ -739,7 +747,7 @@ void RPCConsole::startExecutor()
     // Replies from executor object must go to this object
     connect(executor, SIGNAL(reply(int, QString)), this, SLOT(message(int, QString)));
     // Requests from this object must go to executor
-    connect(this, SIGNAL(cmdRequest(QString)), executor, SLOT(request(QString)));
+    connect(this, SIGNAL(cmdRequest(QString)), executor, SLOT(TEMPrequest(QString)));
 
     // On stopExecutor signal
     // - queue executor for deletion (in execution thread)

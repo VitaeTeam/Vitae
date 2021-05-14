@@ -1,5 +1,5 @@
-// Copyright (c) 2014-2015 The Bitsend developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2019 The PIVX developers
 // Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -43,15 +43,14 @@
 static const int64_t MASTERNODEAMOUNT = 20000 ;
 extern std::string strMasterNodePrivKey;
 
-using namespace std;
 
 class CMasternode;
 class CMasternodePayments;
 class CMasternodePaymentWinner;
 
 extern CMasternodePayments masternodePayments;
-extern map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
-extern map<int64_t, uint256> mapCacheBlockHashesMN;
+extern std::map<uint256, CMasternodePaymentWinner> mapSeenMasternodeVotes;
+extern std::map<int64_t, uint256> mapCacheBlockHashesMN;
 
 
 void ProcessMessageMasternodePayments(CNode* pfrom, std::string& strCommand, CDataStream& vRecv);
@@ -69,11 +68,16 @@ private:
 
 public:
     enum state {
-        MASTERNODE_ENABLED = 1,
-        MASTERNODE_EXPIRED = 2,
-        MASTERNODE_VIN_SPENT = 3,
-        MASTERNODE_REMOVE = 4,
-        MASTERNODE_POS_ERROR = 5
+        MASTERNODE_PRE_ENABLED,
+        MASTERNODE_ENABLED,
+        MASTERNODE_EXPIRED,
+        MASTERNODE_OUTPOINT_SPENT,
+        MASTERNODE_REMOVE,
+        MASTERNODE_WATCHDOG_EXPIRED,
+        MASTERNODE_POSE_BAN,
+        MASTERNODE_VIN_SPENT,
+        MASTERNODE_POS_ERROR,
+        MASTERNODE_MISSING
     };
 
     CTxIn vin;
@@ -256,9 +260,13 @@ public:
         if(activeState == CMasternode::MASTERNODE_VIN_SPENT) strStatus = "VIN_SPENT";
         if(activeState == CMasternode::MASTERNODE_REMOVE) strStatus    = "REMOVE";
         if(activeState == CMasternode::MASTERNODE_POS_ERROR) strStatus = "POS_ERROR";
+        if (activeState == CMasternode::MASTERNODE_MISSING) strStatus = "MISSING";
 
         return strStatus;
     }
+
+    /// Is the input associated with collateral public key? (and there is 10000 VIT - checking if valid masternode)
+    //bool IsInputAssociatedWithPubkey() const;
 
 };
 

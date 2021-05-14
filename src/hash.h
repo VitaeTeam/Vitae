@@ -1,7 +1,8 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2015-2019 The PIVX developers
+// Copyright (c) 2018 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -27,7 +28,8 @@
 #include <sstream>
 #include <vector>
 
-using namespace std;
+
+typedef uint256 ChainCode;
 
 typedef uint256 ChainCode;
 
@@ -156,9 +158,9 @@ inline std::string Hash(std::string input)
     SHA256_Init(&sha256);
     SHA256_Update(&sha256, input.c_str(), input.size());
     SHA256_Final(hash, &sha256);
-    stringstream ss;
+    std::stringstream ss;
     for (int i = 0; i < SHA256_DIGEST_LENGTH; i++) {
-        ss << hex << setw(2) << setfill('0') << (int)hash[i];
+        ss << std::hex << std::setw(2) << std::setfill('0') << (int)hash[i];
     }
     return ss.str();
 }

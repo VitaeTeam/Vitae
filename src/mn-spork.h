@@ -19,9 +19,6 @@
 #include "base58.h"
 #include "main.h"
 
-using namespace std;
-using namespace boost;
-
 // Don't ever reuse these IDs for other mn_sporks
 #define MN_SPORK_1_MASTERNODE_PAYMENTS_ENFORCEMENT               10000
 #define MN_SPORK_2_INSTANTX                                      10001
@@ -47,9 +44,6 @@ class CMNSporkManager;
 #include "protocol.h"
 #include "obfuscation.h"
 #include <boost/lexical_cast.hpp>
-
-using namespace std;
-using namespace boost;
 
 extern std::map<uint256, CMNSporkMessage> mapMNSporks;
 extern std::map<int, CMNSporkMessage> mapMNSporksActive;

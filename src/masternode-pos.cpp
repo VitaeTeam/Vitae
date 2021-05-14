@@ -18,9 +18,7 @@
 #include "mn-spork.h"
 #include <boost/lexical_cast.hpp>
 #include "masternodeman.h"
-
-using namespace std;
-using namespace boost;
+#include "messagesigner.h"
 
 std::map<uint256, CMasternodeScanningError> mapMasternodeScanningErrors;
 CMasternodeScanning mnscan;
@@ -74,7 +72,7 @@ void ProcessMessageMasternodePOS(CNode* pfrom, std::string& strCommand, CDataStr
         if(mapMasternodeScanningErrors.count(mnse.GetHash())){
             return;
         }
-        mapMasternodeScanningErrors.insert(make_pair(mnse.GetHash(), mnse));
+        mapMasternodeScanningErrors.insert(std::make_pair(mnse.GetHash(), mnse));
 
         if(!mnse.IsValid())
         {
@@ -173,14 +171,14 @@ void CMasternodeScanning::DoMasternodePOSChecks()
         // we couldn't connect to the node, let's send a scanning error
         CMasternodeScanningError mnse(activeMasternode.vin, pmn->vin, SCANNING_ERROR_NO_RESPONSE, nBlockHeight);
         mnse.Sign();
-        mapMasternodeScanningErrors.insert(make_pair(mnse.GetHash(), mnse));
+        mapMasternodeScanningErrors.insert(std::make_pair(mnse.GetHash(), mnse));
         mnse.Relay();
     }
 
     // success
     CMasternodeScanningError mnse(activeMasternode.vin, pmn->vin, SCANNING_SUCCESS, nBlockHeight);
     mnse.Sign();
-    mapMasternodeScanningErrors.insert(make_pair(mnse.GetHash(), mnse));
+    mapMasternodeScanningErrors.insert(std::make_pair(mnse.GetHash(), mnse));
     mnse.Relay();
 }
 
@@ -204,7 +202,7 @@ bool CMasternodeScanningError::SignatureValid()
     ExtractDestination(pubkey, address1);
     CBitcoinAddress address2(address1);
 
-    if(!obfuScationSigner.VerifyMessage(pmn->pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pmn->pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
         LogPrintf("CMasternodeScanningError::SignatureValid() - Verify message failed\n");
         return false;
     }
@@ -221,7 +219,7 @@ bool CMasternodeScanningError::Sign()
     std::string strMessage = vinMasternodeA.ToString() + vinMasternodeB.ToString() +
         boost::lexical_cast<std::string>(nBlockHeight) + boost::lexical_cast<std::string>(nErrorType);
 
-    if(!obfuScationSigner.SetKey(strMasterNodePrivKey, errorMessage, key2, pubkey2))
+    if(!CMessageSigner::GetKeysFromSecret(strMasterNodePrivKey, key2, pubkey2))
     {
         LogPrintf("CMasternodeScanningError::Sign() - ERROR: Invalid masternodeprivkey: '%s'\n", errorMessage.c_str());
         return false;
@@ -234,12 +232,12 @@ bool CMasternodeScanningError::Sign()
     CBitcoinAddress address2(address1);
     //LogPrintf("signing pubkey2 %s \n", address2.ToString().c_str());
 
-    if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, key2)) {
+    if(!CMessageSigner::SignMessage(strMessage, vchMasterNodeSignature, key2)) {
         LogPrintf("CMasternodeScanningError::Sign() - Sign message failed");
         return false;
     }
 
-    if(!obfuScationSigner.VerifyMessage(pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
+    if(!CMessageSigner::VerifyMessage(pubkey2, vchMasterNodeSignature, strMessage, errorMessage)) {
         LogPrintf("CMasternodeScanningError::Sign() - Verify message failed");
         return false;
     }
@@ -251,10 +249,10 @@ void CMasternodeScanningError::Relay()
 {
     CInv inv(MSG_MASTERNODE_SCANNING_ERROR, GetHash());
 
-    vector<CInv> vInv;
+    std::vector<CInv> vInv;
     vInv.push_back(inv);
     LOCK(cs_vNodes);
-    BOOST_FOREACH(CNode* pnode, vNodes){
+    for(CNode* pnode : vNodes){
         pnode->PushMessage("inv", vInv);
     }
 }

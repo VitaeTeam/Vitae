@@ -1,7 +1,7 @@
 // Copyright (c) 2009-2014 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
-// Copyright (c) 2015-2017 The PIVX developers
-// Copyright (c) 2018 The VITAE developers
+// Copyright (c) 2015-2020 The PIVX developers
+// Copyright (c) 2018-2020 The VITAE developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,14 +23,9 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <openssl/aes.h>
-#include <openssl/sha.h>
 
 #include <univalue.h>
 
-using namespace std;
-
-void EnsureWalletIsUnlocked(bool fAllowAnonOnly);
 
 std::string static EncodeDumpTime(int64_t nTime)
 {
@@ -54,7 +49,7 @@ int64_t static DecodeDumpTime(const std::string& str)
 std::string static EncodeDumpString(const std::string& str)
 {
     std::stringstream ret;
-    BOOST_FOREACH (unsigned char c, str) {
+    for (unsigned char c : str) {
         if (c <= 32 || c >= 128 || c == '%') {
             ret << '%' << HexStr(&c, &c + 1);
         } else {
@@ -81,16 +76,17 @@ std::string DecodeDumpString(const std::string& str)
 
 UniValue importprivkey(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() < 1 || params.size() > 3)
-        throw runtime_error(
-            "importprivkey \"vitaeprivkey\" ( \"label\" rescan )\n"
+    if (fHelp || params.size() < 1 || params.size() > 4)
+        throw std::runtime_error(
+            "importprivkey \"vitaeprivkey\" ( \"label\" rescan fStakingAddress )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n" +
             HelpRequiringPassphrase() + "\n"
 
             "\nArguments:\n"
-            "1. \"vitaeprivkey\"   (string, required) The private key (see dumpprivkey)\n"
+            "1. \"vitaeprivkey\"     (string, required) The private key (see dumpprivkey)\n"
             "2. \"label\"            (string, optional, default=\"\") An optional label\n"
             "3. rescan               (boolean, optional, default=true) Rescan the wallet for transactions\n"
+            "4. fStakingAddress      (boolean, optional, default=false) Whether this key refers to a (cold) staking address\n"
 
             "\nNote: This call can take minutes to complete if rescan is true.\n"
 
@@ -104,34 +100,31 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
             "\nAs a JSON-RPC call\n" +
             HelpExampleRpc("importprivkey", "\"mykey\", \"testing\", false"));
 
-    LOCK2(cs_main, pwalletMain->cs_wallet);
-
-    EnsureWalletIsUnlocked();
-
-    string strSecret = params[0].get_str();
-    string strLabel = "";
-    if (params.size() > 1)
-        strLabel = params[1].get_str();
-
-    // Whether to perform rescan after import
-    bool fRescan = true;
-    if (params.size() > 2)
-        fRescan = params[2].get_bool();
+    const std::string strSecret = params[0].get_str();
+    const std::string strLabel = (params.size() > 1 ? params[1].get_str() : "");
+    const bool fRescan = (params.size() > 2 ? params[2].get_bool() : true);
+    const bool fStakingAddress = (params.size() > 3 ? params[3].get_bool() : false);
 
     CBitcoinSecret vchSecret;
-    bool fGood = vchSecret.SetString(strSecret);
-
-    if (!fGood) throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key encoding");
+    if (!vchSecret.SetString(strSecret))
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid private key encoding");
 
     CKey key = vchSecret.GetKey();
-    if (!key.IsValid()) throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Private key outside allowed range");
+    if (!key.IsValid())
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Private key outside allowed range");
 
     CPubKey pubkey = key.GetPubKey();
     assert(key.VerifyPubKey(pubkey));
     CKeyID vchAddress = pubkey.GetID();
     {
+        LOCK2(cs_main, pwalletMain->cs_wallet);
+        EnsureWalletIsUnlocked();
+
         pwalletMain->MarkDirty();
-        pwalletMain->SetAddressBook(vchAddress, strLabel, "receive");
+        pwalletMain->SetAddressBook(vchAddress, strLabel, (
+                fStakingAddress ?
+                        AddressBook::AddressBookPurpose::COLD_STAKING :
+                        AddressBook::AddressBookPurpose::RECEIVE));
 
         // Don't throw error in case a key is already there
         if (pwalletMain->HaveKey(vchAddress))
@@ -146,7 +139,12 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
         pwalletMain->nTimeFirstKey = 1; // 0 would be considered 'no value'
 
         if (fRescan) {
-            pwalletMain->ScanForWalletTransactions(chainActive.Genesis(), true);
+            CBlockIndex *pindex = chainActive.Genesis();
+            if (fStakingAddress && Params().NetworkID() != CBaseChainParams::REGTEST) {
+                // cold staking was activated after nBlockTimeProtocolV2. No need to scan the whole chain
+                pindex = chainActive[Params().BlockStartTimeProtocolV2()];
+            }
+            pwalletMain->ScanForWalletTransactions(pindex, true);
         }
     }
 
@@ -156,7 +154,7 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
 UniValue importaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 3)
-        throw runtime_error(
+        throw std::runtime_error(
             "importaddress \"address\" ( \"label\" rescan )\n"
             "\nAdds an address or script (in hex) that can be watched as if it were in your wallet but cannot be used to spend.\n"
 
@@ -189,7 +187,7 @@ UniValue importaddress(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address or script");
     }
 
-    string strLabel = "";
+    std::string strLabel = "";
     if (params.size() > 1)
         strLabel = params[1].get_str();
 
@@ -199,12 +197,16 @@ UniValue importaddress(const UniValue& params, bool fHelp)
         fRescan = params[2].get_bool();
 
     {
-        if (::IsMine(*pwalletMain, script) == ISMINE_SPENDABLE)
+        if (::IsMine(*pwalletMain, script) & ISMINE_SPENDABLE_ALL)
             throw JSONRPCError(RPC_WALLET_ERROR, "The wallet already contains the private key for this address or script");
 
         // add to address book or update label
-        if (address.IsValid())
-            pwalletMain->SetAddressBook(address.Get(), strLabel, "receive");
+        if (address.IsValid()) {
+            pwalletMain->SetAddressBook(address.Get(), strLabel,
+                    (address.IsStakingAddress() ?
+                            AddressBook::AddressBookPurpose::COLD_STAKING :
+                            AddressBook::AddressBookPurpose::RECEIVE));
+        }
 
         // Don't throw error in case an address is already there
         if (pwalletMain->HaveWatchOnly(script))
@@ -227,7 +229,7 @@ UniValue importaddress(const UniValue& params, bool fHelp)
 UniValue importwallet(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "importwallet \"filename\"\n"
             "\nImports keys from a wallet dump file (see dumpwallet).\n" +
             HelpRequiringPassphrase() + "\n"
@@ -247,7 +249,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    ifstream file;
+    std::ifstream file;
     file.open(params[0].get_str().c_str(), std::ios::in | std::ios::ate);
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
@@ -304,7 +306,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
         }
         pwalletMain->mapKeyMetadata[keyid].nCreateTime = nTime;
         if (fLabel)
-            pwalletMain->SetAddressBook(keyid, strLabel, "receive");
+            pwalletMain->SetAddressBook(keyid, strLabel, AddressBook::AddressBookPurpose::RECEIVE);
         nTimeBegin = std::min(nTimeBegin, nTime);
     }
     file.close();
@@ -330,7 +332,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
 UniValue dumpprivkey(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "dumpprivkey \"vitaeaddress\"\n"
             "\nReveals the private key corresponding to 'vitaeaddress'.\n"
             "Then the importprivkey can be used with this output\n" +
@@ -349,7 +351,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strAddress = params[0].get_str();
+    std::string strAddress = params[0].get_str();
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
@@ -366,7 +368,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 UniValue dumpwallet(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "dumpwallet \"filename\"\n"
             "\nDumps all wallet keys in a human-readable format.\n" +
             HelpRequiringPassphrase() + "\n"
@@ -381,7 +383,10 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    ofstream file;
+    boost::filesystem::path filepath = params[0].get_str().c_str();
+    filepath = boost::filesystem::absolute(filepath);
+
+    std::ofstream file;
     file.open(params[0].get_str().c_str());
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
@@ -423,13 +428,17 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     file << "\n";
     file << "# End of dump\n";
     file.close();
-    return NullUniValue;
+
+    UniValue reply(UniValue::VOBJ);
+    reply.push_back(Pair("filename", filepath.string()));
+
+    return reply;
 }
 
 UniValue bip38encrypt(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "bip38encrypt \"vitaeaddress\" \"passphrase\"\n"
             "\nEncrypts a private key corresponding to 'vitaeaddress'.\n" +
             HelpRequiringPassphrase() + "\n"
@@ -449,8 +458,8 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strAddress = params[0].get_str();
-    string strPassphrase = params[1].get_str();
+    std::string strAddress = params[0].get_str();
+    std::string strPassphrase = params[1].get_str();
 
     CBitcoinAddress address;
     if (!address.SetString(strAddress))
@@ -463,7 +472,7 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
 
     uint256 privKey = vchSecret.GetPrivKey_256();
-    string encryptedOut = BIP38_Encrypt(strAddress, strPassphrase, privKey, vchSecret.IsCompressed());
+    std::string encryptedOut = BIP38_Encrypt(strAddress, strPassphrase, privKey, vchSecret.IsCompressed());
 
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("Addess", strAddress));
@@ -475,7 +484,7 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
 UniValue bip38decrypt(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "bip38decrypt \"vitaeaddress\" \"passphrase\"\n"
             "\nDecrypts and then imports password protected private key.\n" +
             HelpRequiringPassphrase() + "\n"
@@ -496,8 +505,8 @@ UniValue bip38decrypt(const UniValue& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     /** Collect private key and passphrase **/
-    string strKey = params[0].get_str();
-    string strPassphrase = params[1].get_str();
+    std::string strKey = params[0].get_str();
+    std::string strPassphrase = params[1].get_str();
 
     uint256 privKey;
     bool fCompressed;
@@ -520,7 +529,7 @@ UniValue bip38decrypt(const UniValue& params, bool fHelp)
     CKeyID vchAddress = pubkey.GetID();
     {
         pwalletMain->MarkDirty();
-        pwalletMain->SetAddressBook(vchAddress, "", "receive");
+        pwalletMain->SetAddressBook(vchAddress, "", AddressBook::AddressBookPurpose::RECEIVE);
 
         // Don't throw error in case a key is already there
         if (pwalletMain->HaveKey(vchAddress))

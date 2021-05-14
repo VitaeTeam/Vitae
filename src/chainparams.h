@@ -41,6 +41,7 @@ public:
         EXT_PUBLIC_KEY, // BIP32
         EXT_SECRET_KEY, // BIP32
         EXT_COIN_TYPE,  // BIP44
+        STAKING_ADDRESS,
 
         MAX_BASE58_TYPES
     };
@@ -106,10 +107,14 @@ public:
     const std::vector<CAddress>& FixedSeeds() const { return vFixedSeeds; }
     virtual const Checkpoints::CCheckpointData& Checkpoints() const = 0;
     int PoolMaxTransactions() const { return nPoolMaxTransactions; }
+    /** Return the number of blocks in a budget cycle */
+    int GetBudgetCycleBlocks() const { return nBudgetCycleBlocks; }
+
+    CAmount GetMinColdStakingAmount() const { return nMinColdStakingAmount; }
 
     /** Spork key and Masternode Handling **/
-    std::string SporkKey() const { return strSporkKey; }
-    std::string SporkKeyOld() const { return strSporkKeyOld; }
+    std::string SporkPubKey() const { return strSporkPubKey; }
+    std::string SporkPubKeyOld() const { return strSporkPubKeyOld; }
     int64_t NewSporkStart() const { return nEnforceNewSporkKey; }
     int64_t RejectOldSporkKey() const { return nRejectOldSporkKey; }
     std::string ObfuscationPoolDummyAddress() const { return strObfuscationPoolDummyAddress; }
@@ -122,6 +127,7 @@ public:
     std::string Zerocoin_Modulus() const { return zerocoinModulus; }
     libzerocoin::ZerocoinParams* Zerocoin_Params(bool useModulusV1) const;
     int Zerocoin_MaxSpendsPerTransaction() const { return nMaxZerocoinSpendsPerTransaction; }
+    int Zerocoin_MaxPublicSpendsPerTransaction() const { return nMaxZerocoinPublicSpendsPerTransaction; }
     CAmount Zerocoin_MintFee() const { return nMinZerocoinMintFee; }
     int Zerocoin_MintRequiredConfirmations() const { return nMintRequiredConfirmations; }
     int Zerocoin_RequiredAccumulation() const { return nRequiredAccumulation; }
@@ -132,6 +138,8 @@ public:
     /** Height or Time Based Activations **/
     int ModifierUpgradeBlock() const { return nModifierUpdateBlock; }
     int LAST_POW_BLOCK() const { return nLastPOWBlock; }
+    int VitaeBadBlockTime() const { return nVitaeBadBlockTime; }
+    int VitaeBadBlocknBits() const { return nVitaeBadBlocknBits; }
     int Zerocoin_StartHeight() const { return nZerocoinStartHeight; }
     int Zerocoin_Block_EnforceSerialRange() const { return nBlockEnforceSerialRange; }
     int Zerocoin_Block_RecalculateAccumulators() const { return nBlockRecalculateAccumulators; }
@@ -141,8 +149,19 @@ public:
     int Block_Enforce_Invalid() const { return nBlockEnforceInvalidUTXO; }
     int Zerocoin_Block_V2_Start() const { return nBlockZerocoinV2; }
     bool IsStakeModifierV2(const int nHeight, const int sporkValue) const { return nHeight >= sporkValue; }
+    int NewSigsActive(const int nHeight) const { return nHeight >= nBlockEnforceNewMessageSignatures; }
+    int BIP65ActivationHeight() const { return nBIP65ActivationHeight; }
+    int Block_V7_StartHeight() const { return nBlockV7StartHeight; }
 
+    // fake serial attack
+    int Zerocoin_Block_EndFakeSerial() const { return nFakeSerialBlockheightEnd; }
+    CAmount GetSupplyBeforeFakeSerial() const { return nSupplyBeforeFakeSerial; }
+
+    int Zerocoin_Block_Double_Accumulated() const { return nBlockDoubleAccumulated; }
     CAmount InvalidAmountFiltered() const { return nInvalidAmountFiltered; };
+
+    int Zerocoin_Block_Public_Spend_Enabled() const { return nPublicZCSpends; }
+    int Zerocoin_Block_Last_Checkpoint() const { return nBlockLastAccumulatorCheckpoint; }
 
 protected:
     CChainParams() {}
@@ -165,6 +184,8 @@ protected:
     int64_t nTargetTimespan_V2;
     int nLastPOWBlock;
     int nFundamentalnodeCountDrift;
+    int64_t nVitaeBadBlockTime;
+    unsigned int nVitaeBadBlocknBits;
 	int nMasternodeCountDrift;
     int nMaturity;
     int nStakeMinDepth;
@@ -194,14 +215,16 @@ protected:
     bool fTestnetToBeDeprecatedFieldRPC;
     bool fHeadersFirstSyncingActive;
     int nPoolMaxTransactions;
-    std::string strSporkKey;
-    std::string strSporkKeyOld;
+    int nBudgetCycleBlocks;
+    std::string strSporkPubKey;
+    std::string strSporkPubKeyOld;
     int64_t nEnforceNewSporkKey;
     int64_t nRejectOldSporkKey;
     std::string strObfuscationPoolDummyAddress;
     int64_t nStartFundamentalnodePayments;
     std::string zerocoinModulus;
     int nMaxZerocoinSpendsPerTransaction;
+    int nMaxZerocoinPublicSpendsPerTransaction;
     CAmount nMinZerocoinMintFee;
     CAmount nInvalidAmountFiltered;
     int nMintRequiredConfirmations;
@@ -212,6 +235,8 @@ protected:
     int nZerocoinStartHeight;
     int nZerocoinStartTime;
     int nZerocoinRequiredStakeDepth;
+    int64_t nProposalEstablishmentTime;
+    int nBIP65ActivationHeight;
 
     int nBlockEnforceSerialRange;
     int nBlockRecalculateAccumulators;
@@ -219,8 +244,19 @@ protected:
     int nBlockLastGoodCheckpoint;
     int nBlockEnforceInvalidUTXO;
     int nBlockZerocoinV2;
+    int nBlockDoubleAccumulated;
+    int nPublicZCSpends;
     //int nBlockStakeModifierlV2;
     //int nBlockTimeProtocolV2;
+    int nBlockEnforceNewMessageSignatures;
+    int nBlockV7StartHeight;
+    int nBlockLastAccumulatorCheckpoint;
+
+    CAmount nMinColdStakingAmount;
+
+    // fake serial attack
+    int nFakeSerialBlockheightEnd = 0;
+    CAmount nSupplyBeforeFakeSerial = 0;
 };
 
 /**
