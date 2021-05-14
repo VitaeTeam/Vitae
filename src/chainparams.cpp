@@ -219,20 +219,20 @@ public:
         nBlockZerocoinV2 = 999999999; //The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1604188800; //!> Fully reject old spork key after (GMT): November 1, 2020 12:00:00 AM
-        nBlockStakeModifierlV2 = 1967000;
+        //nBlockStakeModifierlV2 = 1967000;
         nBIP65ActivationHeight = 1808634;
         // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
-        nBlockTimeProtocolV2 = 2153200;
+        //nBlockTimeProtocolV2 = 2153200;
 
         // Public coin spend enforcement
         nPublicZCSpends = 1880000;
 
         // New P2P messages signatures
-        nBlockEnforceNewMessageSignatures = nBlockTimeProtocolV2;
+        nBlockEnforceNewMessageSignatures = -1; //nBlockTimeProtocolV2;
 
         // Blocks v7
         nBlockLastAccumulatorCheckpoint = 1686240;
-        nBlockV7StartHeight = nBlockTimeProtocolV2;
+        nBlockV7StartHeight = -1; //nBlockTimeProtocolV2;
 
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = 1686229;
@@ -301,8 +301,8 @@ public:
 
         nPoolMaxTransactions = 3;
         nBudgetCycleBlocks = 43200; //!< Amount of blocks in a months period of time (using 1 minutes per) = (60*24*30)
-        strSporkKey = "042c1257f8e148675cdb62b86a9a86625c00a2330957d7d2b6a1d9b685c7e0705014dfb70bf6358c272da0258481902a813197a6bddfddf86f46c48b4f37de9732";
-        strSporkKeyOld = "04fd2375653a3064623b8a9e179c34a4ffa9ee9afbc13e2218b37f5fa6cbe2f94ef874a216cbfddbcbf06b5951a9011d65dae988fb4469fabcfa29b9c8daf23c7e";
+        strSporkPubKey = "042c1257f8e148675cdb62b86a9a86625c00a2330957d7d2b6a1d9b685c7e0705014dfb70bf6358c272da0258481902a813197a6bddfddf86f46c48b4f37de9732";
+        strSporkPubKeyOld = "04fd2375653a3064623b8a9e179c34a4ffa9ee9afbc13e2218b37f5fa6cbe2f94ef874a216cbfddbcbf06b5951a9011d65dae988fb4469fabcfa29b9c8daf23c7e";
         strObfuscationPoolDummyAddress = "VjVqgZbamLZ3KmEKBZZzmZgvtqDWw7jsrL";
         nStartFundamentalnodePayments = 1524487214;
 
@@ -349,7 +349,7 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
     genesis.nTime    = nTime;
     genesis.nBits    = nBits;
     genesis.nNonce   = nNonce;
-    genesis.hashMerkleRoot = genesis.BuildMerkleTree();
+    genesis.hashMerkleRoot = BlockMerkleRoot(genesis);
     return genesis;
 }
 
@@ -422,20 +422,20 @@ public:
         nBlockZerocoinV2 = 999999999; //!> The block that zerocoin v2 becomes active
         nEnforceNewSporkKey = 1596240000; //!> Sporks signed after (GMT): August 1, 2020 12:00:00 AM must use the new spork key
         nRejectOldSporkKey = 1601510400; //!> Fully reject old spork key after (GMT): October 1, 2020 12:00:00 AM
-        nBlockStakeModifierlV2 = 1214000;
+        //nBlockStakeModifierlV2 = 1214000;
         nBIP65ActivationHeight = 851019;
         // Activation height for TimeProtocolV2, Blocks V7 and newMessageSignatures
-        nBlockTimeProtocolV2 = 1347000;
+        //nBlockTimeProtocolV2 = 1347000;
 
         // Public coin spend enforcement
         nPublicZCSpends = 1106100;
 
         // New P2P messages signatures
-        nBlockEnforceNewMessageSignatures = nBlockTimeProtocolV2;
+        nBlockEnforceNewMessageSignatures = -1; //nBlockTimeProtocolV2;
 
         // Blocks v7
         nBlockLastAccumulatorCheckpoint = nPublicZCSpends - 10;
-        nBlockV7StartHeight = nBlockTimeProtocolV2;
+        nBlockV7StartHeight = -1; //nBlockTimeProtocolV2;
 
         // Fake Serial Attack
         nFakeSerialBlockheightEnd = -1;
@@ -503,8 +503,8 @@ public:
 
         nPoolMaxTransactions = 2;
         nBudgetCycleBlocks = 144; //!< Ten cycles per day on testnet
-        strSporkKey = "0416a999f63f7f20d76e5f2d75d23987902aeb372c44ce275e5f6c07b99155a666ef9c96a6d5cc8232fd4eeb6546caa2b35b4b7f336daedbb337b55392ecf69744";
-        strSporkKeyOld = "04cef2ceafa824fa3e5777989e032cf4d48ab3b5ccb83897c7892dd9fd72e69676355e18082e795b67d051b487c6852105db03160e547eeb81b20a608560974cb9";
+        strSporkPubKey = "0416a999f63f7f20d76e5f2d75d23987902aeb372c44ce275e5f6c07b99155a666ef9c96a6d5cc8232fd4eeb6546caa2b35b4b7f336daedbb337b55392ecf69744";
+        strSporkPubKeyOld = "04cef2ceafa824fa3e5777989e032cf4d48ab3b5ccb83897c7892dd9fd72e69676355e18082e795b67d051b487c6852105db03160e547eeb81b20a608560974cb9";
         strObfuscationPoolDummyAddress = "y57cqfGRkekRyDRNeJiLtYVEbvhXrNbmox";
         nStartFundamentalnodePayments = 1420837558; //Fri, 09 Jan 2015 21:05:58 GMT
         nBudget_Fee_Confirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
@@ -556,8 +556,8 @@ public:
         nBlockRecalculateAccumulators = 999999999;  // Trigger a recalculation of accumulators
         nBlockFirstFraudulent = 999999999;          // First block that bad serials emerged
         nBlockLastGoodCheckpoint = 999999999;       // Last valid accumulator checkpoint
-        nBlockStakeModifierlV2 = nLastPOWBlock + 1; // start with modifier V2 on testnet
-        nBlockTimeProtocolV2 = 999999999;
+        //nBlockStakeModifierlV2 = nLastPOWBlock + 1; // start with modifier V2 on testnet
+        //nBlockTimeProtocolV2 = 999999999;
 
         nMintRequiredConfirmations = 10;
         nZerocoinRequiredStakeDepth = nMintRequiredConfirmations;

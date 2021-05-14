@@ -14,6 +14,7 @@
 #include "stakeinput.h"
 #include "utilmoneystr.h"
 #include "zvitchain.h"
+#include "spork.h"
 
 // v1 modifier interval.
 static const int64_t OLD_MODIFIER_INTERVAL = 2087;
@@ -328,7 +329,7 @@ bool GetHashProofOfStake(const CBlockIndex* pindexPrev, CStakeInput* stake, cons
     CDataStream modifier_ss(SER_GETHASH, 0);
 
     // Hash the modifier
-    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1)) {
+    if (!Params().IsStakeModifierV2(pindexPrev->nHeight + 1, getStakeModifierV2SporkValue())) {
         // Modifier v1
         uint64_t nStakeModifier = 0;
         if (!stake->GetModifier(nStakeModifier))
@@ -363,10 +364,6 @@ bool Stake(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, unsigned int 
 
     // Time protocol V2: one-try
     if (Params().IsTimeProtocolV2(nHeight, getTimeProtocolV2SporkValue())) {
-        // store a time stamp of when we last hashed on this block
-        mapHashedBlocks.clear();
-        mapHashedBlocks[pindexPrev->nHeight] = GetTime();
-
         // check required min depth for stake
         const int nHeightBlockFrom = pindexFrom->nHeight;
         if (nHeight < nHeightBlockFrom + Params().COINSTAKE_MIN_DEPTH())
@@ -402,10 +399,6 @@ bool StakeV1(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, const uint3
         return error("%s : stake age violation, nTimeBlockFrom = %d, prevBlockTime = %d -- maxTime = %d ", __func__, nTimeBlockFrom, prevBlockTime, maxTime);
 
     while (nTryTime > minTime) {
-        // store a time stamp of when we last hashed on this block
-        mapHashedBlocks.clear();
-        mapHashedBlocks[pindexPrev->nHeight] = GetTime();
-
         //new block came in, move on
         if (chainActive.Height() != pindexPrev->nHeight) break;
 
@@ -420,9 +413,6 @@ bool StakeV1(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, const uint3
     }
 
     nTimeTx = nTryTime;
-
-    mapHashedBlocks.clear();
-    mapHashedBlocks[pindexPrev->nHeight] = GetTime(); //store a time stamp of when we last hashed on this block
 
     return fSuccess;
 }
@@ -518,7 +508,7 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
     const int nHeightBlockFrom = pindexFrom->nHeight;
     const uint32_t nTimeBlockFrom = pindexFrom->nTime;
 
-    if (!txin.IsZerocoinSpend() && ((nPreviousBlockHeight + 1) >= GetSporkValue(SPORK_26_MINIMUM_STAKE_AGE_BLOCK))) {
+    if (!txin.IsZerocoinSpend() && ((nPreviousBlockHeight + 1) >= sporkManager.GetSporkValue(SPORK_26_MINIMUM_STAKE_AGE_BLOCK))) {
         if(! Params().HasStakeMinAgeOrDepth(nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom, getStakeModifierV2SporkValue()))
             return error("%s : min age violation - height=%d - time=%d, nHeightBlockFrom=%d, nTimeBlockFrom=%d",
                          __func__, nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom);

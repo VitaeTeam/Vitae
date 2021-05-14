@@ -706,19 +706,11 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
     while (it != mapFinalizedBudgets.end()) {
         CFinalizedBudget* pfinalizedBudget = &((*it).second);
         strProposals = pfinalizedBudget->GetProposals();
-<<<<<<< HEAD
 
         LogPrint("fnbudget","CBudgetManager::IsTransactionValid - checking budget (%s) with blockstart %lli, blockend %lli, nBlockHeight %lli, votes %lli, nCountThreshold %lli\n",
                  strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(), 
                  nBlockHeight, pfinalizedBudget->GetVoteCount(), nCountThreshold);
 
-=======
-
-        LogPrint("fnbudget","CBudgetManager::IsTransactionValid - checking budget (%s) with blockstart %lli, blockend %lli, nBlockHeight %lli, votes %lli, nCountThreshold %lli\n",
-                 strProposals.c_str(), pfinalizedBudget->GetBlockStart(), pfinalizedBudget->GetBlockEnd(), 
-                 nBlockHeight, pfinalizedBudget->GetVoteCount(), nCountThreshold);
-
->>>>>>> update-upstream-v4.0.2
         if (pfinalizedBudget->GetVoteCount() > nCountThreshold) {
             fThreshold = true;
             LogPrint("fnbudget","CBudgetManager::IsTransactionValid - GetVoteCount() > nCountThreshold passed\n");
@@ -728,19 +720,10 @@ TrxValidationStatus CBudgetManager::IsTransactionValid(const CTransaction& txNew
                 if (transactionStatus == TrxValidationStatus::Valid) {
                     LogPrint("mnbudget","CBudgetManager::IsTransactionValid - pfinalizedBudget->IsTransactionValid() passed\n");
                     return TrxValidationStatus::Valid;
-<<<<<<< HEAD
-=======
-                }
-                else {
-                    LogPrint("fnbudget","CBudgetManager::IsTransactionValid - pfinalizedBudget->IsTransactionValid() error\n");
->>>>>>> update-upstream-v4.0.2
                 }
                 else {
                     LogPrint("fnbudget","CBudgetManager::IsTransactionValid - pfinalizedBudget->IsTransactionValid() error\n");
                 }
-            }
-            else {
-                LogPrint("fnbudget","CBudgetManager::IsTransactionValid - GetBlockStart() failed, budget is outside current payment cycle and will be ignored.\n");
             }
             else {
                 LogPrint("fnbudget","CBudgetManager::IsTransactionValid - GetBlockStart() failed, budget is outside current payment cycle and will be ignored.\n");
@@ -2094,28 +2077,6 @@ bool CFinalizedBudget::IsValid(std::string& strError, bool fCheckCollateral)
         return false;
     }
 
-    for(it = mapPayment_History.begin(); it != mapPayment_History.end(); /* No incrementation needed */ ) {
-        nPaidBlockHeight = (*it).second;
-        if((nPaidBlockHeight < GetBlockStart()) || (nPaidBlockHeight > GetBlockEnd())) {
-            nOldProposalHash = (*it).first;
-            LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d from old cycle deleted\n", 
-                      nOldProposalHash.ToString().c_str(), nPaidBlockHeight);
-            mapPayment_History.erase(it++);
-        }
-        else {
-            ++it;
-        }
-    }
-
-    // Now that we only have payments from the current payment cycle check if this budget was paid already
-    if(mapPayment_History.count(nProposalHash) == 0) {
-        // New proposal payment, insert into map for checks with later blocks from this cycle
-        mapPayment_History.insert(std::pair<uint256, int>(nProposalHash, nBlockHeight));
-        LogPrint("mnbudget", "CFinalizedBudget::IsPaidAlready - Budget Proposal %s, Block %d added to payment history\n", 
-                  nProposalHash.ToString().c_str(), nBlockHeight);
-        return false;
-    }
-    // This budget was paid already -> reject transaction so it gets paid to a masternode instead
     return true;
 }
 

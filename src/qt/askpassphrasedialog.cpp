@@ -91,11 +91,6 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
         initWatch(ui->layoutEdit2);
         break;
     case Mode::UnlockAnonymize:
-<<<<<<< HEAD
-        ui->anonymizationCheckBox->show();
-    case Mode::Unlock: // Ask passphrase
-=======
->>>>>>> update-upstream-v4.0.2
         ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
         ui->passLabel2->hide();
         ui->passEdit2->hide();
@@ -105,6 +100,7 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
         title = tr("Unlock wallet\nfor staking");
         initWatch(ui->layoutEdit);
         break;
+    case Mode::Unlock: // Ask passphrase
         ui->warningLabel->setText(tr("This operation needs your wallet passphrase to unlock the wallet."));
         ui->passLabel2->hide();
         ui->passEdit2->hide();
@@ -114,7 +110,6 @@ AskPassphraseDialog::AskPassphraseDialog(Mode mode, QWidget* parent, WalletModel
         title = tr("Unlock wallet");
         initWatch(ui->layoutEdit);
         break;
->>>>>>> update-upstream-v4.0.2
     case Mode::Decrypt: // Ask passphrase
         ui->warningLabel->setText(tr("This operation needs your wallet passphrase to decrypt the wallet."));
         ui->passLabel2->hide();

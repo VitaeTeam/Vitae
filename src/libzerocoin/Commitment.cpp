@@ -31,12 +31,6 @@ Commitment::Commitment(const IntegerGroupParams* p, const CBigNum& bnSerial, con
         params->h.pow_mod(this->randomness, params->modulus), params->modulus));
 }
 
-Commitment::Commitment(const IntegerGroupParams* p, const CBigNum& bnSerial, const CBigNum& bnRandomness): params(p), contents(bnSerial) {
-    this->randomness = bnRandomness;
-    this->commitmentValue = (params->g.pow_mod(this->contents, params->modulus).mul_mod(
-        params->h.pow_mod(this->randomness, params->modulus), params->modulus));
-}
-
 const CBigNum& Commitment::getCommitmentValue() const {
     return this->commitmentValue;
 }
