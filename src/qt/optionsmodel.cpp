@@ -264,12 +264,14 @@ QVariant OptionsModel::data(const QModelIndex& index, int role) const
             return settings.value("fHideZeroBalances");
         case HideOrphans:
             return settings.value("fHideOrphans");
+        /*
         case ZeromintEnable:
             return QVariant(fEnableZeromint);
         case ZeromintAddresses:
             return QVariant(fEnableAutoConvert);
         case ZeromintPercentage:
             return QVariant(nZeromintPercentage);
+        */
         case ZeromintPrefDenom:
             return QVariant(nPreferredDenom);
         case Listen:
@@ -385,6 +387,7 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
                 setRestartRequired(true);
             }
             break;
+        /*
         case ZeromintEnable:
             fEnableZeromint = value.toBool();
             settings.setValue("fZeromintEnable", fEnableZeromint);
@@ -399,6 +402,7 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             settings.setValue("nZeromintPercentage", nZeromintPercentage);
             emit zeromintPercentageChanged(nZeromintPercentage);
             break;
+        */
         case ZeromintPrefDenom:
             nPreferredDenom = value.toInt();
             settings.setValue("nPreferredDenom", nPreferredDenom);

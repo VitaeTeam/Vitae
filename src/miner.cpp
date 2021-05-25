@@ -137,6 +137,8 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     if(Params().IsStakeModifierV2(nHeight, getStakeModifierV2SporkValue())) {
         pblock->nVersion = 7;       //!> Supports V2 Stake Modifiers.
     } else {
+        pblock->nVersion = 6;       //!> Supports CLTV activation
+    }
 
     // -regtest only: allow overriding block.nVersion with
     // -blockversion=N to test forking scenarios

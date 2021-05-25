@@ -143,8 +143,6 @@ public:
     int Zerocoin_Block_V2_Start() const { return nBlockZerocoinV2; }
     bool IsStakeModifierV2(const int nHeight, const int sporkValue) const { return nHeight >= sporkValue; }
 
-    CAmount InvalidAmountFiltered() const { return nInvalidAmountFiltered; };
-
     // fake serial attack
     int Zerocoin_Block_EndFakeSerial() const { return nFakeSerialBlockheightEnd; }
     CAmount GetSupplyBeforeFakeSerial() const { return nSupplyBeforeFakeSerial; }

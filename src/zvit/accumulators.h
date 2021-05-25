@@ -42,10 +42,9 @@ bool GenerateAccumulatorWitness(
         const libzerocoin::PublicCoin &coin,
         libzerocoin::Accumulator& accumulator,
         libzerocoin::AccumulatorWitness& witness,
-        int& nMintsAdded,
-        string& strError,
+        int nSecurityLevel, int& nMintsAdded,
+        std::string& strError,
         CBlockIndex* pindexCheckpoint = nullptr);
-
 
 bool GenerateAccumulatorWitness(CoinWitnessData* coinWitness, AccumulatorMap& mapAccumulators, CBlockIndex* pindexCheckpoint);
 list<libzerocoin::PublicCoin> GetPubcoinFromBlock(const CBlockIndex* pindex);

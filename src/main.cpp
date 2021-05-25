@@ -6459,9 +6459,8 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         // VITAE: We use certain sporks during IBD, so check to see if they are
         // available. If not, ask the first peer connected for them.
-        bool fMissingSporks = !pSporkDB->SporkExists(SPORK_14_NEW_PROTOCOL_ENFORCEMENT) &&
-                !pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
-                !pSporkDB->SporkExists(SPORK_16_NEW_PROTOCOL_ENFORCEMENT_3) &&
+        bool fMissingSporks = !pSporkDB->SporkExists(SPORK_25_NEW_PROTOCOL_ENFORCEMENT_6) &&
+                //!pSporkDB->SporkExists(SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) &&
                 !pSporkDB->SporkExists(SPORK_17_NEW_PROTOCOL_ENFORCEMENT_4) &&
                 !pSporkDB->SporkExists(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5) &&
                 !pSporkDB->SporkExists(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
@@ -6567,7 +6566,15 @@ bool static ProcessMessage(CNode* pfrom, string strCommand, CDataStream& vRecv, 
 
         int64_t nTimeOffset = nTime - GetTime();
         pfrom->nTimeOffset = nTimeOffset;
-        AddTimeData(pfrom->addr, nTimeOffset);
+        const int nTimeSlotLength = Params().TimeSlotLength();
+        if (nTimeOffset < 2 * nTimeSlotLength) {
+            pfrom->fSuccessfullyConnected = true;
+            AddTimeData(pfrom->addr, nTimeOffset, nTimeSlotLength);
+        } else {
+            LogPrintf("timeOffset (%d seconds) too large (max is %d seconds). Disconnecting node %s\n",
+                    nTimeOffset, 2 * nTimeSlotLength - 1, pfrom->addr.ToString());
+            pfrom->fDisconnect = true;
+        }
     }
 
 
@@ -7782,3 +7789,14 @@ public:
         mapOrphanTransactionsByPrev.clear();
     }
 } instance_of_cmaincleanup;
+
+// This function is to decouple from spork dependence (not depend on the spork ID)
+int64_t getTimeProtocolV2SporkValue()
+{
+    return GetSporkValue(SPORK_23_TIME_PROTOCOL_V2_BLOCK);
+}
+
+int64_t getStakeModifierV2SporkValue()
+{
+    return GetSporkValue(SPORK_24_STAKE_MODIFIER_V2_BLOCK);
+}
