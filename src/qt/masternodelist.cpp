@@ -96,7 +96,7 @@ void MasternodeList::StartAlias(std::string strAlias)
     std::string strStatusHtml;
     strStatusHtml += "<center>Alias: " + strAlias;
 
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         if (mne.getAlias() == strAlias) {
             std::string strError;
             //CMasternodeBroadcast mnb;
@@ -128,7 +128,7 @@ void MasternodeList::StartAll(std::string strCommand)
     int nCountFailed = 0;
     std::string strFailedHtml;
 
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         std::string strError;
         //CMasternodeBroadcast mnb;
 
@@ -222,13 +222,13 @@ void MasternodeList::updateMyNodeList(bool fForce)
     if (nSecondsTillUpdate > 0 && !fForce) return;
     nTimeMyListUpdated = GetTime();
 
-    ui->tableWidgetMasternodes->setSortingEnabled(false);
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
-        int32_t nOutputIndex = 0;
-        if(!ParseInt32(mne.getOutputIndex(), &nOutputIndex)) {
+    ui->tableWidgetMyMasternodes->setSortingEnabled(false);
+    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
+        int nIndex;
+        if(!mne.castOutputIndex(nIndex)) {
             continue;
         }
-        CTxIn txin = CTxIn(uint256S(mne.getTxHash()), nOutputIndex);
+        CTxIn txin = CTxIn(uint256S(mne.getTxHash()), nIndex);
         CMasternode* pmn = m_nodeman.Find(txin);
 
                 if(pmn != NULL){
@@ -264,7 +264,7 @@ void MasternodeList::updateNodeList()
     ui->tableWidgetMasternodes->setRowCount(0);
     std::vector<CMasternode> vMasternodes = m_nodeman.GetFullMasternodeVector();
 
-    BOOST_FOREACH (CMasternode& mn, vMasternodes) {
+    for (CMasternode& mn : vMasternodes) {
                 CScript pubkey;
                 pubkey = GetScriptForDestination(mn.pubkey.GetID());
                 CTxDestination address1;

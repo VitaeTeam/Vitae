@@ -15,7 +15,6 @@
 #include "sync.h"
 #include "sporkdb.h"
 #include "util.h"
-#include <boost/lexical_cast.hpp>
 
 using namespace std;
 using namespace boost;
@@ -132,8 +131,7 @@ int64_t GetSporkValue(int nSporkID)
         if (nSporkID == SPORK_5_MAX_VALUE) r = SPORK_5_MAX_VALUE_DEFAULT;
         if (nSporkID == SPORK_7_FUNDAMENTALNODE_SCANNING) r = SPORK_7_FUNDAMENTALNODE_SCANNING_DEFAULT;
         if (nSporkID == SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT) r = SPORK_8_FUNDAMENTALNODE_PAYMENT_ENFORCEMENT_DEFAULT;
-        if (nSporkID == SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT) r = SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT_DEFAULT;
-        //activated
+        if (nSporkID == SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT) r = SPORK_9_FUNDAMENTALNODE_BUDGET_ENFORCEMENT_DEFAULT; //activated
         if (nSporkID == SPORK_13_ENABLE_SUPERBLOCKS) r = SPORK_13_ENABLE_SUPERBLOCKS_DEFAULT;
         //if (nSporkID == SPORK_14_NEW_PROTOCOL_ENFORCEMENT) r = SPORK_14_NEW_PROTOCOL_ENFORCEMENT_DEFAULT;
         //if (nSporkID == SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2) r = SPORK_15_NEW_PROTOCOL_ENFORCEMENT_2_DEFAULT;
@@ -199,7 +197,7 @@ void ReprocessBlocks(int nBlocks)
 bool CSporkManager::CheckSignature(CSporkMessage& spork, bool fCheckSigner)
 {
     //note: need to investigate why this is failing
-    std::string strMessage = boost::lexical_cast<std::string>(spork.nSporkID) + boost::lexical_cast<std::string>(spork.nValue) + boost::lexical_cast<std::string>(spork.nTimeSigned);
+    std::string strMessage = std::to_string(spork.nSporkID) + std::to_string(spork.nValue) + std::to_string(spork.nTimeSigned);
     CPubKey pubkeynew(ParseHex(Params().SporkKey()));
     std::string errorMessage = "";
 
@@ -219,7 +217,7 @@ bool CSporkManager::CheckSignature(CSporkMessage& spork, bool fCheckSigner)
 
 bool CSporkManager::Sign(CSporkMessage& spork)
 {
-    std::string strMessage = boost::lexical_cast<std::string>(spork.nSporkID) + boost::lexical_cast<std::string>(spork.nValue) + boost::lexical_cast<std::string>(spork.nTimeSigned);
+    std::string strMessage = std::to_string(spork.nSporkID) + std::to_string(spork.nValue) + std::to_string(spork.nTimeSigned);
 
     CKey key2;
     CPubKey pubkey2;

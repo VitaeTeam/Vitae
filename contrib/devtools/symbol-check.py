@@ -9,7 +9,7 @@ still compatible with the minimum supported Linux distribution versions.
 
 Example usage:
 
-    find ../gitian-builder/build -type f -executable | xargs python contrib/devtools/symbol-check.py
+    find ../gitian-builder/build -type f -executable | xargs python3 contrib/devtools/symbol-check.py
 '''
 from __future__ import division, print_function, unicode_literals
 import subprocess

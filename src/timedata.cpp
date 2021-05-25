@@ -11,7 +11,6 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
-#include <boost/foreach.hpp>
 
 
 static CCriticalSection cs_nTimeOffset;
@@ -81,15 +80,27 @@ void AddTimeData(const CNetAddr& ip, int64_t nOffsetSample, int nOffsetLimit)
         if (abs64(nMedian) < nOffsetLimit) {
             nTimeOffset = nMedian;
         } else {
-            nTimeOffset = (nMedian > 0 ? 1 : -1) * nOffsetLimit;
-            std::string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong VITAE Core will not work properly.");
-            strMiscWarning = strMessage;
-            LogPrintf("*** %s\n", strMessage);
-            // Commented out to prevent freezing of Qt wallet--TODO: Revisit to resolve cause of freezing
-            //uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_ERROR);
+            nTimeOffset = 0;
+
+            static bool fDone;
+            if (!fDone) {
+                // If nobody has a time different than ours but within 5 minutes of ours, give a warning
+                bool fMatch = false;
+                for (int64_t nOffset : vSorted)
+                    if (nOffset != 0 && abs64(nOffset) < 5 * 60)
+                        fMatch = true;
+
+                if (!fMatch) {
+                    fDone = true;
+                    string strMessage = _("Warning: Please check that your computer's date and time are correct! If your clock is wrong VITAE Core will not work properly.");
+                    strMiscWarning = strMessage;
+                    LogPrintf("*** %s\n", strMessage);
+                    uiInterface.ThreadSafeMessageBox(strMessage, "", CClientUIInterface::MSG_WARNING);
+                }
+            }
         }
         if (fDebug) {
-            BOOST_FOREACH (int64_t n, vSorted)
+            for (int64_t n : vSorted)
                 LogPrintf("%+d  ", n);
             LogPrintf("|  ");
         }

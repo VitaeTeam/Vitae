@@ -1349,7 +1349,7 @@
         </widget>
        </item>
        <item row="4" column="0">
-        <widget class="QLabel" name="wallet_customzvitaebackuppath_label">
+        <widget class="QLabel" name="wallet_customzvitbackuppath_label">
          <property name="text">
           <string>Custom zVIT Backup Path:</string>
          </property>
@@ -1359,7 +1359,7 @@
         </widget>
        </item>
        <item row="4" column="1" colspan="3">
-        <widget class="QLabel" name="wallet_customzvitaebackuppath">
+        <widget class="QLabel" name="wallet_customzvitbackuppath">
          <property name="cursor">
           <cursorShape>IBeamCursor</cursorShape>
          </property>

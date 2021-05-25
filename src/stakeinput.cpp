@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "accumulators.h"
+#include "zvit/accumulators.h"
 #include "chain.h"
 #include "primitives/deterministicmint.h"
 #include "main.h"
@@ -125,7 +125,7 @@ bool CZVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nT
     CTxOut outReward;
     libzerocoin::CoinDenomination denomStaked = libzerocoin::AmountToZerocoinDenomination(this->GetValue());
     CDeterministicMint dMint;
-    if (!pwallet->CreateZVITOutPut(denomStaked, outReward, dMint))
+    if (!pwallet->CreateZPIVOutPut(denomStaked, outReward, dMint))
         return error("%s: failed to create zVITAE output", __func__);
     vout.emplace_back(outReward);
 
@@ -136,7 +136,7 @@ bool CZVitStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout, CAmount nT
     for (unsigned int i = 0; i < 3; i++) {
         CTxOut out;
         CDeterministicMint dMintReward;
-        if (!pwallet->CreateZVITOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
+        if (!pwallet->CreateZPIVOutPut(libzerocoin::CoinDenomination::ZQ_ONE, out, dMintReward))
             return error("%s: failed to create zVITAE output", __func__);
         vout.emplace_back(out);
 
@@ -154,7 +154,7 @@ bool CZVitStake::GetTxFrom(CTransaction& tx)
 
 bool CZVitStake::MarkSpent(CWallet *pwallet, const uint256& txid)
 {
-    CzVITAETracker* zvitTracker = pwallet->zvitTracker.get();
+    CzVITTracker* zvitTracker = pwallet->zvitTracker.get();
     CMintMeta meta;
     if (!zvitTracker->GetMetaFromStakeHash(hashSerial, meta))
         return error("%s: tracker does not have serialhash", __func__);

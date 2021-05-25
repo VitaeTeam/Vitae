@@ -7,22 +7,23 @@
 #include "chainparams.h"
 #include "main.h"
 #include "txdb.h"
-#include "primitives/deterministicmint.h"
+#include "zvit/deterministicmint.h"
 #include "key.h"
-#include "accumulatorcheckpoints.h"
+#include "zvit/accumulatorcheckpoints.h"
 #include "libzerocoin/bignum.h"
 #include <boost/test/unit_test.hpp>
 #include <iostream>
-#include <accumulators.h>
+#include <zvit/accumulators.h>
 #include "wallet.h"
-#include "zvitwallet.h"
+#include "zvit/zvitwallet.h"
 #include "zvitchain.h"
+#include "test_vitae.h"
 
 using namespace libzerocoin;
 
 extern bool DecodeHexTx(CTransaction& tx, const std::string& strHexTx);
 
-BOOST_AUTO_TEST_SUITE(zerocoin_implementation_tests)
+BOOST_FIXTURE_TEST_SUITE(zerocoin_implementation_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(zcparams_test)
 {
@@ -33,7 +34,7 @@ BOOST_AUTO_TEST_CASE(zcparams_test)
         SelectParams(CBaseChainParams::MAIN);
         ZerocoinParams *ZCParams = Params().Zerocoin_Params(false);
         (void)ZCParams;
-    } catch(const std::exception& e) {
+    } catch(std::exception& e) {
         fPassed = false;
         std::cout << e.what() << "\n";
     }
@@ -46,6 +47,8 @@ std::string zerocoinModulus = "2519590847565789349402718324004839857142928212620
 "7259085141865462043576798423387184774447920739934236584823824281198163815010674810451660377306056201619676256133"
 "8441436038339044149526344321901146575444541784240209246165157233507787077498171257724679629263863563732899121548"
 "31438167899885040445364023527381951378636564391212010397122822120720357";
+
+
 
 //ZQ_ONE mints
 std::string rawTx1 = "0100000001983d5fd91685bb726c0ebc3676f89101b16e663fd896fea53e19972b95054c49000000006a473044022010fbec3e78f9c46e58193d481caff715ceb984df44671d30a2c0bde95c54055f0220446a97d9340da690eaf2658e5b2bf6a0add06f1ae3f1b40f37614c7079ce450d012103cb666bd0f32b71cbf4f32e95fa58e05cd83869ac101435fcb8acee99123ccd1dffffffff0200e1f5050000000086c10280004c80c3a01f94e71662f2ae8bfcd88dfc5b5e717136facd6538829db0c7f01e5fd793cccae7aa1958564518e0223d6d9ce15b1e38e757583546e3b9a3f85bd14408120cd5192a901bb52152e8759fdd194df230d78477706d0e412a66398f330be38a23540d12ab147e9fb19224913f3fe552ae6a587fb30a68743e52577150ff73042c0f0d8f000000001976a914d6042025bd1fff4da5da5c432d85d82b3f26a01688ac00000000";
@@ -96,7 +99,7 @@ BOOST_AUTO_TEST_CASE(checkzerocoinmint_test)
     CValidationState state;
     bool fFoundMint = false;
     for(unsigned int i = 0; i < tx.vout.size(); i++){
-        if(!tx.vout[i].scriptPubKey.empty() && tx.vout[i].scriptPubKey.IsZerocoinMint()) {
+        if(tx.vout[i].IsZerocoinMint()) {
             BOOST_CHECK(CheckZerocoinMint(tx.GetHash(), tx.vout[i], state, true));
             fFoundMint = true;
         }
@@ -110,7 +113,7 @@ bool CheckZerocoinSpendNoDB(const CTransaction tx, string& strError)
     //max needed non-mint outputs should be 2 - one for redemption address and a possible 2nd for change
     if (tx.vout.size() > 2){
         int outs = 0;
-        for (const CTxOut out : tx.vout) {
+        for (const CTxOut& out : tx.vout) {
             if (out.IsZerocoinMint())
                 continue;
             outs++;
@@ -124,7 +127,7 @@ bool CheckZerocoinSpendNoDB(const CTransaction tx, string& strError)
 
     //compute the txout hash that is used for the zerocoinspend signatures
     CMutableTransaction txTemp;
-    for (const CTxOut out : tx.vout) {
+    for (const CTxOut& out : tx.vout) {
         txTemp.vout.push_back(out);
     }
     //    uint256 hashTxOut = txTemp.GetHash();
@@ -133,10 +136,10 @@ bool CheckZerocoinSpendNoDB(const CTransaction tx, string& strError)
     set<CBigNum> serials;
     list<CoinSpend> vSpends;
     CAmount nTotalRedeemed = 0;
-    BOOST_FOREACH(const CTxIn& txin, tx.vin) {
+    for (const CTxIn& txin : tx.vin) {
 
         //only check txin that is a zcspend
-        if (!txin.scriptSig.IsZerocoinSpend())
+        if (!txin.IsZerocoinSpend())
             continue;
 
         // extract the CoinSpend from the txin
@@ -229,8 +232,8 @@ BOOST_AUTO_TEST_CASE(checkzerocoinspend_test)
         CTransaction tx;
         BOOST_CHECK_MESSAGE(DecodeHexTx(tx, raw.first), "Failed to deserialize hex transaction");
 
-        for(const CTxOut out : tx.vout){
-            if(!out.scriptPubKey.empty() && out.scriptPubKey.IsZerocoinMint()) {
+        for(const CTxOut& out : tx.vout){
+            if(out.IsZerocoinMint()) {
                 PublicCoin publicCoin(Params().Zerocoin_Params(true));
                 BOOST_CHECK_MESSAGE(TxOutToPublicCoin(out, publicCoin, state), "Failed to convert CTxOut " << out.ToString() << " to PublicCoin");
 
@@ -355,7 +358,7 @@ BOOST_AUTO_TEST_CASE(checkzerocoinspend_test)
     //Get the checksum of the accumulator we use for the spend and also add it to our checksum map
     uint32_t nChecksum_v2 = GetChecksum(accumulator_v2.getValue());
     //AddAccumulatorChecksum(nChecksum_v2, accumulator_v2.getValue(), true);
-    uint256 ptxHash = CBigNum::RandKBitBigum(256).getuint256();
+    uint256 ptxHash = CBigNum::randKBitBignum(256).getuint256();
     CoinSpend coinSpend_v2(Params().Zerocoin_Params(false), Params().Zerocoin_Params(false), privateCoin_v2, accumulator_v2, nChecksum_v2, witness_v2, ptxHash, SpendType::SPEND);
 
     BOOST_CHECK_MESSAGE(coinSpend_v2.HasValidSerial(Params().Zerocoin_Params(false)), "coinspend_v2 does not have a valid serial");
@@ -483,7 +486,7 @@ BOOST_AUTO_TEST_CASE(deterministic_tests)
     CWalletDB walletdb(strWalletFile, "cr+");
 
     CWallet wallet(strWalletFile);
-    CzVITAEWallet zWallet(wallet.strWalletFile);
+    CzVITWallet zWallet(wallet.strWalletFile);
     zWallet.SetMasterSeed(seedMaster);
     wallet.setZWallet(&zWallet);
 
@@ -495,7 +498,7 @@ BOOST_AUTO_TEST_CASE(deterministic_tests)
     for (int i = 0; i < nTests; i++) {
         PrivateCoin coin(Params().Zerocoin_Params(false), denom, false);
         CDeterministicMint dMint;
-        zWallet.GenerateDeterministicZVIT(denom, coin, dMint);
+        zWallet.GenerateDeterministicZPIV(denom, coin, dMint);
         vCoins.emplace_back(coin);
     }
 

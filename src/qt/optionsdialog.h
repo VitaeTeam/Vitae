@@ -31,6 +31,7 @@ public:
 
     void setModel(OptionsModel* model);
     void setMapper();
+    void setCurrentIndex(int index);
 
 protected:
     bool eventFilter(QObject* object, QEvent* event);
@@ -45,6 +46,8 @@ private slots:
     void on_resetButton_clicked();
     void on_okButton_clicked();
     void on_cancelButton_clicked();
+
+    void updateHideOrphans(bool fHide);
 
     void showRestartWarning(bool fPersistent = false);
     void clearStatusLabel();

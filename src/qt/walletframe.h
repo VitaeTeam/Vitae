@@ -15,7 +15,6 @@ class ClientModel;
 class SendCoinsRecipient;
 class WalletModel;
 class WalletView;
-class TradingDialog;
 class BlockExplorer;
 
 QT_BEGIN_NAMESPACE
@@ -58,6 +57,8 @@ public slots:
     void gotoHistoryPage();
     /** Switch to fundamentalnode page */
     void gotoFundamentalnodePage();
+    /** Switch to governance page */
+    void gotoGovernancePage();
     /** Switch to masternode page */
     void gotoMasternodePage();
     /** Switch to receive coins page */

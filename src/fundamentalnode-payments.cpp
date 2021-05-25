@@ -19,7 +19,6 @@
 #include "masternodeman.h"
 
 #include <boost/filesystem.hpp>
-#include <boost/lexical_cast.hpp>
 
 /** Object for who's going to get paid on which blocks */
 CFundamentalnodePayments fundamentalnodePayments;
@@ -640,7 +639,7 @@ bool CFundamentalnodePaymentWinner::Sign(CKey& keyFundamentalnode, CPubKey& pubK
     std::string strFundamentalNodeSignMessage;
 
     std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
-                             boost::lexical_cast<std::string>(nBlockHeight) +
+                             std::to_string(nBlockHeight) +
                              payee.ToString();
 
     if (!obfuScationSigner.SignMessage(strMessage, errorMessage, vchSig, keyFundamentalnode)) {
@@ -745,19 +744,19 @@ bool CFundamentalnodeBlockPayees::IsTransactionValid(const CTransaction& txNew)
         nFundamentalnode_Drift_Count = mnodeman.size() + Params().FundamentalnodeCountDrift();
     }
 
-    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count);
+    CAmount requiredFundamentalnodePayment = GetFundamentalnodePayment(nBlockHeight, nReward, nFundamentalnode_Drift_Count, txNew.HasZerocoinSpendInputs());
 
     //require at least 6 signatures
-    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments)
+    for (CFundamentalnodePayee& payee : vecPayments)
         if (payee.nVotes >= nMaxSignatures && payee.nVotes >= MNPAYMENTS_SIGNATURES_REQUIRED)
             nMaxSignatures = payee.nVotes;
 
     // if we don't have at least 6 signatures on a payee, approve whichever is the longest chain
     if (nMaxSignatures < MNPAYMENTS_SIGNATURES_REQUIRED) return true;
 
-    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
+    for (CFundamentalnodePayee& payee : vecPayments) {
         bool found = false;
-        BOOST_FOREACH (CTxOut out, txNew.vout) {
+        for (CTxOut out : txNew.vout) {
             if (payee.scriptPubKey == out.scriptPubKey) {
                 if(out.nValue >= requiredFundamentalnodePayment)
                     found = true;
@@ -791,15 +790,15 @@ std::string CFundamentalnodeBlockPayees::GetRequiredPaymentsString()
 
     std::string ret = "Unknown";
 
-    BOOST_FOREACH (CFundamentalnodePayee& payee, vecPayments) {
+    for (CFundamentalnodePayee& payee : vecPayments) {
         CTxDestination address1;
         ExtractDestination(payee.scriptPubKey, address1);
         CBitcoinAddress address2(address1);
 
         if (ret != "Unknown") {
-            ret += ", " + address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret += ", " + address2.ToString() + ":" + std::to_string(payee.nVotes);
         } else {
-            ret = address2.ToString() + ":" + boost::lexical_cast<std::string>(payee.nVotes);
+            ret = address2.ToString() + ":" + std::to_string(payee.nVotes);
         }
     }
 
@@ -974,7 +973,7 @@ bool CFundamentalnodePaymentWinner::SignatureValid()
 
     if (pmn != NULL) {
         std::string strMessage = vinFundamentalnode.prevout.ToStringShort() +
-                                 boost::lexical_cast<std::string>(nBlockHeight) +
+                                 std::to_string(nBlockHeight) +
                                  payee.ToString();
 
         std::string errorMessage = "";

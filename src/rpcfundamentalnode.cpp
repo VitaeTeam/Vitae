@@ -60,57 +60,6 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
         throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
 }
 
-UniValue obfuscation(const UniValue& params, bool fHelp)
-{
-    throw runtime_error("Obfuscation is not supported any more. Use Zerocoin\n");
-
-    if (fHelp || params.size() == 0)
-        throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, reset, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
-
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
-
-    if (params[0].get_str() == "auto") {
-        if (fFundamentalNode)
-            return "ObfuScation is not supported from fundamentalnodes";
-
-        return "DoAutomaticDenominating " + (obfuScationPool.DoAutomaticDenominating() ? "successful" : ("failed: " + obfuScationPool.GetStatus()));
-    }
-
-    if (params[0].get_str() == "reset") {
-        obfuScationPool.Reset();
-        return "successfully reset obfuscation";
-    }
-
-    if (params.size() != 2)
-        throw runtime_error(
-            "obfuscation <vitaeaddress> <amount>\n"
-            "vitaeaddress, denominate, or auto (AutoDenominate)"
-            "<amount> is a real and will be rounded to the next 0.1" +
-            HelpRequiringPassphrase());
-
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
-        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Vitae address");
-
-    // Amount
-    CAmount nAmount = AmountFromValue(params[1]);
-
-    // Wallet comments
-    CWalletTx wtx;
-    //    string strError = pwalletMain->SendMoneyToDestination(address.Get(), nAmount, wtx, ONLY_DENOMINATED);
-    SendMoney(address.Get(), nAmount, wtx, ONLY_DENOMINATED);
-    //    if (strError != "")
-    //        throw JSONRPCError(RPC_WALLET_ERROR, strError);
-
-    return wtx.GetHash().GetHex();
-}
-
-
 UniValue getpoolinfo(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 0)
@@ -380,7 +329,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -429,7 +378,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultsObj;
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             total++;
 
             std::string errorMessage;
@@ -453,8 +402,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
-        returnObj.push_back(Pair("overall", "Successfully stopped " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to stop " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+        returnObj.push_back(Pair("overall", "Successfully stopped " + std::to_string(successful) + " masternodes, failed to stop " +
+                                 std::to_string(fail) + ", total " + std::to_string(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -475,7 +424,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                                 //return rtnStr;
                         }*/
             /* if(params[1] == "both"){
-                                rtnStr = boost::lexical_cast<std::string>(mnodeman.CountEnabled()) + " / " + boost::lexical_cast<std::string>(mnodeman.size());
+                                rtnStr = std::to_string(mnodeman.CountEnabled()) + " / " + std::to_string(mnodeman.size());
                                 return rtnStr;
                         } */
         }
@@ -568,7 +517,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -624,7 +573,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultsObj;
         UniValue resultsObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             total++;
 
             std::string errorMessage;
@@ -652,8 +601,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object returnObj;
         UniValue returnObj(UniValue::VOBJ);
-        returnObj.push_back(Pair("overall", "Successfully started " + boost::lexical_cast<std::string>(successful) + " masternodes, failed to start " +
-                                 boost::lexical_cast<std::string>(fail) + ", total " + boost::lexical_cast<std::string>(total)));
+        returnObj.push_back(Pair("overall", "Successfully started " + std::to_string(successful) + " masternodes, failed to start " +
+                                 std::to_string(fail) + ", total " + std::to_string(total)));
         returnObj.push_back(Pair("detail", resultsObj));
 
         return returnObj;
@@ -730,9 +679,9 @@ UniValue masternode(const UniValue& params, bool fHelp)
                 CTxDestination address1;
                 ExtractDestination(payee, address1);
                 CBitcoinAddress address2(address1);
-                obj.push_back(Pair(boost::lexical_cast<std::string>(nHeight),       address2.ToString().c_str()));
+                obj.push_back(Pair(std::to_string(nHeight),       address2.ToString().c_str()));
             } else {
-                obj.push_back(Pair(boost::lexical_cast<std::string>(nHeight),       ""));
+                obj.push_back(Pair(std::to_string(nHeight),       ""));
             }
         }
 
@@ -773,7 +722,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
         //Object resultObj;
         UniValue resultObj(UniValue::VOBJ);
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             //Object mnObj;
             UniValue mnObj(UniValue::VOBJ);
             mnObj.push_back(Pair("alias", mne.getAlias()));
@@ -795,8 +744,8 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         //Object obj;
         UniValue obj(UniValue::VOBJ);
-        BOOST_FOREACH(COutput& out, possibleCoins) {
-            obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), boost::lexical_cast<std::string>(out.i)));
+        for(COutput& out : possibleCoins) {
+            obj.push_back(Pair(out.tx->GetHash().ToString().c_str(), std::to_string(out.i)));
         }
 
         return obj;
@@ -823,7 +772,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
         Object resultObj;
 
-        BOOST_FOREACH(CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+        for(CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
             std::string errorMessage;
             std::vector<unsigned char> vchMasterNodeSignature;
             std::string strMasterNodeSignMessage;
@@ -847,7 +796,7 @@ UniValue masternode(const UniValue& params, bool fHelp)
                                 continue;
             }
 
-            std::string strMessage = pmn->vin.ToString() + boost::lexical_cast<std::string>(nVote);
+            std::string strMessage = pmn->vin.ToString() + std::to_string(nVote);
 
                         if(!darkSendSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyMasternode)){
                                 printf(" Error upon calling SignMessage for %s\n", mne.getAlias().c_str());
@@ -865,11 +814,11 @@ UniValue masternode(const UniValue& params, bool fHelp)
 
             //send to all peers
             //LOCK(cs_vNodes);
-            //BOOST_FOREACH(CNode* pnode, vNodes)
+            //for(CNode* pnode : vNodes)
                // pnode->PushMessage("mvote", pmn->vin, vchMasterNodeSignature, nVote);
 
         }
-                return("Voted successfully " + boost::lexical_cast<std::string>(success) + " time(s) and failed " + boost::lexical_cast<std::string>(failed) + " time(s).");
+                return("Voted successfully " + std::to_string(success) + " time(s) and failed " + std::to_string(failed) + " time(s).");
     }*/
 
     /*if (strCommand == "list")
@@ -881,7 +830,6 @@ UniValue masternode(const UniValue& params, bool fHelp)
         }
         return masternodelist(newParams);
     }*/
-    return NullUniValue;
 }
 
 UniValue masternodelist(const UniValue& params, bool fHelp)
@@ -921,14 +869,14 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
         UniValue obj(UniValue::VOBJ);
     if (strMode == "rank") {
         std::vector<pair<int, CMasternode> > vMasternodeRanks = m_nodeman.GetMasternodeRanks(chainActive.Tip()->nHeight);
-        BOOST_FOREACH(PAIRTYPE(int, CMasternode)& s, vMasternodeRanks) {
+        for(PAIRTYPE(int, CMasternode)& s : vMasternodeRanks) {
             std::string strAddr = s.second.addr.ToString();
             if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
             obj.push_back(Pair(strAddr,       s.first));
         }
     } else {
         std::vector<CMasternode> vMasternodes = m_nodeman.GetFullMasternodeVector();
-        BOOST_FOREACH(CMasternode& mn, vMasternodes) {
+        for(CMasternode& mn : vMasternodes) {
             std::string strAddr = mn.addr.ToString();
             if (strMode == "activeseconds") {
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
@@ -946,7 +894,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 if(mn.donationPercentage != 0){
                     strOut = address2.ToString().c_str();
                     strOut += ":";
-                    strOut += boost::lexical_cast<std::string>(mn.donationPercentage);
+                    strOut += std::to_string(mn.donationPercentage);
                 }
                 obj.push_back(Pair(strAddr,       strOut.c_str()));
             } else if (strMode == "full") {
@@ -976,7 +924,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.lastTimeSeen));
             } else if (strMode == "protocol") {
-                if(strFilter !="" && strFilter != boost::lexical_cast<std::string>(mn.protocolVersion) &&
+                if(strFilter !="" && strFilter != std::to_string(mn.protocolVersion) &&
                     strAddr.find(strFilter) == string::npos) continue;
                 obj.push_back(Pair(strAddr,       (int64_t)mn.protocolVersion));
             } else if (strMode == "pubkey") {
@@ -991,7 +939,7 @@ UniValue masternodelist(const UniValue& params, bool fHelp)
                 obj.push_back(Pair(strAddr,       address2.ToString().c_str()));
             } else if (strMode == "pose") {
                 if(strFilter !="" && strAddr.find(strFilter) == string::npos) continue;
-                std::string strOut = boost::lexical_cast<std::string>(mn.nScanningErrorCount);
+                std::string strOut = std::to_string(mn.nScanningErrorCount);
                 obj.push_back(Pair(strAddr,       strOut.c_str()));
             } else if(strMode == "status") {
                 std::string strStatus = mn.Status();
@@ -1099,7 +1047,7 @@ UniValue listfundamentalnodes(const UniValue& params, bool fHelp)
         nHeight = pindex->nHeight;
     }
     std::vector<pair<int, CFundamentalnode> > vFundamentalnodeRanks = mnodeman.GetFundamentalnodeRanks(nHeight);
-    BOOST_FOREACH (PAIRTYPE(int, CFundamentalnode) & s, vFundamentalnodeRanks) {
+    for (PAIRTYPE(int, CFundamentalnode) & s : vFundamentalnodeRanks) {
         UniValue obj(UniValue::VOBJ);
         std::string strVin = s.second.vin.prevout.ToStringShort();
         std::string strTxHash = s.second.vin.prevout.hash.ToString();
@@ -1340,7 +1288,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
             int nIndex;
             if(!mne.castOutputIndex(nIndex))
@@ -1394,7 +1342,7 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             if (mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1477,7 +1425,7 @@ UniValue getfundamentalnodeoutputs (const UniValue& params, bool fHelp)
     vector<COutput> possibleCoins = activeFundamentalnode.SelectCoinsFundamentalnode();
 
     UniValue ret(UniValue::VARR);
-    BOOST_FOREACH (COutput& out, possibleCoins) {
+    for (COutput& out : possibleCoins) {
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("txhash", out.tx->GetHash().ToString()));
         obj.push_back(Pair("outputidx", out.i));
@@ -1522,7 +1470,7 @@ UniValue listfundamentalnodeconf (const UniValue& params, bool fHelp)
 
     UniValue ret(UniValue::VARR);
 
-    BOOST_FOREACH (CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+    for (CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
         int nIndex;
         if(!mne.castOutputIndex(nIndex))
             continue;
@@ -1657,7 +1605,7 @@ UniValue getfundamentalnodewinners (const UniValue& params, bool fHelp)
             UniValue winner(UniValue::VARR);
             boost::char_separator<char> sep(",");
             boost::tokenizer< boost::char_separator<char> > tokens(strPayment, sep);
-            BOOST_FOREACH (const string& t, tokens) {
+            for (const string& t : tokens) {
                 UniValue addr(UniValue::VOBJ);
                 std::size_t pos = t.find(":");
                 std::string strAddress = t.substr(0,pos);
@@ -1721,7 +1669,7 @@ UniValue getfundamentalnodescores (const UniValue& params, bool fHelp)
     for (int nHeight = chainActive.Tip()->nHeight - nLast; nHeight < chainActive.Tip()->nHeight + 20; nHeight++) {
         uint256 nHigh = 0;
         CFundamentalnode* pBestFundamentalnode = NULL;
-        BOOST_FOREACH (CFundamentalnode& mn, vFundamentalnodes) {
+        for (CFundamentalnode& mn : vFundamentalnodes) {
             uint256 n = mn.CalculateScore(1, nHeight - 100);
             if (n > nHigh) {
                 nHigh = n;
@@ -1783,7 +1731,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
         UniValue statusObj(UniValue::VOBJ);
         statusObj.push_back(Pair("alias", alias));
 
-        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for(CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             if(mne.getAlias() == alias) {
                 found = true;
                 std::string errorMessage;
@@ -1831,7 +1779,7 @@ UniValue createfundamentalnodebroadcast(const UniValue& params, bool fHelp)
 
         UniValue resultsObj(UniValue::VARR);
 
-        BOOST_FOREACH(CFundamentalnodeConfig::CFundamentalnodeEntry mne, fundamentalnodeConfig.getEntries()) {
+        for(CFundamentalnodeConfig::CFundamentalnodeEntry mne : fundamentalnodeConfig.getEntries()) {
             std::string errorMessage;
 
             CTxIn vin = CTxIn(uint256S(mne.getTxHash()), uint32_t(atoi(mne.getOutputIndex().c_str())));

@@ -22,25 +22,26 @@
 #include <QSettings>
 #include <utilmoneystr.h>
 #include <QtWidgets>
-#include <primitives/deterministicmint.h>
-#include <accumulators.h>
+#include <zvit/deterministicmint.h>
+#include <zvit/accumulators.h>
 
 PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint | Qt::WindowCloseButtonHint),
                                                           ui(new Ui::PrivacyDialog),
                                                           walletModel(0),
-                                                          currentBalance(-1)
+                                                          currentBalance(-1),
+                                                          fDenomsMinimized(true)
 {
     nDisplayUnit = 0; // just make sure it's not unitialized
     ui->setupUi(this);
 
-    // "Spending 999999 zVITAE ought to be enough for anybody." - Bill Gates, 2017
-    ui->zVITAEpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
-    ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );
+    // "Spending 999999 zVIT ought to be enough for anybody." - Bill Gates, 2017
+    ui->zVITpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
+    //ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );     // disable MINT
 
     // Default texts for (mini-) coincontrol
-    ui->labelCoinControlQuantity->setText (tr("Coins automatically selected"));
-    ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));
-    ui->labelzVITAESyncStatus->setText("(" + tr("out of sync") + ")");
+    //ui->labelCoinControlQuantity->setText (tr("Coins automatically selected"));       // disable MINT
+    //ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));         // disable MINT
+    ui->labelzVITSyncStatus->setText("(" + tr("out of sync") + ")");
 
     // Sunken frame for minting messages
     ui->TEMintStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
@@ -49,6 +50,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     ui->TEMintStatus->setPlainText(tr("Mint Status: Okay"));
 
     // Coin Control signals
+    /*                                                                            [disable MINT and coinControl]
     connect(ui->pushButtonCoinControl, SIGNAL(clicked()), this, SLOT(coinControlButtonClicked()));
 
     // Coin Control: clipboard actions
@@ -58,6 +60,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     connect(clipboardAmountAction, SIGNAL(triggered()), this, SLOT(coinControlClipboardAmount()));
     ui->labelCoinControlQuantity->addAction(clipboardQuantityAction);
     ui->labelCoinControlAmount->addAction(clipboardAmountAction);
+    */
 
     // Denomination labels
     ui->labelzDenom1Text->setText(tr("Denom. with value <b>1</b>:"));
@@ -84,14 +87,6 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
 
     // VITAE settings
     QSettings settings;
-    if (!settings.contains("nSecurityLevel")){
-        nSecurityLevel = 42;
-        settings.setValue("nSecurityLevel", nSecurityLevel);
-    }
-    else{
-        nSecurityLevel = settings.value("nSecurityLevel").toInt();
-    }
-
     if (!settings.contains("fMinimizeChange")){
         fMinimizeChange = false;
         settings.setValue("fMinimizeChange", fMinimizeChange);
@@ -99,6 +94,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     else{
         fMinimizeChange = settings.value("fMinimizeChange").toBool();
     }
+
     ui->checkBoxMinimizeChange->setChecked(fMinimizeChange);
 
     // Start with displaying the "out of sync" warnings
@@ -108,12 +104,21 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     ui->WarningLabel->hide();    // Explanatory text visible in QT-Creator
     ui->dummyHideWidget->hide(); // Dummy widget with elements to hide
 
-    // Set labels/buttons depending on SPORK_16 status
+    // Set labels/buttons depending on SPORK_20 status
     updateSPORK20Status();
+
+    // init Denoms section
+    if(!settings.contains("fDenomsSectionMinimized"))
+        settings.setValue("fDenomsSectionMinimized", true);
+    minimizeDenomsSection(settings.value("fDenomsSectionMinimized").toBool());
+
+    ui->checkBoxMintChange->setVisible(false);
 }
 
 PrivacyDialog::~PrivacyDialog()
 {
+    QSettings settings;
+    settings.setValue("fDenomsSectionMinimized", fDenomsMinimized);
     delete ui;
 }
 
@@ -129,9 +134,8 @@ void PrivacyDialog::setModel(WalletModel* walletModel)
 
         connect(walletModel, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
                                SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
-        //connect(walletModel->getOptionsModel(), SIGNAL(zeromintEnableChanged(bool)), this, SLOT(updateAutomintStatus()));
-        //connect(walletModel->getOptionsModel(), SIGNAL(zeromintPercentageChanged(int)), this, SLOT(updateAutomintStatus()));
-        ui->securityLevel->setValue(nSecurityLevel);
+        connect(walletModel->getOptionsModel(), SIGNAL(zeromintEnableChanged(bool)), this, SLOT(updateAutomintStatus()));
+        connect(walletModel->getOptionsModel(), SIGNAL(zeromintPercentageChanged(int)), this, SLOT(updateAutomintStatus()));
     }
 }
 
@@ -150,11 +154,13 @@ void PrivacyDialog::on_addressBookButton_clicked()
     dlg.setModel(walletModel->getAddressTableModel());
     if (dlg.exec()) {
         ui->payTo->setText(dlg.getReturnValue());
-        ui->zVITAEpayAmount->setFocus();
+        ui->zVITpayAmount->setFocus();
     }
 }
 
-void PrivacyDialog::on_pushButtonMintzVITAE_clicked()
+/* disable MINT
+ *
+void PrivacyDialog::on_pushButtonMintzVIT_clicked()
 {
     if (!walletModel || !walletModel->getOptionsModel())
         return;
@@ -172,7 +178,7 @@ void PrivacyDialog::on_pushButtonMintzVITAE_clicked()
     // Request unlock if wallet was locked or unlocked for mixing:
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
     if (encStatus == walletModel->Locked) {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Mint_zVIT, true));
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Mint_zPIV, true));
         if (!ctx.isValid()) {
             // Unlock wallet was cancelled
             ui->TEMintStatus->setPlainText(tr("Error: Your wallet is locked. Please enter the wallet passphrase first."));
@@ -234,7 +240,7 @@ void PrivacyDialog::on_pushButtonMintzVITAE_clicked()
 
     return;
 }
-
+*/
 void PrivacyDialog::on_pushButtonMintReset_clicked()
 {
     ui->TEMintStatus->setPlainText(tr("Starting ResetMintZerocoin: rescanning complete blockchain, this will need up to 30 minutes depending on your hardware.\nPlease be patient..."));
@@ -250,6 +256,7 @@ void PrivacyDialog::on_pushButtonMintReset_clicked()
     return;
 }
 
+
 void PrivacyDialog::on_pushButtonSpentReset_clicked()
 {
     ui->TEMintStatus->setPlainText(tr("Starting ResetSpentZerocoin: "));
@@ -264,7 +271,7 @@ void PrivacyDialog::on_pushButtonSpentReset_clicked()
     return;
 }
 
-void PrivacyDialog::on_pushButtonSpendzVITAE_clicked()
+void PrivacyDialog::on_pushButtonSpendzVIT_clicked()
 {
 
     if (!walletModel || !walletModel->getOptionsModel() || !pwalletMain)
@@ -285,11 +292,11 @@ void PrivacyDialog::on_pushButtonSpendzVITAE_clicked()
             return;
         }
         // Wallet is unlocked now, sedn zVITAE
-        sendzVITAE();
+        sendzVIT();
         return;
     }
     // Wallet already unlocked or not encrypted at all, send zVITAE
-    sendzVITAE();
+    sendzVIT();
 }
 
 void PrivacyDialog::on_pushButtonZVitControl_clicked()
@@ -313,7 +320,7 @@ static inline int64_t roundint64(double d)
     return (int64_t)(d > 0 ? d + 0.5 : d - 0.5);
 }
 
-void PrivacyDialog::sendzVITAE()
+void PrivacyDialog::sendzVIT()
 {
     QSettings settings;
 
@@ -331,18 +338,18 @@ void PrivacyDialog::sendzVITAE()
     }
 
     // Double is allowed now
-    double dAmount = ui->zVITAEpayAmount->text().toDouble();
+    double dAmount = ui->zVITpayAmount->text().toDouble();
     CAmount nAmount = roundint64(dAmount* COIN);
 
     // Check amount validity
     if (!MoneyRange(nAmount) || nAmount <= 0.0) {
         QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Invalid Send Amount"), QMessageBox::Ok, QMessageBox::Ok);
-        ui->zVITAEpayAmount->setFocus();
+        ui->zVITpayAmount->setFocus();
         return;
     }
 
     // Convert change to zVITAE
-    bool fMintChange = ui->checkBoxMintChange->isChecked();
+    bool fMintChange = false;// ui->checkBoxMintChange->isChecked();
 
     // Persist minimize change setting
     fMinimizeChange = ui->checkBoxMinimizeChange->isChecked();
@@ -365,14 +372,10 @@ void PrivacyDialog::sendzVITAE()
 
         if (retval != QMessageBox::Yes) {
             // Sending canceled
-            ui->zVITAEpayAmount->setFocus();
+            ui->zVITpayAmount->setFocus();
             return;
         }
     }
-
-    // Persist Security Level for next start
-    nSecurityLevel = ui->securityLevel->value();
-    settings.setValue("nSecurityLevel", nSecurityLevel);
 
     // Spend confirmation message box
 
@@ -392,8 +395,7 @@ void PrivacyDialog::sendzVITAE()
         strAddress = tr(" to a newly generated (unused and therefore anonymous) local address <br />");
     }
 
-    QString strSecurityLevel = tr("with Security Level ") + ui->securityLevel->text() + " ?";
-    strQuestionString += strAmount + strAddress + strSecurityLevel;
+    strQuestionString += strAmount + strAddress;
 
     // Display message box
     QMessageBox::StandardButton retval = QMessageBox::question(this, tr("Confirm send coins"),
@@ -407,25 +409,16 @@ void PrivacyDialog::sendzVITAE()
     }
 
     int64_t nTime = GetTimeMillis();
-    ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on the selected Security Level and your hardware.\nPlease be patient..."));
+    ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on your hardware.\nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zVITAE selector if applicable
+    // use mints from zVIT selector if applicable
     vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::setSelectedMints.empty()) {
         vMintsToFetch = ZVitControlDialog::GetSelectedMints();
 
         for (auto& meta : vMintsToFetch) {
-            if (meta.nVersion < libzerocoin::PrivateCoin::PUBKEY_VERSION) {
-                //version 1 coins have to use full security level to successfully spend.
-                if (nSecurityLevel < 100) {
-                    QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Version 1 zVITAE require a security level of 100 to successfully spend."), QMessageBox::Ok, QMessageBox::Ok);
-                    ui->TEMintStatus->setPlainText(tr("Failed to spend zVITAE"));
-                    ui->TEMintStatus->repaint();
-                    return;
-                }
-            }
             CZerocoinMint mint;
             if (!pwalletMain->GetMint(meta.hashSerial, mint)) {
                 ui->TEMintStatus->setPlainText(tr("Failed to fetch mint associated with serial hash"));
@@ -442,22 +435,16 @@ void PrivacyDialog::sendzVITAE()
     bool fSuccess = false;
     if(ui->payTo->text().isEmpty()){
         // Spend to newly generated local address
-        fSuccess = pwalletMain->SpendZerocoin(nAmount, nSecurityLevel, wtxNew, receipt, vMintsSelected, fMintChange, fMinimizeChange);
+        fSuccess = pwalletMain->SpendZerocoin(nAmount, wtxNew, receipt, vMintsSelected, fMintChange, fMinimizeChange);
     }
     else {
         // Spend to supplied destination address
-        fSuccess = pwalletMain->SpendZerocoin(nAmount, nSecurityLevel, wtxNew, receipt, vMintsSelected, fMintChange, fMinimizeChange, &address);
+        fSuccess = pwalletMain->SpendZerocoin(nAmount, wtxNew, receipt, vMintsSelected, fMintChange, fMinimizeChange, &address);
     }
 
     // Display errors during spend
     if (!fSuccess) {
-        if (receipt.GetStatus() == ZVIT_SPEND_V1_SEC_LEVEL) {
-            QMessageBox::warning(this, tr("Spend Zerocoin"), tr("Version 1 zVITAE require a security level of 100 to successfully spend."), QMessageBox::Ok, QMessageBox::Ok);
-            ui->TEMintStatus->setPlainText(tr("Failed to spend zVITAE"));
-            ui->TEMintStatus->repaint();
-            return;
-        }
-
+        /*
         int nNeededSpends = receipt.GetNeededSpends(); // Number of spends we would need for this transaction
         const int nMaxSpends = Params().Zerocoin_MaxSpendsPerTransaction(); // Maximum possible spends for one zVITAE transaction
         if (nNeededSpends > nMaxSpends) {
@@ -467,17 +454,18 @@ void PrivacyDialog::sendzVITAE()
             ui->TEMintStatus->setPlainText(tr("Spend Zerocoin failed with status = ") +QString::number(receipt.GetStatus(), 10) + "\n" + "Message: " + QString::fromStdString(strStatusMessage.toStdString()));
         }
         else {
-            QMessageBox::warning(this, tr("Spend Zerocoin"), receipt.GetStatusMessage().c_str(), QMessageBox::Ok, QMessageBox::Ok);
-            ui->TEMintStatus->setPlainText(tr("Spend Zerocoin failed with status = ") +QString::number(receipt.GetStatus(), 10) + "\n" + "Message: " + QString::fromStdString(receipt.GetStatusMessage()));
-        }
-        ui->zVITAEpayAmount->setFocus();
+         */
+        QMessageBox::warning(this, tr("Spend Zerocoin"), receipt.GetStatusMessage().c_str(), QMessageBox::Ok, QMessageBox::Ok);
+        ui->TEMintStatus->setPlainText(tr("Spend Zerocoin failed with status = ") +QString::number(receipt.GetStatus(), 10) + "\n" + "Message: " + QString::fromStdString(receipt.GetStatusMessage()));
+        //}
+        ui->zVITpayAmount->setFocus();
         ui->TEMintStatus->repaint();
         ui->TEMintStatus->verticalScrollBar()->setValue(ui->TEMintStatus->verticalScrollBar()->maximum()); // Automatically scroll to end of text
         return;
     }
 
     if (walletModel && walletModel->getAddressTableModel()) {
-        // If zVITAE was spent successfully update the addressbook with the label
+        // If zVIT was spent successfully update the addressbook with the label
         std::string labelText = ui->addAsLabel->text().toStdString();
         if (!labelText.empty())
             walletModel->updateAddressBookLabels(address.Get(), labelText, "send");
@@ -510,7 +498,7 @@ void PrivacyDialog::sendzVITAE()
 
         strStats += tr("address: ");
         CTxDestination dest;
-        if(txout.scriptPubKey.IsZerocoinMint())
+        if(txout.IsZerocoinMint())
             strStats += tr("zVITAE Mint");
         else if(ExtractDestination(txout.scriptPubKey, dest))
             strStats += tr(CBitcoinAddress(dest).ToString().c_str());
@@ -526,7 +514,7 @@ void PrivacyDialog::sendzVITAE()
     strReturn += strStats;
 
     // Clear amount to avoid double spending when accidentally clicking twice
-    ui->zVITAEpayAmount->setText ("0");
+    ui->zVITpayAmount->setText ("0");
 
     ui->TEMintStatus->setPlainText(strReturn);
     ui->TEMintStatus->repaint();
@@ -537,6 +525,8 @@ void PrivacyDialog::on_payTo_textChanged(const QString& address)
 {
     updateLabel(address);
 }
+
+/* DISABLE MINTs: no need for coinCointrol
 
 // Coin Control: copy label "Quantity" to clipboard
 void PrivacyDialog::coinControlClipboardQuantity()
@@ -578,6 +568,29 @@ void PrivacyDialog::coinControlUpdateLabels()
         ui->labelCoinControlQuantity->setText (tr("Coins automatically selected"));
         ui->labelCoinControlAmount->setText (tr("Coins automatically selected"));
     }
+}
+*/
+
+void PrivacyDialog::on_pushButtonShowDenoms_clicked()
+{
+    minimizeDenomsSection(false);
+}
+
+void PrivacyDialog::on_pushButtonHideDenoms_clicked()
+{
+    minimizeDenomsSection(true);
+}
+
+void PrivacyDialog::minimizeDenomsSection(bool fMinimize)
+{
+    if (fMinimize) {
+        ui->balanceSupplyFrame->show();
+        ui->verticalFrameRight->hide();
+    } else {
+        ui->balanceSupplyFrame->hide();
+        ui->verticalFrameRight->show();
+    }
+    fDenomsMinimized = fMinimize;
 }
 
 bool PrivacyDialog::updateLabel(const QString& address)
@@ -701,7 +714,7 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
 
     ui->labelzAvailableAmount->setText(QString::number(zerocoinBalance/COIN) + QString(" zVITAE "));
     ui->labelzAvailableAmount_2->setText(QString::number(matureZerocoinBalance/COIN) + QString(" zVITAE "));
-    ui->labelzVITAEAmountValue->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, balance - immatureBalance - nLockedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzAvailableAmount_4->setText(QString::number(zerocoinBalance/COIN) + QString(" zVITAE "));
 
     // Display AutoMint status
     updateAutomintStatus();
@@ -711,6 +724,8 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
 
     // Display global supply
     ui->labelZsupplyAmount->setText(QString::number(chainActive.Tip()->GetZerocoinSupply()/COIN) + QString(" <b>zVITAE </b> "));
+    ui->labelZsupplyAmount_2->setText(QString::number(chainActive.Tip()->GetZerocoinSupply()/COIN) + QString(" <b>zVITAE </b> "));
+
     for (auto denom : libzerocoin::zerocoinDenomList) {
         int64_t nSupply = chainActive.Tip()->mapZerocoinSupply.at(denom);
         QString strSupply = QString::number(nSupply) + " x " + QString::number(denom) + " = <b>" +
@@ -760,7 +775,7 @@ void PrivacyDialog::updateDisplayUnit()
 
 void PrivacyDialog::showOutOfSyncWarning(bool fShow)
 {
-    ui->labelzVITAESyncStatus->setVisible(fShow);
+    ui->labelzVITSyncStatus->setVisible(fShow);
 }
 
 void PrivacyDialog::keyPressEvent(QKeyEvent* event)
@@ -776,30 +791,39 @@ void PrivacyDialog::keyPressEvent(QKeyEvent* event)
 void PrivacyDialog::updateAutomintStatus()
 {
     QString strAutomintStatus = tr("AutoMint Status:");
-    strAutomintStatus += tr(" <b>disabled</b>.");
-    strAutomintStatus += tr(" Configured target percentage: <b>") + QString::number(0) + "%</b>";
+
+    if (pwalletMain->isZeromintEnabled ()) {
+       strAutomintStatus += tr(" <b>enabled</b>.");
+    }
+    else {
+       strAutomintStatus += tr(" <b>disabled</b>.");
+    }
+
+    strAutomintStatus += tr(" Configured target percentage: <b>") + QString::number(pwalletMain->getZeromintPercentage()) + "%</b>";
     ui->label_AutoMintStatus->setText(strAutomintStatus);
 }
 
 void PrivacyDialog::updateSPORK20Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
-    bool fButtonsEnabled =  ui->pushButtonMintzVITAE->isEnabled();
+    //bool fButtonsEnabled =  ui->pushButtonMintzPIV->isEnabled();
+    bool fButtonsEnabled = false;
     bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
-        // Mint zVITAE
-        ui->pushButtonMintzVITAE->setEnabled(false);
-        ui->pushButtonMintzVITAE->setToolTip(tr("zVITAE is currently disabled due to maintenance."));
+        // Mint zVIT
+        //ui->pushButtonMintzPIV->setEnabled(false);
+        //ui->pushButtonMintzPIV->setToolTip(tr("zVIT is currently disabled due to maintenance."));
 
-        // Spend zVITAE
-        ui->pushButtonSpendzVITAE->setEnabled(false);
-        ui->pushButtonSpendzVITAE->setToolTip(tr("zVITAE is currently disabled due to maintenance."));
+        // Spend zVIT
+        ui->pushButtonSpendzVIT->setEnabled(false);
+        ui->pushButtonSpendzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
     } else if (!fMaintenanceMode && !fButtonsEnabled) {
-        // Mint zVITAE
-        ui->pushButtonMintzVITAE->setEnabled(true);
+        // Mint zVIT
+        //ui->pushButtonMintzVIT->setEnabled(true);
+        //ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of VIT to convert to zVIT", 0));
 
-        // Spend zVITAE
-        ui->pushButtonSpendzVITAE->setEnabled(true);
-        ui->pushButtonSpendzVITAE->setToolTip(tr("Spend Zerocoin. Without 'Pay To:' address creates payments to yourself."));
+        // Spend zVIT
+        ui->pushButtonSpendzVIT->setEnabled(true);
+        ui->pushButtonSpendzVIT->setToolTip(tr("Spend Zerocoin. Without 'Pay To:' address creates payments to yourself."));
     }
 }
