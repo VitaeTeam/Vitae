@@ -4,6 +4,9 @@
 /.project
 /.settings
 
+# VSCode settings
+/.vscode
+
 # Mac filesystem dust
 /.DS_Store
 src/qt/.DS_Store
