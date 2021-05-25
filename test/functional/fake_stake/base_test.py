@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-# Copyright (c) 2019 The PIVX developers
-# Distributed under the MIT software license, see the accompanying
-# file COPYING or http://www.opensource.org/licenses/mit-license.php.
 # -*- coding: utf-8 -*-
 
 from io import BytesIO
@@ -18,7 +15,7 @@ from test_framework.test_framework import BitcoinTestFramework
 from test_framework.script import CScript, OP_CHECKSIG
 from test_framework.util import hash256, bytes_to_hex_str, hex_str_to_bytes, connect_nodes_bi, p2p_port
 
-from .util import TestNode, create_transaction, utxo_to_stakingPrevOuts, dir_size, nBlockStakeModifierlV2
+from .util import TestNode, create_transaction, utxo_to_stakingPrevOuts, dir_size
 ''' -------------------------------------------------------------------------
 PIVX_FakeStakeTest CLASS ----------------------------------------------------
 
@@ -117,7 +114,7 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
         block = create_block(int(hashPrevBlock, 16), coinbase, nTime)
 
         # Find valid kernel hash - Create a new private key used for block signing.
-        if not block.solve_stake(stakingPrevOuts, (height >= nBlockStakeModifierlV2)):
+        if not block.solve_stake(stakingPrevOuts):
             raise Exception("Not able to solve for any prev_outpoint")
 
         # Sign coinstake TX and add it to the block
@@ -317,8 +314,10 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
                 txBlocktime = utxo_tx['blocktime']
                 txBlockhash = utxo_tx['blockhash']
 
+            # get Stake Modifier
+            stakeModifier = int(self.node.getblock(txBlockhash)['modifier'], 16)
             # assemble prevout object
-            utxo_to_stakingPrevOuts(utxo, stakingPrevOuts, txBlocktime, zpos)
+            utxo_to_stakingPrevOuts(utxo, stakingPrevOuts, txBlocktime, stakeModifier, zpos)
 
         return stakingPrevOuts
 
@@ -387,7 +386,7 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
             # Try submitblock
             var = self.node.submitblock(bytes_to_hex_str(block.serialize()))
             time.sleep(1)
-            if (not fMustPass and var not in [None, "bad-txns-invalid-zvit"]) or (fMustPass and var != "inconclusive"):
+            if (not fMustPass and var not in [None, "bad-txns-invalid-zpiv"]) or (fMustPass and var != "inconclusive"):
                 self.log.error("submitblock [fMustPass=%s] result: %s" % (str(fMustPass), str(var)))
                 err_msgs.append("submitblock %d: %s" % (current_block_n, str(var)))
 

@@ -13,7 +13,6 @@
 #include "guiutil.h"
 #include "init.h"
 #include "obfuscation.h"
-#include "obfuscationconfig.h"
 #include "optionsmodel.h"
 #include "transactionfilterproxy.h"
 #include "transactionrecord.h"
@@ -59,17 +58,6 @@ public:
         qint64 amount = index.data(TransactionTableModel::AmountRole).toLongLong();
         bool confirmed = index.data(TransactionTableModel::ConfirmedRole).toBool();
 
-        // Check transaction status
-        int nStatus = index.data(TransactionTableModel::StatusRole).toInt();
-        bool fConflicted = false;
-        if (nStatus == TransactionStatus::Conflicted || nStatus == TransactionStatus::NotAccepted) {
-            fConflicted = true; // Most probably orphaned, but could have other reasons as well
-        }
-        bool fImmature = false;
-        if (nStatus == TransactionStatus::Immature) {
-            fImmature = true;
-        }
-
         QVariant value = index.data(Qt::ForegroundRole);
         QColor foreground = COLOR_BLACK;
         if (value.canConvert<QBrush>()) {
@@ -87,15 +75,9 @@ public:
             iconWatchonly.paint(painter, watchonlyRect);
         }
 
-        if(fConflicted) { // No need to check anything else for conflicted transactions
-            foreground = COLOR_CONFLICTED;
-        } else if (!confirmed || fImmature) {
-            foreground = COLOR_UNCONFIRMED;
-        } else if (amount < 0) {
+        if (amount < 0)
             foreground = COLOR_NEGATIVE;
-        } else {
-            foreground = COLOR_BLACK;
-        }
+
         painter->setPen(foreground);
         QString amountText = BitcoinUnits::formatWithUnit(unit, amount, true, BitcoinUnits::separatorAlways);
         if (!confirmed) {
@@ -182,13 +164,13 @@ void OverviewPage::getPercentage(CAmount nUnlockedBalance, CAmount nZerocoinBala
     }
 
     double dPercentage = 100.0 - dzPercentage;
-    
-    szVITAEPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
+
+    szVITPercentage = "(" + QLocale(QLocale::system()).toString(dzPercentage, 'f', nPrecision) + " %)";
     sVITPercentage = "(" + QLocale(QLocale::system()).toString(dPercentage, 'f', nPrecision) + " %)";
-    
+
 }
 
-void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance, 
+void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmedBalance, const CAmount& immatureBalance,
                               const CAmount& zerocoinBalance, const CAmount& unconfirmedZerocoinBalance, const CAmount& immatureZerocoinBalance,
                               const CAmount& watchOnlyBalance, const CAmount& watchUnconfBalance, const CAmount& watchImmatureBalance)
 {
@@ -211,11 +193,15 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     // VITAE Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount vitAvailableBalance = balance - immatureBalance - nLockedBalance;
-    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;    
     CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
 
-    // zVITAE Balance
+    // VITAE Watch-Only Balance
+    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance;
+    CAmount nAvailableWatchBalance = watchOnlyBalance - watchImmatureBalance - nWatchOnlyLockedBalance;
+
+    // zVIT Balance
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
+
     // Percentages
     QString szPercentage = "";
     QString sPercentage = "";
@@ -232,7 +218,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Watchonly labels
-    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchOnlyBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nAvailableWatchBalance, false, BitcoinUnits::separatorAlways));
     ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
     ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorAlways));
     ui->labelWatchLocked->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nWatchOnlyLockedBalance, false, BitcoinUnits::separatorAlways));
@@ -256,39 +242,53 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     // Only show most balances if they are non-zero for the sake of simplicity
     QSettings settings;
     bool settingShowAllBalances = !settings.value("fHideZeroBalances").toBool();
+
     bool showSumAvailable = settingShowAllBalances || sumTotalBalance != availableTotalBalance;
     ui->labelBalanceTextz->setVisible(showSumAvailable);
     ui->labelBalancez->setVisible(showSumAvailable);
-    bool showVITAvailable = settingShowAllBalances || vitAvailableBalance != nTotalBalance;
-    bool showWatchOnlyVITAvailable = watchOnlyBalance != nTotalWatchBalance;
-    bool showVITPending = settingShowAllBalances || unconfirmedBalance != 0;
-    bool showWatchOnlyVITPending = watchUnconfBalance != 0;
-    bool showVITLocked = settingShowAllBalances || nLockedBalance != 0;
-    bool showWatchOnlyVITLocked = nWatchOnlyLockedBalance != 0;
-    bool showImmature = settingShowAllBalances || immatureBalance != 0;
-    bool showWatchOnlyImmature = watchImmatureBalance != 0;
+
     bool showWatchOnly = nTotalWatchBalance != 0;
-    ui->labelBalance->setVisible(showVITAvailable || showWatchOnlyVITAvailable);
+
+    // VITAE Available
+    bool showVITAvailable = settingShowAllBalances || vitAvailableBalance != nTotalBalance;
+    bool showWatchOnlyVITAvailable = showVITAvailable || nAvailableWatchBalance != nTotalWatchBalance;
     ui->labelBalanceText->setVisible(showVITAvailable || showWatchOnlyVITAvailable);
-    ui->labelWatchAvailable->setVisible(showVITAvailable && showWatchOnly);
-    ui->labelUnconfirmed->setVisible(showVITPending || showWatchOnlyVITPending);
+    ui->labelBalance->setVisible(showVITAvailable || showWatchOnlyVITAvailable);
+    ui->labelWatchAvailable->setVisible(showWatchOnlyVITAvailable && showWatchOnly);
+
+    // VITAE Pending
+    bool showVITPending = settingShowAllBalances || unconfirmedBalance != 0;
+    bool showWatchOnlyVITPending = showVITPending || watchUnconfBalance != 0;
     ui->labelPendingText->setVisible(showVITPending || showWatchOnlyVITPending);
-    ui->labelWatchPending->setVisible(showVITPending && showWatchOnly);
-    ui->labelLockedBalance->setVisible(showVITLocked || showWatchOnlyVITLocked);
+    ui->labelUnconfirmed->setVisible(showVITPending || showWatchOnlyVITPending);
+    ui->labelWatchPending->setVisible(showWatchOnlyVITPending && showWatchOnly);
+
+    // VITAE Immature
+    bool showVITImmature = settingShowAllBalances || immatureBalance != 0;
+    bool showWatchOnlyImmature = showVITImmature || watchImmatureBalance != 0;
+    ui->labelImmatureText->setVisible(showVITImmature || showWatchOnlyImmature);
+    ui->labelImmature->setVisible(showVITImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
+    ui->labelWatchImmature->setVisible(showWatchOnlyImmature && showWatchOnly); // show watch-only immature balance
+
+    // VITAE Locked
+    bool showVITLocked = settingShowAllBalances || nLockedBalance != 0;
+    bool showWatchOnlyVITLocked = showVITLocked || nWatchOnlyLockedBalance != 0;
     ui->labelLockedBalanceText->setVisible(showVITLocked || showWatchOnlyVITLocked);
-    ui->labelWatchLocked->setVisible(showVITLocked && showWatchOnly);
-    ui->labelImmature->setVisible(showImmature || showWatchOnlyImmature); // for symmetry reasons also show immature label when the watch-only one is shown
-    ui->labelImmatureText->setVisible(showImmature || showWatchOnlyImmature);
-    ui->labelWatchImmature->setVisible(showImmature && showWatchOnly); // show watch-only immature balance
-    bool showzVITAEAvailable = settingShowAllBalances || zerocoinBalance != matureZerocoinBalance;
-    bool showzVITAEUnconfirmed = settingShowAllBalances || unconfirmedZerocoinBalance != 0;
-    bool showzVITAEImmature = settingShowAllBalances || immatureZerocoinBalance != 0;
-    ui->labelzBalanceMature->setVisible(showzVITAEAvailable);
-    ui->labelzBalanceMatureText->setVisible(showzVITAEAvailable);
-    ui->labelzBalanceUnconfirmed->setVisible(showzVITAEUnconfirmed);
-    ui->labelzBalanceUnconfirmedText->setVisible(showzVITAEUnconfirmed);
-    ui->labelzBalanceImmature->setVisible(showzVITAEImmature);
-    ui->labelzBalanceImmatureText->setVisible(showzVITAEImmature);
+    ui->labelLockedBalance->setVisible(showVITLocked || showWatchOnlyVITLocked);
+    ui->labelWatchLocked->setVisible(showWatchOnlyVITLocked && showWatchOnly);
+
+    // zVIT
+    bool showzVITAvailable = settingShowAllBalances || zerocoinBalance != matureZerocoinBalance;
+    bool showzVITUnconfirmed = settingShowAllBalances || unconfirmedZerocoinBalance != 0;
+    bool showzVITImmature = settingShowAllBalances || immatureZerocoinBalance != 0;
+    ui->labelzBalanceMature->setVisible(showzVITAvailable);
+    ui->labelzBalanceMatureText->setVisible(showzVITAvailable);
+    ui->labelzBalanceUnconfirmed->setVisible(showzVITUnconfirmed);
+    ui->labelzBalanceUnconfirmedText->setVisible(showzVITUnconfirmed);
+    ui->labelzBalanceImmature->setVisible(showzVITImmature);
+    ui->labelzBalanceImmatureText->setVisible(showzVITImmature);
+
+    // Percent split
     bool showPercentages = ! (zerocoinBalance == 0 && nTotalBalance == 0);
     ui->labelVITPercent->setVisible(showPercentages);
     ui->labelzVITAEPercent->setVisible(showPercentages);
@@ -350,13 +350,14 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(),
-                   model->getZerocoinBalance(), model->getUnconfirmedZerocoinBalance(), model->getImmatureZerocoinBalance(), 
+                   model->getZerocoinBalance(), model->getUnconfirmedZerocoinBalance(), model->getImmatureZerocoinBalance(),
                    model->getWatchBalance(), model->getWatchUnconfirmedBalance(), model->getWatchImmatureBalance());
-        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this, 
+        connect(model, SIGNAL(balanceChanged(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)), this,
                          SLOT(setBalance(CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount, CAmount)));
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(hideZeroBalancesChanged(bool)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(hideOrphansChanged(bool)), this, SLOT(hideOrphans(bool)));
 
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
@@ -364,6 +365,10 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
     // update the display unit, to not use the default ("VITAE")
     updateDisplayUnit();
+
+    // Hide orphans
+    QSettings settings;
+    hideOrphans(settings.value("fHideOrphans", false).toBool());
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -391,4 +396,10 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::hideOrphans(bool fHide)
+{
+    if (filter)
+        filter->setHideOrphans(fHide);
 }

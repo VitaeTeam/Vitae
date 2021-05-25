@@ -7,7 +7,7 @@
 
 #include <QDialog>
 #include <QTreeWidgetItem>
-#include "primitives/zerocoin.h"
+#include "zvit/zerocoin.h"
 #include "privacydialog.h"
 
 class CZerocoinMint;
@@ -16,6 +16,16 @@ class WalletModel;
 namespace Ui {
 class ZVitControlDialog;
 }
+
+class CZVitControlWidgetItem : public QTreeWidgetItem
+{
+public:
+    explicit CZVitControlWidgetItem(QTreeWidget *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+    explicit CZVitControlWidgetItem(int type = Type) : QTreeWidgetItem(type) {}
+    explicit CZVitControlWidgetItem(QTreeWidgetItem *parent, int type = Type) : QTreeWidgetItem(parent, type) {}
+
+    bool operator<(const QTreeWidgetItem &other) const;
+};
 
 class ZVitControlDialog : public QDialog
 {
@@ -44,9 +54,11 @@ private:
         COLUMN_DENOMINATION,
         COLUMN_PUBCOIN,
         COLUMN_VERSION,
+        COLUMN_PRECOMPUTE,
         COLUMN_CONFIRMATIONS,
         COLUMN_ISSPENDABLE
     };
+    friend class CZVitControlWidgetItem;
 
 private slots:
     void updateSelection(QTreeWidgetItem* item, int column);

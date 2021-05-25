@@ -57,7 +57,7 @@ void ThreadBitPool()
             bool fIsInitialDownload = IsInitialBlockDownload();
             if(!fIsInitialDownload) {
                 LOCK(cs_vNodes);
-                BOOST_FOREACH(CNode* pnode, vNodes)
+                for(CNode* pnode : vNodes)
                 {
                     if (true/* pnode->nVersion >= MIN_POOL_PEER_PROTO_VERSION */) {
 

@@ -9,7 +9,6 @@
 #include "addrman.h"
 #include "main.h"
 #include "mn-spork.h"
-#include <boost/lexical_cast.hpp>
 
 //
 // Bootup the Masternode, look for a 5000 BSD input and register on the network
@@ -77,8 +76,8 @@ void CActiveMasternode::ManageStatus()
         if(GetMasterNodeVin(vin, pubKeyCollateralAddress, keyCollateralAddress)) {
 
             if(GetInputAge(vin) < MASTERNODE_MIN_CONFIRMATIONS){
-                notCapableReason = "Input must have least " + boost::lexical_cast<string>(MASTERNODE_MIN_CONFIRMATIONS) +
-                        " confirmations - " + boost::lexical_cast<string>(GetInputAge(vin)) + " confirmations";
+                notCapableReason = "Input must have least " + std::to_string(MASTERNODE_MIN_CONFIRMATIONS) +
+                        " confirmations - " + std::to_string(GetInputAge(vin)) + " confirmations";
                 LogPrintf("CActiveMasternode::ManageStatus() - %s\n", notCapableReason.c_str());
                 status = MASTERNODE_INPUT_TOO_NEW;
                 return;
@@ -207,7 +206,7 @@ bool CActiveMasternode::Dseep(CTxIn vin, CService service, CKey keyMasternode, C
     std::string strMasterNodeSignMessage;
     int64_t masterNodeSignatureTime = GetAdjustedTime();
 
-    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(masterNodeSignatureTime) + boost::lexical_cast<std::string>(stop);
+    std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + std::to_string(stop);
 
     if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyMasternode)) {
         retErrorMessage = "sign message failed: " + errorMessage;
@@ -279,7 +278,7 @@ bool CActiveMasternode::Register(std::string strService, std::string strKeyMaste
         donationAddress = GetScriptForDestination(address.Get());
 
         try {
-            donationPercentage = boost::lexical_cast<int>( strDonationPercentage );
+            donationPercentage = (int)std::stoul( strDonationPercentage );
         } catch( boost::bad_lexical_cast const& ) {
             LogPrintf("CActiveMasternode::Register - Invalid Donation Percentage (Couldn't cast)\n");
             return false;
@@ -304,7 +303,7 @@ bool CActiveMasternode::Register(CTxIn vin, CService service, CKey keyCollateral
     std::string vchPubKey(pubKeyCollateralAddress.begin(), pubKeyCollateralAddress.end());
     std::string vchPubKey2(pubKeyMasternode.begin(), pubKeyMasternode.end());
 
-    std::string strMessage = service.ToString() + boost::lexical_cast<std::string>(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + boost::lexical_cast<std::string>(PROTOCOL_VERSION) + donationAddress.ToString() + boost::lexical_cast<std::string>(donationPercentage);
+    std::string strMessage = service.ToString() + std::to_string(masterNodeSignatureTime) + vchPubKey + vchPubKey2 + std::to_string(PROTOCOL_VERSION) + donationAddress.ToString() + std::to_string(donationPercentage);
 
     if(!obfuScationSigner.SignMessage(strMessage, errorMessage, vchMasterNodeSignature, keyCollateralAddress)) {
         retErrorMessage = "sign message failed: " + errorMessage;
@@ -349,9 +348,9 @@ bool CActiveMasternode::GetMasterNodeVin(CTxIn& vin, CPubKey& pubkey, CKey& secr
     if(!strTxHash.empty()) {
         // Let's find it
         uint256 txHash(strTxHash);
-        int outputIndex = boost::lexical_cast<int>(strOutputIndex);
+        int outputIndex = (unsigned int) std::stoul(strOutputIndex);
         bool found = false;
-        BOOST_FOREACH(COutput& out, possibleCoins) {
+        for(COutput& out : possibleCoins) {
             if(out.tx->GetHash() == txHash && out.i == outputIndex)
             {
                 selectedOutput = &out;
@@ -415,7 +414,7 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
     // Temporary unlock MN coins from masternode.conf
     if (GetBoolArg("-mnconflock", true)) {
         uint256 mnTxHash;
-        BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mn, masternodeConfig.getEntries()) {
+        for (CMasternodeConfig::CMasternodeEntry mn : masternodeConfig.getEntries()) {
             mnTxHash.SetHex(mn.getTxHash());
 
             int nIndex;
@@ -433,12 +432,12 @@ vector<COutput> CActiveMasternode::SelectCoinsMasternode()
 
 	// Lock MN coins from masternode.conf back if they where temporary unlocked
     if (!confLockedCoins.empty()) {
-        BOOST_FOREACH (COutPoint outpoint, confLockedCoins)
+        for (COutPoint outpoint : confLockedCoins)
             pwalletMain->LockCoin(outpoint);
     }
 
     // Filter
-    BOOST_FOREACH(const COutput& out, vCoins)
+    for(const COutput& out : vCoins)
     {
         if(out.tx->vout[out.i].nValue == MASTERNODEAMOUNT*COIN) { //exactly        bitsenddev   04-2015
             filteredCoins.push_back(out);

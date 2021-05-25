@@ -59,13 +59,13 @@ bool CheckBlockSignature(const CBlock& block)
     if (block.vchBlockSig.empty())
         return error("%s: vchBlockSig is empty!", __func__);
 
-    /** Each block is signed by the private key of the input that is staked. This can be either zVITAE or normal UTXO
-     *  zVITAE: Each zVITAE has a keypair associated with it. The serial number is a hash of the public key.
+    /** Each block is signed by the private key of the input that is staked. This can be either zVIT or normal UTXO
+     *  zVIT: Each zVIT has a keypair associated with it. The serial number is a hash of the public key.
      *  UTXO: The public key that signs must match the public key associated with the first utxo of the coinstake tx.
      */
     CPubKey pubkey;
-    bool fzVITAEStake = block.vtx[1].IsZerocoinSpend();
-    if (fzVITAEStake) {
+    bool fzVITStake = block.vtx[1].vin[0].IsZerocoinSpend();
+    if (fzVITStake) {
         libzerocoin::CoinSpend spend = TxInToZerocoinSpend(block.vtx[1].vin[0]);
         pubkey = spend.getPubKey();
     } else {
@@ -81,7 +81,7 @@ bool CheckBlockSignature(const CBlock& block)
     }
 
     if (!pubkey.IsValid())
-        return error("%s: invalid pubkey %s", __func__, pubkey.GetHex());
+        return error("%s: invalid pubkey %s", __func__, HexStr(pubkey));
 
     return pubkey.Verify(block.GetHash(), block.vchBlockSig);
 }

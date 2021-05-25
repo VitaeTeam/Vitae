@@ -6,8 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef VITAE_PUBKEY_H
-#define VITAE_PUBKEY_H
+#ifndef PIVX_PUBKEY_H
+#define PIVX_PUBKEY_H
 
 #include "hash.h"
 #include "serialize.h"
@@ -206,11 +206,6 @@ public:
         return std::vector<unsigned char>(vch, vch + size());
     }
 
-    std::string GetHex()
-    {
-        std::string my_std_string(reinterpret_cast<const char*>(vch), 65);
-        return my_std_string;
-    }
 };
 
 struct CExtPubKey {
@@ -270,4 +265,4 @@ public:
     ~ECCVerifyHandle();
 };
 
-#endif // VITAE_PUBKEY_H
+#endif // PIVX_PUBKEY_H

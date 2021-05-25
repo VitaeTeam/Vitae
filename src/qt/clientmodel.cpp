@@ -67,7 +67,7 @@ int ClientModel::getNumConnections(unsigned int flags) const
         return vNodes.size();
 
     int nNum = 0;
-    BOOST_FOREACH (CNode* pnode, vNodes)
+    for (CNode* pnode : vNodes)
         if (flags & (pnode->fInbound ? CONNECTIONS_IN : CONNECTIONS_OUT))
             nNum++;
 
@@ -315,7 +315,7 @@ bool ClientModel::getTorInfo(std::string& ip_port) const
     if (GetProxy((Network) 3, onion) && IsReachable((Network) 3)) {
         {
             LOCK(cs_mapLocalHost);
-            for (const std::pair<CNetAddr, LocalServiceInfo> &item : mapLocalHost) {
+            for (const std::pair<const CNetAddr, LocalServiceInfo>& item : mapLocalHost) {
                 if (item.first.IsTor()) {
                      CService addrOnion = CService(item.first.ToString(), item.second.nPort);
                      ip_port = addrOnion.ToStringIPPort();
