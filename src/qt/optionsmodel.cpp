@@ -91,7 +91,7 @@ void OptionsModel::Init()
     fEnableAutoConvert = settings.value("fEnableAutoConvert").toBool();
 
     if (!settings.contains("nZeromintPercentage"))
-        settings.setValue("nZeromintPercentage", 10);
+        settings.setValue("nZeromintPercentage", 0);
     nZeromintPercentage = settings.value("nZeromintPercentage").toLongLong();
 */
     if (!settings.contains("nPreferredDenom"))

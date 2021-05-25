@@ -3378,10 +3378,10 @@ void CWallet::AutoZeromint()
     }
 
     // zVITAE amount needed for the target percentage
-    nToMintAmount = ((nZerocoinBalance + nBalance) * nZeromintPercentage / 100);
+    nToMintAmount = 0;
 
     // zVITAE amount missing from target (must be minted)
-    nToMintAmount = (nToMintAmount - nZerocoinBalance) / COIN;
+    //nToMintAmount = (nToMintAmount - nZerocoinBalance) / COIN;
 
     // Use the biggest denomination smaller than the needed zVITAE We'll only mint exact denomination to make minting faster.
     // Exception: for big amounts use 6666 (6666 = 1*5000 + 1*1000 + 1*500 + 1*100 + 1*50 + 1*10 + 1*5 + 1) to create all
