@@ -1129,7 +1129,7 @@ bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidati
             }
             libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
             PublicCoinSpend publicSpend(params);
-            if (!ZPIVModule::parseCoinSpend(txin, tx, prevOut, publicSpend)){
+            if (!ZVITModule::parseCoinSpend(txin, tx, prevOut, publicSpend)){
                 return state.DoS(100, error("CheckZerocoinSpend(): public zerocoin spend parse failed"));
             }
             newSpend = publicSpend;
@@ -1152,7 +1152,7 @@ bool CheckZerocoinSpend(const CTransaction& tx, bool fVerifySignature, CValidati
         if (isPublicSpend) {
             libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
             PublicCoinSpend ret(params);
-            if (!ZPIVModule::validateInput(txin, prevOut, tx, ret)){
+            if (!ZVITModule::validateInput(txin, prevOut, tx, ret)){
                 return state.DoS(100, error("CheckZerocoinSpend(): public zerocoin spend did not verify"));
             }
         } else
@@ -1452,7 +1452,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
                 if (isPublicSpend) {
                     libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
                     PublicCoinSpend publicSpend(params);
-                    if (!ZPIVModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
+                    if (!ZVITModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
                         return false;
                     }
                     if (!ContextualCheckZerocoinSpend(tx, &publicSpend, chainActive.Tip(), 0))
@@ -2646,7 +2646,7 @@ void AddInvalidSpendsToMap(const CBlock& block)
                     libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
                     PublicCoinSpend publicSpend(params);
                     CValidationState state;
-                    if (!ZPIVModule::ParseZerocoinPublicSpend(in, tx, state, publicSpend)){
+                    if (!ZVITModule::ParseZerocoinPublicSpend(in, tx, state, publicSpend)){
                         throw runtime_error("Failed to parse public spend");
                     }
                     spend = &publicSpend;
@@ -2855,7 +2855,7 @@ bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex
                             libzerocoin::ZerocoinParams *params = Params().Zerocoin_Params(false);
                             PublicCoinSpend publicSpend(params);
                             CValidationState state;
-                            if (!ZPIVModule::ParseZerocoinPublicSpend(txin, tx, state, publicSpend)) {
+                            if (!ZVITModule::ParseZerocoinPublicSpend(txin, tx, state, publicSpend)) {
                                 return error("Failed to parse public spend");
                             }
                             serial = publicSpend.getCoinSerialNumber();
@@ -3433,7 +3433,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
                 if (isPublicSpend) {
                     libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
                     PublicCoinSpend publicSpend(params);
-                    if (!ZPIVModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
+                    if (!ZVITModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
                         return false;
                     }
                     nValueIn += publicSpend.getDenomination() * COIN;
@@ -4645,7 +4645,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
                     if (isPublicSpend) {
                         libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
                         PublicCoinSpend publicSpend(params);
-                        if (!ZPIVModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
+                        if (!ZVITModule::ParseZerocoinPublicSpend(txIn, tx, state, publicSpend)){
                             return false;
                         }
                         spend = publicSpend;
@@ -4959,7 +4959,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             }
         }
         const bool hasPIVInputs = !vitInputs.empty();
-        const bool hasZPIVInputs = !zVITInputs.empty();
+        const bool hasZVITInputs = !zVITInputs.empty();
 
         // ZC started after PoS.
         // Check for serial double spent on the same block, TODO: Move this to the proper method..
@@ -4981,7 +4981,7 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
                         if (isPublicSpend) {
                             libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
                             PublicCoinSpend publicSpend(params);
-                            if (!ZPIVModule::ParseZerocoinPublicSpend(in, tx, state, publicSpend)){
+                            if (!ZVITModule::ParseZerocoinPublicSpend(in, tx, state, publicSpend)){
                                 return false;
                             }
                             spend = publicSpend;
@@ -5068,9 +5068,9 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             splitHeight = prev->nHeight;
 
             // Now that this loop if completed. Check if we have zVIT inputs.
-            if(hasZPIVInputs){
-                for (const CTxIn& zPivInput : zVITInputs) {
-                    CoinSpend spend = TxInToZerocoinSpend(zPivInput);
+            if(hasZVITInputs){
+                for (const CTxIn& zVitaeInput : zVITInputs) {
+                    CoinSpend spend = TxInToZerocoinSpend(zVitaeInput);
 
                     // First check if the serials were not already spent on the forked blocks.
                     CBigNum coinSerial = spend.getCoinSerialNumber();
@@ -5132,8 +5132,8 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             }
         } else {
             if(!isBlockFromFork)
-                for (const CTxIn& zPivInput : zVITInputs) {
-                        CoinSpend spend = TxInToZerocoinSpend(zPivInput);
+                for (const CTxIn& zVitaeInput : zVITInputs) {
+                        CoinSpend spend = TxInToZerocoinSpend(zVitaeInput);
                         if (!ContextualCheckZerocoinSpend(stakeTxIn, &spend, pindex, 0))
                             return state.DoS(100,error("%s: main chain ContextualCheckZerocoinSpend failed for tx %s", __func__,
                                     stakeTxIn.GetHash().GetHex()), REJECT_INVALID, "bad-txns-invalid-zvit");

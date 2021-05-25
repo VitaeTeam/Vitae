@@ -182,7 +182,7 @@ UniValue getchecksumblock(const UniValue& params, bool fHelp)
             "  \"previousblockhash\" : \"hash\",  (string) The hash of the previous block\n"
             "  \"nextblockhash\" : \"hash\"       (string) The hash of the next block\n"
             "  \"moneysupply\" : \"supply\"       (numeric) The money supply when this block was added to the blockchain\n"
-            "  \"zPIVsupply\" :\n"
+            "  \"zVITAEsupply\" :\n"
             "  {\n"
             "     \"1\" : n,            (numeric) supply of 1 zVIT denomination\n"
             "     \"5\" : n,            (numeric) supply of 5 zVIT denomination\n"
@@ -1439,7 +1439,7 @@ UniValue getserials(const UniValue& params, bool fHelp) {
                         }
                         libzerocoin::ZerocoinParams *params = Params().Zerocoin_Params(false);
                         PublicCoinSpend publicSpend(params);
-                        if (!ZPIVModule::parseCoinSpend(txin, tx, prevOut, publicSpend)) {
+                        if (!ZVITModule::parseCoinSpend(txin, tx, prevOut, publicSpend)) {
                             throw JSONRPCError(RPC_INTERNAL_ERROR, "public zerocoin spend parse failed");
                         }
                         serial_str = publicSpend.getCoinSerialNumber().ToString(16);

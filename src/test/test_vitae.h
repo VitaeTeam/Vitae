@@ -1,5 +1,5 @@
-#ifndef PIVX_TEST_TEST_PIVX_H
-#define PIVX_TEST_TEST_PIVX_H
+#ifndef VITAE_TEST_TEST_VITAE_H
+#define VITAE_TEST_TEST_VITAE_H
 
 #include "txdb.h"
 

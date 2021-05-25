@@ -5,10 +5,10 @@
 """Test bitcoind with different proxy configuration.
 
 Test plan:
-- Start pivxd's with different proxy configurations
+- Start vitaed's with different proxy configurations
 - Use addnode to initiate connections
 - Verify that proxies are connected to, and the right connection command is given
-- Proxy configurations to test on pivxd side:
+- Proxy configurations to test on vitaed side:
     - `-proxy` (proxy everything)
     - `-onion` (proxy just onions)
     - `-proxyrandomize` Circuit randomization
@@ -18,8 +18,8 @@ Test plan:
     - proxy on IPv6
 
 - Create various proxies (as threads)
-- Create pivxds that connect to them
-- Manipulate the pivxds using addnode (onetry) an observe effects
+- Create vitaeds that connect to them
+- Manipulate the vitaeds using addnode (onetry) an observe effects
 
 addnode connect to IPv4
 addnode connect to IPv6

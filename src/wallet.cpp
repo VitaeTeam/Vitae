@@ -1254,8 +1254,8 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
 {
     int ret = 0;
     int64_t nNow = GetTime();
-    bool fCheckZPIV = GetBoolArg("-zapwallettxes", false);
-    if (fCheckZPIV)
+    bool fCheckZVIT = GetBoolArg("-zapwallettxes", false);
+    if (fCheckZVIT)
         zvitTracker->Init();
 
     CBlockIndex* pindex = pindexStart;
@@ -1283,7 +1283,7 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate)
             }
 
             //If this is a zapwallettx, need to readd zvit
-            if (fCheckZPIV && pindex->nHeight >= Params().Zerocoin_StartHeight()) {
+            if (fCheckZVIT && pindex->nHeight >= Params().Zerocoin_StartHeight()) {
                 list<CZerocoinMint> listMints;
                 BlockToZerocoinMintList(block, listMints, true);
 
@@ -3801,11 +3801,11 @@ bool CWallet::GetZerocoinKey(const CBigNum& bnSerial, CKey& key)
     return mint.GetKeyPair(key);
 }
 
-bool CWallet::CreateZPIVOutPut(libzerocoin::CoinDenomination denomination, CTxOut& outMint, CDeterministicMint& dMint)
+bool CWallet::CreateZVITOutPut(libzerocoin::CoinDenomination denomination, CTxOut& outMint, CDeterministicMint& dMint)
 {
     // mint a new coin (create Pedersen Commitment) and extract PublicCoin that is shareable from it
     libzerocoin::PrivateCoin coin(Params().Zerocoin_Params(false), denomination, false);
-    zwalletMain->GenerateDeterministicZPIV(denomination, coin, dMint);
+    zwalletMain->GenerateDeterministicZVIT(denomination, coin, dMint);
 
     libzerocoin::PublicCoin pubCoin = coin.getPublicCoin();
 
@@ -3850,7 +3850,7 @@ bool CWallet::CreateZerocoinMintTransaction(const CAmount nValue, CMutableTransa
 
         CTxOut outMint;
         CDeterministicMint dMint;
-        if (!CreateZPIVOutPut(denomination, outMint, dMint)) {
+        if (!CreateZVITOutPut(denomination, outMint, dMint)) {
             strFailReason = strprintf("%s: failed to create new zvit output", __func__);
             return error(strFailReason.c_str());
         }
@@ -4231,7 +4231,7 @@ bool CWallet::MintsToInputVectorPublicSpend(std::map<CBigNum, CZerocoinMint>& ma
 
             mint.SetOutputIndex(outputIndex);
             CTxIn in;
-            if(!ZPIVModule::createInput(in, mint, hashTxOut)){
+            if(!ZVITModule::createInput(in, mint, hashTxOut)){
                 receipt.SetStatus(_("Cannot create public spend input"), ZVIT_TXMINT_GENERAL);
                 return false;
             }
@@ -4524,7 +4524,7 @@ string CWallet::ResetMintZerocoin()
             LogPrintf("%s: failed to archive mint\n", __func__);
     }
 
-    NotifyzPIVReset();
+    NotifyzVITAEReset();
 
     string strResult = _("ResetMintZerocoin finished: ") + to_string(updates) + _(" mints updated, ") + to_string(deletions) + _(" mints deleted\n");
     return strResult;
@@ -4564,7 +4564,7 @@ string CWallet::ResetSpentZerocoin()
         }
     }
 
-    NotifyzPIVReset();
+    NotifyzVITAEReset();
 
     string strResult = _("ResetSpentZerocoin finished: ") + to_string(removed) + _(" unconfirmed transactions removed\n");
     return strResult;

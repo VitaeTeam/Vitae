@@ -13,29 +13,29 @@
 %endif
 %endif
 
-Name:		pivx
+Name:		vitae
 Version:	0.12.0
 Release:	2%{?dist}
 Summary:	Peer to Peer Cryptographic Currency
 
 Group:		Applications/System
 License:	MIT
-URL:		https://pivx.org/
-Source0:	https://pivx.org/bin/pivx-core-%{version}/pivx-%{version}.tar.gz
+URL:		https://www.vitaetoken.io/
+Source0:	https://github.com/VitaeTeam/Vitae/archive/refs/tags/%{version}.tar.gz
 Source1:	http://download.oracle.com/berkeley-db/db-%{bdbv}.NC.tar.gz
 
-Source10:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/contrib/debian/examples/pivx.conf
+Source10:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/contrib/debian/examples/vitae.conf
 
 #man pages
-Source20:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/doc/man/pivxd.1
-Source21:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/doc/man/pivx-cli.1
-Source22:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/doc/man/pivx-qt.1
+Source20:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/doc/man/vitaed.1
+Source21:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/doc/man/vitae-cli.1
+Source22:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/doc/man/vitae-qt.1
 
 #selinux
-Source30:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/contrib/rpm/pivx.te
-# Source31 - what about pivx-tx and bench_pivx ???
-Source31:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/contrib/rpm/pivx.fc
-Source32:	https://raw.githubusercontent.com/pivx-project/pivx/v%{version}/contrib/rpm/pivx.if
+Source30:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/contrib/rpm/vitae.te
+# Source31 - what about vitae-tx and bench_vitae ???
+Source31:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/contrib/rpm/vitae.fc
+Source32:	https://raw.githubusercontent.com/VitaeTeam/vitae/v%{version}/contrib/rpm/vitae.if
 
 Source100:	https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg
 
@@ -50,13 +50,13 @@ BuildRequires:	autoconf automake libtool
 BuildRequires:	libevent-devel
 
 
-Patch0:		pivx-0.12.0-libressl.patch
+Patch0:		vitae-0.12.0-libressl.patch
 
 
 %description
 Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of pivxs is carried out collectively by the network.
+issuing of vitaes is carried out collectively by the network.
 
 %if %{_buildqt}
 %package core
@@ -81,7 +81,7 @@ BuildRequires:	%{_bindir}/convert
 %description core
 Bitcoin is a digital cryptographic currency that uses peer-to-peer technology to
 operate with no central authority or banks; managing transactions and the
-issuing of pivxs is carried out collectively by the network.
+issuing of vitaes is carried out collectively by the network.
 
 This package contains the Qt based graphical client and node. If you are looking
 to run a Bitcoin wallet, this is probably the package you want.
@@ -93,28 +93,28 @@ Summary:	Bitcoin shared libraries
 Group:		System Environment/Libraries
 
 %description libs
-This package provides the pivxconsensus shared libraries. These libraries
+This package provides the vitaeconsensus shared libraries. These libraries
 may be used by third party software to provide consensus verification
 functionality.
 
 Unless you know need this package, you probably do not.
 
 %package devel
-Summary:	Development files for pivx
+Summary:	Development files for vitae
 Group:		Development/Libraries
 Requires:	%{name}-libs = %{version}-%{release}
 
 %description devel
 This package contains the header files and static library for the
-pivxconsensus shared library. If you are developing or compiling software
+vitaeconsensus shared library. If you are developing or compiling software
 that wants to link against that library, then you need this package installed.
 
 Most people do not need this package installed.
 
 %package server
-Summary:	The pivx daemon
+Summary:	The vitae daemon
 Group:		System Environment/Daemons
-Requires:	pivx-utils = %{version}-%{release}
+Requires:	vitae-utils = %{version}-%{release}
 Requires:	selinux-policy policycoreutils-python
 Requires(pre):	shadow-utils
 Requires(post):	%{_sbindir}/semodule %{_sbindir}/restorecon %{_sbindir}/fixfiles %{_sbindir}/sestatus
@@ -124,13 +124,13 @@ BuildRequires:	checkpolicy
 BuildRequires:	%{_datadir}/selinux/devel/Makefile
 
 %description server
-This package provides a stand-alone pivx-core daemon. For most users, this
+This package provides a stand-alone vitae-core daemon. For most users, this
 package is only needed if they need a full-node without the graphical client.
 
 Some third party wallet software will want this package to provide the actual
-pivx-core node they use to connect to the network.
+vitae-core node they use to connect to the network.
 
-If you use the graphical pivx-core client then you almost certainly do not
+If you use the graphical vitae-core client then you almost certainly do not
 need this package.
 
 %package utils
@@ -139,19 +139,19 @@ Group:		Applications/System
 
 %description utils
 This package provides several command line utilities for interacting with a
-pivx-core daemon.
+vitae-core daemon.
 
-The pivx-cli utility allows you to communicate and control a pivx daemon
-over RPC, the pivx-tx utility allows you to create a custom transaction, and
-the bench_pivx utility can be used to perform some benchmarks.
+The vitae-cli utility allows you to communicate and control a vitae daemon
+over RPC, the vitae-tx utility allows you to create a custom transaction, and
+the bench_vitae utility can be used to perform some benchmarks.
 
-This package contains utilities needed by the pivx-server package.
+This package contains utilities needed by the vitae-server package.
 
 
 %prep
 %setup -q
 %patch0 -p1 -b .libressl
-cp -p %{SOURCE10} ./pivx.conf.example
+cp -p %{SOURCE10} ./vitae.conf.example
 tar -zxf %{SOURCE1}
 cp -p db-%{bdbv}.NC/LICENSE ./db-%{bdbv}.NC-LICENSE
 mkdir db4 SELinux
@@ -172,7 +172,7 @@ make %{?_smp_mflags}
 pushd SELinux
 for selinuxvariant in %{selinux_variants}; do
 	make NAME=${selinuxvariant} -f %{_datadir}/selinux/devel/Makefile
-	mv pivx.pp pivx.pp.${selinuxvariant}
+	mv vitae.pp vitae.pp.${selinuxvariant}
 	make NAME=${selinuxvariant} -f %{_datadir}/selinux/devel/Makefile clean
 done
 popd
@@ -182,42 +182,42 @@ popd
 make install DESTDIR=%{buildroot}
 
 mkdir -p -m755 %{buildroot}%{_sbindir}
-mv %{buildroot}%{_bindir}/pivxd %{buildroot}%{_sbindir}/pivxd
+mv %{buildroot}%{_bindir}/vitaed %{buildroot}%{_sbindir}/vitaed
 
 # systemd stuff
 mkdir -p %{buildroot}%{_tmpfilesdir}
-cat <<EOF > %{buildroot}%{_tmpfilesdir}/pivx.conf
-d /run/pivxd 0750 pivx pivx -
+cat <<EOF > %{buildroot}%{_tmpfilesdir}/vitae.conf
+d /run/vitaed 0750 vitae vitae -
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_tmpfilesdir}/pivx.conf
+touch -a -m -t 201504280000 %{buildroot}%{_tmpfilesdir}/vitae.conf
 
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
-cat <<EOF > %{buildroot}%{_sysconfdir}/sysconfig/pivx
-# Provide options to the pivx daemon here, for example
+cat <<EOF > %{buildroot}%{_sysconfdir}/sysconfig/vitae
+# Provide options to the vitae daemon here, for example
 # OPTIONS="-testnet -disable-wallet"
 
 OPTIONS=""
 
 # System service defaults.
 # Don't change these unless you know what you're doing.
-CONFIG_FILE="%{_sysconfdir}/pivx/pivx.conf"
-DATA_DIR="%{_localstatedir}/lib/pivx"
-PID_FILE="/run/pivxd/pivxd.pid"
+CONFIG_FILE="%{_sysconfdir}/vitae/vitae.conf"
+DATA_DIR="%{_localstatedir}/lib/vitae"
+PID_FILE="/run/vitaed/vitaed.pid"
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_sysconfdir}/sysconfig/pivx
+touch -a -m -t 201504280000 %{buildroot}%{_sysconfdir}/sysconfig/vitae
 
 mkdir -p %{buildroot}%{_unitdir}
-cat <<EOF > %{buildroot}%{_unitdir}/pivx.service
+cat <<EOF > %{buildroot}%{_unitdir}/vitae.service
 [Unit]
 Description=Bitcoin daemon
 After=syslog.target network.target
 
 [Service]
 Type=forking
-ExecStart=%{_sbindir}/pivxd -daemon -conf=\${CONFIG_FILE} -datadir=\${DATA_DIR} -pid=\${PID_FILE} \$OPTIONS
-EnvironmentFile=%{_sysconfdir}/sysconfig/pivx
-User=pivx
-Group=pivx
+ExecStart=%{_sbindir}/vitaed -daemon -conf=\${CONFIG_FILE} -datadir=\${DATA_DIR} -pid=\${PID_FILE} \$OPTIONS
+EnvironmentFile=%{_sysconfdir}/sysconfig/vitae
+User=vitae
+Group=vitae
 
 Restart=on-failure
 PrivateTmp=true
@@ -229,24 +229,24 @@ StartLimitBurst=5
 [Install]
 WantedBy=multi-user.target
 EOF
-touch -a -m -t 201504280000 %{buildroot}%{_unitdir}/pivx.service
+touch -a -m -t 201504280000 %{buildroot}%{_unitdir}/vitae.service
 #end systemd stuff
 
-mkdir %{buildroot}%{_sysconfdir}/pivx
-mkdir -p %{buildroot}%{_localstatedir}/lib/pivx
+mkdir %{buildroot}%{_sysconfdir}/vitae
+mkdir -p %{buildroot}%{_localstatedir}/lib/vitae
 
 #SELinux
 for selinuxvariant in %{selinux_variants}; do
 	install -d %{buildroot}%{_datadir}/selinux/${selinuxvariant}
-	install -p -m 644 SELinux/pivx.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/pivx.pp
+	install -p -m 644 SELinux/vitae.pp.${selinuxvariant} %{buildroot}%{_datadir}/selinux/${selinuxvariant}/vitae.pp
 done
 
 %if %{_buildqt}
 # qt icons
-install -D -p share/pixmaps/pivx.ico %{buildroot}%{_datadir}/pixmaps/pivx.ico
+install -D -p share/pixmaps/vitae.ico %{buildroot}%{_datadir}/pixmaps/vitae.ico
 install -p share/pixmaps/nsis-header.bmp %{buildroot}%{_datadir}/pixmaps/
 install -p share/pixmaps/nsis-wizard.bmp %{buildroot}%{_datadir}/pixmaps/
-install -p %{SOURCE100} %{buildroot}%{_datadir}/pixmaps/pivx.svg
+install -p %{SOURCE100} %{buildroot}%{_datadir}/pixmaps/vitae.svg
 %{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/pivx16.png -w16 -h16
 %{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/pivx32.png -w32 -h32
 %{_bindir}/inkscape %{SOURCE100} --export-png=%{buildroot}%{_datadir}/pixmaps/pivx64.png -w64 -h64
@@ -262,30 +262,30 @@ touch %{buildroot}%{_datadir}/pixmaps/*.xpm -r %{SOURCE100}
 
 # Desktop File - change the touch timestamp if modifying
 mkdir -p %{buildroot}%{_datadir}/applications
-cat <<EOF > %{buildroot}%{_datadir}/applications/pivx-core.desktop
+cat <<EOF > %{buildroot}%{_datadir}/applications/vitae-core.desktop
 [Desktop Entry]
 Encoding=UTF-8
 Name=Bitcoin
 Comment=Bitcoin P2P Cryptocurrency
 Comment[fr]=Bitcoin, monnaie virtuelle cryptographique pair à pair
 Comment[tr]=Bitcoin, eşten eşe kriptografik sanal para birimi
-Exec=pivx-qt %u
+Exec=vitae-qt %u
 Terminal=false
 Type=Application
 Icon=pivx128
-MimeType=x-scheme-handler/pivx;
+MimeType=x-scheme-handler/vitae;
 Categories=Office;Finance;
 EOF
 # change touch date when modifying desktop
-touch -a -m -t 201511100546 %{buildroot}%{_datadir}/applications/pivx-core.desktop
-%{_bindir}/desktop-file-validate %{buildroot}%{_datadir}/applications/pivx-core.desktop
+touch -a -m -t 201511100546 %{buildroot}%{_datadir}/applications/vitae-core.desktop
+%{_bindir}/desktop-file-validate %{buildroot}%{_datadir}/applications/vitae-core.desktop
 
 # KDE protocol - change the touch timestamp if modifying
 mkdir -p %{buildroot}%{_datadir}/kde4/services
-cat <<EOF > %{buildroot}%{_datadir}/kde4/services/pivx-core.protocol
+cat <<EOF > %{buildroot}%{_datadir}/kde4/services/vitae-core.protocol
 [Protocol]
-exec=pivx-qt '%u'
-protocol=pivx
+exec=vitae-qt '%u'
+protocol=vitae
 input=none
 output=none
 helper=true
@@ -296,14 +296,14 @@ makedir=false
 deleting=false
 EOF
 # change touch date when modifying protocol
-touch -a -m -t 201511100546 %{buildroot}%{_datadir}/kde4/services/pivx-core.protocol
+touch -a -m -t 201511100546 %{buildroot}%{_datadir}/kde4/services/vitae-core.protocol
 %endif
 
 # man pages
-install -D -p %{SOURCE20} %{buildroot}%{_mandir}/man1/pivxd.1
-install -p %{SOURCE21} %{buildroot}%{_mandir}/man1/pivx-cli.1
+install -D -p %{SOURCE20} %{buildroot}%{_mandir}/man1/vitaed.1
+install -p %{SOURCE21} %{buildroot}%{_mandir}/man1/vitae-cli.1
 %if %{_buildqt}
-install -p %{SOURCE22} %{buildroot}%{_mandir}/man1/pivx-qt.1
+install -p %{SOURCE22} %{buildroot}%{_mandir}/man1/vitae-qt.1
 %endif
 
 # nuke these, we do extensive testing of binaries in %%check before packaging
@@ -311,7 +311,7 @@ rm -f %{buildroot}%{_bindir}/test_*
 
 %check
 make check
-srcdir=src test/pivx-util-test.py
+srcdir=src test/vitae-util-test.py
 test/functional/test_runner.py --extended
 
 %post libs -p /sbin/ldconfig
@@ -319,37 +319,37 @@ test/functional/test_runner.py --extended
 %postun libs -p /sbin/ldconfig
 
 %pre server
-getent group pivx >/dev/null || groupadd -r pivx
-getent passwd pivx >/dev/null ||
-	useradd -r -g pivx -d /var/lib/pivx -s /sbin/nologin \
-	-c "Bitcoin wallet server" pivx
+getent group vitae >/dev/null || groupadd -r vitae
+getent passwd vitae >/dev/null ||
+	useradd -r -g vitae -d /var/lib/vitae -s /sbin/nologin \
+	-c "Bitcoin wallet server" vitae
 exit 0
 
 %post server
-%systemd_post pivx.service
+%systemd_post vitae.service
 # SELinux
 if [ `%{_sbindir}/sestatus |grep -c "disabled"` -eq 0 ]; then
 for selinuxvariant in %{selinux_variants}; do
-	%{_sbindir}/semodule -s ${selinuxvariant} -i %{_datadir}/selinux/${selinuxvariant}/pivx.pp &> /dev/null || :
+	%{_sbindir}/semodule -s ${selinuxvariant} -i %{_datadir}/selinux/${selinuxvariant}/vitae.pp &> /dev/null || :
 done
-%{_sbindir}/semanage port -a -t pivx_port_t -p tcp 8332
-%{_sbindir}/semanage port -a -t pivx_port_t -p tcp 8333
-%{_sbindir}/semanage port -a -t pivx_port_t -p tcp 18332
-%{_sbindir}/semanage port -a -t pivx_port_t -p tcp 18333
-%{_sbindir}/semanage port -a -t pivx_port_t -p tcp 18443
-%{_sbindir}/semanage port -a -t pivx_port_t -p tcp 18444
-%{_sbindir}/fixfiles -R pivx-server restore &> /dev/null || :
-%{_sbindir}/restorecon -R %{_localstatedir}/lib/pivx || :
+%{_sbindir}/semanage port -a -t vitae_port_t -p tcp 8332
+%{_sbindir}/semanage port -a -t vitae_port_t -p tcp 8333
+%{_sbindir}/semanage port -a -t vitae_port_t -p tcp 18332
+%{_sbindir}/semanage port -a -t vitae_port_t -p tcp 18333
+%{_sbindir}/semanage port -a -t vitae_port_t -p tcp 18443
+%{_sbindir}/semanage port -a -t vitae_port_t -p tcp 18444
+%{_sbindir}/fixfiles -R vitae-server restore &> /dev/null || :
+%{_sbindir}/restorecon -R %{_localstatedir}/lib/vitae || :
 fi
 
 %posttrans server
 %{_bindir}/systemd-tmpfiles --create
 
 %preun server
-%systemd_preun pivx.service
+%systemd_preun vitae.service
 
 %postun server
-%systemd_postun pivx.service
+%systemd_postun vitae.service
 # SELinux
 if [ $1 -eq 0 ]; then
 	if [ `%{_sbindir}/sestatus |grep -c "disabled"` -eq 0 ]; then
@@ -360,11 +360,11 @@ if [ $1 -eq 0 ]; then
 	%{_sbindir}/semanage port -d -p tcp 18443
 	%{_sbindir}/semanage port -d -p tcp 18444
 	for selinuxvariant in %{selinux_variants}; do
-		%{_sbindir}/semodule -s ${selinuxvariant} -r pivx &> /dev/null || :
+		%{_sbindir}/semodule -s ${selinuxvariant} -r vitae &> /dev/null || :
 	done
-	%{_sbindir}/fixfiles -R pivx-server restore &> /dev/null || :
-	[ -d %{_localstatedir}/lib/pivx ] && \
-		%{_sbindir}/restorecon -R %{_localstatedir}/lib/pivx &> /dev/null || :
+	%{_sbindir}/fixfiles -R vitae-server restore &> /dev/null || :
+	[ -d %{_localstatedir}/lib/vitae ] && \
+		%{_sbindir}/restorecon -R %{_localstatedir}/lib/vitae &> /dev/null || :
 	fi
 fi
 
@@ -375,16 +375,16 @@ rm -rf %{buildroot}
 %files core
 %defattr(-,root,root,-)
 %license COPYING db-%{bdbv}.NC-LICENSE
-%doc COPYING pivx.conf.example doc/README.md doc/bips.md doc/files.md doc/multiwallet-qt.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
-%attr(0755,root,root) %{_bindir}/pivx-qt
-%attr(0644,root,root) %{_datadir}/applications/pivx-core.desktop
-%attr(0644,root,root) %{_datadir}/kde4/services/pivx-core.protocol
+%doc COPYING vitae.conf.example doc/README.md doc/bips.md doc/files.md doc/multiwallet-qt.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
+%attr(0755,root,root) %{_bindir}/vitae-qt
+%attr(0644,root,root) %{_datadir}/applications/vitae-core.desktop
+%attr(0644,root,root) %{_datadir}/kde4/services/vitae-core.protocol
 %attr(0644,root,root) %{_datadir}/pixmaps/*.ico
 %attr(0644,root,root) %{_datadir}/pixmaps/*.bmp
 %attr(0644,root,root) %{_datadir}/pixmaps/*.svg
 %attr(0644,root,root) %{_datadir}/pixmaps/*.png
 %attr(0644,root,root) %{_datadir}/pixmaps/*.xpm
-%attr(0644,root,root) %{_mandir}/man1/pivx-qt.1*
+%attr(0644,root,root) %{_mandir}/man1/vitae-qt.1*
 %endif
 
 %files libs
@@ -406,30 +406,30 @@ rm -rf %{buildroot}
 %files server
 %defattr(-,root,root,-)
 %license COPYING db-%{bdbv}.NC-LICENSE
-%doc COPYING pivx.conf.example doc/README.md doc/REST-interface.md doc/bips.md doc/dnsseed-policy.md doc/files.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
-%attr(0755,root,root) %{_sbindir}/pivxd
-%attr(0644,root,root) %{_tmpfilesdir}/pivx.conf
-%attr(0644,root,root) %{_unitdir}/pivx.service
-%dir %attr(0750,pivx,pivx) %{_sysconfdir}/pivx
-%dir %attr(0750,pivx,pivx) %{_localstatedir}/lib/pivx
-%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/sysconfig/pivx
+%doc COPYING vitae.conf.example doc/README.md doc/REST-interface.md doc/bips.md doc/dnsseed-policy.md doc/files.md doc/reduce-traffic.md doc/release-notes.md doc/tor.md
+%attr(0755,root,root) %{_sbindir}/vitaed
+%attr(0644,root,root) %{_tmpfilesdir}/vitae.conf
+%attr(0644,root,root) %{_unitdir}/vitae.service
+%dir %attr(0750,vitae,vitae) %{_sysconfdir}/vitae
+%dir %attr(0750,vitae,vitae) %{_localstatedir}/lib/vitae
+%config(noreplace) %attr(0600,root,root) %{_sysconfdir}/sysconfig/vitae
 %attr(0644,root,root) %{_datadir}/selinux/*/*.pp
-%attr(0644,root,root) %{_mandir}/man1/pivxd.1*
+%attr(0644,root,root) %{_mandir}/man1/vitaed.1*
 
 %files utils
 %defattr(-,root,root,-)
 %license COPYING
-%doc COPYING pivx.conf.example doc/README.md
-%attr(0755,root,root) %{_bindir}/pivx-cli
-%attr(0755,root,root) %{_bindir}/pivx-tx
-%attr(0755,root,root) %{_bindir}/bench_pivx
-%attr(0644,root,root) %{_mandir}/man1/pivx-cli.1*
+%doc COPYING vitae.conf.example doc/README.md
+%attr(0755,root,root) %{_bindir}/vitae-cli
+%attr(0755,root,root) %{_bindir}/vitae-tx
+%attr(0755,root,root) %{_bindir}/bench_vitae
+%attr(0644,root,root) %{_mandir}/man1/vitae-cli.1*
 
 
 
 %changelog
 * Fri Feb 26 2016 Alice Wonder <buildmaster@librelamp.com> - 0.12.0-2
-- Rename Qt package from pivx to pivx-core
+- Rename Qt package from vitae to vitae-core
 - Make building of the Qt package optional
 - When building the Qt package, default to Qt5 but allow building
 -  against Qt4
@@ -439,4 +439,4 @@ rm -rf %{buildroot}
 - Initial spec file for 0.12.0 release
 
 # This spec file is written from scratch but a lot of the packaging decisions are directly
-# based upon the 0.11.2 package spec file from https://www.ringingliberty.com/pivx/
+# based upon the 0.11.2 package spec file from https://www.ringingliberty.com/vitae/

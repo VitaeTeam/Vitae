@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2019 The PIVX Core developers
+# Copyright (c) 2019 The VITAE Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,9 +13,9 @@ from time import sleep
 from test_framework.authproxy import JSONRPCException
 from test_framework.util import assert_equal, assert_greater_than
 
-from fake_stake.base_test import PIVX_FakeStakeTest
+from fake_stake.base_test import VITAE_FakeStakeTest
 
-class zPIVValidCoinSpendTest(PIVX_FakeStakeTest):
+class zVITAEValidCoinSpendTest(VITAE_FakeStakeTest):
 
     def run_test(self):
         self.description = "Covers the 'valid publicCoinSpend spend' scenario."
@@ -31,7 +31,7 @@ class zPIVValidCoinSpendTest(PIVX_FakeStakeTest):
         sleep(2)
 
         # 2) Mint zerocoins
-        self.log.info("Minting %d-denom zPIVs..." % DENOM_TO_USE)
+        self.log.info("Minting %d-denom zVITAEs..." % DENOM_TO_USE)
         self.node.mintzerocoin(DENOM_TO_USE)
         self.node.generate(1)
         sleep(2)
@@ -86,4 +86,4 @@ class zPIVValidCoinSpendTest(PIVX_FakeStakeTest):
         self.log.info("%s DOUBLE SPENT SERIAL NOT VERIFIED, TEST PASSED" % self.__class__.__name__)
 
 if __name__ == '__main__':
-    zPIVValidCoinSpendTest().main()
+    zVITAEValidCoinSpendTest().main()

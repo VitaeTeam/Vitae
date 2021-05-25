@@ -50,7 +50,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             libzerocoin::ZerocoinParams* params = Params().Zerocoin_Params(false);
             PublicCoinSpend publicSpend(params);
             CValidationState state;
-            if (!ZPIVModule::ParseZerocoinPublicSpend(wtx.vin[0], wtx, state, publicSpend)){
+            if (!ZVITModule::ParseZerocoinPublicSpend(wtx.vin[0], wtx, state, publicSpend)){
                 throw std::runtime_error("Error parsing zc public spend");
             }
             fZSpendFromMe = wallet->IsMyZerocoinSpend(publicSpend.getCoinSerialNumber());
@@ -324,7 +324,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
     return parts;
 }
 
-bool IsZPIVType(TransactionRecord::Type type)
+bool IsZVITType(TransactionRecord::Type type)
 {
     switch (type) {
         case TransactionRecord::StakeZVIT:

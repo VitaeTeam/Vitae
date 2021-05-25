@@ -558,7 +558,7 @@ CLEANFILES += obj/build.h
 EXTRA_DIST =
 
 
-config/pivx-config.h: config/stamp-h1
+config/vitae-config.h: config/stamp-h1
 	@$(MAKE) -C $(top_builddir) $(subdir)/$(@)
 
 DISTCLEANFILES = obj/build.h

@@ -1,13 +1,13 @@
 [Desktop Entry]
 Version=1.0
-Name=PIVX Core
-Comment=PIVX P2P Cryptocurrency
-Comment[fr]=PIVX, monnaie virtuelle cryptographique pair à pair
-Comment[tr]=PIVX, eşten eşe kriptografik sanal para birimi
-Exec=pivx-qt %u
+Name=VITAE Core
+Comment=VITAE P2P Cryptocurrency
+Comment[fr]=VITAE, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=VITAE, eşten eşe kriptografik sanal para birimi
+Exec=vitae-qt %u
 Terminal=false
 Type=Application
-Icon=pivx128
-MimeType=x-scheme-handler/pivx;
+Icon=vitae128
+MimeType=x-scheme-handler/vitae;
 Categories=Office;Finance;
-StartupWMClass=Pivx-qt
+StartupWMClass=Vitae-qt

@@ -1,5 +1,5 @@
-#ifndef PIVX_ZPIVTRACKER_H
-#define PIVX_ZPIVTRACKER_H
+#ifndef VITAE_ZVITTRACKER_H
+#define VITAE_ZVITTRACKER_H
 
 #include "zerocoin.h"
 #include "witness.h"
@@ -21,7 +21,7 @@ private:
 public:
     CzVITTracker(std::string strWalletFile);
     ~CzVITTracker();
-    void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false, CzVITWallet* zPIVWallet = NULL);
+    void Add(const CDeterministicMint& dMint, bool isNew = false, bool isArchived = false, CzVITWallet* zVITAEWallet = NULL);
     void Add(const CZerocoinMint& mint, bool isNew = false, bool isArchived = false);
     bool Archive(CMintMeta& meta);
     bool HasPubcoin(const CBigNum& bnValue) const;
@@ -51,4 +51,4 @@ public:
     void Clear();
 };
 
-#endif //PIVX_ZPIVTRACKER_H
+#endif //VITAE_ZVITTRACKER_H

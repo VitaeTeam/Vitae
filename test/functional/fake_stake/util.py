@@ -12,7 +12,7 @@ from test_framework.util import wait_until
 ''' -------------------------------------------------------------------------
 TestNode CLASS --------------------------------------------------------------
 
-A peer we use to send messsages to pivxd and store responses
+A peer we use to send messsages to vitaed and store responses
 Extends P2PInterface.
 '''
 

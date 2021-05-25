@@ -1,7 +1,7 @@
 
 
-#ifndef PIVX_BLOCKSIGNATURE_H
-#define PIVX_BLOCKSIGNATURE_H
+#ifndef VITAE_BLOCKSIGNATURE_H
+#define VITAE_BLOCKSIGNATURE_H
 
 #include "key.h"
 #include "primitives/block.h"
@@ -11,4 +11,4 @@ bool SignBlockWithKey(CBlock& block, const CKey& key);
 bool SignBlock(CBlock& block, const CKeyStore& keystore);
 bool CheckBlockSignature(const CBlock& block);
 
-#endif //PIVX_BLOCKSIGNATURE_H
+#endif //VITAE_BLOCKSIGNATURE_H

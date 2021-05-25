@@ -178,7 +178,7 @@ void PrivacyDialog::on_pushButtonMintzVIT_clicked()
     // Request unlock if wallet was locked or unlocked for mixing:
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
     if (encStatus == walletModel->Locked) {
-        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Mint_zPIV, true));
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock(AskPassphraseDialog::Context::Mint_zVITAE, true));
         if (!ctx.isValid()) {
             // Unlock wallet was cancelled
             ui->TEMintStatus->setPlainText(tr("Error: Your wallet is locked. Please enter the wallet passphrase first."));
@@ -806,13 +806,13 @@ void PrivacyDialog::updateAutomintStatus()
 void PrivacyDialog::updateSPORK20Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
-    //bool fButtonsEnabled =  ui->pushButtonMintzPIV->isEnabled();
+    //bool fButtonsEnabled =  ui->pushButtonMintzVITAE->isEnabled();
     bool fButtonsEnabled = false;
     bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
         // Mint zVIT
-        //ui->pushButtonMintzPIV->setEnabled(false);
-        //ui->pushButtonMintzPIV->setToolTip(tr("zVIT is currently disabled due to maintenance."));
+        //ui->pushButtonMintzVITAE->setEnabled(false);
+        //ui->pushButtonMintzVITAE->setToolTip(tr("zVIT is currently disabled due to maintenance."));
 
         // Spend zVIT
         ui->pushButtonSpendzVIT->setEnabled(false);

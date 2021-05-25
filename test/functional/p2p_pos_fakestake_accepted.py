@@ -10,9 +10,9 @@ but not on the fork branch. These blocks must be accepted.
 
 from time import sleep
 
-from fake_stake.base_test import PIVX_FakeStakeTest
+from fake_stake.base_test import VITAE_FakeStakeTest
 
-class PoSFakeStakeAccepted(PIVX_FakeStakeTest):
+class PoSFakeStakeAccepted(VITAE_FakeStakeTest):
 
     def run_test(self):
         self.description = "Covers the scenario of a valid PoS block where the coinstake input prevout is spent on main chain, but not on the fork branch. These blocks must be accepted."

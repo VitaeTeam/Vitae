@@ -17,11 +17,11 @@ from test_framework.util import hash256, bytes_to_hex_str, hex_str_to_bytes, con
 
 from .util import TestNode, create_transaction, utxo_to_stakingPrevOuts, dir_size
 ''' -------------------------------------------------------------------------
-PIVX_FakeStakeTest CLASS ----------------------------------------------------
+VITAE_FakeStakeTest CLASS ----------------------------------------------------
 
 General Test Class to be extended by individual tests for each attack test
 '''
-class PIVX_FakeStakeTest(BitcoinTestFramework):
+class VITAE_FakeStakeTest(BitcoinTestFramework):
 
     def set_test_params(self):
         ''' Setup test environment
@@ -178,7 +178,7 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
     def spend_utxos(self, utxo_list, address_list = []):
         ''' spend utxos to provided list of addresses or 10 new generate ones.
         :param      utxo_list:      (JSON list) returned from listunspent used as input
-                    address_list:   (string list) [optional] recipient PIVX addresses. if not set,
+                    address_list:   (string list) [optional] recipient VITAE addresses. if not set,
                                     10 new addresses will be generated from the wallet for each tx.
         :return:    txHashes        (string list) tx hashes
         '''
@@ -204,7 +204,7 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
     def stake_amplification_step(self, utxo_list, address_list = []):
         ''' spends a list of utxos providing the list of new outputs
         :param      utxo_list:     (JSON list) returned from listunspent used as input
-                    address_list:  (string list) [optional] recipient PIVX addresses.
+                    address_list:  (string list) [optional] recipient VITAE addresses.
         :return:    new_utxos:     (JSON list) list of new (valid) inputs after the spends
         '''
         self.log.info("--> Stake Amplification step started with %d UTXOs", len(utxo_list))
@@ -226,7 +226,7 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
         ''' performs the "stake amplification" which gives higher chances at finding fake stakes
         :param      utxo_list:    (JSON list) returned from listunspent used as input
                     iterations:   (int) amount of stake amplification steps to perform
-                    address_list: (string list) [optional] recipient PIVX addresses.
+                    address_list: (string list) [optional] recipient VITAE addresses.
         :return:    all_inputs:   (JSON list) list of all spent inputs
         '''
         self.log.info("** Stake Amplification started with %d UTXOs", len(utxo_list))
@@ -386,7 +386,7 @@ class PIVX_FakeStakeTest(BitcoinTestFramework):
             # Try submitblock
             var = self.node.submitblock(bytes_to_hex_str(block.serialize()))
             time.sleep(1)
-            if (not fMustPass and var not in [None, "bad-txns-invalid-zpiv"]) or (fMustPass and var != "inconclusive"):
+            if (not fMustPass and var not in [None, "bad-txns-invalid-zvit"]) or (fMustPass and var != "inconclusive"):
                 self.log.error("submitblock [fMustPass=%s] result: %s" % (str(fMustPass), str(var)))
                 err_msgs.append("submitblock %d: %s" % (current_block_n, str(var)))
 

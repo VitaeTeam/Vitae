@@ -1,81 +1,81 @@
-policy_module(pivx, 1.100.1)
+policy_module(vitae, 1.100.1)
 
 ########################################
 #
 # Declarations
 #
 
-type pivx_t;
-type pivx_exec_t;
-init_daemon_domain(pivx_t, pivx_exec_t)
+type vitae_t;
+type vitae_exec_t;
+init_daemon_domain(vitae_t, vitae_exec_t)
 
-permissive pivx_t;
+permissive vitae_t;
 
-type pivx_initrc_exec_t;
-init_script_file(pivx_initrc_exec_t)
+type vitae_initrc_exec_t;
+init_script_file(vitae_initrc_exec_t)
 
-type pivx_conf_t;
-files_type(pivx_conf_t)
+type vitae_conf_t;
+files_type(vitae_conf_t)
 
-type pivx_var_lib_t;
-files_type(pivx_var_lib_t)
+type vitae_var_lib_t;
+files_type(vitae_var_lib_t)
 
-type pivx_var_run_t;
-files_type(pivx_var_run_t)
+type vitae_var_run_t;
+files_type(vitae_var_run_t)
 
-type pivx_port_t;
-corenet_port(pivx_port_t)
+type vitae_port_t;
+corenet_port(vitae_port_t)
 
 ########################################
 #
-# pivx local policy
+# vitae local policy
 #
-allow pivx_t self:process { fork };
+allow vitae_t self:process { fork };
 
-allow pivx_t self:fifo_file rw_fifo_file_perms;
-allow pivx_t self:unix_stream_socket create_stream_socket_perms;
+allow vitae_t self:fifo_file rw_fifo_file_perms;
+allow vitae_t self:unix_stream_socket create_stream_socket_perms;
 
-manage_dirs_pattern(pivx_t, pivx_conf_t, pivx_conf_t)
-manage_files_pattern(pivx_t, pivx_conf_t, pivx_conf_t)
+manage_dirs_pattern(vitae_t, vitae_conf_t, vitae_conf_t)
+manage_files_pattern(vitae_t, vitae_conf_t, vitae_conf_t)
 
-manage_dirs_pattern(pivx_t, pivx_var_lib_t, pivx_var_lib_t)
-manage_files_pattern(pivx_t, pivx_var_lib_t, pivx_var_lib_t)
-files_var_lib_filetrans(pivx_t, pivx_var_lib_t, { dir file })
+manage_dirs_pattern(vitae_t, vitae_var_lib_t, vitae_var_lib_t)
+manage_files_pattern(vitae_t, vitae_var_lib_t, vitae_var_lib_t)
+files_var_lib_filetrans(vitae_t, vitae_var_lib_t, { dir file })
 
-manage_dirs_pattern(pivx_t, pivx_var_run_t, pivx_var_run_t)
-manage_files_pattern(pivx_t, pivx_var_run_t, pivx_var_run_t)
+manage_dirs_pattern(vitae_t, vitae_var_run_t, vitae_var_run_t)
+manage_files_pattern(vitae_t, vitae_var_run_t, vitae_var_run_t)
 
-sysnet_dns_name_resolve(pivx_t)
-corenet_all_recvfrom_unlabeled(pivx_t)
+sysnet_dns_name_resolve(vitae_t)
+corenet_all_recvfrom_unlabeled(vitae_t)
 
-allow pivx_t self:tcp_socket create_stream_socket_perms;
-corenet_tcp_sendrecv_generic_if(pivx_t)
-corenet_tcp_sendrecv_generic_node(pivx_t)
-corenet_tcp_sendrecv_all_ports(pivx_t)
-corenet_tcp_bind_generic_node(pivx_t)
-
-gen_require(`
-    type pivx_port_t;
-')
-allow pivx_t pivx_port_t:tcp_socket name_bind;
+allow vitae_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(vitae_t)
+corenet_tcp_sendrecv_generic_node(vitae_t)
+corenet_tcp_sendrecv_all_ports(vitae_t)
+corenet_tcp_bind_generic_node(vitae_t)
 
 gen_require(`
-    type pivx_port_t;
+    type vitae_port_t;
 ')
-allow pivx_t pivx_port_t:tcp_socket name_connect;
+allow vitae_t vitae_port_t:tcp_socket name_bind;
 
-domain_use_interactive_fds(pivx_t)
+gen_require(`
+    type vitae_port_t;
+')
+allow vitae_t vitae_port_t:tcp_socket name_connect;
 
-files_read_etc_files(pivx_t)
+domain_use_interactive_fds(vitae_t)
 
-miscfiles_read_localization(pivx_t)
+files_read_etc_files(vitae_t)
 
-sysnet_dns_name_resolve(pivx_t)
+miscfiles_read_localization(vitae_t)
 
-allow pivx_t pivx_exec_t:file execute_no_trans;
-allow pivx_t self:process setsched;
-corecmd_exec_ls(pivx_t)
-corenet_tcp_connect_http_port(pivx_t)
-dev_read_urand(pivx_t)
-fs_getattr_xattr_fs(pivx_t)
-kernel_read_system_state(pivx_t)
+sysnet_dns_name_resolve(vitae_t)
+
+allow vitae_t vitae_exec_t:file execute_no_trans;
+allow vitae_t self:process setsched;
+corecmd_exec_ls(vitae_t)
+corenet_tcp_connect_http_port(vitae_t)
+dev_read_urand(vitae_t)
+fs_getattr_xattr_fs(vitae_t)
+kernel_read_system_state(vitae_t)

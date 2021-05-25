@@ -23,9 +23,9 @@ def setup():
         programs += ['apt-cacher-ng', 'lxc', 'debootstrap']
     subprocess.check_call(['sudo', 'apt-get', 'install', '-qq'] + programs)
     if not os.path.isdir('gitian.sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/pivx-Project/gitian.sigs.git'])
-    if not os.path.isdir('pivx-detached-sigs'):
-        subprocess.check_call(['git', 'clone', 'https://github.com/pivx-Project/pivx-detached-sigs.git'])
+        subprocess.check_call(['git', 'clone', 'https://github.com/VitaeTeam/gitian.sigs.git'])
+    if not os.path.isdir('vitae-detached-sigs'):
+        subprocess.check_call(['git', 'clone', 'https://github.com/VitaeTeam/vitae-detached-sigs.git'])
     if not os.path.isdir('gitian-builder'):
         subprocess.check_call(['git', 'clone', 'https://github.com/devrandom/gitian-builder.git'])
     if not os.path.isdir('vitae'):

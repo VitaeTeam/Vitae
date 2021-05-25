@@ -14,7 +14,7 @@ from test_framework.blocktools import create_coinbase, create_block
 from test_framework.key import CECKey
 from test_framework.messages import CTransaction, CTxIn, CTxOut, COutPoint, COIN
 from test_framework.mininode import network_thread_start
-from test_framework.pivx_node import PivxTestNode
+from test_framework.vitae_node import PivxTestNode
 from test_framework.script import CScript, OP_CHECKSIG
 from test_framework.test_framework import BitcoinTestFramework
 from test_framework.util import hash256, connect_nodes_bi, p2p_port, bytes_to_hex_str, \
@@ -25,7 +25,7 @@ def getDelegatedUtxos(utxos):
     return [x for x in utxos if x["scriptPubKey"][:10] == '76a97b63d1']
 
 
-class PIVX_ColdStakingTest(BitcoinTestFramework):
+class VITAE_ColdStakingTest(BitcoinTestFramework):
 
     def set_test_params(self):
         self.setup_clean_chain = True
@@ -520,4 +520,4 @@ class PIVX_ColdStakingTest(BitcoinTestFramework):
 
 
 if __name__ == '__main__':
-    PIVX_ColdStakingTest().main()
+    VITAE_ColdStakingTest().main()

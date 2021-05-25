@@ -3021,7 +3021,7 @@ UniValue spendzerocoinmints(const UniValue& params, bool fHelp)
         // to avoid type confusion from the JSON interpreter
         address = CBitcoinAddress(params[3].get_str());
         if(!address.IsValid())
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
     }
 
     return DoZvitSpend(nAmount, false, true, vMintsSelected, address_str);
@@ -3043,7 +3043,7 @@ extern UniValue DoZvitSpend(const CAmount nAmount, bool fMintChange, bool fMinim
     if(address_str != "") { // Spend to supplied destination address
         address = CBitcoinAddress(address_str);
         if(!address.IsValid())
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PIVX address");
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid VITAE address");
         fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, &address, ispublicspend);
     } else                   // Spend to newly generated local address
         fSuccess = pwalletMain->SpendZerocoin(nAmount, wtx, receipt, vMintsSelected, fMintChange, fMinimizeChange, nullptr, ispublicspend);
@@ -3637,7 +3637,7 @@ void static SearchThread(CzVITWallet* zwallet, int nCountStart, int nCountEnd)
             CBigNum bnSerial;
             CBigNum bnRandomness;
             CKey key;
-            zwallet->SeedToZPIV(zerocoinSeed, bnValue, bnSerial, bnRandomness, key);
+            zwallet->SeedToZVIT(zerocoinSeed, bnValue, bnSerial, bnRandomness, key);
 
             uint256 hashPubcoin = GetPubCoinHash(bnValue);
             zwallet->AddToMintPool(make_pair(hashPubcoin, i), true);
@@ -3727,7 +3727,7 @@ UniValue createautomintaddress(const UniValue& params, bool fHelp)
                 HelpRequiringPassphrase() + "\n"
 
                 "\nResult\n"
-                "\"address\"     (string) PIVX address for auto minting\n" +
+                "\"address\"     (string) VITAE address for auto minting\n" +
                 HelpExampleCli("createautomintaddress", "") +
                 HelpExampleRpc("createautomintaddress", ""));
 
@@ -3749,7 +3749,7 @@ UniValue spendrawzerocoin(const UniValue& params, bool fHelp)
             "2. \"randomnessHex\"    (string, required) A zerocoin randomness value (hex)\n"
             "3. denom                (numeric, required) A zerocoin denomination (decimal)\n"
             "4. \"priv key\"         (string, required) The private key associated with this coin (hex)\n"
-            "5. \"address\"          (string, optional) PIVX address to spend to. If not specified, spend to change add.\n"
+            "5. \"address\"          (string, optional) VITAE address to spend to. If not specified, spend to change add.\n"
 
             "\nResult:\n"
                 "\"txid\"             (string) The transaction txid in hex\n"

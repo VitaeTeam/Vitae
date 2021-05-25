@@ -303,7 +303,7 @@ bool CzVITTracker::UpdateState(const CMintMeta& meta)
 
 void CzVITTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchived, CzVITWallet* zVITWallet)
 {
-    bool iszPIVWalletInitialized = (NULL != zVITWallet);
+    bool iszVITAEWalletInitialized = (NULL != zVITWallet);
     CMintMeta meta;
     meta.hashPubcoin = dMint.GetPubcoinHash();
     meta.nHeight = dMint.GetHeight();
@@ -315,10 +315,10 @@ void CzVITTracker::Add(const CDeterministicMint& dMint, bool isNew, bool isArchi
     meta.denom = dMint.GetDenomination();
     meta.isArchived = isArchived;
     meta.isDeterministic = true;
-    if (! iszPIVWalletInitialized)
+    if (! iszVITAEWalletInitialized)
         zVITWallet = new CzVITWallet(strWalletFile);
     meta.isSeedCorrect = zVITWallet->CheckSeed(dMint);
-    if (! iszPIVWalletInitialized)
+    if (! iszVITAEWalletInitialized)
         delete zVITWallet;
     mapSerialHashes[meta.hashSerial] = meta;
 

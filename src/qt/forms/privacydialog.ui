@@ -496,7 +496,7 @@ font-weight: bold;</string>
 font-weight: bold;</string>
                           </property>
                           <property name="text">
-                           <string>zPIV spending is NOT private (links back to the mint transaction)</string>
+                           <string>zVITAE spending is NOT private (links back to the mint transaction)</string>
                           </property>
                          </widget>
                         </item>

@@ -94,17 +94,17 @@ BOOST_AUTO_TEST_CASE(zerocoin_public_spend_test)
     tx.vout[0].scriptPubKey = GetScriptForDestination(CBitcoinAddress("D9Ti4LEhF1n6dR2hGd2SyNADD51AVgva6q").Get());
 
     CTxIn in;
-    if (!ZPIVModule::createInput(in, mint, tx.GetHash())){
+    if (!ZVITModule::createInput(in, mint, tx.GetHash())){
         BOOST_CHECK_MESSAGE(false, "Failed to create zc input");
     }
 
     PublicCoinSpend publicSpend(ZCParams);
-    if (!ZPIVModule::validateInput(in, out, tx, publicSpend)){
+    if (!ZVITModule::validateInput(in, out, tx, publicSpend)){
         BOOST_CHECK_MESSAGE(false, "Failed to validate zc input");
     }
 
     PublicCoinSpend publicSpendTest(ZCParams);
-    BOOST_CHECK_MESSAGE(ZPIVModule::parseCoinSpend(in, tx, out, publicSpendTest), "Failed to parse public spend");
+    BOOST_CHECK_MESSAGE(ZVITModule::parseCoinSpend(in, tx, out, publicSpendTest), "Failed to parse public spend");
     libzerocoin::CoinSpend *spend = &publicSpendTest;
 
     BOOST_CHECK_MESSAGE(publicSpendTest.HasValidSignature(), "Failed to validate public spend signature");
@@ -113,7 +113,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_public_spend_test)
     // Verify that fails with a different denomination
     in.nSequence = 500;
     PublicCoinSpend publicSpend2(ZCParams);
-    BOOST_CHECK_MESSAGE(!ZPIVModule::validateInput(in, out, tx, publicSpend2), "Different denomination");
+    BOOST_CHECK_MESSAGE(!ZVITModule::validateInput(in, out, tx, publicSpend2), "Different denomination");
 
 }
 

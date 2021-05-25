@@ -80,7 +80,7 @@ class RawTransactionsTest(BitcoinTestFramework):
         address = self.nodes[0].getnewaddress()
         assert_raises_rpc_error(-3, "Expected type object", self.nodes[0].createrawtransaction, [], 'foo')
         #assert_raises_rpc_error(-8, "Data must be hexadecimal string", self.nodes[0].createrawtransaction, [], {'data': 'foo'})
-        assert_raises_rpc_error(-5, "Invalid PIVX address", self.nodes[0].createrawtransaction, [], {'foo': 0})
+        assert_raises_rpc_error(-5, "Invalid VITAE address", self.nodes[0].createrawtransaction, [], {'foo': 0})
         #assert_raises_rpc_error(-3, "﻿Amount is not a number", self.nodes[0].createrawtransaction, [], {address: 'foo'})
         assert_raises_rpc_error(-3, "Invalid amount", self.nodes[0].createrawtransaction, [], {address: -1})
         assert_raises_rpc_error(-8, "Invalid parameter, duplicated address: %s" % address, self.nodes[0].createrawtransaction, [], multidict([(address, 1), (address, 1)]))
