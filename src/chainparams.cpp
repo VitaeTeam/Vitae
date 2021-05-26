@@ -8,6 +8,7 @@
 #include "libzerocoin/Params.h"
 #include "chainparams.h"
 #include "random.h"
+#include "spork.h"
 #include "util.h"
 #include "utilstrencodings.h"
 
@@ -124,7 +125,11 @@ bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t
         return NetworkID() == CBaseChainParams::REGTEST || (utxoFromBlockTime + nStakeMinAge <= contextTime);
 
     // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
-    return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
+    // Minimum stake depth reduced from 600 to 80 above block height defined by SPORK_28
+    if (IsSporkActive(SPORK_28_NEW_STAKE_MIN_DEPTH_BLOCK))
+        return (contextHeight - utxoFromBlockHeight >= nNewStakeMinDepth);
+    else
+        return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);
 }
 
 int CChainParams::FutureBlockTimeDrift(const int nHeight, const int sporkValue) const
@@ -197,7 +202,8 @@ public:
         nTargetTimespan_V2 = 2 * nTimeSlotLength * 60;  // 30 minutes
         nMaturity = 8;
         nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 80;
+        nStakeMinDepth = 600;
+        nNewStakeMinDepth = 80;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
         nMasternodeCountDrift = 20;
@@ -389,7 +395,8 @@ public:
         nMaturity = 15;
         nTimeSlotLength = 15;                       // 15 seconds
         nStakeMinAge = 60 * 60;                         // 1 hour
-        nStakeMinDepth = 80;
+        nStakeMinDepth = 600;
+        nNewStakeMinDepth = 80;
         nFutureTimeDriftPoW = 7200;
         nFutureTimeDriftPoS = 180;
 
@@ -520,6 +527,7 @@ public:
         nMaturity = 100;
         nStakeMinAge = 0;
         nStakeMinDepth = 0;
+        nNewStakeMinDepth = 0;
         nMasternodeCountDrift = 4;
         nModifierUpdateBlock = 0;       //approx Mon, 17 Apr 2017 04:00:00 GMT
         nMaxMoneyOut = 43199500 * COIN;

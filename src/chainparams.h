@@ -176,6 +176,7 @@ protected:
 	int nMasternodeCountDrift;
     int nMaturity;
     int nStakeMinDepth;
+    int nNewStakeMinDepth;
     int nStakeMinAge;
     int nFutureTimeDriftPoW;
     int nFutureTimeDriftPoS;
