@@ -208,8 +208,10 @@ public:
 class CObfuScationSigner
 {
 public:
-    /// Is the inputs associated with this public key?
+    /// Is the fundamentalnode input associated with this public key?
     bool IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey);
+    /// Is the masternode input associated with this public key?
+    bool IsMnVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, CTransaction& Tx , uint256& hashBlock );
     /// Set the private/public key values, returns true if successful
     bool GetKeysFromSecret(std::string strSecret, CKey& keyRet, CPubKey& pubkeyRet);
     /// Set the private/public key values, returns true if successful

@@ -537,7 +537,25 @@ bool CObfuScationSigner::IsVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey)
     uint256 hash;
     if (GetTransaction(vin.prevout.hash, txVin, hash, true)) {
         for (CTxOut out : txVin.vout) {
-            if (out.nValue == 10000 * COIN) {
+            if (out.nValue == FN_MAGIC_AMOUNT) {
+                if (out.scriptPubKey == payee2) return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool CObfuScationSigner::IsMnVinAssociatedWithPubkey(CTxIn& vin, CPubKey& pubkey, CTransaction &Tx, uint256 &hashBlock)
+{
+    CScript payee2;
+    payee2 = GetScriptForDestination(pubkey.GetID());
+
+    //CTransaction txVin;
+    //uint256 hash;
+    if (GetTransaction(vin.prevout.hash, Tx, hashBlock, true)) {
+        BOOST_FOREACH (CTxOut out, Tx.vout) {
+            if (out.nValue == 20000*COIN ) {
                 if (out.scriptPubKey == payee2) return true;
             }
         }
