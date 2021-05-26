@@ -4328,15 +4328,19 @@ CBlockIndex* AddToBlockIndex(const CBlock& block)
             pindexNew->hashProofOfStake = mapProofOfStake[hash];
         }
 
-        // ppcoin: compute stake modifier
-        uint64_t nStakeModifier = 0;
-        bool fGeneratedStakeModifier = false;
-        if (!ComputeNextStakeModifier(pindexNew->pprev, nStakeModifier, fGeneratedStakeModifier))
-            LogPrintf("AddToBlockIndex() : ComputeNextStakeModifier() failed \n");
-        pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
-        pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
-        if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
-            LogPrintf("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+        if (!Params().IsStakeModifierV2(pindexNew->nHeight, getStakeModifierV2SporkValue())) {
+            uint64_t nStakeModifier = 0;
+            bool fGeneratedStakeModifier = false;
+            if (!ComputeNextStakeModifier(pindexNew->pprev, nStakeModifier, fGeneratedStakeModifier))
+                LogPrintf("AddToBlockIndex() : ComputeNextStakeModifier() failed \n");
+            pindexNew->SetStakeModifier(nStakeModifier, fGeneratedStakeModifier);
+            pindexNew->nStakeModifierChecksum = GetStakeModifierChecksum(pindexNew);
+            if (!CheckStakeModifierCheckpoints(pindexNew->nHeight, pindexNew->nStakeModifierChecksum))
+                LogPrintf("AddToBlockIndex() : Rejected by stake modifier checkpoint height=%d, modifier=%s \n", pindexNew->nHeight, std::to_string(nStakeModifier));
+        } else {
+            // compute v2 stake modifier
+            pindexNew->nStakeModifierV2 = ComputeStakeModifier(pindexNew->pprev, block.vtx[1].vin[0].prevout.hash);
+        }
     }
     pindexNew->nChainWork = (pindexNew->pprev ? pindexNew->pprev->nChainWork : 0) + GetBlockProof(*pindexNew);
     pindexNew->RaiseValidity(BLOCK_VALID_TREE);
@@ -4505,9 +4509,9 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
     if(block.IsProofOfWork()){
-    if (!CheckBlockHeader(block, state, fCheckPOW ))
-        return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
-            REJECT_INVALID, "bad-header", true);
+        if (!CheckBlockHeader(block, state, fCheckPOW ))
+            return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
+                REJECT_INVALID, "bad-header", true);
     } else {
         if (!CheckBlockHeader(block, state, block.IsProofOfWork() ))
             return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
@@ -4697,6 +4701,31 @@ bool CheckWork(const CBlock block, CBlockIndex* const pindexPrev)
     return true;
 }
 
+bool CheckBlockTime(const CBlockHeader& block, CValidationState& state, CBlockIndex* const pindexPrev)
+{
+    // Not enforced on RegTest
+    if (Params().NetworkID() == CBaseChainParams::REGTEST)
+        return true;
+
+    const int64_t blockTime = block.GetBlockTime();
+    const int blockHeight = pindexPrev->nHeight + 1;
+
+    // Check blocktime against future drift (WANT: blk_time <= Now + MaxDrift)
+    if (blockTime > pindexPrev->MaxFutureBlockTime())
+        return state.Invalid(error("%s : block timestamp too far in the future", __func__), REJECT_INVALID, "time-too-new");
+
+    // Check blocktime against prev (WANT: blk_time > MinPastBlockTime)
+    if (blockTime <= pindexPrev->MinPastBlockTime())
+        return state.DoS(50, error("%s : block timestamp too old", __func__), REJECT_INVALID, "time-too-old");
+
+    // Check blocktime mask
+    if (!Params().IsValidBlockTimeStamp(blockTime, blockHeight, getTimeProtocolV2SporkValue()))
+        return state.DoS(100, error("%s : block timestamp mask not valid", __func__), REJECT_INVALID, "invalid-time-mask");
+
+    // All good
+    return true;
+}
+
 bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& state, CBlockIndex* const pindexPrev)
 {
     uint256 hash = block.GetHash();
@@ -4718,12 +4747,17 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
     if (chainActive.Height() - nHeight >= nMaxReorgDepth)
         return state.DoS(1, error("%s: forked chain older than max reorganization depth (height %d)", __func__, chainActive.Height() - nHeight));
 
+    // Check blocktime (past limit, future limit and mask)
+    if (!CheckBlockTime(block, state, pindexPrev))
+        return false;
+    /*
     // Check timestamp against prev
     if (block.GetBlockTime() <= pindexPrev->GetMedianTimePast() && (Params().NetworkIDString() != "regtest")) {
         LogPrintf("Block time = %d , GetMedianTimePast = %d \n", block.GetBlockTime(), pindexPrev->GetMedianTimePast());
         return state.Invalid(error("%s : block's timestamp is too early", __func__),
             REJECT_INVALID, "time-too-old");
     }
+    */
 
     // Check that the block chain matches the known block chain up to a checkpoint
     if (!Checkpoints::CheckBlock(nHeight, hash))

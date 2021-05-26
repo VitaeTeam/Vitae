@@ -27,7 +27,7 @@ class CBlockHeader
 {
 public:
     // header
-    static const int32_t CURRENT_VERSION=7;     //!> Version 7 supports V2 Stake Modifiers
+    static const int32_t CURRENT_VERSION = 7;     //!> Version 7 supports V2 Stake Modifiers
     int32_t nVersion;
     uint256 hashPrevBlock;
     uint256 hashMerkleRoot;
