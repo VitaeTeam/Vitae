@@ -663,5 +663,6 @@ struct CBlockTemplate {
 
 int64_t getTimeProtocolV2SporkValue();
 int64_t getStakeModifierV2SporkValue();
+bool isSporkNewStakeMinDepthActive();
 
 #endif // BITCOIN_MAIN_H

@@ -7834,3 +7834,8 @@ int64_t getStakeModifierV2SporkValue()
 {
     return GetSporkValue(SPORK_24_STAKE_MODIFIER_V2_BLOCK);
 }
+
+bool isSporkNewStakeMinDepthActive()
+{
+    return IsSporkActive(SPORK_28_NEW_STAKE_MIN_DEPTH_BLOCK);
+}

@@ -80,8 +80,8 @@ public:
 
     /** returns the coinstake maturity (min depth required) **/
     int COINSTAKE_MIN_AGE() const { return nStakeMinAge; }
-    int COINSTAKE_MIN_DEPTH() const { return nStakeMinDepth; }
-    bool HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime, const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime, const int sporkValue) const;
+    int COINSTAKE_MIN_DEPTH(const bool isNewStakeMinDepthActive) const;
+    bool HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime, const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime, const int sporkValue, const bool isNewStakeMinDepthActive) const;
 
     /** Time Protocol V2 **/
     int BlockStartTimeProtocolV2(const int sporkValue) const;
