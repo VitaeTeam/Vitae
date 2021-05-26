@@ -117,8 +117,13 @@ libzerocoin::ZerocoinParams* CChainParams::Zerocoin_Params(bool useModulusV1) co
     return &ZCParamsDec;
 }
 
+int CChainParams::COINSTAKE_MIN_DEPTH(const bool isNewStakeMinDepthActive) const
+{
+    return isNewStakeMinDepthActive ? nNewStakeMinDepth : nStakeMinDepth;
+}
+
 bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t contextTime,
-        const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime, const int sporkValue) const
+        const int utxoFromBlockHeight, const uint32_t utxoFromBlockTime, const int sporkValue, const bool isNewStakeMinDepthActive) const
 {
     // before stake modifier V2, the age required was 60 * 60 (1 hour). Not required for regtest
     if (!IsStakeModifierV2(contextHeight, sporkValue))
@@ -126,7 +131,7 @@ bool CChainParams::HasStakeMinAgeOrDepth(const int contextHeight, const uint32_t
 
     // after stake modifier V2, we require the utxo to be nStakeMinDepth deep in the chain
     // Minimum stake depth reduced from 600 to 80 above block height defined by SPORK_28
-    if (IsSporkActive(SPORK_28_NEW_STAKE_MIN_DEPTH_BLOCK))
+    if (isNewStakeMinDepthActive)
         return (contextHeight - utxoFromBlockHeight >= nNewStakeMinDepth);
     else
         return (contextHeight - utxoFromBlockHeight >= nStakeMinDepth);

@@ -378,7 +378,7 @@ bool Stake(const CBlockIndex* pindexPrev, CStakeInput* stakeInput, unsigned int 
 
         // check required min depth for stake
         const int nHeightBlockFrom = pindexFrom->nHeight;
-        if (nHeight < nHeightBlockFrom + Params().COINSTAKE_MIN_DEPTH())
+        if (nHeight < nHeightBlockFrom + Params().COINSTAKE_MIN_DEPTH(isSporkNewStakeMinDepthActive()))
             return error("%s : min depth violation, nHeight=%d, nHeightBlockFrom=%d", __func__, nHeight, nHeightBlockFrom);
 
         nTimeTx = GetCurrentTimeSlot();
@@ -498,7 +498,7 @@ bool CheckProofOfStake(const CBlock& block, uint256& hashProofOfStake, std::uniq
     const uint32_t nTimeBlockFrom = pindexFrom->nTime;
 
     if (!txin.IsZerocoinSpend() && ((nPreviousBlockHeight + 1) >= GetSporkValue(SPORK_26_MINIMUM_STAKE_AGE_BLOCK))) {
-        if(! Params().HasStakeMinAgeOrDepth(nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom, getStakeModifierV2SporkValue()))
+        if(! Params().HasStakeMinAgeOrDepth(nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom, getStakeModifierV2SporkValue(), isSporkNewStakeMinDepthActive()))
             return error("%s : min age violation - height=%d - time=%d, nHeightBlockFrom=%d, nTimeBlockFrom=%d",
                          __func__, nPreviousBlockHeight + 1, block.nTime, nHeightBlockFrom, nTimeBlockFrom);
     }
