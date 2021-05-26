@@ -747,7 +747,8 @@ void CFundamentalnodeMan::ProcessMessage(CNode* pfrom, std::string& strCommand, 
             return;
         }
 
-        uint256 hashBlock =0 ;
+        // Removed due to compiler warning it is unused
+        //uint256 hashBlock =0 ;
         CTransaction tx;
         // make sure the vout that was signed is related to the transaction that spawned the Fundamentalnode
         //  - this is expensive, so it's only done once per Fundamentalnode
