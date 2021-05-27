@@ -94,6 +94,8 @@ jobs:
     - stage: lint
       sudo: false
       cache: false
+      language: python
+      python: '3.5' # Oldest supported version according to doc/dependencies.md
       addons:
         apt:
           packages:
