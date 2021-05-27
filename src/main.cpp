@@ -2429,6 +2429,13 @@ int64_t GetFundamentalnodePayment(int nHeight, int64_t blockValue, int nFundamen
     if (Params().NetworkID() == CBaseChainParams::TESTNET) {
         if (nHeight < 200)
             return 0;
+        if (nHeight < GetSporkValue(SPORK_22_REMOVE_SEESAW_BLOCK)) {
+            ret = (blockValue * 6 )/ 10;
+        }
+        else {
+            ret = (blockValue * 4 )/ 10;
+        }
+        return ret;
     }
 
     if(nHeight < 209467){
@@ -2448,13 +2455,20 @@ CAmount GetMasternodePayment(int nHeight, int64_t blockValue, int nMasternodeCou
         if (nHeight < 200)
             return 0;
     }
-    if(nHeight < 209467){
+    if(Params().NetworkID() == CBaseChainParams::MAIN && nHeight < 209467){
         ret = blockValue * .25;
     }
-    else{
+    else if(Params().NetworkID() == CBaseChainParams::TESTNET && nHeight < 137910){
+        ret = blockValue * .25;
+    }
+    // Keep seesaw protocol until removal spork is activated
+    else if(nHeight < GetSporkValue(SPORK_22_REMOVE_SEESAW_BLOCK)){
         blockValue = blockValue * 0.6 ;
         ret = GetSeeSaw(nHeight, blockValue);
-     }
+    }
+    else{
+        ret = (blockValue * 4 )/ 10;
+    }
     return ret;
 }
 
