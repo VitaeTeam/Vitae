@@ -85,7 +85,6 @@ src/qt/test/moc*.cpp
 *.pyc
 *.o
 *.o-*
-*.patch
 .vitae
 *.a
 *.pb.cc
