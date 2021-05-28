@@ -243,7 +243,7 @@ done
 
 %if %{_buildqt}
 # qt icons
-install -D -p share/pixmaps/vitae.ico %{buildroot}%{_datadir}/pixmaps/vitae.ico
+install -D -p share/pixmaps/pivx.ico %{buildroot}%{_datadir}/pixmaps/vitae.ico
 install -p share/pixmaps/nsis-header.bmp %{buildroot}%{_datadir}/pixmaps/
 install -p share/pixmaps/nsis-wizard.bmp %{buildroot}%{_datadir}/pixmaps/
 install -p %{SOURCE100} %{buildroot}%{_datadir}/pixmaps/vitae.svg
