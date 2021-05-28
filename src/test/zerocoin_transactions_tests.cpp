@@ -12,7 +12,7 @@
 #include "walletdb.h"
 #include "txdb.h"
 #include "zvit/zvitmodule.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 

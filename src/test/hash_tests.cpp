@@ -4,7 +4,7 @@
 
 #include "hash.h"
 #include "utilstrencodings.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 
 #include <vector>
 

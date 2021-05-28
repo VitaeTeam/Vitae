@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 #include "addrman.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 #include <string>
 #include <boost/test/unit_test.hpp>
 #include <crypto/common.h> // for ReadLE64

@@ -6,7 +6,7 @@
 
 #include "random.h"
 #include "util.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 
 #include <set>
 

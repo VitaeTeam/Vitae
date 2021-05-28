@@ -14,7 +14,7 @@
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 
 #include <vector>
 

@@ -17,7 +17,7 @@
 #include "wallet.h"
 #include "zvit/zvitwallet.h"
 #include "zvitchain.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 
 using namespace libzerocoin;
 

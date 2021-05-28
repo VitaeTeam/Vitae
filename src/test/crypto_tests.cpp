@@ -11,7 +11,7 @@
 #include "crypto/hmac_sha512.h"
 #include "random.h"
 #include "utilstrencodings.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 
 #include <vector>
 

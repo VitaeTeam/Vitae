@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "util.h"
-#include "test_vitae.h"
+#include "test/test_vitae.h"
 
 #include <string>
 #include <vector>
