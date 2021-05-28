@@ -11,7 +11,7 @@
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utilmoneystr.h"
-#include "test/test_vitae.h"
+#include "test_vitae.h"
 
 #include <stdint.h>
 #include <vector>

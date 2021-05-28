@@ -5,7 +5,7 @@
 #include "coins.h"
 #include "random.h"
 #include "uint256.h"
-#include "test/test_vitae.h"
+#include "test_vitae.h"
 
 #include <vector>
 #include <map>
