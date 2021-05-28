@@ -555,7 +555,7 @@ CLEANFILES += zmq/*.gcda zmq/*.gcno
 CLEANFILES += zvit/*.gcda zvit/*.gcno
 CLEANFILES += obj/build.h
 
-EXTRA_DIST =
+#EXTRA_DIST =
 
 
 config/vitae-config.h: config/stamp-h1
