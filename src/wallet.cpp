@@ -1797,33 +1797,29 @@ bool less_then_denom(const COutput& out1, const COutput& out2)
     return (!found1 && found2);
 }
 
-bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount, bool fPrecompute)
+bool CWallet::SelectStakeCoins(std::list<std::unique_ptr<CStakeInput> >& listInputs, CAmount nTargetAmount,
+        int blockHeight, bool fPrecompute)
 {
     LOCK(cs_main);
     //Add VIT
     vector<COutput> vCoins;
     AvailableCoins(vCoins, true, NULL, false, STAKABLE_COINS);
     CAmount nAmountSelected = 0;
-    if (GetBoolArg("-vitstake", true) && !fPrecompute) {
+    if (GetBoolArg("-vitstake", true)) {
         for (const COutput &out : vCoins) {
             //make sure not to outrun target amount
             if (nAmountSelected + out.tx->vout[out.i].nValue > nTargetAmount)
                 continue;
 
-            //if zerocoinspend, then use the block time
-            int64_t nTxTime = out.tx->GetTxTime();
-            if (out.tx->vin[0].IsZerocoinSpend()) {
-                if (!out.tx->IsInMainChain())
-                    continue;
-                nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
-            }
-
-            //check for min age
-            if ((GetAdjustedTime() - nTxTime < nStakeMinAge ) && Params().NetworkID() != CBaseChainParams::REGTEST)
+            if (out.tx->vin[0].IsZerocoinSpend() && !out.tx->IsInMainChain())
                 continue;
 
-            //check that it is matured
-            if (out.nDepth < (out.tx->IsCoinStake() ? Params().COINBASE_MATURITY() : 10))
+            if (!out.tx->hashBlock)
+                continue;
+
+            CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
+            //check for maturity (min age/depth)
+            if (!Params().HasStakeMinAgeOrDepth(blockHeight, GetAdjustedTime(), utxoBlock->nHeight, utxoBlock->GetBlockTime(), getStakeModifierV2SporkValue(), isSporkNewStakeMinDepthActive()))
                 continue;
 
             //add to our stake set
@@ -4926,6 +4922,7 @@ bool CWallet::DatabaseMint(CDeterministicMint& dMint)
 
 void ThreadPrecomputeSpends()
 {
+/* The code is deleted from upstream later
     boost::this_thread::interruption_point();
     LogPrintf("ThreadPrecomputeSpends started\n");
     CWallet* pwallet = pwalletMain;
@@ -4938,10 +4935,12 @@ void ThreadPrecomputeSpends()
         LogPrintf("ThreadPrecomputeSpends() error \n");
     }
     LogPrintf("ThreadPrecomputeSpends exiting,\n");
+*/
 }
 
 void CWallet::PrecomputeSpends()
 {
+/*
     LogPrintf("Precomputer started\n");
     RenameThread("vitae-precomputer");
 
@@ -5215,5 +5214,6 @@ void CWallet::PrecomputeSpends()
         LogPrint("precompute", "%s: Finished precompute round...\n\n", __func__);
         MilliSleep(5000);
     }
+*/
 }
 
