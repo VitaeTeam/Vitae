@@ -1871,7 +1871,9 @@ bool CWallet::MintableCoins()
     CAmount nBalance = GetBalance();
     CAmount nZvitBalance = GetZerocoinBalance(false);
 
-    // Regular VIT
+    int chainHeight = chainActive.Height();
+
+    // Regular PIV
     if (nBalance > 0) {
         if (mapArgs.count("-reservebalance") && !ParseMoney(mapArgs["-reservebalance"], nReserveBalance))
             return error("%s : invalid reserve balance amount", __func__);
@@ -1881,26 +1883,22 @@ bool CWallet::MintableCoins()
         vector<COutput> vCoins;
         AvailableCoins(vCoins, true);
 
+        int64_t time = GetAdjustedTime();
         for (const COutput& out : vCoins) {
-            int64_t nTxTime = out.tx->GetTxTime();
-            if (out.tx->vin[0].IsZerocoinSpend()) {
-                if (!out.tx->IsInMainChain())
-                    continue;
-                nTxTime = mapBlockIndex.at(out.tx->hashBlock)->GetBlockTime();
-            }
-
-            if (GetAdjustedTime() - nTxTime > nStakeMinAge)
+            CBlockIndex* utxoBlock = mapBlockIndex.at(out.tx->hashBlock);
+            //check for maturity (min age/depth)
+            if (Params().HasStakeMinAgeOrDepth(chainHeight, time, utxoBlock->nHeight, utxoBlock->nTime, getStakeModifierV2SporkValue(), isSporkNewStakeMinDepthActive()))
                 return true;
         }
     }
 
-    // zVIT
+    // zVITAE
     if (nZvitBalance > 0) {
         set<CMintMeta> setMints = zvitTracker->ListMints(true, true, true);
         for (auto mint : setMints) {
             if (mint.nVersion < CZerocoinMint::STAKABLE_VERSION)
                 continue;
-            if (mint.nHeight > chainActive.Height() - Params().Zerocoin_RequiredStakeDepth())
+            if (mint.nHeight > chainHeight - Params().Zerocoin_RequiredStakeDepth())
                 continue;
            return true;
         }
