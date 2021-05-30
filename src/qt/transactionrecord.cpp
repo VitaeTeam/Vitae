@@ -84,19 +84,22 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet* 
             sub.address = CBitcoinAddress(address).ToString();
             sub.credit = nNet;
         } else {
-            //Masternode reward
-            CTxDestination destMN;
-            int nIndexMN = wtx.vout.size() - 1;
-            if (ExtractDestination(wtx.vout[nIndexMN].scriptPubKey, destMN) && IsMine(*wallet, destMN)) {
-                isminetype mine = wallet->IsMine(wtx.vout[nIndexMN]);
-                sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
-				if (nIndexMN == 2) {
-					sub.type = TransactionRecord::FNReward;
-				} else {
-					sub.type = TransactionRecord::MNReward;
-				}
-                sub.address = CBitcoinAddress(destMN).ToString();
-                sub.credit = wtx.vout[nIndexMN].nValue;
+            //if the address is not yours then it means you have a tx sent to you in someone elses coinstake tx
+            for (unsigned int i = 1; i < wtx.vout.size(); i++) {
+                CTxDestination outAddress;
+                if (ExtractDestination(wtx.vout[i].scriptPubKey, outAddress)) {
+                    if (IsMine(*wallet, outAddress)) {
+                        isminetype mine = wallet->IsMine(wtx.vout[i]);
+                        sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
+                        if (i == 2) {
+                            sub.type = TransactionRecord::FNReward;
+                        } else {
+                            sub.type = TransactionRecord::MNReward;
+                        }
+                        sub.address = CBitcoinAddress(outAddress).ToString();
+                        sub.credit = wtx.vout[i].nValue;
+                    }
+                }
             }
         }
 
