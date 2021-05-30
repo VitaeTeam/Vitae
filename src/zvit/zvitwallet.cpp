@@ -30,7 +30,7 @@ CzVITWallet::CzVITWallet(std::string strWalletFile)
             hashSeed = Hash(seed.begin(), seed.end());
             if (pwalletMain->AddDeterministicSeed(seed)) {
                 if (walletdb.EraseZVITSeed_deprecated()) {
-                    LogPrintf("%s: Updated zVIT seed databasing\n", __func__);
+                    LogPrintf("%s: Updated zVITAE seed databasing\n", __func__);
                     fFirstRun = false;
                 } else {
                     LogPrintf("%s: failed to remove old zvit seed\n", __func__);

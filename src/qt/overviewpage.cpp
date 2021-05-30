@@ -199,7 +199,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance;
     CAmount nAvailableWatchBalance = watchOnlyBalance - watchImmatureBalance - nWatchOnlyLockedBalance;
 
-    // zVIT Balance
+    // zVITAE Balance
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
 
     // Percentages
@@ -277,7 +277,7 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelLockedBalance->setVisible(showVITLocked || showWatchOnlyVITLocked);
     ui->labelWatchLocked->setVisible(showWatchOnlyVITLocked && showWatchOnly);
 
-    // zVIT
+    // zVITAE
     bool showzVITAvailable = settingShowAllBalances || zerocoinBalance != matureZerocoinBalance;
     bool showzVITUnconfirmed = settingShowAllBalances || unconfirmedZerocoinBalance != 0;
     bool showzVITImmature = settingShowAllBalances || immatureZerocoinBalance != 0;

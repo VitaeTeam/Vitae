@@ -672,7 +672,7 @@ public:
     /** MultiSig address added */
     boost::signals2::signal<void(bool fHaveMultiSig)> NotifyMultiSigChanged;
 
-    /** zVIT reset */
+    /** zVITAE reset */
     boost::signals2::signal<void()> NotifyzVITAEReset;
 
     /** notify wallet file backed up */

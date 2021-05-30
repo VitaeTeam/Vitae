@@ -44,12 +44,12 @@ namespace ZVITModule {
         uint8_t nVersion = mint.GetVersion();
         if (nVersion < libzerocoin::PrivateCoin::PUBKEY_VERSION) {
             // No v1 serials accepted anymore.
-            return error("%s: failed to set zVIT privkey mint version=%d\n", __func__, nVersion);
+            return error("%s: failed to set zVITAE privkey mint version=%d\n", __func__, nVersion);
         }
 
         CKey key;
         if (!mint.GetKeyPair(key))
-            return error("%s: failed to set zVIT privkey mint version=%d\n", __func__, nVersion);
+            return error("%s: failed to set zVITAE privkey mint version=%d\n", __func__, nVersion);
 
         PublicCoinSpend spend(params, mint.GetSerialNumber(), mint.GetRandomness(), key.GetPubKey());
         spend.setTxOutHash(hashTxOut);

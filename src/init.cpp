@@ -545,8 +545,8 @@ std::string HelpMessage(HelpMessageMode mode)
 #ifdef ENABLE_WALLET
     strUsage += HelpMessageGroup(_("Staking options:"));
     strUsage += HelpMessageOpt("-staking=<n>", strprintf(_("Enable staking functionality (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-vitstake=<n>", strprintf(_("Enable or disable staking functionality for VIT inputs (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-zvitstake=<n>", strprintf(_("Enable or disable staking functionality for zVIT inputs (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-vitstake=<n>", strprintf(_("Enable or disable staking functionality for VITAE inputs (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-zvitaestake=<n>", strprintf(_("Enable or disable staking functionality for zVITAE inputs (0-1, default: %u)"), 1));
     strUsage += HelpMessageOpt("-reservebalance=<amt>", _("Keep the specified amount available for spending at all times (default: 0)"));
     if (GetBoolArg("-help-debug", false)) {
         strUsage += HelpMessageOpt("-printstakemodifier", _("Display the stake modifier calculations in the debug.log file."));
@@ -577,10 +577,10 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-enableautoconvertaddress=<n>", strprintf(_("Enable automatic Zerocoin minting from specific addresses (0-1, default: %u)"), DEFAULT_AUTOCONVERTADDRESS));
     strUsage += HelpMessageOpt("-zeromintpercentage=<n>", strprintf(_("Percentage of automatically minted Zerocoin  (1-100, default: %u)"), 10));
     strUsage += HelpMessageOpt("-preferredDenom=<n>", strprintf(_("Preferred Denomination for automatically minted Zerocoin  (1/5/10/50/100/500/1000/5000), 0 for no preference. default: %u)"), 0));
-    strUsage += HelpMessageOpt("-backupzvit=<n>", strprintf(_("Enable automatic wallet backups triggered after each zVIT minting (0-1, default: %u)"), 1));
-    strUsage += HelpMessageOpt("-precompute=<n>", strprintf(_("Enable precomputation of zVIT spends and stakes (0-1, default %u)"), 1));
+    strUsage += HelpMessageOpt("-backupzvitae=<n>", strprintf(_("Enable automatic wallet backups triggered after each zVITAE minting (0-1, default: %u)"), 1));
+    strUsage += HelpMessageOpt("-precompute=<n>", strprintf(_("Enable precomputation of zVITAE spends and stakes (0-1, default %u)"), 1));
     strUsage += HelpMessageOpt("-precomputecachelength=<n>", strprintf(_("Set the number of included blocks to precompute per cycle. (minimum: %d) (maximum: %d) (default: %d)"), MIN_PRECOMPUTE_LENGTH, MAX_PRECOMPUTE_LENGTH, DEFAULT_PRECOMPUTE_LENGTH));
-    strUsage += HelpMessageOpt("-zvitbackuppath=<dir|file>", _("Specify custom backup path to add a copy of any automatic zVIT backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup. If backuppath is set as well, 4 backups will happen"));
+    strUsage += HelpMessageOpt("-zvitbackuppath=<dir|file>", _("Specify custom backup path to add a copy of any automatic zVITAE backup. If set as dir, every backup generates a timestamped file. If set as file, will rewrite to that file every backup. If backuppath is set as well, 4 backups will happen"));
 #endif // ENABLE_WALLET
     strUsage += HelpMessageOpt("-reindexzerocoin=<n>", strprintf(_("Delete all zerocoin spends and mints that have been recorded to the blockchain database and reindex them (0-1, default: %u)"), 0));
 
@@ -1544,7 +1544,7 @@ bool AppInit2()
                         LogPrintf("Current GetZerocoinSupply: %d vs %d\n", pblockindex->GetZerocoinSupply()/COIN , zvitSupplyCheckpoint/COIN);
                         reindexDueWrappedSerials = true;
                     } else if (pblockindex->GetZerocoinSupply() > zvitSupplyCheckpoint) {
-                        // Trigger global zVIT reindex
+                        // Trigger global zVITAE reindex
                         reindexZerocoin = true;
                         LogPrintf("Current GetZerocoinSupply: %d vs %d\n", pblockindex->GetZerocoinSupply()/COIN , zvitSupplyCheckpoint/COIN);
                     }
@@ -1791,12 +1791,12 @@ bool AppInit2()
         }
         fVerifyingBlocks = false;
 
-        //Inititalize zVITWallet
-        uiInterface.InitMessage(_("Syncing zVIT wallet..."));
+        //Inititalize zVITAEWallet
+        uiInterface.InitMessage(_("Syncing zVITAE wallet..."));
 
         pwalletMain->InitAutoConvertAddresses();
 
-        bool fEnableZVitBackups = GetBoolArg("-backupzVit", true);
+        bool fEnableZVitBackups = GetBoolArg("-backupzVitae", true);
         pwalletMain->setZVitAutoBackups(fEnableZVitBackups);
 
         //Load zerocoin mint hashes to memory
@@ -2154,7 +2154,7 @@ bool AppInit2()
         threadGroup.create_thread(boost::bind(&ThreadFlushWalletDB, boost::ref(pwalletMain->strWalletFile)));
 
         if (GetBoolArg("-precompute", false)) {
-            // Run a thread to precompute any zVIT spends
+            // Run a thread to precompute any zVITAE spends
             threadGroup.create_thread(boost::bind(&ThreadPrecomputeSpends));
         }
     }

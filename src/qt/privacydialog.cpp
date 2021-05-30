@@ -34,7 +34,7 @@ PrivacyDialog::PrivacyDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystem
     nDisplayUnit = 0; // just make sure it's not unitialized
     ui->setupUi(this);
 
-    // "Spending 999999 zVIT ought to be enough for anybody." - Bill Gates, 2017
+    // "Spending 999999 zVITAE ought to be enough for anybody." - Bill Gates, 2017
     ui->zVITpayAmount->setValidator( new QDoubleValidator(0.0, 21000000.0, 20, this) );
     //ui->labelMintAmountValue->setValidator( new QIntValidator(0, 999999, this) );     // disable MINT
 
@@ -412,7 +412,7 @@ void PrivacyDialog::sendzVIT()
     ui->TEMintStatus->setPlainText(tr("Spending Zerocoin.\nComputationally expensive, might need several minutes depending on your hardware.\nPlease be patient..."));
     ui->TEMintStatus->repaint();
 
-    // use mints from zVIT selector if applicable
+    // use mints from zVITAE selector if applicable
     vector<CMintMeta> vMintsToFetch;
     vector<CZerocoinMint> vMintsSelected;
     if (!ZVitControlDialog::setSelectedMints.empty()) {
@@ -465,7 +465,7 @@ void PrivacyDialog::sendzVIT()
     }
 
     if (walletModel && walletModel->getAddressTableModel()) {
-        // If zVIT was spent successfully update the addressbook with the label
+        // If zVITAE was spent successfully update the addressbook with the label
         std::string labelText = ui->addAsLabel->text().toStdString();
         if (!labelText.empty())
             walletModel->updateAddressBookLabels(address.Get(), labelText, "send");
@@ -810,19 +810,19 @@ void PrivacyDialog::updateSPORK20Status()
     bool fButtonsEnabled = false;
     bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_20_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
-        // Mint zVIT
+        // Mint zVITAE
         //ui->pushButtonMintzVITAE->setEnabled(false);
-        //ui->pushButtonMintzVITAE->setToolTip(tr("zVIT is currently disabled due to maintenance."));
+        //ui->pushButtonMintzVITAE->setToolTip(tr("zVITAE is currently disabled due to maintenance."));
 
-        // Spend zVIT
+        // Spend zVITAE
         ui->pushButtonSpendzVIT->setEnabled(false);
-        ui->pushButtonSpendzVIT->setToolTip(tr("zVIT is currently disabled due to maintenance."));
+        ui->pushButtonSpendzVIT->setToolTip(tr("zVITAE is currently disabled due to maintenance."));
     } else if (!fMaintenanceMode && !fButtonsEnabled) {
-        // Mint zVIT
+        // Mint zVITAE
         //ui->pushButtonMintzVIT->setEnabled(true);
-        //ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of VIT to convert to zVIT", 0));
+        //ui->pushButtonMintzVIT->setToolTip(tr("PrivacyDialog", "Enter an amount of VITAE to convert to zVITAE", 0));
 
-        // Spend zVIT
+        // Spend zVITAE
         ui->pushButtonSpendzVIT->setEnabled(true);
         ui->pushButtonSpendzVIT->setToolTip(tr("Spend Zerocoin. Without 'Pay To:' address creates payments to yourself."));
     }

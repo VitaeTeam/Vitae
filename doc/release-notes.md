@@ -39,21 +39,21 @@ VITAE Core should also work on most other Unix-like systems but is not frequentl
 Notable Changes
 ==============
 
-## zVIT Public Spends
+## zVITAE Public Spends
 
-Recent exploits of the Zerocoin protocol (Wrapped serials and broken P1 proof) required us to enable the zerocoin spork and deactivate zVIT functionality in order to secure the supply until the pertinent review process was completed.
+Recent exploits of the Zerocoin protocol (Wrapped serials and broken P1 proof) required us to enable the zerocoin spork and deactivate zVITAE functionality in order to secure the supply until the pertinent review process was completed.
 
-Moving forward from this undesired situation, we are enabling a secure and chain storage friendly solution for the zerocoin public spend (aka zVIT to VIT conversion).
+Moving forward from this undesired situation, we are enabling a secure and chain storage friendly solution for the zerocoin public spend (aka zVITAE to VITAE conversion).
 
 The explanation of how this works can be found in #891
 
-After block `1,880,000` has past, `SPORK_16` will be deactivated to allow zVIT spends to occur using this new public spend method for version 2 zVIT (version 1 zVIT won't be spendable, see note below). zVIT public spends, as the name suggests, are **NOT** private, they reveal the input mint that is being spent. The minting of **NEW** zVIT, as well as zVIT staking will remain disabled for the time being.
+After block `1,880,000` has past, `SPORK_16` will be deactivated to allow zVITAE spends to occur using this new public spend method for version 2 zVITAE (version 1 zVITAE won't be spendable, see note below). zVITAE public spends, as the name suggests, are **NOT** private, they reveal the input mint that is being spent. The minting of **NEW** zVITAE, as well as zVITAE staking will remain disabled for the time being.
 
-It is advised that users spend/convert their existing zVIT to VIT, which can be done via the GUI or RPC as it was prior to the disabling of zVIT. Note that with the public spend method, the restriction on the number of denominations per transaction (previously 7) has been lifted, and now allows for several hundred denominations per transaction.
+It is advised that users spend/convert their existing zVITAE to VITAE, which can be done via the GUI or RPC as it was prior to the disabling of zVITAE. Note that with the public spend method, the restriction on the number of denominations per transaction (previously 7) has been lifted, and now allows for several hundred denominations per transaction.
 
-*Note on version 1 zVIT*: Version 1 zVIT was only available to me minted between versions v3.0.0 (Oct 6, 2017) and v3.1.0 (May 8, 2018). The announcement that version 1 zVIT was deprecated went out on May 1, 2018 with a recommendation for users to spend/convert their version 1 zVIT.
+*Note on version 1 zVITAE*: Version 1 zVITAE was only available to me minted between versions v3.0.0 (Oct 6, 2017) and v3.1.0 (May 8, 2018). The announcement that version 1 zVITAE was deprecated went out on May 1, 2018 with a recommendation for users to spend/convert their version 1 zVITAE.
 
-Version 1 zVIT will be made spendable at a later date due to the extra work required in order to make these version 1 mints spendable.
+Version 1 zVITAE will be made spendable at a later date due to the extra work required in order to make these version 1 mints spendable.
 
 ## GUI Changes
 
@@ -63,7 +63,7 @@ The options/settings UI dialog has been cleaned up to no longer show settings th
 
 ### Privacy Tab
 
-Notice text has been added to the privacy tab indicating that zVIT minting is disabled, as well as the removal of UI elements that supported such functionality. Notice text has also been added indicating that zVIT spends are currently **NOT** private.
+Notice text has been added to the privacy tab indicating that zVITAE minting is disabled, as well as the removal of UI elements that supported such functionality. Notice text has also been added indicating that zVITAE spends are currently **NOT** private.
 
 ## RPC Changes
 
@@ -78,8 +78,8 @@ Several new commands were added in v2.3.1 to replace the two aforementioned comm
 A new RPC command (`getblockindexstats`) has been introduced which serves the purpose of obtaining statistical information on a range of blocks. The information returned is as follows:
   * transaction count (not including coinbase/coinstake txes)
   * transaction count (including coinbase/coinstake txes)
-  * zVIT per-denom mint count
-  * zVIT per-denom spend count
+  * zVITAE per-denom mint count
+  * zVITAE per-denom spend count
   * total transaction bytes
   * total fees in block range
   * average fee per kB
@@ -117,9 +117,9 @@ Result:
         denom_5: xxxx,         (numeric) number of PUBLIC spends of denom_5 occurred over the block range
          ...                   ... number of PUBLIC spends of other denominations: ..., 10, 50, 100, 500, 1000, 5000
   },
-  txbytes: xxxxx,              (numeric) Sum of the size of all txes (zVIT excluded) over block range
-  ttlfee: xxxxx,               (numeric) Sum of the fee amount of all txes (zVIT mints excluded) over block range
-  ttlfee_all: xxxxx,           (numeric) Sum of the fee amount of all txes (zVIT mints included) over block range
+  txbytes: xxxxx,              (numeric) Sum of the size of all txes (zVITAE excluded) over block range
+  ttlfee: xxxxx,               (numeric) Sum of the fee amount of all txes (zVITAE mints excluded) over block range
+  ttlfee_all: xxxxx,           (numeric) Sum of the fee amount of all txes (zVITAE mints included) over block range
   feeperkb: xxxxx,             (numeric) Average fee per kb (excluding zc txes)
 }
 ```
@@ -150,9 +150,9 @@ Detailed release notes follow. This overview includes changes that affect behavi
 ### Core
  - #875 `a99c2dd3bb` [Zerocoin] GMP BigNum: Fix limits for random number generators (random-zebra)
  - #888 `0c071c3fd0` [Zerocoin] remove CTransaction::IsZerocoinSpend/IsZerocoinMint (random-zebra)
- - #891 `855408c2c3` [zVIT] Zerocoin public coin spend. (furszy)
- - #897 `65bd788945` [zVIT] Disable zerocoin minting (random-zebra)
- - #899 `4b22a09024` [zVIT] Disable zVIT staking (random-zebra)
+ - #891 `855408c2c3` [zVITAE] Zerocoin public coin spend. (furszy)
+ - #897 `65bd788945` [zVITAE] Disable zerocoin minting (random-zebra)
+ - #899 `4b22a09024` [zVITAE] Disable zVITAE staking (random-zebra)
  - #909 `458b08c8f2` [Consensus] Mainnet public spend enforcement height set. (furszy)
  - #924 `988b33dab8` [Backport] Max tip age to consider a node in IBD status customizable. (furszy)
  - #925 `a9827a0e63` [Consensus] Time checks (warrows)
@@ -202,9 +202,9 @@ Detailed release notes follow. This overview includes changes that affect behavi
  - #879 `5f0d72659c` [Refactor] Rename ui_interface.h file (Fuzzbawls)
  - #890 `fddac44eab` [Refactor] Remove unused setStakeSeen variable (warrows)
  - #903 `68c81c407a` [Log] Handle errors during log message formatting (warrows)
- - #904 `6f597629d8` [zVIT] Free memory from ToString() (warrows)
+ - #904 `6f597629d8` [zVITAE] Free memory from ToString() (warrows)
  - #912 `5f167c2c7e` [Cleanup] compiler warnings in coinSpend object. (furszy)
- - #919 `c0233e4af6` [zVIT] Debug missing jump line. (Matias Furszyfer)
+ - #919 `c0233e4af6` [zVITAE] Debug missing jump line. (Matias Furszyfer)
  - #920 `a56cc2948d` [Docs] Overhaul documentation files (Fuzzbawls)
  - #921 `893183339e` [Scripts] Overhaul supplemental python/shell scripts (Fuzzbawls)
  - #926 `49a69b8931` [Doc] 3.3.0 Notable Changes (Fuzzbawls)
