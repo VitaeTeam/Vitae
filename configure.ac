@@ -1223,7 +1223,7 @@ echo "  with upnp     = $use_upnp"
 echo "  debug enabled = $enable_debug"
 echo
 echo "  target os     = $TARGET_OS"
-echo "  build os      = $BUILD_OS"
+echo "  build os      = $build_os"
 echo
 echo "  CC            = $CC"
 echo "  CFLAGS        = $CFLAGS"
