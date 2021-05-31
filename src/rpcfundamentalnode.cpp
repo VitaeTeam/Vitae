@@ -15,6 +15,7 @@
 #include "fundamentalnodeman.h"
 #include "rpcserver.h"
 #include "utilmoneystr.h"
+#include "spork.h"
 
 #include "masternode-pos.h"
 #include "masternodeconfig.h"
@@ -1437,6 +1438,10 @@ UniValue startfundamentalnode (const UniValue& params, bool fHelp)
 
 UniValue createfundamentalnodekey (const UniValue& params, bool fHelp)
 {
+    if(GetSporkValue(SPORK_25_DISABLE_NEW_FUNDAMENTALNODE) > 0) {
+        throw runtime_error("Fundamental node creation is disabled.");
+    }
+    
     if (fHelp || (params.size() != 0))
         throw runtime_error(
             "createfundamentalnodekey\n"

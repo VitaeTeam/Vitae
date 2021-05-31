@@ -583,6 +583,11 @@ void CFundamentalnodePayments::ProcessMessageFundamentalnodePayments(CNode* pfro
             if (!locked || chainActive.Tip() == NULL) return;
             nHeight = chainActive.Tip()->nHeight;
         }
+        
+        if(! isVinValidFundamentalNode(winner.vinFundamentalnode)) {
+            LogPrint("mnpayments", "fnw - new fundamentalnode is disabled\n");
+            return;
+        }
 
         if (fundamentalnodePayments.mapFundamentalnodePayeeVotes.count(winner.GetHash())) {
             LogPrint("mnpayments", "fnw - Already seen - %s bestHeight %d\n", winner.GetHash().ToString().c_str(), nHeight);
@@ -692,6 +697,11 @@ bool CFundamentalnodePayments::IsScheduled(CFundamentalnode& mn, int nNotBlockHe
 
 bool CFundamentalnodePayments::AddWinningFundamentalnode(CFundamentalnodePaymentWinner& winnerIn)
 {
+    if(! isVinValidFundamentalNode(winnerIn.vinFundamentalnode)) {
+        LogPrint("mnpayments", "AddWinningFundamentalnode - new fundamentalnode is disabled\n");
+        return false;
+    }
+
     uint256 blockHash = 0;
     if (!GetBlockHash(blockHash, winnerIn.nBlockHeight - 100)) {
         return false;

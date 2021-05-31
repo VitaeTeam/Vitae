@@ -20,6 +20,7 @@
 #define ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW 2
 #define ACTIVE_FUNDAMENTALNODE_NOT_CAPABLE 3
 #define ACTIVE_FUNDAMENTALNODE_STARTED 4
+#define ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED 5
 
 // Responsible for activating the Fundamentalnode and pinging the network
 class CActiveFundamentalnode

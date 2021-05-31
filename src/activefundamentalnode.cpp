@@ -86,6 +86,12 @@ void CActiveFundamentalnode::ManageStatus()
         CKey keyCollateralAddress;
 
         if (GetFundamentalNodeVin(vin, pubKeyCollateralAddress, keyCollateralAddress)) {
+            if(! isVinValidFundamentalNode(vin)) {
+                status = ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED;
+                notCapableReason = strprintf("%s", GetStatus());
+                LogPrintf("CActiveFundamentalnode::ManageStatus() - %s\n", notCapableReason);
+                return;
+            }
             if (GetInputAge(vin) < FUNDAMENTALNODE_MIN_CONFIRMATIONS) {
                 status = ACTIVE_FUNDAMENTALNODE_INPUT_TOO_NEW;
                 notCapableReason = strprintf("%s - %d confirmations", GetStatus(), GetInputAge(vin));
@@ -151,6 +157,8 @@ std::string CActiveFundamentalnode::GetStatus()
         return "Not capable fundamentalnode: " + notCapableReason;
     case ACTIVE_FUNDAMENTALNODE_STARTED:
         return "Fundamentalnode successfully started";
+    case ACTIVE_FUNDAMENTALNODE_NEW_NODE_DISABLED:
+        return "New fundamentalnode is disabled";
     default:
         return "unknown";
     }

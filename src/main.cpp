@@ -910,6 +910,25 @@ unsigned int GetP2SHSigOpCount(const CTransaction& tx, const CCoinsViewCache& in
     return nSigOps;
 }
 
+int GetInputHeight(CTxIn& vin)
+{
+    CCoinsView viewDummy;
+    CCoinsViewCache view(&viewDummy);
+    {
+        LOCK(mempool.cs);
+        CCoinsViewMemPool viewMempool(pcoinsTip, mempool);
+        view.SetBackend(viewMempool); // temporarily switch cache backend to db+mempool view
+
+        const CCoins* coins = view.AccessCoins(vin.prevout.hash);
+
+        if (coins && coins->nHeight >= 0) {
+            return coins->nHeight;
+        }
+        
+        return -1;
+    }
+}
+
 int GetInputAge(CTxIn& vin)
 {
     CCoinsView viewDummy;
