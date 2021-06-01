@@ -24,20 +24,20 @@ void CActiveMasternode::ManageStatus()
     //need correct adjusted time to send ping
     bool fIsInitialDownload = IsInitialBlockDownload();
     if(fIsInitialDownload) {
-        status = MASTERNODE_SYNC_IN_PROCESS;
+        status = ACTIVE_MASTERNODE_SYNC_IN_PROCESS;
         LogPrintf("CActiveMasternode::ManageStatus() - Sync in progress. Must wait until sync is complete to start Masternode.\n");
         return;
     }
 
-    if(status == MASTERNODE_INPUT_TOO_NEW || status == MASTERNODE_NOT_CAPABLE || status == MASTERNODE_SYNC_IN_PROCESS){
-        status = MASTERNODE_NOT_PROCESSED;
+    if(status == ACTIVE_MASTERNODE_INPUT_TOO_NEW || status == ACTIVE_MASTERNODE_NOT_CAPABLE || status == ACTIVE_MASTERNODE_SYNC_IN_PROCESS){
+        status = ACTIVE_MASTERNODE_INITIAL;
     }
 
-    if(status == MASTERNODE_NOT_PROCESSED) {
+    if(status == ACTIVE_MASTERNODE_INITIAL) {
         if(strMasterNodeAddr.empty()) {
             if(!GetLocal(service)) {
                 notCapableReason = "Can't detect external address. Please use the Masternodeaddr configuration option.";
-                status = MASTERNODE_NOT_CAPABLE;
+                status = ACTIVE_MASTERNODE_NOT_CAPABLE;
                 LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
                 return;
             }
@@ -53,20 +53,20 @@ void CActiveMasternode::ManageStatus()
 
         if(!ConnectNode((CAddress)service, service.ToString().c_str())){
             notCapableReason = "Could not connect to " + service.ToString();
-            status = MASTERNODE_NOT_CAPABLE;
+            status = ACTIVE_MASTERNODE_NOT_CAPABLE;
             LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
             return;
         }
 
         if(pwalletMain->IsLocked()){
             notCapableReason = "Wallet is locked.";
-            status = MASTERNODE_NOT_CAPABLE;
+            status = ACTIVE_MASTERNODE_NOT_CAPABLE;
             LogPrintf("CActiveMasternode::ManageStatus() - not capable: %s\n", notCapableReason.c_str());
             return;
         }
 
         // Set defaults
-        status = MASTERNODE_NOT_CAPABLE;
+        status = ACTIVE_MASTERNODE_NOT_CAPABLE;
         notCapableReason = "Unknown. Check debug.log for more information.";
 
         // Choose coins to use
@@ -79,13 +79,13 @@ void CActiveMasternode::ManageStatus()
                 notCapableReason = "Input must have least " + std::to_string(MASTERNODE_MIN_CONFIRMATIONS) +
                         " confirmations - " + std::to_string(GetInputAge(vin)) + " confirmations";
                 LogPrintf("CActiveMasternode::ManageStatus() - %s\n", notCapableReason.c_str());
-                status = MASTERNODE_INPUT_TOO_NEW;
+                status = ACTIVE_MASTERNODE_INPUT_TOO_NEW;
                 return;
             }
 
             LogPrintf("CActiveMasternode::ManageStatus() - Is capable master node!\n");
 
-            status = MASTERNODE_IS_CAPABLE;
+            status = ACTIVE_MASTERNODE_STARTED;
             notCapableReason = "";
 
             pwalletMain->LockCoin(vin.prevout);
@@ -155,13 +155,13 @@ bool CActiveMasternode::StopMasterNode(std::string strService, std::string strKe
 
 // Send stop dseep to network for main Masternode
 bool CActiveMasternode::StopMasterNode(std::string& errorMessage) {
-    if(status != MASTERNODE_IS_CAPABLE && status != MASTERNODE_REMOTELY_ENABLED) {
+    if(status != ACTIVE_MASTERNODE_STARTED) {
         errorMessage = "Masternode is not in a running status";
         LogPrintf("CActiveMasternode::StopMasterNode() - Error: %s\n", errorMessage.c_str());
         return false;
     }
 
-    status = MASTERNODE_STOPPED;
+    status = ACTIVE_MASTERNODE_INITIAL;
 
     CPubKey pubKeyMasternode;
     CKey keyMasternode;
@@ -182,7 +182,7 @@ bool CActiveMasternode::StopMasterNode(CTxIn vin, CService service, CKey keyMast
 }
 
 bool CActiveMasternode::Dseep(std::string& errorMessage) {
-    if(status != MASTERNODE_IS_CAPABLE && status != MASTERNODE_REMOTELY_ENABLED) {
+    if(status != ACTIVE_MASTERNODE_STARTED) {
         errorMessage = "Masternode is not in a running status";
         LogPrintf("CActiveMasternode::Dseep() - Error: %s\n", errorMessage.c_str());
         return false;
@@ -234,7 +234,7 @@ bool CActiveMasternode::Dseep(CTxIn vin, CService service, CKey keyMasternode, C
         // Seems like we are trying to send a ping while the Masternode is not registered in the network
         retErrorMessage = "Darksend Masternode List doesn't include our Masternode, Shutting down Masternode pinging service! " + vin.ToString();
         LogPrintf("CActiveMasternode::Dseep() - Error: %s\n", retErrorMessage.c_str());
-        status = MASTERNODE_NOT_CAPABLE;
+        status = ACTIVE_MASTERNODE_NOT_CAPABLE;
         notCapableReason = retErrorMessage;
         return false;
     }
@@ -451,7 +451,7 @@ bool CActiveMasternode::EnableHotColdMasterNode(CTxIn& newVin, CService& newServ
 {
     if(!fMasterNode) return false;
 
-    status = MASTERNODE_REMOTELY_ENABLED;
+    status = ACTIVE_MASTERNODE_STARTED;
 
     //The values below are needed for signing dseep messages going forward
     this->vin = newVin;
