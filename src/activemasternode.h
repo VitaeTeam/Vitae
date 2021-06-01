@@ -40,7 +40,7 @@ public:
 
     CActiveMasternode()
     {
-        status = MASTERNODE_NOT_PROCESSED;
+        status = ACTIVE_MASTERNODE_INITIAL;
     }
 
     /// Manage status of main Masternode
