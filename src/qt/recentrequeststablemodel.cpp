@@ -208,10 +208,10 @@ void RecentRequestsTableModel::updateDisplayUnit()
     updateAmountColumnTitle();
 }
 
-bool RecentRequestEntryLessThan::operator()(RecentRequestEntry& left, RecentRequestEntry& right) const
+bool RecentRequestEntryLessThan::operator()(const RecentRequestEntry& left, const RecentRequestEntry& right) const
 {
-    RecentRequestEntry* pLeft = &left;
-    RecentRequestEntry* pRight = &right;
+    const RecentRequestEntry* pLeft = &left;
+    const RecentRequestEntry* pRight = &right;
     if (order == Qt::DescendingOrder)
         std::swap(pLeft, pRight);
 
