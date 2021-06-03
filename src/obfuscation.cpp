@@ -615,11 +615,13 @@ bool CObfuScationSigner::VerifyMessage(CPubKey pubkey, vector<unsigned char>& vc
     CPubKey pubkey2;
     if (!pubkey2.RecoverCompact(ss.GetHash(), vchSig)) {
         errorMessage = _("Error recovering public key.");
+        LogPrintf("CObfuScationSigner::VerifyMessage -- Error recovering public key.");
         return false;
     }
 
-    if (fDebug && pubkey2.GetID() != pubkey.GetID())
+    if (/*fDebug &&*/ pubkey2.GetID() != pubkey.GetID()) {
         LogPrintf("CObfuScationSigner::VerifyMessage -- keys don't match: %s %s\n", pubkey2.GetID().ToString(), pubkey.GetID().ToString());
+    }
 
     return (pubkey2.GetID() == pubkey.GetID());
 }
