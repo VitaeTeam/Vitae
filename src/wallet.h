@@ -300,58 +300,11 @@ public:
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
 
-    CWallet()
-    {
-        SetNull();
-    }
+    CWallet();
+    CWallet(std::string strWalletFileIn);
+    ~CWallet();
 
-    CWallet(std::string strWalletFileIn)
-    {
-        SetNull();
-
-        strWalletFile = strWalletFileIn;
-        fFileBacked = true;
-    }
-
-    ~CWallet()
-    {
-        delete pwalletdbEncryption;
-    }
-
-    void SetNull()
-    {
-        nWalletVersion = FEATURE_BASE;
-        nWalletMaxVersion = FEATURE_BASE;
-        fFileBacked = false;
-        nMasterKeyMaxID = 0;
-        pwalletdbEncryption = NULL;
-        nOrderPosNext = 0;
-        nNextResend = 0;
-        nLastResend = 0;
-        nTimeFirstKey = 0;
-        fWalletUnlockAnonymizeOnly = false;
-        fBackupMints = false;
-
-        // Stake Settings
-        nHashDrift = 45;
-        nStakeSplitThreshold = 2000;
-        nHashInterval = 22;
-        nStakeSetUpdateTime = 300; // 5 minutes
-
-        //MultiSend
-        vMultiSend.clear();
-        fMultiSendStake = false;
-        fMultiSendFundamentalnodeReward = false;
-        fMultiSendMasternodeReward = false;
-        fMultiSendNotify = false;
-        strMultiSendChangeAddress = "";
-        nLastMultiSendHeight = 0;
-        vDisabledAddresses.clear();
-
-        //Auto Combine Dust
-        fCombineDust = false;
-        nAutoCombineThreshold = 0;
-    }
+    void SetNull();
 
     int getZeromintPercentage()
     {
@@ -406,8 +359,6 @@ public:
     int64_t nTimeFirstKey;
 
     const CWalletTx* GetWalletTx(const uint256& hash) const;
-
-    void PrecomputeSpends();
 
     //! check whether we are allowed to upgrade (or already support) to the named feature
     bool CanSupportFeature(enum WalletFeature wf)
