@@ -2189,7 +2189,7 @@ CAmount GetSeeSaw(int nHeight, int64_t blockValue){
         int nMasternodeCount = 0 ;
 
         //if a mn count is inserted into the function we are looking for a specific result for a masternode count
-        if (IsSporkActive(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5))
+        if (IsSporkActive(SPORK_27_NEW_PROTOCOL_ENFORCEMENT_7))
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT);
         else
             nMasternodeCount = m_nodeman.CountMasternodesAboveProtocol(MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT);
@@ -4518,24 +4518,27 @@ bool CheckBlockHeader(const CBlockHeader& block, CValidationState& state, bool f
 bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bool fCheckMerkleRoot, bool fCheckSig)
 {
     // These are checks that are independent of context.
+    const bool IsPoS = block.IsProofOfStake();
+    LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(), IsPoS);
+
 
     // Check that the header is valid (particularly PoW).  This is mostly
     // redundant with the call in AcceptBlockHeader.
-    if(block.IsProofOfWork()){
-        if (!CheckBlockHeader(block, state, fCheckPOW ))
-            return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
-                REJECT_INVALID, "bad-header", true);
-    } else {
-        if (!CheckBlockHeader(block, state, block.IsProofOfWork() ))
-            return state.DoS(100, error("CheckBlock() : CheckBlockHeader failed"),
-                REJECT_INVALID, "bad-header", true);
-    }
+    if (!CheckBlockHeader(block, state, !IsPoS))
+        return state.DoS(100, error("%s : CheckBlockHeader failed", __func__), REJECT_INVALID, "bad-header", true);
+
+    // All potential-corruption validation must be done before we do any
+    // transaction validation, as otherwise we may mark the header as invalid
+    // because we receive the wrong transactions for it.
 
     // Check timestamp
-    LogPrint("debug", "%s: block=%s  is proof of stake=%d\n", __func__, block.GetHash().ToString().c_str(), block.IsProofOfStake());
     if (Params().NetworkID() != CBaseChainParams::REGTEST && block.GetBlockTime() > GetAdjustedTime() + (block.IsProofOfStake() ? 180 : 7200)) // 3 minute future drift for PoS
-        return state.Invalid(error("CheckBlock() : block timestamp too far in the future"),
+        return state.Invalid(error("%s : block timestamp too far in the future", __func__),
             REJECT_INVALID, "time-too-new");
+
+    // All potential-corruption validation must be done before we do any
+    // transaction validation, as otherwise we may mark the header as invalid
+    // because we receive the wrong transactions for it.
 
     // Check the merkle root.
     if (fCheckMerkleRoot) {
@@ -4572,7 +4575,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
             return state.DoS(100, error("CheckBlock() : more than one coinbase"),
                 REJECT_INVALID, "bad-cb-multiple");
 
-    if (block.IsProofOfStake()) {
+    if (IsPoS) {
         // Coinbase output should be empty if proof-of-stake block
         if (block.vtx[0].vout.size() != 1 || !block.vtx[0].vout[0].IsEmpty())
             return state.DoS(100, error("CheckBlock() : coinbase output not empty for proof-of-stake block"));
@@ -4750,7 +4753,7 @@ bool ContextualCheckBlockHeader(const CBlockHeader& block, CValidationState& sta
 
     int nHeight = pindexPrev->nHeight + 1;
 
-    if ((Params().NetworkIDString() == "regtest") && block.nBits != GetNextWorkRequired(pindexPrev, &block))
+    if ((Params().NetworkID() == CBaseChainParams::REGTEST) && block.nBits != GetNextWorkRequired(pindexPrev, &block))
         return state.DoS(100, error("%s : incorrect proof of work", __func__),
                 REJECT_INVALID, "bad-diffbits");
 
@@ -5217,7 +5220,10 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
             // while that block is not on the main chain
             while (!chainActive.Contains(last) && last != NULL) {
                 CBlock bl;
-                ReadBlockFromDisk(bl, last);
+                if(! ReadBlockFromDisk(bl, last)) {
+                    // Previous block not on disk
+                    return error("%s: previous block %s not on disk", __func__, last->GetBlockHash().GetHex());
+                }
                 // loop through every spent input from said block
                 for (CTransaction t : bl.vtx) {
                     for (CTxIn in: t.vin) {
@@ -7418,7 +7424,7 @@ int ActiveProtocol()
     // SPORK_18 is used for 71010. Nodes < 70926 won't see it and still get their protocol version via SPORK_17 and their
     // own ModifierUpgradeBlock()
 
-    if (IsSporkActive(SPORK_18_NEW_PROTOCOL_ENFORCEMENT_5))
+    if (IsSporkActive(SPORK_27_NEW_PROTOCOL_ENFORCEMENT_7))
             return MIN_PEER_PROTO_VERSION_AFTER_ENFORCEMENT;
     return MIN_PEER_PROTO_VERSION_BEFORE_ENFORCEMENT;
 }
