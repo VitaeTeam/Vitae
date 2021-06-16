@@ -1,7 +1,6 @@
 ---
-name: "vitae-win-3.3"
+name: "vitae-win-4.7"
 enable_cache: true
-distro: "ubuntu"
 suites:
 - "trusty"
 architectures:
@@ -21,15 +20,12 @@ packages:
 - "nsis"
 - "zip"
 - "ca-certificates"
-- "python3"
-- "rename"
+- "python"
 remotes:
-- "url": "https://github.com/VitaeTeam/vitae.git"
+- "url": "https://github.com/vitaeteam/vitae.git"
   "dir": "vitae"
 files: []
 script: |
-  set -e -o pipefail
-
   WRAP_DIR=$HOME/wrapped
   HOSTS="i686-w64-mingw32 x86_64-w64-mingw32"
   CONFIGFLAGS="--enable-reduce-exports --disable-bench --disable-gui-tests"
