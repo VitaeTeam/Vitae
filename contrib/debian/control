@@ -29,8 +29,8 @@ Build-Depends: debhelper,
  dh-systemd
 Standards-Version: 3.9.2
 Homepage: http://www.vitae.org
-Vcs-Git: git://github.com/VITAE-Project/VITAE.git
-Vcs-Browser: http://github.com/VITAE-Project/VITAE
+Vcs-Git: git://github.com/VitaeTeam/VITAE.git
+Vcs-Browser: http://github.com/VitaeTeam/VITAE
 
 Package: vitaed
 Architecture: any

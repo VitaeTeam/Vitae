@@ -49,7 +49,7 @@ Build Vitae Core
 
 1. Clone the github tree to get the source code and go into the directory.
 
-        git clone https://github.com/VITAE-Project/VITAE.git
+        git clone https://github.com/VitaeTeam/VITAE.git
         cd VITAE
 
 2.  Build vitaed:

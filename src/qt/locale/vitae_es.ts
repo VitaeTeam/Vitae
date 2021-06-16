@@ -1687,9 +1687,9 @@ Por favor compruebe la dirección e inténtelo de nuevo.</translation>
     </message>
     <message>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/vitae-project/vitae-project-translations</source>
+https://www.transifex.com/VitaeTeam/VitaeTeam-translations</source>
         <translation>¿Falta su lenguaje o la traducción está incompleta? Contribuya con las traducciones aquí:
-https://www.transifex.com/vitae-project/vitae-project-translations</translation>
+https://www.transifex.com/VitaeTeam/VitaeTeam-translations</translation>
     </message>
     <message>
         <source>Map port using &amp;UPnP</source>

@@ -2409,7 +2409,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location line="+21"/>
         <source>Language missing or translation incomplete? Help contributing translations here:
-https://www.transifex.com/vitae-project/vitae-project-translations</source>
+https://www.transifex.com/VitaeTeam/VitaeTeam-translations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

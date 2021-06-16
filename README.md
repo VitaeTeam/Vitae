@@ -1,7 +1,7 @@
 VITAE Core integration/staging repository
 =====================================
 
-[![Build Status](https://travis-ci.org/VITAE-Project/VITAE.svg?branch=master)](https://travis-ci.org/VITAE-Project/VITAE) [![GitHub version](https://badge.fury.io/gh/VITAE-Project%2FVITAE.svg)](https://badge.fury.io/gh/VITAE-Project%2FVITAE)
+[![Build Status](https://travis-ci.org/VitaeTeam/VITAE.svg?branch=master)](https://travis-ci.org/VitaeTeam/VITAE) [![GitHub version](https://badge.fury.io/gh/VitaeTeam%2FVITAE.svg)](https://badge.fury.io/gh/VitaeTeam%2FVITAE)
 
 VITAE is a cutting edge cryptocurrency, with many features not available in most other cryptocurrencies.
 - Anonymized transactions using the _Zerocoin Protocol_.

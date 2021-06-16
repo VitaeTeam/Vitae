@@ -29,7 +29,7 @@ packages:
 - "python3-setuptools"
 - "fonts-tuffy"
 remotes:
-- "url": "https://github.com/vitae-project/vitae.git"
+- "url": "https://github.com/VitaeTeam/vitae.git"
   "dir": "vitae"
 files:
 - "MacOSX10.11.sdk.tar.gz"
